@@ -33,8 +33,6 @@ async function cargarProductos() {
 }
 
 // ==================== MOSTRAR PRODUCTOS ====================
-let filtroActual = 'todos';
-
 function mostrarProductos() {
     const contenedor = document.getElementById('productos');
     const productosFiltrados = filtroActual === 'todos' 
@@ -50,6 +48,8 @@ function mostrarProductos() {
     productosFiltrados.forEach(producto => {
         const card = document.createElement('div');
         card.className = 'producto-card';
+        card.style.cursor = 'pointer';
+        
         card.innerHTML = `
             <img src="${producto.imagen}" alt="${producto.nombre}" class="producto-imagen" onerror="this.src='https://via.placeholder.com/300x200?text=Sin+imagen'">
             <div class="producto-origen origen-${producto.origen.toLowerCase()}">${producto.origen}</div>
@@ -57,11 +57,20 @@ function mostrarProductos() {
             <div class="producto-precio">$${producto.precio.toFixed(2)}</div>
             <button class="btn-agregar" data-id="${producto.id}">➕ Agregar</button>
         `;
+        
+        // Al hacer clic en la tarjeta (excepto en el botón) abre el modal
+        card.addEventListener('click', (e) => {
+            if (!e.target.classList.contains('btn-agregar')) {
+                mostrarModal(producto.id);
+            }
+        });
+        
         contenedor.appendChild(card);
     });
     
     document.querySelectorAll('.btn-agregar').forEach(btn => {
         btn.addEventListener('click', (e) => {
+            e.stopPropagation();  // Evita que se abra el modal dos veces
             const id = parseInt(btn.dataset.id);
             agregarAlCarrito(id);
         });
