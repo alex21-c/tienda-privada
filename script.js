@@ -1,6 +1,6 @@
 // ==================== CONFIGURACIÓN ====================
 // 🔴 ¡IMPORTANTE! Cambia esta URL por la de tu Google Apps Script
-const API_URL = 'https://script.google.com/macros/s/AKfycbxE6pKdR4iVkoMuxkwbAPl3WsBO-t6iE8VtDJs63s_BNoKWUdhUlAYK43faykuA4BqV7w/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbyJSN8XLKPe0TXXxWx6Ea0Ow5JNVEIfkH4IYcxxx0fX0YJtcuWgKfXtUKhNQc_6qUrusQ/exec';
 
 let productos = [];
 let carrito = [];
