@@ -111,6 +111,16 @@
     </style>
 </head>
 <body>
+    <script>
+// PROTECCIÓN CONTRASEÑA - Cambia "admin123" por una clave segura
+const ADMIN_PASSWORD = "tuclavesecreta123";
+
+let acceso = prompt("🔐 Panel de Administración - Ingresa la contraseña:");
+if (acceso !== ADMIN_PASSWORD) {
+    document.body.innerHTML = "<h1 style='text-align:center;margin-top:50px'>⛔ Acceso Denegado</h1><p style='text-align:center'>No tienes permiso para ver esta página.</p>";
+    throw new Error("Acceso denegado");
+}
+</script>
     <div class="admin-container">
         <h1>📊 Panel de Administrador</h1>
         
