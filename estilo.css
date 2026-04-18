@@ -268,7 +268,19 @@ h1, h2 {
 #modal-descripcion {
     color: #666;
     margin: 15px 0;
-    line-height: 1.5;
+    line-height: 1.6;
+    max-height: 150px;
+    overflow-y: auto;
+    text-align: justify;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    font-size: 0.95em;
+}
+
+.modal-content {
+    max-height: 85vh;
+    overflow-y: auto;
 }
 
 #modal-agregar {
