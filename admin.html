@@ -3,128 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administrador</title>
-    <link rel="stylesheet" href="estilo.css">
+    <title>Panel Admin - Mi Tienda</title>
     <style>
-        .admin-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #ddd;
-        }
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            background: #f0f0f0;
-            border: none;
-            border-radius: 8px 8px 0 0;
-        }
-        .tab.active {
-            background: #3498db;
-            color: white;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .producto-form {
-            background: #f9f9f9;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-        .producto-form input, .producto-form select {
-            padding: 8px;
-            margin: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .productos-lista {
-            display: grid;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .producto-item {
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .tabla-pedidos {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .tabla-pedidos th, .tabla-pedidos td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
-        .tabla-pedidos th {
-            background: #3498db;
-            color: white;
-        }
-        .estado-pendiente {
-            background: #f39c12;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
-        .estado-pagado {
-            background: #27ae60;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
-        .btn-cambiar-estado {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn-eliminar-prod {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .url-info {
-            background: #2ecc71;
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #E8E6E1; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        /* Login */
+        .login-box { background: #FDFBF7; max-width: 400px; margin: 100px auto; padding: 30px; border-radius: 32px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+        .login-box input { width: 100%; padding: 12px; margin: 10px 0; border: 1.5px solid #E8E6E1; border-radius: 30px; }
+        .login-box button { background: #9CAF88; color: white; padding: 12px 24px; border: none; border-radius: 40px; cursor: pointer; font-weight: bold; }
+        
+        /* Panel Admin */
+        .admin-panel { background: #FDFBF7; border-radius: 32px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+        .tabs { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid #E8E6E1; }
+        .tab { padding: 12px 24px; cursor: pointer; background: none; border: none; border-radius: 30px; font-weight: 500; color: #C4B7A6; transition: all 0.3s; }
+        .tab.active { background: #9CAF88; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* Tabla de pedidos */
+        .tabla-pedidos { width: 100%; border-collapse: collapse; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .tabla-pedidos th, .tabla-pedidos td { padding: 15px; text-align: left; border-bottom: 1px solid #E8E6E1; vertical-align: top; }
+        .tabla-pedidos th { background: #9CAF88; color: white; font-weight: 500; }
+        .tabla-pedidos tr:hover { background: #FDFBF7; }
+        
+        /* Estados */
+        .estado { display: inline-block; padding: 4px 12px; border-radius: 30px; font-size: 0.75em; font-weight: 500; }
+        .estado-pendiente { background: #FFE8E0; color: #D4A5A5; }
+        .estado-pagado { background: #E8F0E8; color: #9CAF88; }
+        .estado-enviado { background: #E0E8FF; color: #6B8CBF; }
+        .estado-entregado { background: #E0F0E8; color: #6B9C7F; }
+        
+        /* Selector de estado */
+        select.estado-select { padding: 6px 12px; border-radius: 20px; border: 1px solid #E8E6E1; background: white; cursor: pointer; }
+        
+        /* Filtros */
+        .filtros-pedidos { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filtro-estado { padding: 8px 20px; border: 1.5px solid #E8E6E1; border-radius: 30px; background: white; cursor: pointer; transition: all 0.3s; }
+        .filtro-estado.active { background: #9CAF88; color: white; border-color: #9CAF88; }
+        
+        /* Productos */
+        .producto-item { background: #F9F9F9; padding: 15px; margin: 10px 0; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-eliminar { background: #D4A5A5; color: white; border: none; padding: 6px 14px; border-radius: 30px; cursor: pointer; }
+        .form-producto { background: #F9F9F9; padding: 20px; border-radius: 24px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+        .form-producto input, .form-producto select { padding: 10px; border: 1.5px solid #E8E6E1; border-radius: 30px; flex: 1; min-width: 150px; }
+        .form-producto button { background: #9CAF88; color: white; padding: 10px 20px; border: none; border-radius: 30px; cursor: pointer; }
+        
+        .url-info { background: #E8F0E8; color: #6B9C7F; padding: 12px; border-radius: 20px; margin-bottom: 20px; text-align: center; }
+        .btn-refresh { background: #9CAF88; color: white; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; margin-bottom: 20px; }
+        
+        @media (max-width: 768px) {
+            .tabla-pedidos { font-size: 0.75em; }
+            .tabla-pedidos th, .tabla-pedidos td { padding: 8px; }
         }
     </style>
 </head>
 <body>
-    <script>
-// PROTECCIÓN CONTRASEÑA - Cambia "admin123" por una clave segura
-const ADMIN_PASSWORD = "87842193";
-
-let acceso = prompt("🔐 Panel de Administración - Ingresa la contraseña:");
-if (acceso !== ADMIN_PASSWORD) {
-    document.body.innerHTML = "<h1 style='text-align:center;margin-top:50px'>⛔ Acceso Denegado</h1><p style='text-align:center'>No tienes permiso para ver esta página.</p>";
-    throw new Error("Acceso denegado");
-}
-</script>
-    <div class="admin-container">
-        <h1>📊 Panel de Administrador</h1>
-        
-        <div class="url-info" id="urlInfo">
+<div class="container">
+    <!-- Login -->
+    <div id="login" class="login-box">
+        <h2>🔐 Panel de Administración</h2>
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="login()">Ingresar</button>
+    </div>
+    
+    <!-- Panel Admin -->
+    <div id="adminPanel" class="admin-panel" style="display:none">
+        <div class="url-info">
             🔗 Tu tienda está en: <strong id="tiendaUrl">Cargando...</strong>
         </div>
         
@@ -133,43 +79,226 @@ if (acceso !== ADMIN_PASSWORD) {
             <button class="tab" data-tab="productos">🛍️ Gestionar Productos</button>
         </div>
         
-        <!-- Tabla de Pedidos -->
+        <!-- Tab Pedidos -->
         <div id="tab-pedidos" class="tab-content active">
-            <h2>Pedidos recibidos</h2>
-            <div id="google-sheets-config" style="background:#fff3cd; padding:15px; border-radius:8px; margin-bottom:20px;">
-                <h3>⚙️ Configuración de Google Sheets</h3>
-                <label>URL del Webhook de Google Apps Script:</label>
-                <input type="text" id="webhookUrl" style="width:100%; padding:8px; margin:10px 0;" placeholder="https://script.google.com/macros/s/.../exec">
-                <button id="guardarWebhook" class="btn-admin">💾 Guardar</button>
-                <button id="cargarPedidos" class="btn-admin">🔄 Cargar Pedidos</button>
-                <p style="font-size:12px; margin-top:10px;">⚠️ Los pedidos se guardan en Google Sheets. Después de configurar el webhook, haz clic en "Cargar Pedidos"</p>
+            <h2>📋 Gestión de Pedidos</h2>
+            <div class="filtros-pedidos">
+                <button class="filtro-estado active" data-filtro="todos">Todos</button>
+                <button class="filtro-estado" data-filtro="Pendiente">⏳ Pendientes</button>
+                <button class="filtro-estado" data-filtro="Pagado">✅ Pagados</button>
+                <button class="filtro-estado" data-filtro="Enviado">📦 Enviados</button>
+                <button class="filtro-estado" data-filtro="Entregado">🏠 Entregados</button>
+                <button class="btn-refresh" onclick="cargarPedidos()">🔄 Refrescar</button>
             </div>
             <div id="pedidos-lista">
                 <p>Cargando pedidos...</p>
             </div>
         </div>
         
-        <!-- Gestión de Productos -->
+        <!-- Tab Productos -->
         <div id="tab-productos" class="tab-content">
             <h2>➕ Agregar nuevo producto</h2>
-            <div class="producto-form">
-                <input type="text" id="prod-nombre" placeholder="Nombre del producto" style="width:200px">
-                <input type="number" id="prod-precio" placeholder="Precio" step="0.01" style="width:100px">
+            <div class="form-producto">
+                <input type="text" id="prod-nombre" placeholder="Nombre del producto">
+                <input type="number" id="prod-precio" placeholder="Precio" step="0.01">
                 <select id="prod-origen">
                     <option value="Amazon">Amazon</option>
                     <option value="Temu">Temu</option>
                 </select>
-                <input type="text" id="prod-imagen" placeholder="URL de la imagen" style="width:300px">
-                <button id="agregar-producto" class="btn-admin">➕ Agregar</button>
+                <input type="text" id="prod-imagen" placeholder="URL de la imagen">
+                <input type="text" id="prod-enlace" placeholder="URL del producto (Amazon/Temu)">
+                <button onclick="agregarProducto()">➕ Agregar</button>
             </div>
-            
             <h2>📋 Productos existentes</h2>
-            <div id="productos-lista" class="productos-lista">
-                <p>Cargando productos...</p>
-            </div>
+            <div id="lista-productos"></div>
         </div>
     </div>
+</div>
+
+<script>
+// ==================== CONFIGURACIÓN ====================
+const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
+const ADMIN_PASSWORD = 'admin123';
+let pedidos = [];
+let filtroActual = 'todos';
+
+// ==================== LOGIN ====================
+function login() {
+    const pass = document.getElementById('password').value;
+    if (pass === ADMIN_PASSWORD) {
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+        document.getElementById('tiendaUrl').textContent = window.location.origin.replace('/admin.html', '');
+        cargarPedidos();
+        cargarProductosAdmin();
+    } else {
+        alert('❌ Contraseña incorrecta');
+    }
+}
+
+// ==================== CARGAR PEDIDOS ====================
+async function cargarPedidos() {
+    try {
+        const response = await fetch(`${API_URL}?action=getPedidos`);
+        const datos = await response.json();
+        
+        if (datos.error) {
+            document.getElementById('pedidos-lista').innerHTML = `<p>❌ Error: ${datos.error}</p>`;
+            return;
+        }
+        
+        pedidos = datos;
+        mostrarPedidos();
+    } catch (error) {
+        document.getElementById('pedidos-lista').innerHTML = '<p>❌ Error cargando pedidos</p>';
+    }
+}
+
+// ==================== MOSTRAR PEDIDOS ====================
+function mostrarPedidos() {
+    const container = document.getElementById('pedidos-lista');
+    const pedidosFiltrados = filtroActual === 'todos' 
+        ? pedidos 
+        : pedidos.filter(p => p.estado === filtroActual);
     
-    <script src="admin.js"></script>
+    if (pedidosFiltrados.length === 0) {
+        container.innerHTML = '<p>📭 No hay pedidos en esta categoría</p>';
+        return;
+    }
+    
+    let html = `
+        <table class="tabla-pedidos">
+            <thead>
+                <tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Dirección</th><th>Método Pago</th><th>Productos</th><th>Total</th><th>Estado</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+    `;
+    
+    pedidosFiltrados.forEach(pedido => {
+        html += `
+            <tr>
+                <td>${pedido.idPedido || pedido.id}</td>
+                <td>${pedido.fecha}</td>
+                <td><strong>${pedido.nombre}</strong></td>
+                <td>${pedido.direccion}</td>
+                <td>${pedido.metodoPago}</td>
+                <td><small>${(pedido.productos || '').substring(0, 100)}...</small></td>
+                <td><strong>$${pedido.total.toFixed(2)}</strong></td>
+                <td><span class="estado estado-${pedido.estado.toLowerCase()}">${pedido.estado}</span></td>
+                <td>
+                    <select class="estado-select" onchange="cambiarEstado(${pedido.id}, this.value)">
+                        <option value="Pendiente" ${pedido.estado === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+                        <option value="Pagado" ${pedido.estado === 'Pagado' ? 'selected' : ''}>✅ Pagado</option>
+                        <option value="Enviado" ${pedido.estado === 'Enviado' ? 'selected' : ''}>📦 Enviado</option>
+                        <option value="Entregado" ${pedido.estado === 'Entregado' ? 'selected' : ''}>🏠 Entregado</option>
+                    </select>
+                </td>
+            </tr>
+        `;
+    });
+    
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+}
+
+// ==================== CAMBIAR ESTADO ====================
+async function cambiarEstado(id, nuevoEstado) {
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ action: 'actualizarEstado', fila: id, estado: nuevoEstado })
+        });
+        
+        // Actualizar localmente
+        const pedido = pedidos.find(p => p.id === id);
+        if (pedido) pedido.estado = nuevoEstado;
+        mostrarPedidos();
+        
+        alert(`✅ Estado actualizado a: ${nuevoEstado}`);
+    } catch (error) {
+        alert('❌ Error al actualizar estado');
+    }
+}
+
+// ==================== FILTROS ====================
+function configurarFiltros() {
+    document.querySelectorAll('.filtro-estado').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filtro-estado').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filtroActual = btn.dataset.filtro;
+            mostrarPedidos();
+        });
+    });
+}
+
+// ==================== PRODUCTOS ADMIN ====================
+let productosAdmin = [];
+
+async function cargarProductosAdmin() {
+    try {
+        const response = await fetch(`${API_URL}?action=getProductos`);
+        productosAdmin = await response.json();
+        mostrarListaProductos();
+    } catch (error) {
+        document.getElementById('lista-productos').innerHTML = '<p>❌ Error cargando productos</p>';
+    }
+}
+
+function mostrarListaProductos() {
+    const container = document.getElementById('lista-productos');
+    if (!productosAdmin || productosAdmin.length === 0) {
+        container.innerHTML = '<p>No hay productos. Agrega uno.</p>';
+        return;
+    }
+    
+    container.innerHTML = '';
+    productosAdmin.forEach(prod => {
+        const div = document.createElement('div');
+        div.className = 'producto-item';
+        div.innerHTML = `
+            <div>
+                <strong>${prod.nombre}</strong><br>
+                $${prod.precio} - ${prod.origen}
+                ${prod.enlace ? `<br><small>🔗 <a href="${prod.enlace}" target="_blank">Ver original</a></small>` : ''}
+            </div>
+            <button class="btn-eliminar" onclick="eliminarProducto(${prod.id})">🗑️ Eliminar</button>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function agregarProducto() {
+    alert('📝 Para agregar productos, edita directamente en Google Sheets (hoja "productos")');
+}
+
+function eliminarProducto(id) {
+    alert('🗑️ Para eliminar productos, edita directamente en Google Sheets (hoja "productos")');
+}
+
+// ==================== TABS ====================
+function configurarTabs() {
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+            if (tab.dataset.tab === 'productos') cargarProductosAdmin();
+            if (tab.dataset.tab === 'pedidos') cargarPedidos();
+        });
+    });
+}
+
+// ==================== INICIAR ====================
+function init() {
+    configurarTabs();
+    configurarFiltros();
+}
+
+init();
+</script>
 </body>
 </html>
