@@ -5,6 +5,7 @@ let productos = [];
 let carrito = [];
 let productoActual = null;
 let varianteSeleccionada = null;
+let esAdmin = false;
 
 // ==================== CARGAR PRODUCTOS ====================
 async function cargarProductos() {
@@ -97,16 +98,16 @@ function mostrarModal(productoId) {
     const descripcion = producto.descripcion || `Producto de alta calidad de ${producto.origen}.`;
     document.getElementById('modal-descripcion').textContent = descripcion;
     
+    // Mostrar enlace oculto para admin
+    mostrarEnlaceAdmin(producto.enlace);
+    
     // Manejar variantes (tallas)
     const variantesDiv = document.getElementById('modal-variantes');
     const selectorVariante = document.getElementById('selector-variante');
     const precioElement = document.getElementById('modal-precio');
     
     if (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0) {
-        // Mostrar el selector de tallas
         variantesDiv.style.display = 'block';
-        
-        // Llenar el selector con las opciones
         selectorVariante.innerHTML = '<option value="">Selecciona una talla</option>';
         
         producto.variantes.forEach(v => {
@@ -117,11 +118,9 @@ function mostrarModal(productoId) {
             selectorVariante.appendChild(option);
         });
         
-        // Mostrar precio base mientras no seleccione
         precioElement.textContent = `$${producto.precio.toFixed(2)}`;
         precioElement.style.color = '#999';
         
-        // Evento cuando cambia la selección
         selectorVariante.onchange = function() {
             if (this.value) {
                 const precioSeleccionado = parseFloat(this.value);
@@ -140,13 +139,11 @@ function mostrarModal(productoId) {
             }
         };
     } else {
-        // Producto sin variantes, ocultar selector
         variantesDiv.style.display = 'none';
         precioElement.textContent = `$${producto.precio.toFixed(2)}`;
         precioElement.style.color = '#2ecc71';
     }
     
-    // Mostrar el modal
     document.getElementById('producto-modal').style.display = 'flex';
 }
 
@@ -162,7 +159,6 @@ function agregarDesdeModal() {
     let precioFinal = productoActual.precio;
     let nombreFinal = productoActual.nombre;
     
-    // Verificar si tiene variantes y si seleccionó una
     if (productoActual.tiene_variantes && productoActual.variantes && productoActual.variantes.length > 0) {
         if (!varianteSeleccionada) {
             alert('⚠️ Por favor selecciona una talla antes de agregar al carrito');
@@ -172,7 +168,6 @@ function agregarDesdeModal() {
         nombreFinal = `${productoActual.nombre} (Talla: ${varianteSeleccionada.talla})`;
     }
     
-    // Buscar si ya existe el mismo producto con la misma talla en el carrito
     const existente = carrito.find(item => item.id === productoActual.id && item.nombre === nombreFinal);
     
     if (existente) {
@@ -211,13 +206,11 @@ function agregarAlCarrito(id) {
     const producto = productos.find(p => p.id == id);
     if (!producto) return;
     
-    // Si el producto tiene variantes, mostrar el modal para que elija talla
     if (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0) {
         mostrarModal(id);
         return;
     }
     
-    // Producto sin variantes, agregar directamente
     const existente = carrito.find(item => item.id == id);
     if (existente) {
         existente.cantidad++;
@@ -351,19 +344,7 @@ function configurarFormulario() {
     }
 }
 
-// ==================== INICIAR ====================
-async function init() {
-    await cargarProductos();
-    const carritoGuardado = localStorage.getItem('carrito');
-    if (carritoGuardado) carrito = JSON.parse(carritoGuardado);
-    actualizarCarrito();
-    configurarFiltros();
-    configurarFormulario();
-    configurarModal();
-}
 // ==================== ENLACE OCULTO PARA ADMIN ====================
-let esAdmin = false;
-
 function verificarAdmin() {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('admin') === 'true') {
@@ -400,4 +381,17 @@ function mostrarEnlaceAdmin(enlace) {
         if (enlaceDiv) enlaceDiv.style.display = 'none';
     }
 }
+
+// ==================== INICIAR ====================
+async function init() {
+    verificarAdmin();
+    await cargarProductos();
+    const carritoGuardado = localStorage.getItem('carrito');
+    if (carritoGuardado) carrito = JSON.parse(carritoGuardado);
+    actualizarCarrito();
+    configurarFiltros();
+    configurarFormulario();
+    configurarModal();
+}
+
 init();
