@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Tienda Privada</title>
+    <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🛒 Bienvenido a la Tienda Privada</h1>
+        
+        <!-- Panel de administración (solo visible para ti) -->
+        <div id="admin-panel" style="display:none;" class="admin-quick-panel">
+            <a href="admin.html" class="btn-admin">📊 Ir al Panel de Administrador</a>
+        </div>
+        
+        <!-- Filtros de productos -->
+        <div class="filtros">
+            <button class="filtro-btn active" data-filtro="todos">Todos</button>
+            <button class="filtro-btn" data-filtro="Amazon">Amazon</button>
+            <button class="filtro-btn" data-filtro="Temu">Temu</button>
+        </div>
+        
+        <!-- Contenedor de productos -->
+        <div id="productos" class="productos-grid">
+            <div class="loading">Cargando productos...</div>
+        </div>
+        
+        <!-- Carrito -->
+        <div class="carrito-section">
+            <h2>🛍️ Tu Carrito</h2>
+            <div id="carrito-lista" class="carrito-lista">
+                <p class="vacio">El carrito está vacío</p>
+            </div>
+            <div class="carrito-total">
+                <strong>Total: $<span id="total">0.00</span></strong>
+            </div>
+        </div>
+        
+        <!-- Formulario de pedido -->
+        <div id="formulario-datos" style="display:none;" class="formulario-pedido">
+            <h2>📋 Completa tus datos</h2>
+            <form id="pedido-form">
+                <label>Nombre completo:</label>
+                <input type="text" id="nombre" required>
+                
+                <label>Dirección de entrega:</label>
+                <textarea id="direccion" required rows="3"></textarea>
+                
+                <label>Método de pago:</label>
+                <select id="metodo-pago" required>
+                    <option value="">Selecciona...</option>
+                    <option value="Efectivo contra entrega">💵 Efectivo (pagas al recibir)</option>
+                    <option value="Yappy">📱 Yappy (te enviamos el número)</option>
+                    <option value="Transferencia">🏦 Transferencia bancaria</option>
+                </select>
+                
+                <button type="submit" class="btn-confirmar">✅ Confirmar Pedido</button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

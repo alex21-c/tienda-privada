@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administrador</title>
+    <link rel="stylesheet" href="estilo.css">
+    <style>
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 8px 8px 0 0;
+        }
+        .tab.active {
+            background: #3498db;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .producto-form {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .producto-form input, .producto-form select {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .productos-lista {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .producto-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tabla-pedidos {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .tabla-pedidos th, .tabla-pedidos td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .tabla-pedidos th {
+            background: #3498db;
+            color: white;
+        }
+        .estado-pendiente {
+            background: #f39c12;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .estado-pagado {
+            background: #27ae60;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .btn-cambiar-estado {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-eliminar-prod {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .url-info {
+            background: #2ecc71;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1>📊 Panel de Administrador</h1>
+        
+        <div class="url-info" id="urlInfo">
+            🔗 Tu tienda está en: <strong id="tiendaUrl">Cargando...</strong>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="pedidos">📦 Pedidos</button>
+            <button class="tab" data-tab="productos">🛍️ Gestionar Productos</button>
+        </div>
+        
+        <!-- Tabla de Pedidos -->
+        <div id="tab-pedidos" class="tab-content active">
+            <h2>Pedidos recibidos</h2>
+            <div id="google-sheets-config" style="background:#fff3cd; padding:15px; border-radius:8px; margin-bottom:20px;">
+                <h3>⚙️ Configuración de Google Sheets</h3>
+                <label>URL del Webhook de Google Apps Script:</label>
+                <input type="text" id="webhookUrl" style="width:100%; padding:8px; margin:10px 0;" placeholder="https://script.google.com/macros/s/.../exec">
+                <button id="guardarWebhook" class="btn-admin">💾 Guardar</button>
+                <button id="cargarPedidos" class="btn-admin">🔄 Cargar Pedidos</button>
+                <p style="font-size:12px; margin-top:10px;">⚠️ Los pedidos se guardan en Google Sheets. Después de configurar el webhook, haz clic en "Cargar Pedidos"</p>
+            </div>
+            <div id="pedidos-lista">
+                <p>Cargando pedidos...</p>
+            </div>
+        </div>
+        
+        <!-- Gestión de Productos -->
+        <div id="tab-productos" class="tab-content">
+            <h2>➕ Agregar nuevo producto</h2>
+            <div class="producto-form">
+                <input type="text" id="prod-nombre" placeholder="Nombre del producto" style="width:200px">
+                <input type="number" id="prod-precio" placeholder="Precio" step="0.01" style="width:100px">
+                <select id="prod-origen">
+                    <option value="Amazon">Amazon</option>
+                    <option value="Temu">Temu</option>
+                </select>
+                <input type="text" id="prod-imagen" placeholder="URL de la imagen" style="width:300px">
+                <button id="agregar-producto" class="btn-admin">➕ Agregar</button>
+            </div>
+            
+            <h2>📋 Productos existentes</h2>
+            <div id="productos-lista" class="productos-lista">
+                <p>Cargando productos...</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="admin.js"></script>
+</body>
+</html>
