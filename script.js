@@ -3,6 +3,8 @@ const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQ
 
 let productos = [];
 let carrito = [];
+let productoActual = null;
+let varianteSeleccionada = null;
 
 // ==================== CARGAR PRODUCTOS ====================
 async function cargarProductos() {
@@ -60,7 +62,24 @@ function mostrarProductos() {
         
         card.addEventListener('click', (e) => {
             if (!e.target.classList.contains('btn-agregar')) {
-       function mostrarModal(productoId) {
+                mostrarModal(producto.id);
+            }
+        });
+        
+        contenedor.appendChild(card);
+    });
+    
+    document.querySelectorAll('.btn-agregar').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const id = parseInt(btn.dataset.id);
+            agregarAlCarrito(id);
+        });
+    });
+}
+
+// ==================== MODAL CON VARIANTES ====================
+function mostrarModal(productoId) {
     const producto = productos.find(p => p.id == productoId);
     if (!producto) return;
     
@@ -130,52 +149,47 @@ function mostrarProductos() {
     // Mostrar el modal
     document.getElementById('producto-modal').style.display = 'flex';
 }
-        
-        contenedor.appendChild(card);
-    });
-    
-    document.querySelectorAll('.btn-agregar').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const id = parseInt(btn.dataset.id);
-            agregarAlCarrito(id);
-        });
-    });
-}
-
-// ==================== MODAL ====================
-let productoActual = null;
-
-function mostrarModal(productoId) {
-    const producto = productos.find(p => p.id == productoId);
-    if (!producto) return;
-    
-    productoActual = producto;
-    
-    document.getElementById('modal-imagen').src = producto.imagen;
-    document.getElementById('modal-nombre').textContent = producto.nombre;
-    document.getElementById('modal-precio').textContent = `$${producto.precio.toFixed(2)}`;
-    
-    const origenSpan = document.getElementById('modal-origen');
-    origenSpan.textContent = producto.origen;
-    origenSpan.className = `origen-${producto.origen.toLowerCase()}`;
-    
-    const descripcion = producto.descripcion || `Producto de alta calidad de ${producto.origen}.`;
-    document.getElementById('modal-descripcion').textContent = descripcion;
-    
-    document.getElementById('producto-modal').style.display = 'flex';
-}
 
 function cerrarModal() {
     document.getElementById('producto-modal').style.display = 'none';
     productoActual = null;
+    varianteSeleccionada = null;
 }
 
 function agregarDesdeModal() {
-    if (productoActual) {
-        agregarAlCarrito(productoActual.id);
-        cerrarModal();
+    if (!productoActual) return;
+    
+    let precioFinal = productoActual.precio;
+    let nombreFinal = productoActual.nombre;
+    
+    // Verificar si tiene variantes y si seleccionó una
+    if (productoActual.tiene_variantes && productoActual.variantes && productoActual.variantes.length > 0) {
+        if (!varianteSeleccionada) {
+            alert('⚠️ Por favor selecciona una talla antes de agregar al carrito');
+            return;
+        }
+        precioFinal = varianteSeleccionada.precio;
+        nombreFinal = `${productoActual.nombre} (Talla: ${varianteSeleccionada.talla})`;
     }
+    
+    // Buscar si ya existe el mismo producto con la misma talla en el carrito
+    const existente = carrito.find(item => item.id === productoActual.id && item.nombre === nombreFinal);
+    
+    if (existente) {
+        existente.cantidad++;
+    } else {
+        carrito.push({
+            id: productoActual.id,
+            nombre: nombreFinal,
+            precio: precioFinal,
+            origen: productoActual.origen,
+            cantidad: 1
+        });
+    }
+    
+    guardarCarrito();
+    actualizarCarrito();
+    cerrarModal();
 }
 
 function configurarModal() {
@@ -195,8 +209,16 @@ function configurarModal() {
 // ==================== CARRITO ====================
 function agregarAlCarrito(id) {
     const producto = productos.find(p => p.id == id);
-    const existente = carrito.find(item => item.id == id);
+    if (!producto) return;
     
+    // Si el producto tiene variantes, mostrar el modal para que elija talla
+    if (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0) {
+        mostrarModal(id);
+        return;
+    }
+    
+    // Producto sin variantes, agregar directamente
+    const existente = carrito.find(item => item.id == id);
     if (existente) {
         existente.cantidad++;
     } else {
@@ -236,9 +258,9 @@ function actualizarCarrito() {
         itemDiv.innerHTML = `
             <div>
                 <strong>${item.nombre}</strong> (${item.origen})<br>
-                $${item.precio} x ${item.cantidad} = $${subtotal.toFixed(2)}
+                $${item.precio.toFixed(2)} x ${item.cantidad} = $${subtotal.toFixed(2)}
             </div>
-            <button class="btn-eliminar" data-id="${item.id}">🗑️</button>
+            <button class="btn-eliminar" data-id="${item.id}" data-nombre="${item.nombre}">🗑️</button>
         `;
         if (listaCarrito) listaCarrito.appendChild(itemDiv);
     });
@@ -248,7 +270,8 @@ function actualizarCarrito() {
     document.querySelectorAll('.btn-eliminar').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const id = parseInt(btn.dataset.id);
-            carrito = carrito.filter(item => item.id != id);
+            const nombre = btn.dataset.nombre;
+            carrito = carrito.filter(item => !(item.id == id && item.nombre == nombre));
             guardarCarrito();
             actualizarCarrito();
         });
@@ -288,7 +311,8 @@ async function enviarPedido(datosCliente) {
         carrito = [];
         guardarCarrito();
         actualizarCarrito();
-        document.getElementById('pedido-form').reset();
+        const form = document.getElementById('pedido-form');
+        if (form) form.reset();
         return true;
     } catch (error) {
         alert('❌ Error al enviar. Por favor intenta de nuevo.');
