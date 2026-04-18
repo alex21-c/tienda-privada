@@ -5,71 +5,96 @@
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f5f5f5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #708090; /* Gris Pizarra como fondo exterior */
     padding: 20px;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    background: white;
+    background: #F5F0E8; /* Blanco Hueso - fondo principal */
     border-radius: 20px;
     padding: 30px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 h1, h2 {
-    color: #333;
+    color: #708090; /* Gris Pizarra para títulos */
     margin-bottom: 20px;
 }
 
+h1 {
+    text-align: center;
+    font-size: 2.2em;
+}
+
+.subtitle {
+    text-align: center;
+    color: #708090;
+    margin-bottom: 30px;
+}
+
+/* ========== FILTROS ========== */
 .filtros {
     display: flex;
     gap: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
+    justify-content: center;
 }
 
 .filtro-btn {
-    padding: 8px 16px;
-    background: #ecf0f1;
-    border: none;
-    border-radius: 20px;
+    padding: 10px 24px;
+    background: white;
+    border: 2px solid #708090; /* Gris Pizarra */
+    border-radius: 30px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s;
+    font-weight: bold;
+    color: #708090;
 }
 
 .filtro-btn.active {
-    background: #3498db;
+    background: #228B22; /* Verde Bosque */
+    border-color: #228B22;
     color: white;
 }
 
+.filtro-btn:hover:not(.active) {
+    background: #E2725B; /* Terracota */
+    border-color: #E2725B;
+    color: white;
+}
+
+/* ========== PRODUCTOS ========== */
 .productos-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
+    gap: 25px;
     margin-bottom: 40px;
 }
 
 .producto-card {
     background: white;
-    border: 1px solid #ddd;
-    border-radius: 12px;
+    border: 1px solid #708090;
+    border-radius: 16px;
     padding: 15px;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
 }
 
 .producto-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    border-color: #E2725B; /* Terracota */
 }
 
 .producto-imagen {
     width: 100%;
     height: 200px;
-    object-fit: contain;
-     object-position: top;
-    border-radius: 8px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 10px;
 }
 
 .producto-titulo {
@@ -80,66 +105,82 @@ h1, h2 {
 
 .producto-precio {
     font-size: 1.3em;
-    color: #2ecc71;
+    color: #228B22; /* Verde Bosque para precios */
     font-weight: bold;
 }
 
 .producto-origen {
     display: inline-block;
-    padding: 4px 8px;
+    padding: 4px 12px;
     border-radius: 20px;
     font-size: 0.8em;
     margin: 10px 0;
 }
 
 .origen-amazon {
-    background: #ff9900;
+    background: #FF9900;
     color: white;
 }
 
 .origen-temu {
-    background: #e74c3c;
+    background: #E2725B; /* Terracota para Temu */
     color: white;
 }
 
-.btn-agregar, .btn-admin {
+/* ========== BOTONES ========== */
+.btn-agregar {
     width: 100%;
-    background: #3498db;
+    background: #228B22; /* Verde Bosque */
     color: white;
     border: none;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 12px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 1em;
+    font-weight: bold;
+    transition: all 0.3s;
     margin-top: 10px;
 }
 
-.btn-agregar:hover, .btn-admin:hover {
-    background: #2980b9;
+.btn-agregar:hover {
+    background: #E2725B; /* Terracota al pasar el mouse */
+    transform: scale(1.02);
 }
 
+/* ========== CARRITO ========== */
 .carrito-section {
-    background: #f9f9f9;
-    border-radius: 12px;
+    background: white;
+    border-radius: 16px;
     padding: 20px;
-    margin-top: 20px;
+    margin-top: 30px;
+    border: 1px solid #708090;
+}
+
+.carrito-lista {
+    margin: 15px 0;
 }
 
 .item-carrito {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding: 12px;
     border-bottom: 1px solid #ddd;
 }
 
 .btn-eliminar {
-    background: #e74c3c;
+    background: #E2725B; /* Terracota */
     color: white;
     border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
+    padding: 6px 12px;
+    border-radius: 8px;
     cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-eliminar:hover {
+    background: #c0392b;
+    transform: scale(1.05);
 }
 
 .carrito-total {
@@ -147,57 +188,66 @@ h1, h2 {
     text-align: right;
     margin-top: 15px;
     padding-top: 15px;
-    border-top: 2px solid #ddd;
+    border-top: 2px solid #708090;
+    color: #228B22;
 }
 
+/* ========== FORMULARIO PEDIDO ========== */
 .formulario-pedido {
     margin-top: 30px;
-    padding: 20px;
-    background: #fff3e0;
-    border-radius: 12px;
+    padding: 25px;
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #708090;
 }
 
 .formulario-pedido label {
     display: block;
     margin-top: 15px;
     font-weight: bold;
+    color: #708090;
 }
 
 .formulario-pedido input,
 .formulario-pedido textarea,
 .formulario-pedido select {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+    border: 2px solid #708090;
+    border-radius: 10px;
+    font-size: 1em;
+    transition: all 0.3s;
+}
+
+.formulario-pedido input:focus,
+.formulario-pedido textarea:focus,
+.formulario-pedido select:focus {
+    border-color: #228B22;
+    outline: none;
+    box-shadow: 0 0 5px rgba(34,139,34,0.3);
 }
 
 .btn-confirmar {
-    margin-top: 20px;
-    background: #27ae60;
+    margin-top: 25px;
+    background: #228B22;
     color: white;
     border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
+    padding: 14px 24px;
+    border-radius: 12px;
     cursor: pointer;
     width: 100%;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: all 0.3s;
 }
 
-.admin-quick-panel {
-    background: #e8f4fd;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    text-align: right;
+.btn-confirmar:hover {
+    background: #E2725B;
+    transform: scale(1.02);
 }
 
-.loading {
-    text-align: center;
-    padding: 40px;
-    color: #999;
-}
-/* Modal (ventana emergente) */
+/* ========== MODAL ========== */
 .modal {
     display: none;
     position: fixed;
@@ -206,20 +256,23 @@ h1, h2 {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.8);
+    background-color: rgba(112, 128, 144, 0.9); /* Gris Pizarra con opacidad */
     justify-content: center;
     align-items: center;
 }
 
 .modal-content {
-    background-color: white;
+    background: #F5F0E8; /* Blanco Hueso */
     margin: auto;
     padding: 30px;
     border-radius: 20px;
     width: 90%;
     max-width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
     position: relative;
     text-align: center;
+    border: 2px solid #708090;
 }
 
 .modal-cerrar {
@@ -229,16 +282,17 @@ h1, h2 {
     font-size: 35px;
     font-weight: bold;
     cursor: pointer;
-    color: #999;
+    color: #708090;
+    transition: all 0.3s;
 }
 
 .modal-cerrar:hover {
-    color: #333;
+    color: #E2725B;
 }
 
 #modal-imagen {
     width: 100%;
-    max-height: 300px;
+    max-height: 250px;
     object-fit: contain;
     border-radius: 12px;
     margin-bottom: 15px;
@@ -247,44 +301,101 @@ h1, h2 {
 #modal-nombre {
     font-size: 1.8em;
     margin: 10px 0;
-    color: #333;
-}
-
-#modal-origen {
-    display: inline-block;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.9em;
-    margin: 10px 0;
+    color: #708090;
 }
 
 #modal-precio {
     font-size: 2em;
-    color: #2ecc71;
+    color: #228B22;
     font-weight: bold;
     margin: 15px 0;
 }
 
 #modal-descripcion {
-    color: #666;
+    color: #555;
     margin: 15px 0;
     line-height: 1.6;
     max-height: 150px;
     overflow-y: auto;
-    text-align: justify;
     padding: 10px;
-    background: #f9f9f9;
-    border-radius: 8px;
-    font-size: 0.95em;
+    background: white;
+    border-radius: 10px;
+    text-align: justify;
 }
 
-.modal-content {
-    max-height: 85vh;
-    overflow-y: auto;
+#modal-variantes {
+    margin: 15px 0;
 }
 
-#modal-agregar {
-    margin-top: 20px;
+#modal-variantes label {
+    font-weight: bold;
+    color: #708090;
+    display: block;
+    margin-bottom: 8px;
+}
+
+#selector-variante {
+    width: 100%;
     padding: 12px;
-    font-size: 1.1em;
+    border: 2px solid #708090;
+    border-radius: 10px;
+    background: white;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+#selector-variante:focus {
+    border-color: #228B22;
+    outline: none;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    
+    .productos-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    h1 {
+        font-size: 1.6em;
+    }
+    
+    .filtro-btn {
+        padding: 8px 16px;
+        font-size: 0.9em;
+    }
+}
+
+/* ========== ADMIN PANEL (para admin.html) ========== */
+.admin-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: #F5F0E8;
+    border-radius: 20px;
+    padding: 30px;
+}
+
+.tabs button {
+    background: white;
+    border: 2px solid #708090;
+    color: #708090;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.tabs button.active {
+    background: #228B22;
+    border-color: #228B22;
+    color: white;
+}
+
+.tabs button:hover {
+    background: #E2725B;
+    border-color: #E2725B;
+    color: white;
 }
