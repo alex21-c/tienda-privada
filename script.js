@@ -1,27 +1,25 @@
 // ==================== CONFIGURACIÓN ====================
-// 🔴 ¡IMPORTANTE! Cambia esta URL por la de tu Google Apps Script
-const API_URL = 'const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
 
 let productos = [];
 let carrito = [];
 
-// ==================== CARGAR PRODUCTOS DESDE GOOGLE SHEETS ====================
+// ==================== CARGAR PRODUCTOS ====================
 async function cargarProductos() {
     try {
         const response = await fetch(`${API_URL}?action=getProductos`);
         const datos = await response.json();
         
-        // Verificar si hay error
         if (datos.error) {
             console.error('Error:', datos.error);
-            document.getElementById('productos').innerHTML = '<p class="loading">❌ Error cargando productos. Verifica la URL del API.</p>';
+            document.getElementById('productos').innerHTML = '<p class="loading">❌ Error: ' + datos.error + '</p>';
             return;
         }
         
         productos = datos;
         
         if (productos.length === 0) {
-            document.getElementById('productos').innerHTML = '<p class="loading">📦 No hay productos. Agrega productos en Google Sheets (hoja "productos").</p>';
+            document.getElementById('productos').innerHTML = '<p class="loading">📦 No hay productos. Agrega productos en Google Sheets.</p>';
             return;
         }
         
@@ -33,6 +31,8 @@ async function cargarProductos() {
 }
 
 // ==================== MOSTRAR PRODUCTOS ====================
+let filtroActual = 'todos';
+
 function mostrarProductos() {
     const contenedor = document.getElementById('productos');
     const productosFiltrados = filtroActual === 'todos' 
@@ -58,7 +58,6 @@ function mostrarProductos() {
             <button class="btn-agregar" data-id="${producto.id}">➕ Agregar</button>
         `;
         
-        // Al hacer clic en la tarjeta (excepto en el botón) abre el modal
         card.addEventListener('click', (e) => {
             if (!e.target.classList.contains('btn-agregar')) {
                 mostrarModal(producto.id);
@@ -70,11 +69,60 @@ function mostrarProductos() {
     
     document.querySelectorAll('.btn-agregar').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            e.stopPropagation();  // Evita que se abra el modal dos veces
+            e.stopPropagation();
             const id = parseInt(btn.dataset.id);
             agregarAlCarrito(id);
         });
     });
+}
+
+// ==================== MODAL ====================
+let productoActual = null;
+
+function mostrarModal(productoId) {
+    const producto = productos.find(p => p.id == productoId);
+    if (!producto) return;
+    
+    productoActual = producto;
+    
+    document.getElementById('modal-imagen').src = producto.imagen;
+    document.getElementById('modal-nombre').textContent = producto.nombre;
+    document.getElementById('modal-precio').textContent = `$${producto.precio.toFixed(2)}`;
+    
+    const origenSpan = document.getElementById('modal-origen');
+    origenSpan.textContent = producto.origen;
+    origenSpan.className = `origen-${producto.origen.toLowerCase()}`;
+    
+    const descripcion = producto.descripcion || `Producto de alta calidad de ${producto.origen}.`;
+    document.getElementById('modal-descripcion').textContent = descripcion;
+    
+    document.getElementById('producto-modal').style.display = 'flex';
+}
+
+function cerrarModal() {
+    document.getElementById('producto-modal').style.display = 'none';
+    productoActual = null;
+}
+
+function agregarDesdeModal() {
+    if (productoActual) {
+        agregarAlCarrito(productoActual.id);
+        cerrarModal();
+    }
+}
+
+function configurarModal() {
+    const modal = document.getElementById('producto-modal');
+    const cerrar = document.querySelector('.modal-cerrar');
+    
+    if (cerrar) cerrar.onclick = cerrarModal;
+    if (modal) {
+        window.onclick = function(event) {
+            if (event.target == modal) cerrarModal();
+        }
+    }
+    const btnModal = document.getElementById('modal-agregar');
+    if (btnModal) btnModal.onclick = agregarDesdeModal;
 }
 
 // ==================== CARRITO ====================
@@ -102,14 +150,14 @@ function actualizarCarrito() {
     const formularioDiv = document.getElementById('formulario-datos');
     
     if (carrito.length === 0) {
-        listaCarrito.innerHTML = '<p class="vacio">Carrito vacío</p>';
-        totalSpan.textContent = '0.00';
-        formularioDiv.style.display = 'none';
+        if (listaCarrito) listaCarrito.innerHTML = '<p class="vacio">Carrito vacío</p>';
+        if (totalSpan) totalSpan.textContent = '0.00';
+        if (formularioDiv) formularioDiv.style.display = 'none';
         return;
     }
     
-    formularioDiv.style.display = 'block';
-    listaCarrito.innerHTML = '';
+    if (formularioDiv) formularioDiv.style.display = 'block';
+    if (listaCarrito) listaCarrito.innerHTML = '';
     let total = 0;
     
     carrito.forEach(item => {
@@ -125,10 +173,10 @@ function actualizarCarrito() {
             </div>
             <button class="btn-eliminar" data-id="${item.id}">🗑️</button>
         `;
-        listaCarrito.appendChild(itemDiv);
+        if (listaCarrito) listaCarrito.appendChild(itemDiv);
     });
     
-    totalSpan.textContent = total.toFixed(2);
+    if (totalSpan) totalSpan.textContent = total.toFixed(2);
     
     document.querySelectorAll('.btn-eliminar').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -181,7 +229,7 @@ async function enviarPedido(datosCliente) {
     }
 }
 
-// ==================== FILTROS ====================
+// ==================== FILTROS Y FORMULARIO ====================
 function configurarFiltros() {
     document.querySelectorAll('.filtro-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -193,21 +241,23 @@ function configurarFiltros() {
     });
 }
 
-// ==================== FORMULARIO ====================
 function configurarFormulario() {
-    document.getElementById('pedido-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const nombre = document.getElementById('nombre').value;
-        const direccion = document.getElementById('direccion').value;
-        const metodoPago = document.getElementById('metodo-pago').value;
-        
-        if (!nombre || !direccion || !metodoPago) {
-            alert('Completa todos los campos');
-            return;
-        }
-        
-        await enviarPedido({nombre, direccion, metodoPago});
-    });
+    const form = document.getElementById('pedido-form');
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('nombre').value;
+            const direccion = document.getElementById('direccion').value;
+            const metodoPago = document.getElementById('metodo-pago').value;
+            
+            if (!nombre || !direccion || !metodoPago) {
+                alert('Completa todos los campos');
+                return;
+            }
+            
+            await enviarPedido({nombre, direccion, metodoPago});
+        });
+    }
 }
 
 // ==================== INICIAR ====================
@@ -218,58 +268,7 @@ async function init() {
     actualizarCarrito();
     configurarFiltros();
     configurarFormulario();
-}
-// ==================== MODAL DE DETALLE DE PRODUCTO ====================
-let productoActual = null;
-
-function mostrarModal(productoId) {
-    const producto = productos.find(p => p.id == productoId);
-    if (!producto) return;
-    
-    productoActual = producto;
-    
-    // Llenar el modal con los datos del producto
-    document.getElementById('modal-imagen').src = producto.imagen;
-    document.getElementById('modal-nombre').textContent = producto.nombre;
-    document.getElementById('modal-precio').textContent = `$${producto.precio.toFixed(2)}`;
-    
-    // Configurar el origen con su color
-    const origenSpan = document.getElementById('modal-origen');
-    origenSpan.textContent = producto.origen;
-    origenSpan.className = `origen-${producto.origen.toLowerCase()}`;
-    
-    // Descripción (si no hay, crear una por defecto)
-    const descripcion = producto.descripcion || `Producto de alta calidad de ${producto.origen}. Perfecto para tu día a día.`;
-    document.getElementById('modal-descripcion').textContent = descripcion;
-    
-    // Mostrar el modal
-    document.getElementById('producto-modal').style.display = 'flex';
+    configurarModal();
 }
 
-function cerrarModal() {
-    document.getElementById('producto-modal').style.display = 'none';
-    productoActual = null;
-}
-
-function agregarDesdeModal() {
-    if (productoActual) {
-        agregarAlCarrito(productoActual.id);
-        cerrarModal();
-    }
-}
-
-// Configurar eventos del modal
-function configurarModal() {
-    const modal = document.getElementById('producto-modal');
-    const cerrar = document.querySelector('.modal-cerrar');
-    
-    cerrar.onclick = cerrarModal;
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            cerrarModal();
-        }
-    }
-    
-    document.getElementById('modal-agregar').onclick = agregarDesdeModal;
-}
 init();
