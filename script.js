@@ -1,20 +1,38 @@
-// Configuración
+// ==================== CONFIGURACIÓN ====================
+// 🔴 ¡IMPORTANTE! Cambia esta URL por la de tu Google Apps Script
+const API_URL = 'https://script.google.com/macros/s/AKfycbxE6pKdR4iVkoMuxkwbAPl3WsBO-t6iE8VtDJs63s_BNoKWUdhUlAYK43faykuA4BqV7w/exec';
+
 let productos = [];
 let carrito = [];
 
-// Cargar productos desde el archivo JSON
+// ==================== CARGAR PRODUCTOS DESDE GOOGLE SHEETS ====================
 async function cargarProductos() {
     try {
-        const response = await fetch('productos.json');
-        productos = await response.json();
+        const response = await fetch(`${API_URL}?action=getProductos`);
+        const datos = await response.json();
+        
+        // Verificar si hay error
+        if (datos.error) {
+            console.error('Error:', datos.error);
+            document.getElementById('productos').innerHTML = '<p class="loading">❌ Error cargando productos. Verifica la URL del API.</p>';
+            return;
+        }
+        
+        productos = datos;
+        
+        if (productos.length === 0) {
+            document.getElementById('productos').innerHTML = '<p class="loading">📦 No hay productos. Agrega productos en Google Sheets (hoja "productos").</p>';
+            return;
+        }
+        
         mostrarProductos();
     } catch (error) {
         console.error('Error cargando productos:', error);
-        document.getElementById('productos').innerHTML = '<p class="loading">Error cargando productos. Asegúrate que productos.json existe.</p>';
+        document.getElementById('productos').innerHTML = '<p class="loading">❌ Error de conexión. Asegúrate que la API_URL es correcta.</p>';
     }
 }
 
-// Mostrar productos con filtro
+// ==================== MOSTRAR PRODUCTOS ====================
 let filtroActual = 'todos';
 
 function mostrarProductos() {
@@ -50,10 +68,10 @@ function mostrarProductos() {
     });
 }
 
-// Agregar al carrito
+// ==================== CARRITO ====================
 function agregarAlCarrito(id) {
-    const producto = productos.find(p => p.id === id);
-    const existente = carrito.find(item => item.id === id);
+    const producto = productos.find(p => p.id == id);
+    const existente = carrito.find(item => item.id == id);
     
     if (existente) {
         existente.cantidad++;
@@ -65,12 +83,10 @@ function agregarAlCarrito(id) {
     actualizarCarrito();
 }
 
-// Guardar carrito
 function guardarCarrito() {
     localStorage.setItem('carrito', JSON.stringify(carrito));
 }
 
-// Actualizar visualización del carrito
 function actualizarCarrito() {
     const listaCarrito = document.getElementById('carrito-lista');
     const totalSpan = document.getElementById('total');
@@ -108,27 +124,22 @@ function actualizarCarrito() {
     document.querySelectorAll('.btn-eliminar').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const id = parseInt(btn.dataset.id);
-            carrito = carrito.filter(item => item.id !== id);
+            carrito = carrito.filter(item => item.id != id);
             guardarCarrito();
             actualizarCarrito();
         });
     });
 }
 
-// Enviar pedido a Google Sheets
+// ==================== ENVIAR PEDIDO ====================
 async function enviarPedido(datosCliente) {
-    const webhookUrl = localStorage.getItem('webhookUrl');
-    if (!webhookUrl) {
-        alert('⚠️ Error de configuración. Por favor contacta al administrador.');
-        return false;
-    }
-    
     let detalleProductos = '';
     let total = 0;
+    
     carrito.forEach(item => {
         const subtotal = item.precio * item.cantidad;
         total += subtotal;
-        detalleProductos += `${item.nombre} (${item.origen}) x${item.cantidad} - $${subtotal}\n`;
+        detalleProductos += `${item.nombre} (${item.origen}) x${item.cantidad} - $${subtotal.toFixed(2)}\n`;
     });
     
     const pedido = {
@@ -142,7 +153,7 @@ async function enviarPedido(datosCliente) {
     };
     
     try {
-        const response = await fetch(webhookUrl, {
+        await fetch(API_URL, {
             method: 'POST',
             mode: 'no-cors',
             headers: {'Content-Type': 'application/json'},
@@ -161,7 +172,7 @@ async function enviarPedido(datosCliente) {
     }
 }
 
-// Configurar filtros
+// ==================== FILTROS ====================
 function configurarFiltros() {
     document.querySelectorAll('.filtro-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -173,7 +184,7 @@ function configurarFiltros() {
     });
 }
 
-// Configurar formulario
+// ==================== FORMULARIO ====================
 function configurarFormulario() {
     document.getElementById('pedido-form').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -190,16 +201,7 @@ function configurarFormulario() {
     });
 }
 
-// Mostrar panel admin si es el administrador
-function mostrarPanelAdmin() {
-    // Si la URL tiene ?admin=true o si el usuario confirma contraseña
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('admin') === 'true') {
-        document.getElementById('admin-panel').style.display = 'block';
-    }
-}
-
-// Inicializar
+// ==================== INICIAR ====================
 async function init() {
     await cargarProductos();
     const carritoGuardado = localStorage.getItem('carrito');
@@ -207,7 +209,6 @@ async function init() {
     actualizarCarrito();
     configurarFiltros();
     configurarFormulario();
-    mostrarPanelAdmin();
 }
 
 init();
