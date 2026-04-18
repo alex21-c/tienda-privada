@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "nombre": "Audífonos Bluetooth",
+        "precio": 25.99,
+        "origen": "Temu",
+        "imagen": "https://via.placeholder.com/300x200?text=Audifonos+Temu"
+    },
+    {
+        "id": 2,
+        "nombre": "Smartwatch Deportivo",
+        "precio": 45.50,
+        "origen": "Amazon",
+        "imagen": "https://via.placeholder.com/300x200?text=Smartwatch+Amazon"
+    }
+]
