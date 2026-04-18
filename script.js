@@ -60,9 +60,76 @@ function mostrarProductos() {
         
         card.addEventListener('click', (e) => {
             if (!e.target.classList.contains('btn-agregar')) {
-                mostrarModal(producto.id);
-            }
+       function mostrarModal(productoId) {
+    const producto = productos.find(p => p.id == productoId);
+    if (!producto) return;
+    
+    productoActual = producto;
+    varianteSeleccionada = null;
+    
+    // Llenar datos básicos
+    document.getElementById('modal-imagen').src = producto.imagen;
+    document.getElementById('modal-nombre').textContent = producto.nombre;
+    
+    const origenSpan = document.getElementById('modal-origen');
+    origenSpan.textContent = producto.origen;
+    origenSpan.className = `origen-${producto.origen.toLowerCase()}`;
+    
+    const descripcion = producto.descripcion || `Producto de alta calidad de ${producto.origen}.`;
+    document.getElementById('modal-descripcion').textContent = descripcion;
+    
+    // Manejar variantes (tallas)
+    const variantesDiv = document.getElementById('modal-variantes');
+    const selectorVariante = document.getElementById('selector-variante');
+    const precioElement = document.getElementById('modal-precio');
+    
+    if (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0) {
+        // Mostrar el selector de tallas
+        variantesDiv.style.display = 'block';
+        
+        // Llenar el selector con las opciones
+        selectorVariante.innerHTML = '<option value="">Selecciona una talla</option>';
+        
+        producto.variantes.forEach(v => {
+            const option = document.createElement('option');
+            option.value = v.precio;
+            option.setAttribute('data-talla', v.talla);
+            option.textContent = `${v.talla} - $${v.precio.toFixed(2)}`;
+            selectorVariante.appendChild(option);
         });
+        
+        // Mostrar precio base mientras no seleccione
+        precioElement.textContent = `$${producto.precio.toFixed(2)}`;
+        precioElement.style.color = '#999';
+        
+        // Evento cuando cambia la selección
+        selectorVariante.onchange = function() {
+            if (this.value) {
+                const precioSeleccionado = parseFloat(this.value);
+                const tallaSeleccionada = this.options[this.selectedIndex].getAttribute('data-talla');
+                varianteSeleccionada = {
+                    talla: tallaSeleccionada,
+                    precio: precioSeleccionado
+                };
+                precioElement.textContent = `$${precioSeleccionado.toFixed(2)}`;
+                precioElement.style.color = '#2ecc71';
+                precioElement.style.fontWeight = 'bold';
+            } else {
+                varianteSeleccionada = null;
+                precioElement.textContent = `$${producto.precio.toFixed(2)}`;
+                precioElement.style.color = '#999';
+            }
+        };
+    } else {
+        // Producto sin variantes, ocultar selector
+        variantesDiv.style.display = 'none';
+        precioElement.textContent = `$${producto.precio.toFixed(2)}`;
+        precioElement.style.color = '#2ecc71';
+    }
+    
+    // Mostrar el modal
+    document.getElementById('producto-modal').style.display = 'flex';
+}
         
         contenedor.appendChild(card);
     });
