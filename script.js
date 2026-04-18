@@ -361,5 +361,43 @@ async function init() {
     configurarFormulario();
     configurarModal();
 }
+// ==================== ENLACE OCULTO PARA ADMIN ====================
+let esAdmin = false;
 
+function verificarAdmin() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('admin') === 'true') {
+        esAdmin = true;
+        localStorage.setItem('adminSession', 'true');
+    }
+    if (localStorage.getItem('adminSession') === 'true') {
+        esAdmin = true;
+    }
+    return esAdmin;
+}
+
+function mostrarEnlaceAdmin(enlace) {
+    const enlaceDiv = document.getElementById('modal-enlace-admin');
+    const enlaceElement = document.getElementById('modal-enlace');
+    const copiarBtn = document.getElementById('copiar-enlace');
+    
+    if (esAdmin && enlace && enlace !== '') {
+        if (enlaceDiv) enlaceDiv.style.display = 'block';
+        if (enlaceElement) {
+            enlaceElement.href = enlace;
+            enlaceElement.textContent = enlace;
+        }
+        if (copiarBtn) {
+            copiarBtn.onclick = () => {
+                navigator.clipboard.writeText(enlace);
+                copiarBtn.textContent = '✅ Copiado!';
+                setTimeout(() => {
+                    copiarBtn.textContent = '📋 Copiar enlace';
+                }, 2000);
+            };
+        }
+    } else {
+        if (enlaceDiv) enlaceDiv.style.display = 'none';
+    }
+}
 init();
