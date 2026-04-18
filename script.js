@@ -210,5 +210,57 @@ async function init() {
     configurarFiltros();
     configurarFormulario();
 }
+// ==================== MODAL DE DETALLE DE PRODUCTO ====================
+let productoActual = null;
 
+function mostrarModal(productoId) {
+    const producto = productos.find(p => p.id == productoId);
+    if (!producto) return;
+    
+    productoActual = producto;
+    
+    // Llenar el modal con los datos del producto
+    document.getElementById('modal-imagen').src = producto.imagen;
+    document.getElementById('modal-nombre').textContent = producto.nombre;
+    document.getElementById('modal-precio').textContent = `$${producto.precio.toFixed(2)}`;
+    
+    // Configurar el origen con su color
+    const origenSpan = document.getElementById('modal-origen');
+    origenSpan.textContent = producto.origen;
+    origenSpan.className = `origen-${producto.origen.toLowerCase()}`;
+    
+    // Descripción (si no hay, crear una por defecto)
+    const descripcion = producto.descripcion || `Producto de alta calidad de ${producto.origen}. Perfecto para tu día a día.`;
+    document.getElementById('modal-descripcion').textContent = descripcion;
+    
+    // Mostrar el modal
+    document.getElementById('producto-modal').style.display = 'flex';
+}
+
+function cerrarModal() {
+    document.getElementById('producto-modal').style.display = 'none';
+    productoActual = null;
+}
+
+function agregarDesdeModal() {
+    if (productoActual) {
+        agregarAlCarrito(productoActual.id);
+        cerrarModal();
+    }
+}
+
+// Configurar eventos del modal
+function configurarModal() {
+    const modal = document.getElementById('producto-modal');
+    const cerrar = document.querySelector('.modal-cerrar');
+    
+    cerrar.onclick = cerrarModal;
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            cerrarModal();
+        }
+    }
+    
+    document.getElementById('modal-agregar').onclick = agregarDesdeModal;
+}
 init();
