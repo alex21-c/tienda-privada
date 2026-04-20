@@ -384,7 +384,6 @@ function agregarDesdeModal() {
     guardarCarrito();
     actualizarCarrito();
     cerrarModal();
-    alert(`✅ Agregado: ${nombreFinal} por $${precioFinal.toFixed(2)}`);
 }
 
 function cerrarModal() {
