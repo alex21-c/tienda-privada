@@ -495,6 +495,7 @@ async function enviarPedido(datosCliente) {
     
     const pedido = {
         nombre: datosCliente.nombre,
+        telefono: datosCliente.telefono,  
         direccion: datosCliente.direccion,
         metodoPago: datosCliente.metodoPago,
         estadoPago: 'Pendiente',
