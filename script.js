@@ -7,6 +7,10 @@ let productoActual = null;
 let varianteSeleccionada = null;
 let esAdmin = false;
 
+// ==================== VARIABLES DE FILTROS ====================
+let filtroPlataforma = 'todos';
+let filtroGenero = 'todos';
+
 // ==================== CARGAR PRODUCTOS ====================
 async function cargarProductos() {
     try {
@@ -33,14 +37,33 @@ async function cargarProductos() {
     }
 }
 
-// ==================== MOSTRAR PRODUCTOS ====================
-let filtroActual = 'todos';
+// ==================== FUNCIÓN PARA ICONO DE GÉNERO ====================
+function getIconoGenero(genero) {
+    const iconos = {
+        'hombre': '👨',
+        'mujer': '👩',
+        'niño': '👦',
+        'niña': '👧',
+        'unisex': '👥'
+    };
+    return iconos[genero] || '👤';
+}
 
+// ==================== MOSTRAR PRODUCTOS CON FILTROS ====================
 function mostrarProductos() {
     const contenedor = document.getElementById('productos');
-    const productosFiltrados = filtroActual === 'todos' 
-        ? productos 
-        : productos.filter(p => p.origen === filtroActual);
+    
+    let productosFiltrados = productos;
+    
+    // Filtrar por plataforma
+    if (filtroPlataforma !== 'todos') {
+        productosFiltrados = productosFiltrados.filter(p => p.origen === filtroPlataforma);
+    }
+    
+    // Filtrar por género
+    if (filtroGenero !== 'todos') {
+        productosFiltrados = productosFiltrados.filter(p => p.genero === filtroGenero);
+    }
     
     if (productosFiltrados.length === 0) {
         contenedor.innerHTML = '<p class="loading">No hay productos en esta categoría</p>';
@@ -56,6 +79,7 @@ function mostrarProductos() {
         card.innerHTML = `
             <img src="${producto.imagen}" alt="${producto.nombre}" class="producto-imagen" onerror="this.src='https://via.placeholder.com/300x200?text=Sin+imagen'">
             <div class="producto-origen origen-${producto.origen.toLowerCase()}">${producto.origen}</div>
+            <div class="producto-genero">${getIconoGenero(producto.genero)} ${producto.genero || 'Unisex'}</div>
             <h3 class="producto-titulo">${producto.nombre}</h3>
             <div class="producto-precio">$${producto.precio.toFixed(2)}</div>
             <button class="btn-agregar" data-id="${producto.id}">➕ Agregar</button>
@@ -79,7 +103,7 @@ function mostrarProductos() {
     });
 }
 
-// ==================== MODAL CON VARIANTES ====================
+// ==================== MODAL CON VARIANTES Y GÉNERO ====================
 function mostrarModal(productoId) {
     const producto = productos.find(p => p.id == productoId);
     if (!producto) return;
@@ -87,13 +111,18 @@ function mostrarModal(productoId) {
     productoActual = producto;
     varianteSeleccionada = null;
     
-    // Llenar datos básicos
     document.getElementById('modal-imagen').src = producto.imagen;
     document.getElementById('modal-nombre').textContent = producto.nombre;
     
     const origenSpan = document.getElementById('modal-origen');
     origenSpan.textContent = producto.origen;
     origenSpan.className = `origen-${producto.origen.toLowerCase()}`;
+    
+    // Mostrar género en modal
+    const generoElement = document.getElementById('modal-genero');
+    if (generoElement) {
+        generoElement.textContent = `${getIconoGenero(producto.genero)} ${producto.genero || 'Unisex'}`;
+    }
     
     const descripcion = producto.descripcion || `Producto de alta calidad de ${producto.origen}.`;
     document.getElementById('modal-descripcion').textContent = descripcion;
@@ -315,11 +344,37 @@ async function enviarPedido(datosCliente) {
 
 // ==================== FILTROS Y FORMULARIO ====================
 function configurarFiltros() {
+    // Filtros de plataforma
     document.querySelectorAll('.filtro-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            filtroActual = btn.dataset.filtro;
+            filtroPlataforma = btn.dataset.filtro;
+            
+            // Mostrar u ocultar filtros de género
+            const filtrosGenero = document.getElementById('filtros-genero');
+            if (filtroPlataforma !== 'todos') {
+                filtrosGenero.style.display = 'flex';
+                // Resetear filtro de género
+                filtroGenero = 'todos';
+                document.querySelectorAll('.filtro-genero-btn').forEach(b => b.classList.remove('active'));
+                const btnTodos = document.querySelector('.filtro-genero-btn[data-genero="todos"]');
+                if (btnTodos) btnTodos.classList.add('active');
+            } else {
+                filtrosGenero.style.display = 'none';
+                filtroGenero = 'todos';
+            }
+            
+            mostrarProductos();
+        });
+    });
+    
+    // Filtros de género
+    document.querySelectorAll('.filtro-genero-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filtro-genero-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            filtroGenero = btn.dataset.genero;
             mostrarProductos();
         });
     });
@@ -348,8 +403,15 @@ function configurarFormulario() {
 function verificarAdmin() {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('admin') === 'true') {
-        esAdmin = true;
-        localStorage.setItem('adminSession', 'true');
+        const password = prompt('🔐 Modo Administrador - Ingresa la contraseña:');
+        if (password === 'admin123') {
+            esAdmin = true;
+            localStorage.setItem('adminSession', 'true');
+            alert('✅ Modo administrador activado');
+        } else {
+            alert('❌ Contraseña incorrecta');
+            window.location.href = window.location.pathname;
+        }
     }
     if (localStorage.getItem('adminSession') === 'true') {
         esAdmin = true;
