@@ -108,14 +108,22 @@ function mostrarProductos() {
 
 // ==================== MOSTRAR MODAL ====================
 function mostrarModal(productoId) {
+    console.log("Mostrando modal para producto:", productoId);
+    
     const producto = productos.find(p => p.id == productoId);
-    if (!producto) return;
+    if (!producto) {
+        console.error("Producto no encontrado:", productoId);
+        return;
+    }
+    
+    console.log("Producto encontrado:", producto.nombre);
     
     productoActual = producto;
     colorSeleccionado = null;
     tallaSeleccionada = null;
     
     // Elementos del modal
+    const modal = document.getElementById('producto-modal');
     const modalImagen = document.getElementById('modal-imagen');
     const modalNombre = document.getElementById('modal-nombre');
     const modalOrigen = document.getElementById('modal-origen');
@@ -123,8 +131,19 @@ function mostrarModal(productoId) {
     const modalPrecio = document.getElementById('modal-precio');
     const modalDescripcion = document.getElementById('modal-descripcion');
     
+    // Verificar que los elementos existan
+    if (!modal) {
+        console.error("Modal no encontrado");
+        return;
+    }
+    
     // Llenar datos
-    if (modalImagen) modalImagen.src = (producto.colores && producto.colores[0]) ? producto.colores[0].imagen : producto.imagen;
+    if (modalImagen) {
+        const imagenUrl = (producto.colores && producto.colores[0]) ? producto.colores[0].imagen : producto.imagen;
+        modalImagen.src = imagenUrl;
+        console.log("Imagen cargada:", imagenUrl);
+    }
+    
     if (modalNombre) modalNombre.textContent = producto.nombre;
     
     if (modalOrigen) {
@@ -144,8 +163,10 @@ function mostrarModal(productoId) {
     if (modalDescripcion) {
         const descripcion = producto.descripcion || `Producto de alta calidad de ${producto.origen}.`;
         modalDescripcion.textContent = descripcion;
+        console.log("Descripción cargada:", descripcion.substring(0, 50));
     }
     
+    // Mostrar enlace oculto para admin
     mostrarEnlaceAdmin(producto.enlace);
     
     // Colores
@@ -157,8 +178,9 @@ function mostrarModal(productoId) {
         if (modalColores) modalColores.style.display = 'none';
     }
     
-    const modal = document.getElementById('producto-modal');
-    if (modal) modal.style.display = 'flex';
+    // Mostrar el modal
+    modal.style.display = 'flex';
+    console.log("Modal mostrado");
 }
 
 // ==================== SELECTORES DE COLOR ====================
@@ -171,9 +193,13 @@ function mostrarSelectoresColor(colores) {
     colores.forEach((color, index) => {
         const btn = document.createElement('button');
         btn.textContent = color.nombre;
+        btn.style.padding = '8px 20px';
         btn.style.border = index === 0 ? '2px solid #9CAF88' : '2px solid #E8E6E1';
         btn.style.background = index === 0 ? '#9CAF88' : 'white';
+        btn.style.borderRadius = '40px';
         btn.style.color = index === 0 ? 'white' : '#C4B7A6';
+        btn.style.cursor = 'pointer';
+        btn.style.fontWeight = '500';
         
         btn.onclick = () => {
             document.querySelectorAll('#selector-color button').forEach(b => {
@@ -303,6 +329,7 @@ function agregarDesdeModal() {
     guardarCarrito();
     actualizarCarrito();
     cerrarModal();
+    alert(`✅ Agregado: ${nombreFinal} por $${precioFinal.toFixed(2)}`);
 }
 
 function cerrarModal() {
@@ -346,6 +373,7 @@ function agregarAlCarrito(id) {
     
     guardarCarrito();
     actualizarCarrito();
+    alert(`✅ Agregado: ${producto.nombre} por $${producto.precio.toFixed(2)}`);
 }
 
 function guardarCarrito() {
