@@ -122,7 +122,6 @@ function mostrarModal(productoId) {
     colorSeleccionado = null;
     tallaSeleccionada = null;
     
-    // Elementos del modal
     const modal = document.getElementById('producto-modal');
     const modalImagen = document.getElementById('modal-imagen');
     const modalNombre = document.getElementById('modal-nombre');
@@ -138,7 +137,6 @@ function mostrarModal(productoId) {
         return;
     }
     
-    // Llenar datos básicos
     if (modalImagen) {
         const imagenUrl = (producto.colores && producto.colores[0]) ? producto.colores[0].imagen : producto.imagen;
         modalImagen.src = imagenUrl;
@@ -167,18 +165,14 @@ function mostrarModal(productoId) {
     
     mostrarEnlaceAdmin(producto.enlace);
     
-    // ========== LÓGICA CORREGIDA ==========
-    // Caso 1: Producto CON colores
     if (producto.colores && producto.colores.length > 0) {
         if (modalColores) modalColores.style.display = 'block';
         mostrarSelectoresColor(producto.colores);
     } 
-    // Caso 2: Producto SIN colores PERO CON tallas
     else if (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0) {
         if (modalColores) modalColores.style.display = 'none';
         mostrarTallasDirectas(producto.variantes);
     }
-    // Caso 3: Producto sin colores ni tallas
     else {
         if (modalColores) modalColores.style.display = 'none';
         if (variantesDiv) variantesDiv.style.display = 'none';
@@ -188,7 +182,7 @@ function mostrarModal(productoId) {
     console.log("Modal mostrado");
 }
 
-// ==================== MOSTRAR TALLAS DIRECTAS (SIN COLORES) ====================
+// ==================== MOSTRAR TALLAS DIRECTAS ====================
 function mostrarTallasDirectas(variantes) {
     const variantesDiv = document.getElementById('modal-variantes');
     const selectorVariante = document.getElementById('selector-variante');
@@ -343,7 +337,6 @@ function agregarDesdeModal() {
     let precioFinal = productoActual.precio;
     let nombreFinal = productoActual.nombre;
     
-    // Caso 1: Producto CON colores
     if (productoActual.colores && productoActual.colores.length > 0) {
         if (!colorSeleccionado) {
             alert('⚠️ Por favor selecciona un color');
@@ -357,7 +350,6 @@ function agregarDesdeModal() {
             nombreFinal = `${productoActual.nombre} (${colorSeleccionado.nombre} - Talla: ${tallaSeleccionada.talla})`;
         }
     } 
-    // Caso 2: Producto SIN colores PERO CON tallas
     else if (productoActual.tiene_variantes && productoActual.variantes && productoActual.variantes.length > 0) {
         if (!tallaSeleccionada) {
             alert('⚠️ Por favor selecciona una talla');
@@ -413,7 +405,6 @@ function agregarAlCarrito(id) {
     const producto = productos.find(p => p.id == id);
     if (!producto) return;
     
-    // Si tiene colores o tallas, abrir modal
     if ((producto.colores && producto.colores.length > 0) || 
         (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0)) {
         mostrarModal(id);
@@ -436,10 +427,8 @@ function guardarCarrito() {
 }
 
 function actualizarCarrito() {
-    // Actualizar carrito superior
     actualizarCarritoTop();
     
-    // Actualizar carrito viejo (ahora oculto pero lo mantenemos)
     const listaCarrito = document.getElementById('carrito-lista');
     const totalSpan = document.getElementById('total');
     const formularioDiv = document.getElementById('formulario-datos');
@@ -502,7 +491,7 @@ function actualizarCarritoTop() {
     
     if (listaPanel) {
         if (carrito.length === 0) {
-            listaPanel.innerHTML = '<p class="vacio">El carrito está vacío</p>';
+            listaPanel.innerHTML = '<div class="vacio">✨ Tu carrito está vacío</div>';
         } else {
             listaPanel.innerHTML = '';
             carrito.forEach(item => {
@@ -710,6 +699,113 @@ function mostrarEnlaceAdmin(enlace) {
     }
 }
 
+// ==================== MIS PEDIDOS ====================
+function toggleMisPedidos() {
+    const panel = document.getElementById('mis-pedidos-panel');
+    if (panel) {
+        if (panel.style.display === 'none') {
+            panel.style.display = 'block';
+        } else {
+            panel.style.display = 'none';
+        }
+    }
+}
+
+function cerrarMisPedidos() {
+    const panel = document.getElementById('mis-pedidos-panel');
+    if (panel) panel.style.display = 'none';
+}
+
+async function buscarPedidosPorNombre() {
+    const nombre = document.getElementById('nombre-consulta').value;
+    const resultadoDiv = document.getElementById('resultado-pedidos');
+    
+    if (!nombre || nombre.trim() === '') {
+        resultadoDiv.innerHTML = '<p class="error">⚠️ Por favor ingresa tu nombre completo</p>';
+        return;
+    }
+    
+    resultadoDiv.innerHTML = '<p>Cargando tus pedidos...</p>';
+    
+    try {
+        const response = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombre)}`);
+        const pedidos = await response.json();
+        
+        if (pedidos.error) {
+            resultadoDiv.innerHTML = `<p class="error">❌ ${pedidos.error}</p>`;
+            return;
+        }
+        
+        if (pedidos.length === 0) {
+            resultadoDiv.innerHTML = '<p class="vacio">📭 No encontramos pedidos asociados a este nombre</p>';
+            return;
+        }
+        
+        resultadoDiv.innerHTML = '';
+        pedidos.forEach(pedido => {
+            const estadoClass = getEstadoClass(pedido.estado);
+            const estadoIcono = getEstadoIcono(pedido.estado);
+            
+            const card = document.createElement('div');
+            card.className = 'pedido-card';
+            card.innerHTML = `
+                <div class="pedido-header">
+                    <span class="pedido-id">#${pedido.id}</span>
+                    <span class="pedido-fecha">${new Date(pedido.fecha).toLocaleDateString()}</span>
+                    <span class="pedido-estado ${estadoClass}">${estadoIcono} ${pedido.estado}</span>
+                </div>
+                <div class="pedido-productos">
+                    ${pedido.productos.replace(/\n/g, '<br>')}
+                </div>
+                <div class="pedido-total">
+                    Total: $${pedido.total.toFixed(2)}
+                </div>
+            `;
+            resultadoDiv.appendChild(card);
+        });
+        
+    } catch (error) {
+        console.error('Error:', error);
+        resultadoDiv.innerHTML = '<p class="error">❌ Error al consultar tus pedidos. Intenta nuevamente.</p>';
+    }
+}
+
+function getEstadoClass(estado) {
+    switch(estado) {
+        case 'Pendiente': return 'estado-pendiente';
+        case 'Pagado': return 'estado-pagado';
+        case 'Enviado': return 'estado-enviado';
+        case 'Entregado': return 'estado-entregado';
+        default: return 'estado-pendiente';
+    }
+}
+
+function getEstadoIcono(estado) {
+    switch(estado) {
+        case 'Pendiente': return '⏳';
+        case 'Pagado': return '✅';
+        case 'Enviado': return '📦';
+        case 'Entregado': return '🏠';
+        default: return '⏳';
+    }
+}
+
+function configurarMisPedidos() {
+    const toggleBtn = document.getElementById('toggle-mis-pedidos');
+    const cerrarBtn = document.getElementById('cerrar-mis-pedidos');
+    const buscarBtn = document.getElementById('buscar-pedidos');
+    const nombreInput = document.getElementById('nombre-consulta');
+    
+    if (toggleBtn) toggleBtn.onclick = toggleMisPedidos;
+    if (cerrarBtn) cerrarBtn.onclick = cerrarMisPedidos;
+    if (buscarBtn) buscarBtn.onclick = buscarPedidosPorNombre;
+    if (nombreInput) {
+        nombreInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') buscarPedidosPorNombre();
+        });
+    }
+}
+
 // ==================== INICIAR ====================
 async function init() {
     verificarAdmin();
@@ -721,6 +817,7 @@ async function init() {
     configurarFormulario();
     configurarModal();
     configurarCarritoTop();
+    configurarMisPedidos();
 }
 
 init();
