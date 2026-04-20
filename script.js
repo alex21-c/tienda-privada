@@ -113,37 +113,51 @@ function mostrarModal(productoId) {
     tallaSeleccionada = null;
     
     // Llenar datos básicos
-    document.getElementById('modal-imagen').src = producto.colores ? producto.colores[0].imagen : producto.imagen;
-    document.getElementById('modal-nombre').textContent = producto.nombre;
+    const modalImagen = document.getElementById('modal-imagen');
+    const modalNombre = document.getElementById('modal-nombre');
+    const modalOrigen = document.getElementById('modal-origen');
+    const modalGenero = document.getElementById('modal-genero');
+    const modalPrecio = document.getElementById('modal-precio');
+    const modalDescripcion = document.getElementById('modal-descripcion');
     
-    const origenSpan = document.getElementById('modal-origen');
-    origenSpan.textContent = producto.origen;
-    origenSpan.className = `origen-${producto.origen.toLowerCase()}`;
+    if (modalImagen) modalImagen.src = (producto.colores && producto.colores[0]) ? producto.colores[0].imagen : producto.imagen;
+    if (modalNombre) modalNombre.textContent = producto.nombre;
     
-    // Mostrar género en modal
-    const generoElement = document.getElementById('modal-genero');
-    if (generoElement) {
-        generoElement.textContent = `${getIconoGenero(producto.genero)} ${producto.genero || 'Unisex'}`;
+    if (modalOrigen) {
+        modalOrigen.textContent = producto.origen;
+        modalOrigen.className = `origen-${producto.origen.toLowerCase()}`;
     }
     
-    const descripcion = producto.descripcion || `Producto de alta calidad de ${producto.origen}.`;
-    document.getElementById('modal-descripcion').textContent = descripcion;
+    if (modalGenero) {
+        modalGenero.textContent = `${getIconoGenero(producto.genero)} ${producto.genero || 'Unisex'}`;
+    }
     
+    if (modalDescripcion) {
+        const descripcion = producto.descripcion || `Producto de alta calidad de ${producto.origen}.`;
+        modalDescripcion.textContent = descripcion;
+    }
+    
+    if (modalPrecio) {
+        modalPrecio.textContent = `$${producto.precio.toFixed(2)}`;
+        modalPrecio.style.color = '#2ecc71';
+    }
+    
+    // Mostrar enlace oculto para admin
     mostrarEnlaceAdmin(producto.enlace);
     
     // Mostrar selectores de color si existen colores
+    const modalColores = document.getElementById('modal-colores');
     if (producto.colores && producto.colores.length > 0) {
+        if (modalColores) modalColores.style.display = 'block';
         mostrarSelectoresColor(producto.colores);
     } else {
-        // Si no hay colores, mostrar precio normal y ocultar selector de colores
-        const coloresDiv = document.getElementById('modal-colores');
-        if (coloresDiv) coloresDiv.style.display = 'none';
-        document.getElementById('modal-precio').textContent = `$${producto.precio.toFixed(2)}`;
+        if (modalColores) modalColores.style.display = 'none';
     }
     
-    document.getElementById('producto-modal').style.display = 'flex';
+    // Mostrar el modal
+    const modal = document.getElementById('producto-modal');
+    if (modal) modal.style.display = 'flex';
 }
-
 // ==================== MOSTRAR SELECTORES DE COLOR ====================
 function mostrarSelectoresColor(colores) {
     const container = document.getElementById('selector-color');
