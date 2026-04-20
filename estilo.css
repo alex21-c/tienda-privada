@@ -455,3 +455,52 @@ h1 {
     background: #F0F0F0;
     color: #999;
 }
+/* Selector de colores */
+#modal-colores {
+    margin: 15px 0;
+}
+
+#selector-color {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+#selector-color button {
+    padding: 8px 20px;
+    border: 2px solid #E8E6E1;
+    border-radius: 40px;
+    background: white;
+    color: #C4B7A6;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    font-size: 0.85em;
+}
+
+#selector-color button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Selector de tallas */
+#modal-variantes {
+    margin: 15px 0;
+}
+
+#selector-variante {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #E8E6E1;
+    border-radius: 30px;
+    background: white;
+    font-size: 0.95em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#selector-variante:focus {
+    border-color: #9CAF88;
+    outline: none;
+}
