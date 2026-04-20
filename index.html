@@ -81,16 +81,28 @@
                 <p id="modal-genero" style="margin:5px 0; color:#C4B7A6;"></p>
                 <p id="modal-precio"></p>
                 <p id="modal-descripcion"></p>
+                
+                <!-- Selector de colores -->
+                <div id="modal-colores" style="margin:15px 0;">
+                    <label style="font-weight:bold; display:block; margin-bottom:8px;">🎨 Color:</label>
+                    <div id="selector-color" style="display:flex; gap:10px; flex-wrap:wrap;">
+                    </div>
+                </div>
+                
+                <!-- Selector de tallas (se actualiza según color seleccionado) -->
                 <div id="modal-variantes" style="display:none; margin:15px 0;">
-                    <label style="font-weight:bold;">Talla / Variante:</label>
+                    <label style="font-weight:bold;">📏 Talla / Variante:</label>
                     <select id="selector-variante" style="width:100%; padding:10px; margin-top:5px; border-radius:8px; border:1px solid #ccc;">
                     </select>
                 </div>
+                
+                <!-- Enlace oculto para admin -->
                 <div id="modal-enlace-admin" style="display:none; margin:15px 0; padding:12px; background:#E8E6E1; border-radius:16px;">
                     <label style="font-weight:500; color:#9CAF88; display:block; margin-bottom:8px;">🔗 Enlace original del producto:</label>
                     <a id="modal-enlace" href="#" target="_blank" style="color:#D4A5A5; text-decoration:none; word-break:break-all; font-size:0.85em;">Cargando...</a>
                     <button id="copiar-enlace" style="margin-top:8px; background:#9CAF88; color:white; border:none; padding:6px 12px; border-radius:20px; cursor:pointer; font-size:0.75em;">📋 Copiar enlace</button>
                 </div>
+                
                 <button id="modal-agregar" class="btn-agregar">➕ Agregar al carrito</button>
             </div>
         </div>
