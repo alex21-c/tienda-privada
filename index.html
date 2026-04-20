@@ -15,11 +15,20 @@
             <a href="admin.html" class="btn-admin">📊 Ir al Panel de Administrador</a>
         </div>
         
-        <!-- Filtros de productos -->
-        <div class="filtros">
+        <!-- Filtros de plataforma -->
+        <div class="filtros-plataforma">
             <button class="filtro-btn active" data-filtro="todos">Todos</button>
             <button class="filtro-btn" data-filtro="Amazon">Amazon</button>
             <button class="filtro-btn" data-filtro="Temu">Temu</button>
+        </div>
+        
+        <!-- Filtros de género (aparecen después de seleccionar plataforma) -->
+        <div id="filtros-genero" style="display:none;" class="filtros-genero">
+            <button class="filtro-genero-btn active" data-genero="todos">Todos</button>
+            <button class="filtro-genero-btn" data-genero="hombre">👨 Hombre</button>
+            <button class="filtro-genero-btn" data-genero="mujer">👩 Mujer</button>
+            <button class="filtro-genero-btn" data-genero="niño">👦 Niño</button>
+            <button class="filtro-genero-btn" data-genero="niña">👧 Niña</button>
         </div>
         
         <!-- Contenedor de productos -->
@@ -61,30 +70,32 @@
         </div>
     </div>
     
-    <script src="script.js"></script>
     <!-- Modal de detalle de producto -->
-<div id="producto-modal" class="modal">
-    <div class="modal-content">
-        <span class="modal-cerrar">&times;</span>
-        <div id="modal-contenido">
-            <img id="modal-imagen" src="" alt="">
-            <h2 id="modal-nombre"></h2>
-            <p id="modal-origen"></p>
-            <p id="modal-precio"></p>
-            <p id="modal-descripcion"></p>
-             <div id="modal-variantes" style="display:none; margin:15px 0;">
-                <label style="font-weight:bold;">Talla / Variante:</label>
-                <select id="selector-variante" style="width:100%; padding:10px; margin-top:5px; border-radius:8px; border:1px solid #ccc;">
-                </select>
-            </div>
-              <div id="modal-enlace-admin" style="display:none; margin:15px 0; padding:12px; background:#E8E6E1; border-radius:16px;">
+    <div id="producto-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-cerrar">&times;</span>
+            <div id="modal-contenido">
+                <img id="modal-imagen" src="" alt="">
+                <h2 id="modal-nombre"></h2>
+                <p id="modal-origen"></p>
+                <p id="modal-genero" style="margin:5px 0; color:#C4B7A6;"></p>
+                <p id="modal-precio"></p>
+                <p id="modal-descripcion"></p>
+                <div id="modal-variantes" style="display:none; margin:15px 0;">
+                    <label style="font-weight:bold;">Talla / Variante:</label>
+                    <select id="selector-variante" style="width:100%; padding:10px; margin-top:5px; border-radius:8px; border:1px solid #ccc;">
+                    </select>
+                </div>
+                <div id="modal-enlace-admin" style="display:none; margin:15px 0; padding:12px; background:#E8E6E1; border-radius:16px;">
                     <label style="font-weight:500; color:#9CAF88; display:block; margin-bottom:8px;">🔗 Enlace original del producto:</label>
                     <a id="modal-enlace" href="#" target="_blank" style="color:#D4A5A5; text-decoration:none; word-break:break-all; font-size:0.85em;">Cargando...</a>
                     <button id="copiar-enlace" style="margin-top:8px; background:#9CAF88; color:white; border:none; padding:6px 12px; border-radius:20px; cursor:pointer; font-size:0.75em;">📋 Copiar enlace</button>
                 </div>
-            <button id="modal-agregar" class="btn-agregar">➕ Agregar al carrito</button>
+                <button id="modal-agregar" class="btn-agregar">➕ Agregar al carrito</button>
+            </div>
         </div>
     </div>
-</div>
+    
+    <script src="script.js"></script>
 </body>
 </html>
