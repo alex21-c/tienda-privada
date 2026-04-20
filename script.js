@@ -430,7 +430,6 @@ function agregarAlCarrito(id) {
     
     guardarCarrito();
     actualizarCarrito();
-    alert(`✅ Agregado: ${producto.nombre} por $${producto.precio.toFixed(2)}`);
 }
 
 function guardarCarrito() {
