@@ -6,7 +6,9 @@ let carrito = [];
 let productoActual = null;
 let varianteSeleccionada = null;
 let esAdmin = false;
-
+let productoActual = null;
+let colorSeleccionado = null;
+let tallaSeleccionada = null;
 // ==================== VARIABLES DE FILTROS ====================
 let filtroPlataforma = 'todos';
 let filtroGenero = 'todos';
