@@ -130,18 +130,18 @@ function mostrarModal(productoId) {
     const modalGenero = document.getElementById('modal-genero');
     const modalPrecio = document.getElementById('modal-precio');
     const modalDescripcion = document.getElementById('modal-descripcion');
+    const modalColores = document.getElementById('modal-colores');
+    const variantesDiv = document.getElementById('modal-variantes');
     
-    // Verificar que los elementos existan
     if (!modal) {
         console.error("Modal no encontrado");
         return;
     }
     
-    // Llenar datos
+    // Llenar datos básicos
     if (modalImagen) {
         const imagenUrl = (producto.colores && producto.colores[0]) ? producto.colores[0].imagen : producto.imagen;
         modalImagen.src = imagenUrl;
-        console.log("Imagen cargada:", imagenUrl);
     }
     
     if (modalNombre) modalNombre.textContent = producto.nombre;
@@ -163,24 +163,76 @@ function mostrarModal(productoId) {
     if (modalDescripcion) {
         const descripcion = producto.descripcion || `Producto de alta calidad de ${producto.origen}.`;
         modalDescripcion.textContent = descripcion;
-        console.log("Descripción cargada:", descripcion.substring(0, 50));
     }
     
-    // Mostrar enlace oculto para admin
     mostrarEnlaceAdmin(producto.enlace);
     
-    // Colores
-    const modalColores = document.getElementById('modal-colores');
+    // ========== LÓGICA CORREGIDA ==========
+    // Caso 1: Producto CON colores
     if (producto.colores && producto.colores.length > 0) {
         if (modalColores) modalColores.style.display = 'block';
         mostrarSelectoresColor(producto.colores);
-    } else {
+    } 
+    // Caso 2: Producto SIN colores PERO CON tallas
+    else if (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0) {
         if (modalColores) modalColores.style.display = 'none';
+        // Mostrar directamente las tallas
+        mostrarTallasDirectas(producto.variantes);
+    }
+    // Caso 3: Producto sin colores ni tallas
+    else {
+        if (modalColores) modalColores.style.display = 'none';
+        if (variantesDiv) variantesDiv.style.display = 'none';
     }
     
-    // Mostrar el modal
     modal.style.display = 'flex';
     console.log("Modal mostrado");
+}
+
+// ==================== MOSTRAR TALLAS DIRECTAS (SIN COLORES) ====================
+function mostrarTallasDirectas(variantes) {
+    const variantesDiv = document.getElementById('modal-variantes');
+    const selectorVariante = document.getElementById('selector-variante');
+    
+    if (!variantesDiv) return;
+    
+    if (variantes && variantes.length > 0) {
+        variantesDiv.style.display = 'block';
+        selectorVariante.innerHTML = '<option value="">Selecciona una talla</option>';
+        
+        variantes.forEach(t => {
+            const option = document.createElement('option');
+            option.value = t.precio;
+            option.setAttribute('data-talla', t.talla);
+            option.textContent = `${t.talla} - $${t.precio.toFixed(2)}`;
+            selectorVariante.appendChild(option);
+        });
+        
+        selectorVariante.onchange = function() {
+            if (this.value) {
+                const precioSeleccionado = parseFloat(this.value);
+                const tallaSeleccionadaNombre = this.options[this.selectedIndex].getAttribute('data-talla');
+                tallaSeleccionada = {
+                    talla: tallaSeleccionadaNombre,
+                    precio: precioSeleccionado
+                };
+                const modalPrecio = document.getElementById('modal-precio');
+                if (modalPrecio) {
+                    modalPrecio.textContent = `$${precioSeleccionado.toFixed(2)}`;
+                    modalPrecio.style.fontWeight = 'bold';
+                }
+            } else {
+                tallaSeleccionada = null;
+                const modalPrecio = document.getElementById('modal-precio');
+                if (modalPrecio && productoActual) {
+                    modalPrecio.textContent = `$${productoActual.precio.toFixed(2)}`;
+                }
+            }
+        };
+    } else {
+        variantesDiv.style.display = 'none';
+        tallaSeleccionada = null;
+    }
 }
 
 // ==================== SELECTORES DE COLOR ====================
@@ -291,6 +343,7 @@ function agregarDesdeModal() {
     let precioFinal = productoActual.precio;
     let nombreFinal = productoActual.nombre;
     
+    // Caso 1: Producto CON colores
     if (productoActual.colores && productoActual.colores.length > 0) {
         if (!colorSeleccionado) {
             alert('⚠️ Por favor selecciona un color');
@@ -303,7 +356,9 @@ function agregarDesdeModal() {
             precioFinal = tallaSeleccionada.precio;
             nombreFinal = `${productoActual.nombre} (${colorSeleccionado.nombre} - Talla: ${tallaSeleccionada.talla})`;
         }
-    } else if (productoActual.tiene_variantes && productoActual.variantes && productoActual.variantes.length > 0) {
+    } 
+    // Caso 2: Producto SIN colores PERO CON tallas
+    else if (productoActual.tiene_variantes && productoActual.variantes && productoActual.variantes.length > 0) {
         if (!tallaSeleccionada) {
             alert('⚠️ Por favor selecciona una talla');
             return;
@@ -359,7 +414,9 @@ function agregarAlCarrito(id) {
     const producto = productos.find(p => p.id == id);
     if (!producto) return;
     
-    if ((producto.colores && producto.colores.length > 0) || (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0)) {
+    // Si tiene colores o tallas, abrir modal
+    if ((producto.colores && producto.colores.length > 0) || 
+        (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0)) {
         mostrarModal(id);
         return;
     }
