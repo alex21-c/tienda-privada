@@ -4,11 +4,10 @@ const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQ
 let productos = [];
 let carrito = [];
 let productoActual = null;
-let varianteSeleccionada = null;
 let esAdmin = false;
-let productoActual = null;
 let colorSeleccionado = null;
 let tallaSeleccionada = null;
+
 // ==================== VARIABLES DE FILTROS ====================
 let filtroPlataforma = 'todos';
 let filtroGenero = 'todos';
@@ -42,10 +41,9 @@ async function cargarProductos() {
 // ==================== FUNCIÓN PARA ICONO DE GÉNERO ====================
 function getIconoGenero(genero) {
     const iconos = {
-        'hombre': '👨',
-        'mujer': '👩',
-        'niño': '👦',
-        'niña': '👧',
+        'homme': '👨',
+        'femme': '👩',
+        'enfant': '👦',
         'unisex': '👥'
     };
     return iconos[genero] || '👤';
@@ -105,15 +103,17 @@ function mostrarProductos() {
     });
 }
 
-// ==================== MODAL CON VARIANTES Y GÉNERO ====================
+// ==================== MOSTRAR MODAL CON COLORES ====================
 function mostrarModal(productoId) {
     const producto = productos.find(p => p.id == productoId);
     if (!producto) return;
     
     productoActual = producto;
-    varianteSeleccionada = null;
+    colorSeleccionado = null;
+    tallaSeleccionada = null;
     
-    document.getElementById('modal-imagen').src = producto.imagen;
+    // Llenar datos básicos
+    document.getElementById('modal-imagen').src = producto.colores ? producto.colores[0].imagen : producto.imagen;
     document.getElementById('modal-nombre').textContent = producto.nombre;
     
     const origenSpan = document.getElementById('modal-origen');
@@ -129,74 +129,147 @@ function mostrarModal(productoId) {
     const descripcion = producto.descripcion || `Producto de alta calidad de ${producto.origen}.`;
     document.getElementById('modal-descripcion').textContent = descripcion;
     
-    // Mostrar enlace oculto para admin
     mostrarEnlaceAdmin(producto.enlace);
     
-    // Manejar variantes (tallas)
-    const variantesDiv = document.getElementById('modal-variantes');
-    const selectorVariante = document.getElementById('selector-variante');
-    const precioElement = document.getElementById('modal-precio');
-    
-    if (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0) {
-        variantesDiv.style.display = 'block';
-        selectorVariante.innerHTML = '<option value="">Selecciona una talla</option>';
-        
-        producto.variantes.forEach(v => {
-            const option = document.createElement('option');
-            option.value = v.precio;
-            option.setAttribute('data-talla', v.talla);
-            option.textContent = `${v.talla} - $${v.precio.toFixed(2)}`;
-            selectorVariante.appendChild(option);
-        });
-        
-        precioElement.textContent = `$${producto.precio.toFixed(2)}`;
-        precioElement.style.color = '#999';
-        
-        selectorVariante.onchange = function() {
-            if (this.value) {
-                const precioSeleccionado = parseFloat(this.value);
-                const tallaSeleccionada = this.options[this.selectedIndex].getAttribute('data-talla');
-                varianteSeleccionada = {
-                    talla: tallaSeleccionada,
-                    precio: precioSeleccionado
-                };
-                precioElement.textContent = `$${precioSeleccionado.toFixed(2)}`;
-                precioElement.style.color = '#2ecc71';
-                precioElement.style.fontWeight = 'bold';
-            } else {
-                varianteSeleccionada = null;
-                precioElement.textContent = `$${producto.precio.toFixed(2)}`;
-                precioElement.style.color = '#999';
-            }
-        };
+    // Mostrar selectores de color si existen colores
+    if (producto.colores && producto.colores.length > 0) {
+        mostrarSelectoresColor(producto.colores);
     } else {
-        variantesDiv.style.display = 'none';
-        precioElement.textContent = `$${producto.precio.toFixed(2)}`;
-        precioElement.style.color = '#2ecc71';
+        // Si no hay colores, mostrar precio normal y ocultar selector de colores
+        const coloresDiv = document.getElementById('modal-colores');
+        if (coloresDiv) coloresDiv.style.display = 'none';
+        document.getElementById('modal-precio').textContent = `$${producto.precio.toFixed(2)}`;
     }
     
     document.getElementById('producto-modal').style.display = 'flex';
 }
 
-function cerrarModal() {
-    document.getElementById('producto-modal').style.display = 'none';
-    productoActual = null;
-    varianteSeleccionada = null;
+// ==================== MOSTRAR SELECTORES DE COLOR ====================
+function mostrarSelectoresColor(colores) {
+    const container = document.getElementById('selector-color');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    document.getElementById('modal-colores').style.display = 'block';
+    
+    colores.forEach((color, index) => {
+        const btn = document.createElement('button');
+        btn.textContent = color.nombre;
+        btn.style.border = index === 0 ? '2px solid #9CAF88' : '2px solid #E8E6E1';
+        btn.style.background = index === 0 ? '#9CAF88' : 'white';
+        btn.style.color = index === 0 ? 'white' : '#C4B7A6';
+        
+        btn.onclick = () => {
+            // Actualizar selección visual
+            document.querySelectorAll('#selector-color button').forEach(b => {
+                b.style.border = '2px solid #E8E6E1';
+                b.style.background = 'white';
+                b.style.color = '#C4B7A6';
+            });
+            btn.style.border = '2px solid #9CAF88';
+            btn.style.background = '#9CAF88';
+            btn.style.color = 'white';
+            
+            // Actualizar color seleccionado
+            colorSeleccionado = color;
+            
+            // Cambiar imagen principal
+            document.getElementById('modal-imagen').src = color.imagen;
+            
+            // Actualizar precio base
+            const precioElement = document.getElementById('modal-precio');
+            precioElement.textContent = `$${color.precio.toFixed(2)}`;
+            precioElement.style.color = '#2ecc71';
+            
+            // Mostrar tallas si existen
+            mostrarTallas(color.tallas);
+        };
+        
+        container.appendChild(btn);
+    });
+    
+    // Seleccionar primer color por defecto
+    if (colores.length > 0) {
+        colorSeleccionado = colores[0];
+        const precioElement = document.getElementById('modal-precio');
+        precioElement.textContent = `$${colores[0].precio.toFixed(2)}`;
+        mostrarTallas(colores[0].tallas);
+    }
 }
 
+// ==================== MOSTRAR TALLAS ====================
+function mostrarTallas(tallas) {
+    const variantesDiv = document.getElementById('modal-variantes');
+    const selectorVariante = document.getElementById('selector-variante');
+    
+    if (!variantesDiv) return;
+    
+    if (tallas && tallas.length > 0) {
+        variantesDiv.style.display = 'block';
+        selectorVariante.innerHTML = '<option value="">Selecciona una talla</option>';
+        
+        tallas.forEach(t => {
+            const option = document.createElement('option');
+            option.value = t.precio;
+            option.setAttribute('data-talla', t.talla);
+            option.textContent = `${t.talla} - $${t.precio.toFixed(2)}`;
+            selectorVariante.appendChild(option);
+        });
+        
+        selectorVariante.onchange = function() {
+            if (this.value) {
+                const precioSeleccionado = parseFloat(this.value);
+                const tallaSeleccionadaNombre = this.options[this.selectedIndex].getAttribute('data-talla');
+                tallaSeleccionada = {
+                    talla: tallaSeleccionadaNombre,
+                    precio: precioSeleccionado
+                };
+                const precioElement = document.getElementById('modal-precio');
+                precioElement.textContent = `$${precioSeleccionado.toFixed(2)}`;
+                precioElement.style.fontWeight = 'bold';
+            } else {
+                tallaSeleccionada = null;
+                const precioElement = document.getElementById('modal-precio');
+                precioElement.textContent = `$${colorSeleccionado.precio.toFixed(2)}`;
+            }
+        };
+    } else {
+        variantesDiv.style.display = 'none';
+        tallaSeleccionada = null;
+    }
+}
+
+// ==================== AGREGAR DESDE MODAL ====================
 function agregarDesdeModal() {
     if (!productoActual) return;
     
     let precioFinal = productoActual.precio;
     let nombreFinal = productoActual.nombre;
     
-    if (productoActual.tiene_variantes && productoActual.variantes && productoActual.variantes.length > 0) {
-        if (!varianteSeleccionada) {
-            alert('⚠️ Por favor selecciona una talla antes de agregar al carrito');
+    // Si tiene colores y se seleccionó uno
+    if (productoActual.colores && productoActual.colores.length > 0) {
+        if (!colorSeleccionado) {
+            alert('⚠️ Por favor selecciona un color');
             return;
         }
-        precioFinal = varianteSeleccionada.precio;
-        nombreFinal = `${productoActual.nombre} (Talla: ${varianteSeleccionada.talla})`;
+        precioFinal = colorSeleccionado.precio;
+        nombreFinal = `${productoActual.nombre} (${colorSeleccionado.nombre})`;
+        
+        // Si tiene talla seleccionada
+        if (tallaSeleccionada) {
+            precioFinal = tallaSeleccionada.precio;
+            nombreFinal = `${productoActual.nombre} (${colorSeleccionado.nombre} - Talla: ${tallaSeleccionada.talla})`;
+        }
+    } else {
+        // Producto sin colores, verificar si tiene tallas directas
+        if (productoActual.tiene_variantes && productoActual.variantes && productoActual.variantes.length > 0) {
+            if (!tallaSeleccionada) {
+                alert('⚠️ Por favor selecciona una talla');
+                return;
+            }
+            precioFinal = tallaSeleccionada.precio;
+            nombreFinal = `${productoActual.nombre} (Talla: ${tallaSeleccionada.talla})`;
+        }
     }
     
     const existente = carrito.find(item => item.id === productoActual.id && item.nombre === nombreFinal);
@@ -218,6 +291,13 @@ function agregarDesdeModal() {
     cerrarModal();
 }
 
+function cerrarModal() {
+    document.getElementById('producto-modal').style.display = 'none';
+    productoActual = null;
+    colorSeleccionado = null;
+    tallaSeleccionada = null;
+}
+
 function configurarModal() {
     const modal = document.getElementById('producto-modal');
     const cerrar = document.querySelector('.modal-cerrar');
@@ -237,7 +317,8 @@ function agregarAlCarrito(id) {
     const producto = productos.find(p => p.id == id);
     if (!producto) return;
     
-    if (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0) {
+    // Si el producto tiene colores o variantes, abrir modal
+    if ((producto.colores && producto.colores.length > 0) || (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0)) {
         mostrarModal(id);
         return;
     }
