@@ -20,30 +20,34 @@ async function cargarProductos() {
         
         if (datos.error) {
             console.error('Error:', datos.error);
-            document.getElementById('productos').innerHTML = '<p class="loading">❌ Error: ' + datos.error + '</p>';
+            const productosDiv = document.getElementById('productos');
+            if (productosDiv) productosDiv.innerHTML = '<p class="loading">❌ Error: ' + datos.error + '</p>';
             return;
         }
         
         productos = datos;
         
         if (productos.length === 0) {
-            document.getElementById('productos').innerHTML = '<p class="loading">📦 No hay productos. Agrega productos en Google Sheets.</p>';
+            const productosDiv = document.getElementById('productos');
+            if (productosDiv) productosDiv.innerHTML = '<p class="loading">📦 No hay productos. Agrega productos en Google Sheets.</p>';
             return;
         }
         
         mostrarProductos();
     } catch (error) {
         console.error('Error cargando productos:', error);
-        document.getElementById('productos').innerHTML = '<p class="loading">❌ Error de conexión. Asegúrate que la API_URL es correcta.</p>';
+        const productosDiv = document.getElementById('productos');
+        if (productosDiv) productosDiv.innerHTML = '<p class="loading">❌ Error de conexión. Asegúrate que la API_URL es correcta.</p>';
     }
 }
 
 // ==================== FUNCIÓN PARA ICONO DE GÉNERO ====================
 function getIconoGenero(genero) {
     const iconos = {
-        'homme': '👨',
-        'femme': '👩',
-        'enfant': '👦',
+        'hombre': '👨',
+        'mujer': '👩',
+        'niño': '👦',
+        'niña': '👧',
         'unisex': '👥'
     };
     return iconos[genero] || '👤';
@@ -52,15 +56,14 @@ function getIconoGenero(genero) {
 // ==================== MOSTRAR PRODUCTOS CON FILTROS ====================
 function mostrarProductos() {
     const contenedor = document.getElementById('productos');
+    if (!contenedor) return;
     
     let productosFiltrados = productos;
     
-    // Filtrar por plataforma
     if (filtroPlataforma !== 'todos') {
         productosFiltrados = productosFiltrados.filter(p => p.origen === filtroPlataforma);
     }
     
-    // Filtrar por género
     if (filtroGenero !== 'todos') {
         productosFiltrados = productosFiltrados.filter(p => p.genero === filtroGenero);
     }
@@ -103,7 +106,7 @@ function mostrarProductos() {
     });
 }
 
-// ==================== MOSTRAR MODAL CON COLORES ====================
+// ==================== MOSTRAR MODAL ====================
 function mostrarModal(productoId) {
     const producto = productos.find(p => p.id == productoId);
     if (!producto) return;
@@ -112,7 +115,7 @@ function mostrarModal(productoId) {
     colorSeleccionado = null;
     tallaSeleccionada = null;
     
-    // Llenar datos básicos
+    // Elementos del modal
     const modalImagen = document.getElementById('modal-imagen');
     const modalNombre = document.getElementById('modal-nombre');
     const modalOrigen = document.getElementById('modal-origen');
@@ -120,6 +123,7 @@ function mostrarModal(productoId) {
     const modalPrecio = document.getElementById('modal-precio');
     const modalDescripcion = document.getElementById('modal-descripcion');
     
+    // Llenar datos
     if (modalImagen) modalImagen.src = (producto.colores && producto.colores[0]) ? producto.colores[0].imagen : producto.imagen;
     if (modalNombre) modalNombre.textContent = producto.nombre;
     
@@ -132,20 +136,19 @@ function mostrarModal(productoId) {
         modalGenero.textContent = `${getIconoGenero(producto.genero)} ${producto.genero || 'Unisex'}`;
     }
     
-    if (modalDescripcion) {
-        const descripcion = producto.descripcion || `Producto de alta calidad de ${producto.origen}.`;
-        modalDescripcion.textContent = descripcion;
-    }
-    
     if (modalPrecio) {
         modalPrecio.textContent = `$${producto.precio.toFixed(2)}`;
         modalPrecio.style.color = '#2ecc71';
     }
     
-    // Mostrar enlace oculto para admin
+    if (modalDescripcion) {
+        const descripcion = producto.descripcion || `Producto de alta calidad de ${producto.origen}.`;
+        modalDescripcion.textContent = descripcion;
+    }
+    
     mostrarEnlaceAdmin(producto.enlace);
     
-    // Mostrar selectores de color si existen colores
+    // Colores
     const modalColores = document.getElementById('modal-colores');
     if (producto.colores && producto.colores.length > 0) {
         if (modalColores) modalColores.style.display = 'block';
@@ -154,17 +157,16 @@ function mostrarModal(productoId) {
         if (modalColores) modalColores.style.display = 'none';
     }
     
-    // Mostrar el modal
     const modal = document.getElementById('producto-modal');
     if (modal) modal.style.display = 'flex';
 }
-// ==================== MOSTRAR SELECTORES DE COLOR ====================
+
+// ==================== SELECTORES DE COLOR ====================
 function mostrarSelectoresColor(colores) {
     const container = document.getElementById('selector-color');
     if (!container) return;
     
     container.innerHTML = '';
-    document.getElementById('modal-colores').style.display = 'block';
     
     colores.forEach((color, index) => {
         const btn = document.createElement('button');
@@ -174,7 +176,6 @@ function mostrarSelectoresColor(colores) {
         btn.style.color = index === 0 ? 'white' : '#C4B7A6';
         
         btn.onclick = () => {
-            // Actualizar selección visual
             document.querySelectorAll('#selector-color button').forEach(b => {
                 b.style.border = '2px solid #E8E6E1';
                 b.style.background = 'white';
@@ -184,29 +185,29 @@ function mostrarSelectoresColor(colores) {
             btn.style.background = '#9CAF88';
             btn.style.color = 'white';
             
-            // Actualizar color seleccionado
             colorSeleccionado = color;
             
-            // Cambiar imagen principal
-            document.getElementById('modal-imagen').src = color.imagen;
+            const modalImagen = document.getElementById('modal-imagen');
+            if (modalImagen) modalImagen.src = color.imagen;
             
-            // Actualizar precio base
-            const precioElement = document.getElementById('modal-precio');
-            precioElement.textContent = `$${color.precio.toFixed(2)}`;
-            precioElement.style.color = '#2ecc71';
+            const modalPrecio = document.getElementById('modal-precio');
+            if (modalPrecio) {
+                modalPrecio.textContent = `$${color.precio.toFixed(2)}`;
+                modalPrecio.style.color = '#2ecc71';
+            }
             
-            // Mostrar tallas si existen
             mostrarTallas(color.tallas);
         };
         
         container.appendChild(btn);
     });
     
-    // Seleccionar primer color por defecto
     if (colores.length > 0) {
         colorSeleccionado = colores[0];
-        const precioElement = document.getElementById('modal-precio');
-        precioElement.textContent = `$${colores[0].precio.toFixed(2)}`;
+        const modalPrecio = document.getElementById('modal-precio');
+        if (modalPrecio) {
+            modalPrecio.textContent = `$${colores[0].precio.toFixed(2)}`;
+        }
         mostrarTallas(colores[0].tallas);
     }
 }
@@ -238,13 +239,17 @@ function mostrarTallas(tallas) {
                     talla: tallaSeleccionadaNombre,
                     precio: precioSeleccionado
                 };
-                const precioElement = document.getElementById('modal-precio');
-                precioElement.textContent = `$${precioSeleccionado.toFixed(2)}`;
-                precioElement.style.fontWeight = 'bold';
+                const modalPrecio = document.getElementById('modal-precio');
+                if (modalPrecio) {
+                    modalPrecio.textContent = `$${precioSeleccionado.toFixed(2)}`;
+                    modalPrecio.style.fontWeight = 'bold';
+                }
             } else {
                 tallaSeleccionada = null;
-                const precioElement = document.getElementById('modal-precio');
-                precioElement.textContent = `$${colorSeleccionado.precio.toFixed(2)}`;
+                const modalPrecio = document.getElementById('modal-precio');
+                if (modalPrecio && colorSeleccionado) {
+                    modalPrecio.textContent = `$${colorSeleccionado.precio.toFixed(2)}`;
+                }
             }
         };
     } else {
@@ -260,7 +265,6 @@ function agregarDesdeModal() {
     let precioFinal = productoActual.precio;
     let nombreFinal = productoActual.nombre;
     
-    // Si tiene colores y se seleccionó uno
     if (productoActual.colores && productoActual.colores.length > 0) {
         if (!colorSeleccionado) {
             alert('⚠️ Por favor selecciona un color');
@@ -269,21 +273,17 @@ function agregarDesdeModal() {
         precioFinal = colorSeleccionado.precio;
         nombreFinal = `${productoActual.nombre} (${colorSeleccionado.nombre})`;
         
-        // Si tiene talla seleccionada
         if (tallaSeleccionada) {
             precioFinal = tallaSeleccionada.precio;
             nombreFinal = `${productoActual.nombre} (${colorSeleccionado.nombre} - Talla: ${tallaSeleccionada.talla})`;
         }
-    } else {
-        // Producto sin colores, verificar si tiene tallas directas
-        if (productoActual.tiene_variantes && productoActual.variantes && productoActual.variantes.length > 0) {
-            if (!tallaSeleccionada) {
-                alert('⚠️ Por favor selecciona una talla');
-                return;
-            }
-            precioFinal = tallaSeleccionada.precio;
-            nombreFinal = `${productoActual.nombre} (Talla: ${tallaSeleccionada.talla})`;
+    } else if (productoActual.tiene_variantes && productoActual.variantes && productoActual.variantes.length > 0) {
+        if (!tallaSeleccionada) {
+            alert('⚠️ Por favor selecciona una talla');
+            return;
         }
+        precioFinal = tallaSeleccionada.precio;
+        nombreFinal = `${productoActual.nombre} (Talla: ${tallaSeleccionada.talla})`;
     }
     
     const existente = carrito.find(item => item.id === productoActual.id && item.nombre === nombreFinal);
@@ -306,7 +306,8 @@ function agregarDesdeModal() {
 }
 
 function cerrarModal() {
-    document.getElementById('producto-modal').style.display = 'none';
+    const modal = document.getElementById('producto-modal');
+    if (modal) modal.style.display = 'none';
     productoActual = null;
     colorSeleccionado = null;
     tallaSeleccionada = null;
@@ -331,7 +332,6 @@ function agregarAlCarrito(id) {
     const producto = productos.find(p => p.id == id);
     if (!producto) return;
     
-    // Si el producto tiene colores o variantes, abrir modal
     if ((producto.colores && producto.colores.length > 0) || (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0)) {
         mostrarModal(id);
         return;
@@ -441,24 +441,21 @@ async function enviarPedido(datosCliente) {
 
 // ==================== FILTROS Y FORMULARIO ====================
 function configurarFiltros() {
-    // Filtros de plataforma
     document.querySelectorAll('.filtro-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             filtroPlataforma = btn.dataset.filtro;
             
-            // Mostrar u ocultar filtros de género
             const filtrosGenero = document.getElementById('filtros-genero');
             if (filtroPlataforma !== 'todos') {
-                filtrosGenero.style.display = 'flex';
-                // Resetear filtro de género
+                if (filtrosGenero) filtrosGenero.style.display = 'flex';
                 filtroGenero = 'todos';
                 document.querySelectorAll('.filtro-genero-btn').forEach(b => b.classList.remove('active'));
                 const btnTodos = document.querySelector('.filtro-genero-btn[data-genero="todos"]');
                 if (btnTodos) btnTodos.classList.add('active');
             } else {
-                filtrosGenero.style.display = 'none';
+                if (filtrosGenero) filtrosGenero.style.display = 'none';
                 filtroGenero = 'todos';
             }
             
@@ -466,7 +463,6 @@ function configurarFiltros() {
         });
     });
     
-    // Filtros de género
     document.querySelectorAll('.filtro-genero-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.filtro-genero-btn').forEach(b => b.classList.remove('active'));
