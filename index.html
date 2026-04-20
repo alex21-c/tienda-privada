@@ -15,11 +15,21 @@
             <a href="admin.html" class="btn-admin">📊 Ir al Panel de Administrador</a>
         </div>
         
-        <!-- Filtros de plataforma -->
-        <div class="filtros-plataforma">
-            <button class="filtro-btn active" data-filtro="todos">Todos</button>
-            <button class="filtro-btn" data-filtro="Amazon">Amazon</button>
-            <button class="filtro-btn" data-filtro="Temu">Temu</button>
+        <!-- Barra superior con filtros y carrito -->
+        <div class="top-bar">
+            <div class="filtros-plataforma">
+                <button class="filtro-btn active" data-filtro="todos">Todos</button>
+                <button class="filtro-btn" data-filtro="Amazon">Amazon</button>
+                <button class="filtro-btn" data-filtro="Temu">Temu</button>
+            </div>
+            
+            <!-- Carrito en la parte superior -->
+            <div class="carrito-top">
+                <button id="carrito-toggle" class="carrito-toggle-btn">
+                    🛒 Carrito
+                    <span id="carrito-contador" class="carrito-contador">0</span>
+                </button>
+            </div>
         </div>
         
         <!-- Filtros de género (aparecen después de seleccionar plataforma) -->
@@ -31,35 +41,40 @@
             <button class="filtro-genero-btn" data-genero="niña">👧 Niña</button>
         </div>
         
+        <!-- Panel desplegable del carrito -->
+        <div id="carrito-panel" class="carrito-panel">
+            <div class="carrito-panel-header">
+                <h3>🛍️ Mi Carrito</h3>
+                <button id="cerrar-carrito" class="cerrar-carrito">&times;</button>
+            </div>
+            <div id="carrito-lista-panel" class="carrito-lista-panel">
+                <p class="vacio">El carrito está vacío</p>
+            </div>
+            <div class="carrito-total-panel">
+                <strong>Total: $<span id="total-panel">0.00</span></strong>
+            </div>
+            <button id="ir-pagar" class="btn-pagar">📋 Ir a pagar</button>
+        </div>
+        
         <!-- Contenedor de productos -->
         <div id="productos" class="productos-grid">
             <div class="loading">Cargando productos...</div>
         </div>
         
-        <!-- Carrito -->
-        <div class="carrito-section">
-            <h2>🛍️ Tu Carrito</h2>
-            <div id="carrito-lista" class="carrito-lista">
-                <p class="vacio">El carrito está vacío</p>
-            </div>
-            <div class="carrito-total">
-                <strong>Total: $<span id="total">0.00</span></strong>
-            </div>
-        </div>
-        
-        <!-- Formulario de pedido -->
+        <!-- Formulario de pedido (oculto inicialmente) -->
         <div id="formulario-datos" style="display:none;" class="formulario-pedido">
             <h2>📋 Completa tus datos</h2>
             <form id="pedido-form">
-                <label>Nombre completo:</label>
+                <label>👤 Nombre completo:</label>
                 <input type="text" id="nombre" required>
-                <label>📱 Número de teléfono:</label>
-    <input type="tel" id="telefono" required placeholder="Ej: 6123-4567">
                 
-                <label>Dirección de entrega:</label>
+                <label>📱 Número de teléfono:</label>
+                <input type="tel" id="telefono" required placeholder="Ej: 6123-4567">
+                
+                <label>📍 Dirección de entrega:</label>
                 <textarea id="direccion" required rows="3"></textarea>
                 
-                <label>Método de pago:</label>
+                <label>💳 Método de pago:</label>
                 <select id="metodo-pago" required>
                     <option value="">Selecciona...</option>
                     <option value="Efectivo contra entrega">💵 Efectivo (pagas al recibir)</option>
@@ -99,16 +114,19 @@
                 </div>
                 
                 <!-- Enlace oculto para admin -->
-                <div id="modal-enlace-admin" style="display:none; margin:15px 0; padding:12px; background:#E8E6E1; border-radius:16px;">
-                    <label style="font-weight:500; color:#9CAF88; display:block; margin-bottom:8px;">🔗 Enlace original del producto:</label>
-                    <a id="modal-enlace" href="#" target="_blank" style="color:#D4A5A5; text-decoration:none; word-break:break-all; font-size:0.85em;">Cargando...</a>
-                    <button id="copiar-enlace" style="margin-top:8px; background:#9CAF88; color:white; border:none; padding:6px 12px; border-radius:20px; cursor:pointer; font-size:0.75em;">📋 Copiar enlace</button>
+                <div id="modal-enlace-admin" style="display:none; margin:15px 0; padding:12px; background:#1A1A1A; border-radius:16px;">
+                    <label style="font-weight:500; color:#00D4FF; display:block; margin-bottom:8px;">🔗 Enlace original del producto:</label>
+                    <a id="modal-enlace" href="#" target="_blank" style="color:#9D00FF; text-decoration:none; word-break:break-all; font-size:0.85em;">Cargando...</a>
+                    <button id="copiar-enlace" style="margin-top:8px; background:#00D4FF; color:#0A0A0A; border:none; padding:6px 12px; border-radius:20px; cursor:pointer; font-size:0.75em; font-weight:500;">📋 Copiar enlace</button>
                 </div>
                 
                 <button id="modal-agregar" class="btn-agregar">➕ Agregar al carrito</button>
             </div>
         </div>
     </div>
+    
+    <!-- Overlay para cerrar carrito -->
+    <div id="overlay" class="overlay"></div>
     
     <script src="script.js"></script>
 </body>
