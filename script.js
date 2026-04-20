@@ -633,5 +633,87 @@ async function init() {
     configurarFormulario();
     configurarModal();
 }
+// ==================== CARRITO SUPERIOR ====================
+function actualizarCarritoTop() {
+    const contadorSpan = document.getElementById('carrito-contador');
+    const totalPanel = document.getElementById('total-panel');
+    const listaPanel = document.getElementById('carrito-lista-panel');
+    
+    if (!contadorSpan) return;
+    
+    const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+    contadorSpan.textContent = totalItems;
+    
+    if (totalPanel) {
+        const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+        totalPanel.textContent = total.toFixed(2);
+    }
+    
+    if (listaPanel) {
+        if (carrito.length === 0) {
+            listaPanel.innerHTML = '<p class="vacio">El carrito está vacío</p>';
+        } else {
+            listaPanel.innerHTML = '';
+            carrito.forEach(item => {
+                const subtotal = item.precio * item.cantidad;
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'item-carrito';
+                itemDiv.innerHTML = `
+                    <div>
+                        <strong>${item.nombre}</strong><br>
+                        $${item.precio.toFixed(2)} x ${item.cantidad} = $${subtotal.toFixed(2)}
+                    </div>
+                    <button class="btn-eliminar" data-id="${item.id}" data-nombre="${item.nombre}">🗑️</button>
+                `;
+                listaPanel.appendChild(itemDiv);
+            });
+            
+            document.querySelectorAll('#carrito-lista-panel .btn-eliminar').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const id = parseInt(btn.dataset.id);
+                    const nombre = btn.dataset.nombre;
+                    carrito = carrito.filter(item => !(item.id == id && item.nombre == nombre));
+                    guardarCarrito();
+                    actualizarCarritoTop();
+                    actualizarCarrito();
+                });
+            });
+        }
+    }
+}
 
+function toggleCarrito() {
+    const panel = document.getElementById('carrito-panel');
+    const overlay = document.getElementById('overlay');
+    panel.classList.toggle('open');
+    if (overlay) overlay.classList.toggle('active');
+}
+
+function cerrarCarrito() {
+    const panel = document.getElementById('carrito-panel');
+    const overlay = document.getElementById('overlay');
+    panel.classList.remove('open');
+    if (overlay) overlay.classList.remove('active');
+}
+
+function irAPagar() {
+    cerrarCarrito();
+    const formulario = document.getElementById('formulario-datos');
+    if (formulario) {
+        formulario.scrollIntoView({ behavior: 'smooth' });
+        formulario.style.display = 'block';
+    }
+}
+
+function configurarCarritoTop() {
+    const toggleBtn = document.getElementById('carrito-toggle');
+    const cerrarBtn = document.getElementById('cerrar-carrito');
+    const pagarBtn = document.getElementById('ir-pagar');
+    const overlay = document.getElementById('overlay');
+    
+    if (toggleBtn) toggleBtn.onclick = toggleCarrito;
+    if (cerrarBtn) cerrarBtn.onclick = cerrarCarrito;
+    if (pagarBtn) pagarBtn.onclick = irAPagar;
+    if (overlay) overlay.onclick = cerrarCarrito;
+}
 init();
