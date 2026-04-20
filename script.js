@@ -565,6 +565,7 @@ function configurarFormulario() {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const nombre = document.getElementById('nombre').value;
+            const telefono = document.getElementById('telefono').value; 
             const direccion = document.getElementById('direccion').value;
             const metodoPago = document.getElementById('metodo-pago').value;
             
