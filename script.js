@@ -559,13 +559,18 @@ async function enviarPedidoModal() {
     }
     
     let detalleProductos = '';
-    let total = 0;
+    let totalProductos = 0;
     
     carrito.forEach(item => {
         const subtotal = item.precio * item.cantidad;
-        total += subtotal;
+        totalProductos += subtotal;
         detalleProductos += `${item.nombre} (${item.origen}) x${item.cantidad} - $${subtotal.toFixed(2)}\n`;
     });
+    
+    // Costos de envío (se pagarán al recibir)
+    const costoEnvioLibra = 3.50;
+    const costoDelivery = 1.00;
+    const totalEnvio = costoEnvioLibra + costoDelivery;
     
     const pedido = {
         nombre: nombre,
@@ -574,7 +579,10 @@ async function enviarPedidoModal() {
         metodoPago: metodoPago,
         estadoPago: 'Pendiente',
         productos: detalleProductos,
-        total: total.toFixed(2),
+        totalProductos: totalProductos.toFixed(2),
+        envioLibra: costoEnvioLibra,
+        delivery: costoDelivery,
+        envioTotal: totalEnvio.toFixed(2),
         idPedido: Date.now().toString()
     };
     
@@ -586,7 +594,35 @@ async function enviarPedidoModal() {
             body: JSON.stringify(pedido)
         });
         
-        alert('✅ ¡Pedido enviado! Te contactaremos pronto.');
+        // Mostrar factura detallada
+        alert(`✅ ¡PEDIDO CONFIRMADO! ✅
+        
+╔════════════════════════════════════════╗
+║           FACTURA DE COMPRA            ║
+╠════════════════════════════════════════╣
+║  📦 TOTAL PRODUCTOS:                   ║
+║     $${totalProductos.toFixed(2)}
+║                                        ║
+║  🚚 COSTOS DE ENVÍO:                   ║
+║     📦 Por libra:        $${costoEnvioLibra.toFixed(2)}
+║     🏠 Delivery:         $${costoDelivery.toFixed(2)}
+║                                        ║
+╠════════════════════════════════════════╣
+║  💰 TOTAL A PAGAR AHORA:               ║
+║     $${totalProductos.toFixed(2)}
+║                                        ║
+║  ⚠️ LOS COSTOS DE ENVÍO                ║
+║     SE PAGARÁN CUANDO EL PAQUETE       ║
+║     LLEGUE A PANAMÁ                    ║
+╚════════════════════════════════════════╝
+        
+📋 Resumen:
+• Pagas ahora: $${totalProductos.toFixed(2)} (productos)
+• Pagas al recibir: Envío por libra ($${costoEnvioLibra.toFixed(2)}) + Delivery ($${costoDelivery.toFixed(2)})
+• Total a pagar cuando llegue: $${(totalProductos + totalEnvio).toFixed(2)}
+
+📦 Te contactaremos cuando tu paquete esté en Panamá.`);
+        
         carrito = [];
         guardarCarrito();
         actualizarCarrito();
@@ -688,6 +724,10 @@ async function enviarPedido(datosCliente) {
         detalleProductos += `${item.nombre} (${item.origen}) x${item.cantidad} - $${subtotal.toFixed(2)}\n`;
     });
     
+    // Costos de envío (se pagarán al recibir)
+    const costoEnvioLibra = 3.50;
+    const costoDelivery = 1.00;
+    
     const pedido = {
         nombre: datosCliente.nombre,
         telefono: datosCliente.telefono,
@@ -707,7 +747,16 @@ async function enviarPedido(datosCliente) {
             body: JSON.stringify(pedido)
         });
         
-        alert('✅ ¡Pedido enviado! Te contactaremos pronto.');
+        alert(`✅ ¡PEDIDO CONFIRMADO! ✅
+        
+📦 TOTAL PRODUCTOS: $${total.toFixed(2)}
+🚚 COSTOS DE ENVÍO: $${(costoEnvioLibra + costoDelivery).toFixed(2)} (SE PAGAN AL RECIBIR)
+
+💰 Pagas ahora: $${total.toFixed(2)}
+💰 Pagas al recibir: Envío por libra ($${costoEnvioLibra.toFixed(2)}) + Delivery ($${costoDelivery.toFixed(2)})
+
+⚠️ Los costos de envío se pagan cuando el paquete llegue a Panamá.`);
+        
         carrito = [];
         guardarCarrito();
         actualizarCarrito();
