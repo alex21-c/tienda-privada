@@ -15,7 +15,7 @@
             <a href="admin.html" class="btn-admin">📊 Ir al Panel de Administrador</a>
         </div>
         
-        <!-- Barra superior con filtros y carrito -->
+        <!-- Barra superior con filtros, mis pedidos y carrito -->
         <div class="top-bar">
             <div class="filtros-plataforma">
                 <button class="filtro-btn active" data-filtro="todos">Todos</button>
@@ -23,12 +23,19 @@
                 <button class="filtro-btn" data-filtro="Temu">Temu</button>
             </div>
             
-            <!-- Carrito en la parte superior -->
-            <div class="carrito-top">
-                <button id="carrito-toggle" class="carrito-toggle-btn">
-                    🛒 Carrito
-                    <span id="carrito-contador" class="carrito-contador">0</span>
+            <div class="acciones-top">
+                <!-- Botón Mis Pedidos -->
+                <button id="toggle-mis-pedidos" class="mis-pedidos-top-btn">
+                    📦 Mis Pedidos
                 </button>
+                
+                <!-- Carrito -->
+                <div class="carrito-top">
+                    <button id="carrito-toggle" class="carrito-toggle-btn">
+                        🛒 Carrito
+                        <span id="carrito-contador" class="carrito-contador">0</span>
+                    </button>
+                </div>
             </div>
         </div>
         
@@ -62,24 +69,18 @@
             <div class="loading">Cargando productos...</div>
         </div>
         
-        <!-- Sección Mis Pedidos -->
-        <div class="mis-pedidos-section">
-            <button id="toggle-mis-pedidos" class="toggle-mis-pedidos-btn">
-                📦 Consultar Mis Pedidos
-            </button>
-            
-            <div id="mis-pedidos-panel" class="mis-pedidos-panel" style="display:none;">
-                <div class="mis-pedidos-header">
-                    <h3>📋 Mis Pedidos</h3>
-                    <button id="cerrar-mis-pedidos" class="cerrar-mis-pedidos">&times;</button>
-                </div>
-                <div class="mis-pedidos-busqueda">
-                    <input type="text" id="nombre-consulta" placeholder="Ingresa tu nombre completo" required>
-                    <button id="buscar-pedidos" class="btn-buscar">🔍 Buscar</button>
-                </div>
-                <div id="resultado-pedidos" class="resultado-pedidos">
-                    <p class="vacio">Ingresa tu nombre para ver tus pedidos</p>
-                </div>
+        <!-- Panel de Mis Pedidos (desplegable) -->
+        <div id="mis-pedidos-panel" class="mis-pedidos-panel" style="display:none;">
+            <div class="mis-pedidos-header">
+                <h3>📋 Mis Pedidos</h3>
+                <button id="cerrar-mis-pedidos" class="cerrar-mis-pedidos">&times;</button>
+            </div>
+            <div class="mis-pedidos-busqueda">
+                <input type="text" id="nombre-consulta" placeholder="Ingresa tu nombre completo" required>
+                <button id="buscar-pedidos" class="btn-buscar">🔍 Buscar</button>
+            </div>
+            <div id="resultado-pedidos" class="resultado-pedidos">
+                <p class="vacio">Ingresa tu nombre para ver tus pedidos</p>
             </div>
         </div>
         
