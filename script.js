@@ -536,25 +536,145 @@ function cerrarCarrito() {
     if (overlay) overlay.classList.remove('active');
 }
 
-function irAPagar() {
-    cerrarCarrito();
-    const formulario = document.getElementById('formulario-datos');
-    if (formulario) {
-        formulario.scrollIntoView({ behavior: 'smooth' });
-        formulario.style.display = 'block';
+// ==================== MODAL DE PAGO ====================
+function abrirModalPago() {
+    const modal = document.getElementById('pago-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function cerrarModalPago() {
+    const modal = document.getElementById('pago-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+async function enviarPedidoModal() {
+    const nombre = document.getElementById('nombre-modal').value;
+    const telefono = document.getElementById('telefono-modal').value;
+    const direccion = document.getElementById('direccion-modal').value;
+    const metodoPago = document.getElementById('metodo-pago-modal').value;
+    
+    if (!nombre || !telefono || !direccion || !metodoPago) {
+        alert('Completa todos los campos');
+        return;
+    }
+    
+    let detalleProductos = '';
+    let total = 0;
+    
+    carrito.forEach(item => {
+        const subtotal = item.precio * item.cantidad;
+        total += subtotal;
+        detalleProductos += `${item.nombre} (${item.origen}) x${item.cantidad} - $${subtotal.toFixed(2)}\n`;
+    });
+    
+    const pedido = {
+        nombre: nombre,
+        telefono: telefono,
+        direccion: direccion,
+        metodoPago: metodoPago,
+        estadoPago: 'Pendiente',
+        productos: detalleProductos,
+        total: total.toFixed(2),
+        idPedido: Date.now().toString()
+    };
+    
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(pedido)
+        });
+        
+        alert('✅ ¡Pedido enviado! Te contactaremos pronto.');
+        carrito = [];
+        guardarCarrito();
+        actualizarCarrito();
+        cerrarModalPago();
+        cerrarCarrito();
+        
+        // Limpiar campos
+        document.getElementById('nombre-modal').value = '';
+        document.getElementById('telefono-modal').value = '';
+        document.getElementById('direccion-modal').value = '';
+        document.getElementById('metodo-pago-modal').value = '';
+        
+    } catch (error) {
+        alert('❌ Error al enviar. Por favor intenta de nuevo.');
     }
 }
 
-function configurarCarritoTop() {
-    const toggleBtn = document.getElementById('carrito-toggle');
-    const cerrarBtn = document.getElementById('cerrar-carrito');
-    const pagarBtn = document.getElementById('ir-pagar');
-    const overlay = document.getElementById('overlay');
+function irAPagar() {
+    cerrarCarrito();
+    abrirModalPago();
+}
+
+// ==================== MODAL DE MIS PEDIDOS ====================
+function abrirModalMisPedidos() {
+    const modal = document.getElementById('mis-pedidos-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function cerrarModalMisPedidos() {
+    const modal = document.getElementById('mis-pedidos-modal');
+    if (modal) modal.style.display = 'none';
+    // Limpiar resultados
+    document.getElementById('resultado-pedidos-modal').innerHTML = '<p class="vacio">Ingresa tu nombre para ver tus pedidos</p>';
+    document.getElementById('nombre-consulta-modal').value = '';
+}
+
+async function buscarPedidosPorNombreModal() {
+    const nombre = document.getElementById('nombre-consulta-modal').value;
+    const resultadoDiv = document.getElementById('resultado-pedidos-modal');
     
-    if (toggleBtn) toggleBtn.onclick = toggleCarrito;
-    if (cerrarBtn) cerrarBtn.onclick = cerrarCarrito;
-    if (pagarBtn) pagarBtn.onclick = irAPagar;
-    if (overlay) overlay.onclick = cerrarCarrito;
+    if (!nombre || nombre.trim() === '') {
+        resultadoDiv.innerHTML = '<p class="error">⚠️ Por favor ingresa tu nombre completo</p>';
+        return;
+    }
+    
+    resultadoDiv.innerHTML = '<p>Cargando tus pedidos...</p>';
+    
+    try {
+        const response = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombre)}`);
+        const pedidos = await response.json();
+        
+        if (pedidos.error) {
+            resultadoDiv.innerHTML = `<p class="error">❌ ${pedidos.error}</p>`;
+            return;
+        }
+        
+        if (pedidos.length === 0) {
+            resultadoDiv.innerHTML = '<p class="vacio">📭 No encontramos pedidos asociados a este nombre</p>';
+            return;
+        }
+        
+        resultadoDiv.innerHTML = '';
+        pedidos.forEach(pedido => {
+            const estadoClass = getEstadoClass(pedido.estado);
+            const estadoIcono = getEstadoIcono(pedido.estado);
+            
+            const card = document.createElement('div');
+            card.className = 'pedido-card';
+            card.innerHTML = `
+                <div class="pedido-header">
+                    <span class="pedido-id">#${pedido.id}</span>
+                    <span class="pedido-fecha">${new Date(pedido.fecha).toLocaleDateString()}</span>
+                    <span class="pedido-estado ${estadoClass}">${estadoIcono} ${pedido.estado}</span>
+                </div>
+                <div class="pedido-productos">
+                    ${pedido.productos.replace(/\n/g, '<br>')}
+                </div>
+                <div class="pedido-total">
+                    Total: $${pedido.total.toFixed(2)}
+                </div>
+            `;
+            resultadoDiv.appendChild(card);
+        });
+        
+    } catch (error) {
+        console.error('Error:', error);
+        resultadoDiv.innerHTML = '<p class="error">❌ Error al consultar tus pedidos. Intenta nuevamente.</p>';
+    }
 }
 
 // ==================== ENVIAR PEDIDO ====================
@@ -654,6 +774,16 @@ function configurarFormulario() {
     }
 }
 
+function configurarFormularioModal() {
+    const form = document.getElementById('pedido-form-modal');
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await enviarPedidoModal();
+        });
+    }
+}
+
 // ==================== ENLACE OCULTO PARA ADMIN ====================
 function verificarAdmin() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -699,77 +829,6 @@ function mostrarEnlaceAdmin(enlace) {
     }
 }
 
-// ==================== MIS PEDIDOS ====================
-function toggleMisPedidos() {
-    const panel = document.getElementById('mis-pedidos-panel');
-    if (panel) {
-        if (panel.style.display === 'none') {
-            panel.style.display = 'block';
-        } else {
-            panel.style.display = 'none';
-        }
-    }
-}
-
-function cerrarMisPedidos() {
-    const panel = document.getElementById('mis-pedidos-panel');
-    if (panel) panel.style.display = 'none';
-}
-
-async function buscarPedidosPorNombre() {
-    const nombre = document.getElementById('nombre-consulta').value;
-    const resultadoDiv = document.getElementById('resultado-pedidos');
-    
-    if (!nombre || nombre.trim() === '') {
-        resultadoDiv.innerHTML = '<p class="error">⚠️ Por favor ingresa tu nombre completo</p>';
-        return;
-    }
-    
-    resultadoDiv.innerHTML = '<p>Cargando tus pedidos...</p>';
-    
-    try {
-        const response = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombre)}`);
-        const pedidos = await response.json();
-        
-        if (pedidos.error) {
-            resultadoDiv.innerHTML = `<p class="error">❌ ${pedidos.error}</p>`;
-            return;
-        }
-        
-        if (pedidos.length === 0) {
-            resultadoDiv.innerHTML = '<p class="vacio">📭 No encontramos pedidos asociados a este nombre</p>';
-            return;
-        }
-        
-        resultadoDiv.innerHTML = '';
-        pedidos.forEach(pedido => {
-            const estadoClass = getEstadoClass(pedido.estado);
-            const estadoIcono = getEstadoIcono(pedido.estado);
-            
-            const card = document.createElement('div');
-            card.className = 'pedido-card';
-            card.innerHTML = `
-                <div class="pedido-header">
-                    <span class="pedido-id">#${pedido.id}</span>
-                    <span class="pedido-fecha">${new Date(pedido.fecha).toLocaleDateString()}</span>
-                    <span class="pedido-estado ${estadoClass}">${estadoIcono} ${pedido.estado}</span>
-                </div>
-                <div class="pedido-productos">
-                    ${pedido.productos.replace(/\n/g, '<br>')}
-                </div>
-                <div class="pedido-total">
-                    Total: $${pedido.total.toFixed(2)}
-                </div>
-            `;
-            resultadoDiv.appendChild(card);
-        });
-        
-    } catch (error) {
-        console.error('Error:', error);
-        resultadoDiv.innerHTML = '<p class="error">❌ Error al consultar tus pedidos. Intenta nuevamente.</p>';
-    }
-}
-
 function getEstadoClass(estado) {
     switch(estado) {
         case 'Pendiente': return 'estado-pendiente';
@@ -790,19 +849,48 @@ function getEstadoIcono(estado) {
     }
 }
 
+// ==================== CONFIGURAR CARRITO TOP ====================
+function configurarCarritoTop() {
+    const toggleBtn = document.getElementById('carrito-toggle');
+    const cerrarBtn = document.getElementById('cerrar-carrito');
+    const pagarBtn = document.getElementById('ir-pagar');
+    const overlay = document.getElementById('overlay');
+    
+    if (toggleBtn) toggleBtn.onclick = toggleCarrito;
+    if (cerrarBtn) cerrarBtn.onclick = cerrarCarrito;
+    if (pagarBtn) pagarBtn.onclick = irAPagar;
+    if (overlay) overlay.onclick = cerrarCarrito;
+}
+
+// ==================== CONFIGURAR MIS PEDIDOS ====================
 function configurarMisPedidos() {
     const toggleBtn = document.getElementById('toggle-mis-pedidos');
     const cerrarBtn = document.getElementById('cerrar-mis-pedidos');
-    const buscarBtn = document.getElementById('buscar-pedidos');
-    const nombreInput = document.getElementById('nombre-consulta');
+    const buscarBtn = document.getElementById('buscar-pedidos-modal');
+    const nombreInput = document.getElementById('nombre-consulta-modal');
+    const modalCerrar = document.querySelector('.modal-cerrar-mis-pedidos');
+    const modalPagoCerrar = document.querySelector('.modal-cerrar-pago');
     
-    if (toggleBtn) toggleBtn.onclick = toggleMisPedidos;
-    if (cerrarBtn) cerrarBtn.onclick = cerrarMisPedidos;
-    if (buscarBtn) buscarBtn.onclick = buscarPedidosPorNombre;
+    if (toggleBtn) toggleBtn.onclick = abrirModalMisPedidos;
+    if (cerrarBtn) cerrarBtn.onclick = cerrarModalMisPedidos;
+    if (modalCerrar) modalCerrar.onclick = cerrarModalMisPedidos;
+    if (modalPagoCerrar) modalPagoCerrar.onclick = cerrarModalPago;
+    if (buscarBtn) buscarBtn.onclick = buscarPedidosPorNombreModal;
     if (nombreInput) {
         nombreInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') buscarPedidosPorNombre();
+            if (e.key === 'Enter') buscarPedidosPorNombreModal();
         });
+    }
+    
+    // Cerrar modales al hacer clic fuera
+    const pagoModal = document.getElementById('pago-modal');
+    const misPedidosModal = document.getElementById('mis-pedidos-modal');
+    
+    if (pagoModal) {
+        window.onclick = function(event) {
+            if (event.target === pagoModal) cerrarModalPago();
+            if (event.target === misPedidosModal) cerrarModalMisPedidos();
+        }
     }
 }
 
@@ -814,7 +902,7 @@ async function init() {
     if (carritoGuardado) carrito = JSON.parse(carritoGuardado);
     actualizarCarrito();
     configurarFiltros();
-    configurarFormulario();
+    configurarFormularioModal();
     configurarModal();
     configurarCarritoTop();
     configurarMisPedidos();
