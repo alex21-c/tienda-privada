@@ -713,33 +713,53 @@ async function guardarPedido(pedido) {
 
 // ==================== MOSTRAR FACTURA AESTHETIC ====================
 function mostrarFactura(pedido) {
+    console.log("Pedido recibido en mostrarFactura:", pedido); // Para depurar
+    
     const facturaDiv = document.getElementById('factura-contenido');
-    const totalProductos = parseFloat(pedido.totalProductos);
+    
+    // Obtener el total de productos de diferentes formas posibles
+    let totalProductos = 0;
+    
+    if (pedido.totalProductos) {
+        totalProductos = parseFloat(pedido.totalProductos);
+    } else if (pedido.total) {
+        totalProductos = parseFloat(pedido.total);
+    } else if (pedido.totalProductos === 0 && pedido.productos) {
+        // Calcular desde los productos
+        const lineas = pedido.productos.split('\n');
+        for (const linea of lineas) {
+            const match = linea.match(/\$(\d+\.?\d*)/);
+            if (match) {
+                totalProductos += parseFloat(match[1]);
+            }
+        }
+    }
+    
     const envioLibra = 3.50;
     const delivery = 1.00;
     
     // Procesar productos para mostrar en lista
-    const productosLista = pedido.productos.split('\n').filter(p => p.trim());
+    const productosLista = pedido.productos ? pedido.productos.split('\n').filter(p => p.trim()) : [];
     const productosHtml = productosLista.map(p => `<div class="producto-linea"><span>${p}</span></div>`).join('');
     
     facturaDiv.innerHTML = `
         <div class="factura-header">
             <h2>🎀 FACTURA DE COMPRA</h2>
             <p>Comprobante de pago</p>
-            <p><strong>N°:</strong> ${pedido.idPedido}</p>
+            <p><strong>N°:</strong> ${pedido.idPedido || 'N/A'}</p>
         </div>
         
         <div class="factura-info">
             <p><strong>📅 Fecha:</strong> ${new Date().toLocaleString()}</p>
-            <p><strong>👤 Cliente:</strong> ${pedido.nombre}</p>
-            <p><strong>📱 Teléfono:</strong> ${pedido.telefono}</p>
-            <p><strong>📍 Dirección:</strong> ${pedido.direccion}</p>
-            <p><strong>💳 Método de pago:</strong> ${pedido.metodoPago}</p>
+            <p><strong>👤 Cliente:</strong> ${pedido.nombre || 'N/A'}</p>
+            <p><strong>📱 Teléfono:</strong> ${pedido.telefono || 'N/A'}</p>
+            <p><strong>📍 Dirección:</strong> ${pedido.direccion || 'N/A'}</p>
+            <p><strong>💳 Método de pago:</strong> ${pedido.metodoPago || 'N/A'}</p>
         </div>
         
         <div class="factura-productos">
             <h4>🛍️ Detalle de productos:</h4>
-            ${productosHtml}
+            ${productosHtml || '<p>No hay productos</p>'}
         </div>
         
         <div class="factura-totales">
@@ -780,7 +800,7 @@ function mostrarFactura(pedido) {
         modal.style.display = 'flex';
     }
     
-    // Asegurarse que los botones existen y funcionan
+    // Configurar botones
     const descargarBtn = document.getElementById('descargar-factura');
     const cerrarBtn = document.getElementById('cerrar-factura');
     const cerrarX = document.querySelector('.modal-cerrar-factura');
