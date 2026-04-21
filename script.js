@@ -586,24 +586,22 @@ async function enviarPedidoModal() {
         idPedido: Date.now().toString()
     };
     
+    // 🔴 IMPORTANTE: Guardar el pedido AHORA MISMO
+    await guardarPedido(pedido);
+    
+    // Guardar el pedido pendiente para la verificación
     pedidoPendiente = pedido;
     
+    // Cerrar modal de pago y carrito
     cerrarModalPago();
     cerrarCarrito();
     
     if (metodoPago === 'Yappy') {
         abrirModalYappy();
     } else {
-        await guardarPedido(pedido);
         mostrarFactura(pedido);
     }
 }
-
-function irAPagar() {
-    cerrarCarrito();
-    abrirModalPago();
-}
-
 // ==================== YAPPY MODAL ====================
 function abrirModalYappy() {
     const modal = document.getElementById('yappy-modal');
@@ -645,15 +643,55 @@ async function verificarPagoYGenerarFactura() {
         return;
     }
     
-    if (pedidoPendiente && pedidoPendiente.nombre.toLowerCase() === nombreVerificar.toLowerCase()) {
-        await guardarPedido(pedidoPendiente);
-        cerrarConfirmarPago();
-        mostrarFactura(pedidoPendiente);
-    } else {
-        alert('❌ No encontramos un pedido con ese nombre. Verifica que escribiste el mismo nombre que usaste al hacer el pedido.');
+    // Buscar el pedido por nombre en lugar de usar pedidoPendiente
+    try {
+        const response = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombreVerificar)}`);
+        const pedidos = await response.json();
+        
+        if (pedidos && pedidos.length > 0) {
+            // Encontrar el pedido más reciente con estado "Pendiente de pago"
+            const pedidoEncontrado = pedidos.find(p => p.estado === 'Pendiente de pago');
+            
+            if (pedidoEncontrado) {
+                // Actualizar estado del pedido a "Pagado"
+                await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'actualizarEstado',
+                        fila: pedidoEncontrado.id,
+                        estado: 'Pagado'
+                    })
+                });
+                
+                // Recargar los datos del pedido para la factura
+                const pedidoCompleto = {
+                    nombre: pedidoEncontrado.nombre,
+                    telefono: pedidoEncontrado.telefono,
+                    direccion: pedidoEncontrado.direccion,
+                    metodoPago: pedidoEncontrado.metodoPago,
+                    productos: pedidoEncontrado.productos,
+                    totalProductos: pedidoEncontrado.total,
+                    envioLibra: 3.50,
+                    delivery: 1.00,
+                    envioTotal: 4.50,
+                    idPedido: pedidoEncontrado.idPedido
+                };
+                
+                cerrarConfirmarPago();
+                mostrarFactura(pedidoCompleto);
+            } else {
+                alert('❌ No encontramos un pedido pendiente con ese nombre. Verifica que escribiste el mismo nombre que usaste al hacer el pedido.');
+            }
+        } else {
+            alert('❌ No encontramos un pedido con ese nombre. Verifica que escribiste el mismo nombre que usaste al hacer el pedido.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Error al verificar el pago. Intenta nuevamente.');
     }
 }
-
 // ==================== GUARDAR PEDIDO ====================
 async function guardarPedido(pedido) {
     try {
