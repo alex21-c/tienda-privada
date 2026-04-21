@@ -179,6 +179,54 @@
         </div>
     </div>
     
+    <!-- Modal de Yappy (para mostrar número de pago) -->
+    <div id="yappy-modal" class="modal">
+        <div class="modal-content" style="max-width: 450px; text-align: center;">
+            <span class="modal-cerrar-yappy">&times;</span>
+            <div id="modal-yappy-contenido">
+                <div class="yappy-icon">📱</div>
+                <h3>Pagar con Yappy</h3>
+                <p>Escanea el código QR o copia el número:</p>
+                <div class="yappy-numero">
+                    <span id="yappy-telefono">6474-5914</span>
+                    <button id="copiar-yappy" class="btn-copiar">📋 Copiar</button>
+                </div>
+                <div class="yappy-instrucciones">
+                    <p>⚠️ <strong>Importante:</strong></p>
+                    <p>Al realizar el pago, escribe en <strong>COMENTARIOS</strong> tu <strong>nombre completo</strong> para identificar tu pedido.</p>
+                </div>
+                <button id="ya-pague" class="btn-yappy-pague">✅ Ya hice el pago</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de confirmación de pago -->
+    <div id="confirmar-pago-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="modal-cerrar-confirmar">&times;</span>
+            <div id="modal-confirmar-contenido">
+                <h3>🔍 Confirmar Pago</h3>
+                <p>Ingresa tu nombre completo para verificar tu pago:</p>
+                <input type="text" id="nombre-verificar" placeholder="Tu nombre completo" style="width:100%; padding:12px; margin:15px 0; border-radius:50px; border:1px solid #E5E5E5;">
+                <button id="verificar-pago" class="btn-verificar">🔍 Verificar y generar factura</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Factura Aesthetic -->
+    <div id="factura-modal" class="modal">
+        <div class="modal-content factura-content">
+            <span class="modal-cerrar-factura">&times;</span>
+            <div id="factura-contenido" class="factura-container">
+                <!-- La factura se genera dinámicamente -->
+            </div>
+            <div class="factura-actions">
+                <button id="descargar-factura" class="btn-descargar">📄 Descargar Factura</button>
+                <button id="cerrar-factura" class="btn-cerrar-factura">✖ Cerrar</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Modal de Mis Pedidos -->
     <div id="mis-pedidos-modal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
