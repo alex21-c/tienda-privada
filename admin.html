@@ -129,7 +129,21 @@
                 <p style="margin-top:10px; font-size:0.8em; color:#888888;">⚠️ Copia este JSON y pégalo en la fila correspondiente de Google Sheets (hoja "productos")</p>
             </div>
         </div>
-        
+        <!-- Tab Pedidos de Clientes -->
+<div id="tab-pedidos" class="tab-content">
+    <h3>📦 Pedidos de Clientes</h3>
+    <div class="filtros-pedidos">
+        <button class="filtro-pedido active" data-filtro="todos">Todos</button>
+        <button class="filtro-pedido" data-filtro="Pendiente">⏳ Pendientes</button>
+        <button class="filtro-pedido" data-filtro="Pagado">✅ Pagados</button>
+        <button class="filtro-pedido" data-filtro="Enviado">📦 Enviados</button>
+        <button class="filtro-pedido" data-filtro="Entregado">🏠 Entregados</button>
+        <button class="btn-refresh" onclick="cargarPedidosAdmin()">🔄 Refrescar</button>
+    </div>
+    <div id="pedidos-lista-admin" class="pedidos-lista">
+        <p>Cargando pedidos...</p>
+    </div>
+</div>
         <!-- Tab Listar Productos -->
         <div id="tab-listar" class="tab-content">
             <h3>📋 Productos Existentes</h3>
