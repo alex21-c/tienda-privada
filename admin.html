@@ -429,7 +429,7 @@ async function cargarPedidosAdmin() {
         const container = document.getElementById('pedidos-lista-admin');
         container.innerHTML = '<p>Cargando pedidos...</p>';
         
-        const response = await fetch(`${API_URL}?action=getPedidos`);
+        const response = await fetch(`${API_URL}?action=getPedidosConEnlaces`);
         pedidosAdmin = await response.json();
         
         if (pedidosAdmin.error) {
