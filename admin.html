@@ -5,29 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admin - Gestión Completa</title>
     <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: #0A0A0A; padding: 20px; color: #FFFFFF; }
-    .container { max-width: 1400px; margin: 0 auto; }
-    
-    /* ... (todos los estilos existentes) ... */
-    
-    /* ========== ESTILOS PARA ENLACES DE PRODUCTOS ========== */
-    .producto-enlace {
-        color: #00D4FF;
-        text-decoration: none;
-        font-size: 0.75em;
-        margin-left: 10px;
-        transition: all 0.3s;
-    }
-    
-    .producto-enlace:hover {
-        color: #9D00FF;
-        text-decoration: underline;
-    }
-    
-    @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
-</style>
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #0A0A0A; padding: 20px; color: #FFFFFF; }
         .container { max-width: 1400px; margin: 0 auto; }
@@ -175,6 +152,8 @@
         .producto-item-pedido {
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
             padding: 8px;
             border-bottom: 1px solid #222222;
             font-size: 0.85em;
@@ -182,6 +161,20 @@
 
         .producto-item-pedido:last-child {
             border-bottom: none;
+        }
+
+        /* ========== ESTILOS PARA ENLACES DE PRODUCTOS ========== */
+        .producto-enlace {
+            color: #00D4FF;
+            text-decoration: none;
+            font-size: 0.75em;
+            margin-left: 10px;
+            transition: all 0.3s;
+        }
+
+        .producto-enlace:hover {
+            color: #9D00FF;
+            text-decoration: underline;
         }
 
         .pedido-total {
@@ -248,7 +241,10 @@
             color: #00D4FF;
         }
         
-        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { 
+            .form-grid { grid-template-columns: 1fr; }
+            .producto-item-pedido { flex-direction: column; align-items: flex-start; gap: 5px; }
+        }
     </style>
 </head>
 <body>
@@ -485,14 +481,13 @@ function mostrarPedidosAdmin() {
         const estadoClass = getEstadoClass(pedido.estado);
         const estadoIcono = getEstadoIcono(pedido.estado);
         
-        // Usar productos con enlaces si existen, si no usar el texto plano
         let productosHtml = '';
         if (pedido.productosConEnlaces && pedido.productosConEnlaces.length > 0) {
             productosHtml = pedido.productosConEnlaces.map(prod => {
                 if (prod.enlace) {
                     return `<div class="producto-item-pedido">
                                 📦 ${prod.texto}
-                                <a href="${prod.enlace}" target="_blank" class="producto-enlace" style="color:#00D4FF; text-decoration:none; margin-left:10px;">🔗 Ver original</a>
+                                <a href="${prod.enlace}" target="_blank" class="producto-enlace">🔗 Ver original</a>
                             </div>`;
                 } else {
                     return `<div class="producto-item-pedido">📦 ${prod.texto}</div>`;
@@ -536,6 +531,7 @@ function mostrarPedidosAdmin() {
         container.appendChild(card);
     });
 }
+
 async function cambiarEstadoPedido(id, nuevoEstado) {
     try {
         await fetch(API_URL, {
@@ -658,7 +654,7 @@ function renderizarColores() {
     }
     
     container.innerHTML = '';
-    colores.forEach((color, idx) => {
+    colores.forEach((color) => {
         const colorDiv = document.createElement('div');
         colorDiv.className = 'color-item';
         colorDiv.innerHTML = `
