@@ -74,6 +74,24 @@
             color: #0A0A0A;
         }
         
+        /* ========== ENLACE DE PRODUCTO EN LISTA ========== */
+        .producto-enlace-admin {
+            margin: 8px 0;
+            padding: 5px 0;
+            font-size: 0.85em;
+        }
+
+        .producto-enlace-admin a {
+            color: #00D4FF;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .producto-enlace-admin a:hover {
+            color: #9D00FF;
+            text-decoration: underline;
+        }
+        
         .mensaje { background: #00D4FF; color: #0A0A0A; padding: 12px; border-radius: 12px; margin-bottom: 20px; display: none; }
         .url-info { background: rgba(0,212,255,0.1); padding: 12px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
         
@@ -419,6 +437,15 @@ function mostrarListaProductos() {
     productosActuales.forEach(prod => {
         const div = document.createElement('div');
         div.className = 'producto-admin-card';
+        
+        // Construir HTML de enlaces si existen
+        let enlaceHtml = '';
+        if (prod.enlace && prod.enlace !== '') {
+            enlaceHtml = `<div class="producto-enlace-admin">
+                            🔗 <a href="${prod.enlace}" target="_blank" style="color:#00D4FF; text-decoration:none;">Ver producto original (${prod.origen})</a>
+                          </div>`;
+        }
+        
         div.innerHTML = `
             <div class="producto-admin-header">
                 <strong>#${prod.id} - ${prod.nombre.substring(0, 50)}${prod.nombre.length > 50 ? '...' : ''}</strong>
@@ -428,6 +455,7 @@ function mostrarListaProductos() {
                 </div>
             </div>
             <div>💰 Precio actual: <strong style="color:#00D4FF;">$${prod.precio.toFixed(2)}</strong> | 📦 Origen: ${prod.origen} | 👤 Género: ${prod.genero || 'unisex'}</div>
+            ${enlaceHtml}
             <div class="producto-colores">🎨 Colores: ${prod.colores && prod.colores.length > 0 ? prod.colores.map(c => c.nombre).join(', ') : 'Sin colores'}</div>
             <div class="producto-colores">📏 Tallas: ${prod.variantes && prod.variantes.length > 0 ? prod.variantes.map(v => v.talla).join(', ') : 'Sin tallas'}</div>
         `;
