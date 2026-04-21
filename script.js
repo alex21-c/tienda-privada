@@ -1160,9 +1160,12 @@ function configurarCarritoTop() {
     const pagarBtn = document.getElementById('ir-pagar');
     const overlay = document.getElementById('overlay');
     
+    console.log("Configurando carrito top");
+    console.log("Botón pagar encontrado:", pagarBtn);
+    
     if (toggleBtn) toggleBtn.onclick = toggleCarrito;
     if (cerrarBtn) cerrarBtn.onclick = cerrarCarrito;
-    if (pagarBtn) pagarBtn.onclick = irAPagar;
+    if (pagarBtn) pagarBtn.onclick = irAPagar;  // 👈 Esta línea es clave
     if (overlay) overlay.onclick = cerrarCarrito;
 }
 
@@ -1211,5 +1214,41 @@ async function init() {
     configurarMisPedidos();
     configurarModalesPago();
 }
+// ==================== IR A PAGAR ====================
+function irAPagar() {
+    console.log("irAPagar llamado");
+    cerrarCarrito();
+    abrirModalPago();
+}
 
+function abrirModalPago() {
+    console.log("abrirModalPago llamado");
+    const modal = document.getElementById('pago-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        console.log("Modal abierto");
+    } else {
+        console.error("Modal de pago no encontrado");
+        alert('Error: No se encontró el formulario de pago');
+    }
+}
+
+function cerrarModalPago() {
+    const modal = document.getElementById('pago-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+// Función de prueba temporal
+function testModalPago() {
+    const modal = document.getElementById('pago-modal');
+    if (modal) {
+        modal.style.display = 'flex';
+        console.log('Modal abierto manualmente');
+        return true;
+    } else {
+        console.error('Modal no encontrado');
+        alert('Error: No se encuentra el modal de pago en el HTML');
+        return false;
+    }
+}
 init();
