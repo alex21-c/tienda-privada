@@ -677,9 +677,10 @@ async function guardarPedido(pedido) {
 function mostrarFactura(pedido) {
     const facturaDiv = document.getElementById('factura-contenido');
     const totalProductos = parseFloat(pedido.totalProductos);
-    const totalEnvio = parseFloat(pedido.envioTotal);
-    const totalFinal = totalProductos + totalEnvio;
+    const envioLibra = 3.50;
+    const delivery = 1.00;
     
+    // Procesar productos para mostrar en lista
     const productosLista = pedido.productos.split('\n').filter(p => p.trim());
     const productosHtml = productosLista.map(p => `<div class="producto-linea"><span>${p}</span></div>`).join('');
     
@@ -705,26 +706,28 @@ function mostrarFactura(pedido) {
         
         <div class="factura-totales">
             <div class="factura-total-linea">
-                <span>📦 Total productos:</span>
+                <span>📦 TOTAL PRODUCTOS:</span>
                 <span class="valor">$${totalProductos.toFixed(2)}</span>
             </div>
-            <div class="factura-total-linea">
-                <span>🚚 Envío por libra:</span>
-                <span class="valor">$${pedido.envioLibra.toFixed(2)}</span>
+            <div class="factura-total-linea envio">
+                <span>🚚 ENVÍO POR LIBRA:</span>
+                <span class="valor">$${envioLibra.toFixed(2)}</span>
             </div>
-            <div class="factura-total-linea">
-                <span>🏠 Delivery:</span>
-                <span class="valor">$${pedido.delivery.toFixed(2)}</span>
+            <div class="factura-total-linea envio">
+                <span>🏠 DELIVERY:</span>
+                <span class="valor">$${delivery.toFixed(2)}</span>
             </div>
             <div class="factura-total-linea total">
-                <span>💰 TOTAL A PAGAR:</span>
+                <span>💰 TOTAL A PAGAR AHORA:</span>
                 <span class="valor">$${totalProductos.toFixed(2)}</span>
             </div>
         </div>
         
         <div class="factura-envio-nota">
-            ⚠️ <strong>NOTA IMPORTANTE:</strong> Los costos de envío ($${pedido.envioLibra.toFixed(2)} por libra + $${pedido.delivery.toFixed(2)} delivery) se pagan cuando el paquete llegue a Panamá.
-            ${pedido.metodoPago === 'Yappy' ? '<br><br>✅ Pago realizado por Yappy correctamente.' : ''}
+            ⚠️ <strong>NOTA IMPORTANTE:</strong><br>
+            Los costos de envío ($${envioLibra.toFixed(2)} por libra + $${delivery.toFixed(2)} delivery) 
+            se pagarán cuando el paquete llegue a Panamá.
+            ${pedido.metodoPago === 'Yappy' ? '<br><br>✅ Pago de productos realizado por Yappy correctamente.' : ''}
         </div>
         
         <div class="factura-footer">
@@ -733,14 +736,47 @@ function mostrarFactura(pedido) {
         </div>
     `;
     
+    // Mostrar el modal de factura
     const modal = document.getElementById('factura-modal');
-    modal.style.display = 'flex';
+    if (modal) {
+        modal.style.display = 'flex';
+    }
     
-    document.getElementById('nombre-modal').value = '';
-    document.getElementById('telefono-modal').value = '';
-    document.getElementById('direccion-modal').value = '';
-    document.getElementById('metodo-pago-modal').value = '';
-    document.getElementById('nombre-verificar').value = '';
+    // Asegurarse que los botones existen y funcionan
+    const descargarBtn = document.getElementById('descargar-factura');
+    const cerrarBtn = document.getElementById('cerrar-factura');
+    const cerrarX = document.querySelector('.modal-cerrar-factura');
+    
+    if (descargarBtn) {
+        descargarBtn.onclick = function() {
+            descargarFactura();
+        };
+    }
+    
+    if (cerrarBtn) {
+        cerrarBtn.onclick = function() {
+            modal.style.display = 'none';
+        };
+    }
+    
+    if (cerrarX) {
+        cerrarX.onclick = function() {
+            modal.style.display = 'none';
+        };
+    }
+    
+    // Limpiar campos
+    const nombreModal = document.getElementById('nombre-modal');
+    const telefonoModal = document.getElementById('telefono-modal');
+    const direccionModal = document.getElementById('direccion-modal');
+    const metodoPagoModal = document.getElementById('metodo-pago-modal');
+    const nombreVerificar = document.getElementById('nombre-verificar');
+    
+    if (nombreModal) nombreModal.value = '';
+    if (telefonoModal) telefonoModal.value = '';
+    if (direccionModal) direccionModal.value = '';
+    if (metodoPagoModal) metodoPagoModal.value = '';
+    if (nombreVerificar) nombreVerificar.value = '';
     
     pedidoPendiente = null;
 }
