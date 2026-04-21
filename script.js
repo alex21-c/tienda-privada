@@ -7,6 +7,7 @@ let productoActual = null;
 let esAdmin = false;
 let colorSeleccionado = null;
 let tallaSeleccionada = null;
+let pedidoPendiente = null;
 
 // ==================== VARIABLES DE FILTROS ====================
 let filtroPlataforma = 'todos';
@@ -536,7 +537,7 @@ function cerrarCarrito() {
     if (overlay) overlay.classList.remove('active');
 }
 
-// ==================== MODAL DE PAGO ====================
+// ==================== MODAL DE PAGO MODIFICADO ====================
 function abrirModalPago() {
     const modal = document.getElementById('pago-modal');
     if (modal) modal.style.display = 'flex';
@@ -567,7 +568,6 @@ async function enviarPedidoModal() {
         detalleProductos += `${item.nombre} (${item.origen}) x${item.cantidad} - $${subtotal.toFixed(2)}\n`;
     });
     
-    // Costos de envío (se pagarán al recibir)
     const costoEnvioLibra = 3.50;
     const costoDelivery = 1.00;
     const totalEnvio = costoEnvioLibra + costoDelivery;
@@ -577,7 +577,7 @@ async function enviarPedidoModal() {
         telefono: telefono,
         direccion: direccion,
         metodoPago: metodoPago,
-        estadoPago: 'Pendiente',
+        estadoPago: metodoPago === 'Yappy' ? 'Pendiente de pago' : 'Pendiente',
         productos: detalleProductos,
         totalProductos: totalProductos.toFixed(2),
         envioLibra: costoEnvioLibra,
@@ -586,6 +586,76 @@ async function enviarPedidoModal() {
         idPedido: Date.now().toString()
     };
     
+    pedidoPendiente = pedido;
+    
+    cerrarModalPago();
+    cerrarCarrito();
+    
+    if (metodoPago === 'Yappy') {
+        abrirModalYappy();
+    } else {
+        await guardarPedido(pedido);
+        mostrarFactura(pedido);
+    }
+}
+
+function irAPagar() {
+    cerrarCarrito();
+    abrirModalPago();
+}
+
+// ==================== YAPPY MODAL ====================
+function abrirModalYappy() {
+    const modal = document.getElementById('yappy-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function cerrarModalYappy() {
+    const modal = document.getElementById('yappy-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+function copiarNumeroYappy() {
+    const numero = document.getElementById('yappy-telefono').textContent;
+    navigator.clipboard.writeText(numero);
+    const btn = document.getElementById('copiar-yappy');
+    const textoOriginal = btn.textContent;
+    btn.textContent = '✅ Copiado!';
+    setTimeout(() => {
+        btn.textContent = textoOriginal;
+    }, 2000);
+}
+
+function abrirConfirmarPago() {
+    cerrarModalYappy();
+    const modal = document.getElementById('confirmar-pago-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function cerrarConfirmarPago() {
+    const modal = document.getElementById('confirmar-pago-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+async function verificarPagoYGenerarFactura() {
+    const nombreVerificar = document.getElementById('nombre-verificar').value;
+    
+    if (!nombreVerificar) {
+        alert('Por favor ingresa tu nombre completo');
+        return;
+    }
+    
+    if (pedidoPendiente && pedidoPendiente.nombre.toLowerCase() === nombreVerificar.toLowerCase()) {
+        await guardarPedido(pedidoPendiente);
+        cerrarConfirmarPago();
+        mostrarFactura(pedidoPendiente);
+    } else {
+        alert('❌ No encontramos un pedido con ese nombre. Verifica que escribiste el mismo nombre que usaste al hacer el pedido.');
+    }
+}
+
+// ==================== GUARDAR PEDIDO ====================
+async function guardarPedido(pedido) {
     try {
         await fetch(API_URL, {
             method: 'POST',
@@ -593,56 +663,130 @@ async function enviarPedidoModal() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(pedido)
         });
-        
-        // Mostrar factura detallada
-        alert(`✅ ¡PEDIDO CONFIRMADO! ✅
-        
-╔════════════════════════════════════════╗
-║           FACTURA DE COMPRA            ║
-╠════════════════════════════════════════╣
-║  📦 TOTAL PRODUCTOS:                   ║
-║     $${totalProductos.toFixed(2)}
-║                                        ║
-║  🚚 COSTOS DE ENVÍO:                   ║
-║     📦 Por libra:        $${costoEnvioLibra.toFixed(2)}
-║     🏠 Delivery:         $${costoDelivery.toFixed(2)}
-║                                        ║
-╠════════════════════════════════════════╣
-║  💰 TOTAL A PAGAR AHORA:               ║
-║     $${totalProductos.toFixed(2)}
-║                                        ║
-║  ⚠️ LOS COSTOS DE ENVÍO                ║
-║     SE PAGARÁN CUANDO EL PAQUETE       ║
-║     LLEGUE A PANAMÁ                    ║
-╚════════════════════════════════════════╝
-        
-📋 Resumen:
-• Pagas ahora: $${totalProductos.toFixed(2)} (productos)
-• Pagas al recibir: Envío por libra ($${costoEnvioLibra.toFixed(2)}) + Delivery ($${costoDelivery.toFixed(2)})
-• Total a pagar cuando llegue: $${(totalProductos + totalEnvio).toFixed(2)}
-
-📦 Te contactaremos cuando tu paquete esté en Panamá.`);
-        
         carrito = [];
         guardarCarrito();
         actualizarCarrito();
-        cerrarModalPago();
-        cerrarCarrito();
-        
-        // Limpiar campos
-        document.getElementById('nombre-modal').value = '';
-        document.getElementById('telefono-modal').value = '';
-        document.getElementById('direccion-modal').value = '';
-        document.getElementById('metodo-pago-modal').value = '';
-        
+        return true;
     } catch (error) {
-        alert('❌ Error al enviar. Por favor intenta de nuevo.');
+        console.error('Error:', error);
+        return false;
     }
 }
 
-function irAPagar() {
-    cerrarCarrito();
-    abrirModalPago();
+// ==================== MOSTRAR FACTURA AESTHETIC ====================
+function mostrarFactura(pedido) {
+    const facturaDiv = document.getElementById('factura-contenido');
+    const totalProductos = parseFloat(pedido.totalProductos);
+    const totalEnvio = parseFloat(pedido.envioTotal);
+    const totalFinal = totalProductos + totalEnvio;
+    
+    const productosLista = pedido.productos.split('\n').filter(p => p.trim());
+    const productosHtml = productosLista.map(p => `<div class="producto-linea"><span>${p}</span></div>`).join('');
+    
+    facturaDiv.innerHTML = `
+        <div class="factura-header">
+            <h2>🎀 FACTURA DE COMPRA</h2>
+            <p>Comprobante de pago</p>
+            <p><strong>N°:</strong> ${pedido.idPedido}</p>
+        </div>
+        
+        <div class="factura-info">
+            <p><strong>📅 Fecha:</strong> ${new Date().toLocaleString()}</p>
+            <p><strong>👤 Cliente:</strong> ${pedido.nombre}</p>
+            <p><strong>📱 Teléfono:</strong> ${pedido.telefono}</p>
+            <p><strong>📍 Dirección:</strong> ${pedido.direccion}</p>
+            <p><strong>💳 Método de pago:</strong> ${pedido.metodoPago}</p>
+        </div>
+        
+        <div class="factura-productos">
+            <h4>🛍️ Detalle de productos:</h4>
+            ${productosHtml}
+        </div>
+        
+        <div class="factura-totales">
+            <div class="factura-total-linea">
+                <span>📦 Total productos:</span>
+                <span class="valor">$${totalProductos.toFixed(2)}</span>
+            </div>
+            <div class="factura-total-linea">
+                <span>🚚 Envío por libra:</span>
+                <span class="valor">$${pedido.envioLibra.toFixed(2)}</span>
+            </div>
+            <div class="factura-total-linea">
+                <span>🏠 Delivery:</span>
+                <span class="valor">$${pedido.delivery.toFixed(2)}</span>
+            </div>
+            <div class="factura-total-linea total">
+                <span>💰 TOTAL A PAGAR:</span>
+                <span class="valor">$${totalProductos.toFixed(2)}</span>
+            </div>
+        </div>
+        
+        <div class="factura-envio-nota">
+            ⚠️ <strong>NOTA IMPORTANTE:</strong> Los costos de envío ($${pedido.envioLibra.toFixed(2)} por libra + $${pedido.delivery.toFixed(2)} delivery) se pagan cuando el paquete llegue a Panamá.
+            ${pedido.metodoPago === 'Yappy' ? '<br><br>✅ Pago realizado por Yappy correctamente.' : ''}
+        </div>
+        
+        <div class="factura-footer">
+            ¡Gracias por tu compra!<br>
+            https://alex21-c.github.io/tienda-privada/
+        </div>
+    `;
+    
+    const modal = document.getElementById('factura-modal');
+    modal.style.display = 'flex';
+    
+    document.getElementById('nombre-modal').value = '';
+    document.getElementById('telefono-modal').value = '';
+    document.getElementById('direccion-modal').value = '';
+    document.getElementById('metodo-pago-modal').value = '';
+    document.getElementById('nombre-verificar').value = '';
+    
+    pedidoPendiente = null;
+}
+
+// ==================== DESCARGAR FACTURA ====================
+function descargarFactura() {
+    const facturaElement = document.getElementById('factura-contenido');
+    const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Factura</title>
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { font-family: 'Courier New', monospace; padding: 40px; background: #fff; }
+            .factura { max-width: 800px; margin: 0 auto; border: 1px solid #ddd; padding: 30px; border-radius: 20px; }
+            .factura-header { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px dashed #ddd; }
+            .factura-header h2 { color: #A3B8A4; }
+            .factura-info { background: #f9f9f9; padding: 15px; border-radius: 15px; margin-bottom: 20px; }
+            .factura-info p { margin: 5px 0; }
+            .producto-linea { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+            .factura-totales { margin-top: 20px; padding-top: 15px; border-top: 2px solid #ddd; }
+            .factura-total-linea { display: flex; justify-content: space-between; margin: 8px 0; }
+            .factura-total-linea.total { margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 1.2em; font-weight: bold; }
+            .factura-envio-nota { background: #FFF0F0; padding: 12px; border-radius: 15px; margin-top: 20px; text-align: center; font-size: 0.75em; }
+            .factura-footer { text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 0.7em; }
+        </style>
+    </head>
+    <body>
+        <div class="factura">
+            ${facturaElement.innerHTML}
+        </div>
+    </body>
+    </html>
+    `;
+    
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.download = `factura_${new Date().getTime()}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
 }
 
 // ==================== MODAL DE MIS PEDIDOS ====================
@@ -654,7 +798,6 @@ function abrirModalMisPedidos() {
 function cerrarModalMisPedidos() {
     const modal = document.getElementById('mis-pedidos-modal');
     if (modal) modal.style.display = 'none';
-    // Limpiar resultados
     document.getElementById('resultado-pedidos-modal').innerHTML = '<p class="vacio">Ingresa tu nombre para ver tus pedidos</p>';
     document.getElementById('nombre-consulta-modal').value = '';
 }
@@ -724,7 +867,6 @@ async function enviarPedido(datosCliente) {
         detalleProductos += `${item.nombre} (${item.origen}) x${item.cantidad} - $${subtotal.toFixed(2)}\n`;
     });
     
-    // Costos de envío (se pagarán al recibir)
     const costoEnvioLibra = 3.50;
     const costoDelivery = 1.00;
     
@@ -898,6 +1040,45 @@ function getEstadoIcono(estado) {
     }
 }
 
+// ==================== CONFIGURAR MODALES ====================
+function configurarModalesPago() {
+    const cerrarYappy = document.querySelector('.modal-cerrar-yappy');
+    const copiarBtn = document.getElementById('copiar-yappy');
+    const yaPagueBtn = document.getElementById('ya-pague');
+    
+    if (cerrarYappy) cerrarYappy.onclick = cerrarModalYappy;
+    if (copiarBtn) copiarBtn.onclick = copiarNumeroYappy;
+    if (yaPagueBtn) yaPagueBtn.onclick = abrirConfirmarPago;
+    
+    const cerrarConfirmar = document.querySelector('.modal-cerrar-confirmar');
+    const verificarBtn = document.getElementById('verificar-pago');
+    
+    if (cerrarConfirmar) cerrarConfirmar.onclick = cerrarConfirmarPago;
+    if (verificarBtn) verificarBtn.onclick = verificarPagoYGenerarFactura;
+    
+    const cerrarFactura = document.querySelector('.modal-cerrar-factura');
+    const descargarBtn = document.getElementById('descargar-factura');
+    const cerrarFacturaBtn = document.getElementById('cerrar-factura');
+    
+    if (cerrarFactura) cerrarFactura.onclick = () => {
+        document.getElementById('factura-modal').style.display = 'none';
+    };
+    if (cerrarFacturaBtn) cerrarFacturaBtn.onclick = () => {
+        document.getElementById('factura-modal').style.display = 'none';
+    };
+    if (descargarBtn) descargarBtn.onclick = descargarFactura;
+    
+    const yappyModal = document.getElementById('yappy-modal');
+    const confirmarModal = document.getElementById('confirmar-pago-modal');
+    const facturaModal = document.getElementById('factura-modal');
+    
+    window.onclick = function(event) {
+        if (event.target === yappyModal) cerrarModalYappy();
+        if (event.target === confirmarModal) cerrarConfirmarPago();
+        if (event.target === facturaModal) facturaModal.style.display = 'none';
+    };
+}
+
 // ==================== CONFIGURAR CARRITO TOP ====================
 function configurarCarritoTop() {
     const toggleBtn = document.getElementById('carrito-toggle');
@@ -931,7 +1112,6 @@ function configurarMisPedidos() {
         });
     }
     
-    // Cerrar modales al hacer clic fuera
     const pagoModal = document.getElementById('pago-modal');
     const misPedidosModal = document.getElementById('mis-pedidos-modal');
     
@@ -955,6 +1135,7 @@ async function init() {
     configurarModal();
     configurarCarritoTop();
     configurarMisPedidos();
+    configurarModalesPago();
 }
 
 init();
