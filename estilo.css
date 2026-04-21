@@ -714,3 +714,308 @@ h2 {
         font-size: 0.8em;
     }
 }
+/* ========== MODAL DE PAGO ========== */
+#pago-modal .modal-content {
+    background: white;
+    border-radius: 32px;
+    padding: 32px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+#pago-modal h2 {
+    color: #A3B8A4;
+    font-size: 1.5em;
+    font-weight: 500;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+#pago-modal label {
+    display: block;
+    margin-top: 18px;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #9CA3AF;
+    font-size: 0.8em;
+    letter-spacing: 0.5px;
+}
+
+#pago-modal input,
+#pago-modal textarea,
+#pago-modal select {
+    width: 100%;
+    padding: 14px 16px;
+    background: #FDFBF7;
+    border: 1px solid #E5E5E5;
+    border-radius: 50px;
+    font-size: 0.9em;
+    color: #4A4A4A;
+    transition: all 0.3s ease;
+}
+
+#pago-modal input:focus,
+#pago-modal textarea:focus,
+#pago-modal select:focus {
+    border-color: #F4A0B5;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(244, 160, 181, 0.1);
+}
+
+#pago-modal textarea {
+    border-radius: 24px;
+    resize: vertical;
+}
+
+#pago-modal .btn-confirmar {
+    margin-top: 28px;
+    background: #A3B8A4;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 50px;
+    width: 100%;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#pago-modal .btn-confirmar:hover {
+    background: #F4A0B5;
+    transform: translateY(-2px);
+}
+
+.modal-cerrar-pago {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 28px;
+    font-weight: 300;
+    cursor: pointer;
+    color: #9CA3AF;
+    transition: all 0.2s ease;
+    background: #F5F5F5;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-cerrar-pago:hover {
+    background: #F4A0B5;
+    color: white;
+}
+
+/* ========== MODAL DE MIS PEDIDOS ========== */
+#mis-pedidos-modal .modal-content {
+    background: white;
+    border-radius: 32px;
+    padding: 32px;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+#mis-pedidos-modal h3 {
+    color: #A3B8A4;
+    font-size: 1.4em;
+    font-weight: 500;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.modal-cerrar-mis-pedidos {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    font-size: 28px;
+    font-weight: 300;
+    cursor: pointer;
+    color: #9CA3AF;
+    transition: all 0.2s ease;
+    background: #F5F5F5;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-cerrar-mis-pedidos:hover {
+    background: #F4A0B5;
+    color: white;
+}
+
+.mis-pedidos-busqueda-modal {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.mis-pedidos-busqueda-modal input {
+    flex: 1;
+    padding: 14px 18px;
+    background: #FDFBF7;
+    border: 1px solid #E5E5E5;
+    border-radius: 50px;
+    font-size: 0.9em;
+    color: #4A4A4A;
+    transition: all 0.3s ease;
+}
+
+.mis-pedidos-busqueda-modal input:focus {
+    border-color: #F4A0B5;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(244, 160, 181, 0.1);
+}
+
+.mis-pedidos-busqueda-modal input::placeholder {
+    color: #C4C4C4;
+}
+
+.btn-buscar {
+    background: #A3B8A4;
+    color: white;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9em;
+    transition: all 0.3s ease;
+}
+
+.btn-buscar:hover {
+    background: #F4A0B5;
+    transform: translateY(-2px);
+}
+
+/* Resultados de pedidos dentro del modal */
+#resultado-pedidos-modal {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+#resultado-pedidos-modal .pedido-card {
+    background: #FDFBF7;
+    border-radius: 24px;
+    padding: 18px;
+    margin-bottom: 16px;
+    border: 1px solid #E5E5E5;
+    transition: all 0.3s ease;
+}
+
+#resultado-pedidos-modal .pedido-card:hover {
+    border-color: #F4A0B5;
+    transform: translateX(4px);
+}
+
+#resultado-pedidos-modal .pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #E5E5E5;
+}
+
+#resultado-pedidos-modal .pedido-id {
+    font-family: monospace;
+    background: white;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 0.75em;
+    color: #A3B8A4;
+    border: 1px solid #E5E5E5;
+}
+
+#resultado-pedidos-modal .pedido-fecha {
+    font-size: 0.75em;
+    color: #9CA3AF;
+}
+
+#resultado-pedidos-modal .pedido-estado {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.7em;
+    font-weight: 600;
+}
+
+#resultado-pedidos-modal .pedido-productos {
+    font-size: 0.85em;
+    color: #666;
+    margin: 12px 0;
+    line-height: 1.5;
+}
+
+#resultado-pedidos-modal .pedido-total {
+    text-align: right;
+    font-size: 1em;
+    font-weight: 700;
+    color: #A3B8A4;
+}
+
+#resultado-pedidos-modal .vacio {
+    text-align: center;
+    color: #9CA3AF;
+    padding: 40px;
+}
+
+#resultado-pedidos-modal .error {
+    text-align: center;
+    color: #D4A5A5;
+    padding: 40px;
+}
+
+/* Animación de carga */
+@keyframes pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+#resultado-pedidos-modal p:first-child {
+    animation: pulse 1.5s infinite;
+    text-align: center;
+    color: #9CA3AF;
+    padding: 40px;
+}
+
+/* Scrollbar personalizada para resultados */
+#resultado-pedidos-modal::-webkit-scrollbar {
+    width: 4px;
+}
+
+#resultado-pedidos-modal::-webkit-scrollbar-track {
+    background: #F5F5F5;
+    border-radius: 10px;
+}
+
+#resultado-pedidos-modal::-webkit-scrollbar-thumb {
+    background: #D4A5A5;
+    border-radius: 10px;
+}
+
+/* Responsive para modales */
+@media (max-width: 768px) {
+    .mis-pedidos-busqueda-modal {
+        flex-direction: column;
+    }
+    
+    .btn-buscar {
+        padding: 12px;
+    }
+    
+    #pago-modal .modal-content,
+    #mis-pedidos-modal .modal-content {
+        padding: 24px;
+        width: 95%;
+    }
+}
