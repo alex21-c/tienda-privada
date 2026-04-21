@@ -674,6 +674,7 @@ h2 {
         justify-content: center;
     }
 }
+
 /* ========== ACCIONES SUPERIORES ========== */
 .acciones-top {
     display: flex;
@@ -714,6 +715,7 @@ h2 {
         font-size: 0.8em;
     }
 }
+
 /* ========== MODAL DE PAGO ========== */
 #pago-modal .modal-content {
     background: white;
@@ -1019,6 +1021,7 @@ h2 {
         width: 95%;
     }
 }
+
 /* ========== SECCIÓN DE ENVÍO INFORMATIVA ========== */
 .carrito-envio-info {
     padding: 16px 28px;
@@ -1059,4 +1062,219 @@ h2 {
     padding: 4px 12px;
     border-radius: 50px;
     display: inline-block;
+}
+
+/* ========== MODAL YAPPY ========== */
+.yappy-icon {
+    font-size: 60px;
+    margin-bottom: 15px;
+}
+
+.yappy-numero {
+    background: #E8F0E8;
+    padding: 15px;
+    border-radius: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.yappy-numero span {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #A3B8A4;
+    letter-spacing: 2px;
+}
+
+.btn-copiar {
+    background: #A3B8A4;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-copiar:hover {
+    background: #F4A0B5;
+}
+
+.yappy-instrucciones {
+    background: #FFF0F0;
+    padding: 15px;
+    border-radius: 20px;
+    margin: 15px 0;
+    text-align: left;
+}
+
+.yappy-instrucciones p {
+    margin: 5px 0;
+    color: #D4A5A5;
+}
+
+.btn-yappy-pague {
+    background: #A3B8A4;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 50px;
+    width: 100%;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+.btn-yappy-pague:hover {
+    background: #F4A0B5;
+    transform: translateY(-2px);
+}
+
+/* ========== FACTURA AESTHETIC ========== */
+.factura-content {
+    max-width: 550px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+.factura-container {
+    padding: 30px;
+    background: white;
+}
+
+.factura-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 2px dashed #E5E5E5;
+}
+
+.factura-header h2 {
+    color: #A3B8A4;
+    font-size: 1.8em;
+    margin-bottom: 5px;
+}
+
+.factura-header p {
+    color: #9CA3AF;
+    font-size: 0.8em;
+}
+
+.factura-info {
+    background: #FDFBF7;
+    padding: 15px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+.factura-info p {
+    margin: 8px 0;
+    color: #4A4A4A;
+}
+
+.factura-info strong {
+    color: #A3B8A4;
+}
+
+.factura-productos {
+    margin: 20px 0;
+}
+
+.factura-productos h4 {
+    color: #A3B8A4;
+    margin-bottom: 10px;
+}
+
+.producto-linea {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #E5E5E5;
+    font-size: 0.85em;
+}
+
+.factura-totales {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 2px solid #E5E5E5;
+}
+
+.factura-total-linea {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+}
+
+.factura-total-linea.total {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid #E5E5E5;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.factura-total-linea.total .valor {
+    color: #F4A0B5;
+}
+
+.factura-envio-nota {
+    background: #FFF0F0;
+    padding: 12px;
+    border-radius: 15px;
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.75em;
+    color: #D4A5A5;
+}
+
+.factura-footer {
+    text-align: center;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid #E5E5E5;
+    font-size: 0.7em;
+    color: #9CA3AF;
+}
+
+.factura-actions {
+    display: flex;
+    gap: 15px;
+    padding: 20px;
+    background: #FDFBF7;
+    border-top: 1px solid #E5E5E5;
+}
+
+.btn-descargar {
+    flex: 1;
+    background: #A3B8A4;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-descargar:hover {
+    background: #F4A0B5;
+    transform: translateY(-2px);
+}
+
+.btn-cerrar-factura {
+    flex: 1;
+    background: #E5E5E5;
+    color: #4A4A4A;
+    border: none;
+    padding: 12px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-cerrar-factura:hover {
+    background: #D4A5A5;
+    color: white;
 }
