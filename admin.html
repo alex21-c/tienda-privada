@@ -462,7 +462,23 @@ function mostrarPedidosAdmin() {
         const estadoClass = getEstadoClass(pedido.estado);
         const estadoIcono = getEstadoIcono(pedido.estado);
         
-        const productosLista = pedido.productos ? pedido.productos.split('\n').filter(p => p.trim()) : [];
+        // Usar productos con enlaces si existen, si no usar el texto plano
+        let productosHtml = '';
+        if (pedido.productosConEnlaces && pedido.productosConEnlaces.length > 0) {
+            productosHtml = pedido.productosConEnlaces.map(prod => {
+                if (prod.enlace) {
+                    return `<div class="producto-item-pedido">
+                                📦 ${prod.texto}
+                                <a href="${prod.enlace}" target="_blank" class="producto-enlace" style="color:#00D4FF; text-decoration:none; margin-left:10px;">🔗 Ver original</a>
+                            </div>`;
+                } else {
+                    return `<div class="producto-item-pedido">📦 ${prod.texto}</div>`;
+                }
+            }).join('');
+        } else {
+            const productosLista = pedido.productosTexto ? pedido.productosTexto.split('\n').filter(p => p.trim()) : [];
+            productosHtml = productosLista.map(prod => `<div class="producto-item-pedido">📦 ${prod}</div>`).join('');
+        }
         
         const card = document.createElement('div');
         card.className = 'pedido-card';
@@ -480,7 +496,7 @@ function mostrarPedidosAdmin() {
             </div>
             <div class="pedido-productos">
                 <h4>🛍️ Productos comprados:</h4>
-                ${productosLista.map(prod => `<div class="producto-item-pedido">📦 ${prod}</div>`).join('')}
+                ${productosHtml}
             </div>
             <div class="pedido-total">
                 💰 Total: $${pedido.total.toFixed(2)}
@@ -497,7 +513,6 @@ function mostrarPedidosAdmin() {
         container.appendChild(card);
     });
 }
-
 async function cambiarEstadoPedido(id, nuevoEstado) {
     try {
         await fetch(API_URL, {
