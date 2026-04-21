@@ -3,60 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Admin - Mi Tienda</title>
+    <title>Panel Admin - Gestión Completa</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #E8E6E1; padding: 20px; }
+        body { font-family: 'Inter', sans-serif; background: #0A0A0A; padding: 20px; color: #FFFFFF; }
         .container { max-width: 1400px; margin: 0 auto; }
         
         /* Login */
-        .login-box { background: #FDFBF7; max-width: 400px; margin: 100px auto; padding: 30px; border-radius: 32px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
-        .login-box input { width: 100%; padding: 12px; margin: 10px 0; border: 1.5px solid #E8E6E1; border-radius: 30px; }
-        .login-box button { background: #9CAF88; color: white; padding: 12px 24px; border: none; border-radius: 40px; cursor: pointer; font-weight: bold; }
+        .login-box { background: #111111; max-width: 400px; margin: 100px auto; padding: 30px; border-radius: 24px; text-align: center; border: 1px solid #222222; }
+        .login-box input { width: 100%; padding: 12px; margin: 10px 0; background: #0A0A0A; border: 1px solid #222222; border-radius: 12px; color: #FFFFFF; }
+        .login-box button { background: linear-gradient(135deg, #00D4FF, #0099CC); color: #0A0A0A; padding: 12px 24px; border: none; border-radius: 12px; cursor: pointer; font-weight: 600; }
         
         /* Panel Admin */
-        .admin-panel { background: #FDFBF7; border-radius: 32px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
-        .tabs { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 2px solid #E8E6E1; }
-        .tab { padding: 12px 24px; cursor: pointer; background: none; border: none; border-radius: 30px; font-weight: 500; color: #C4B7A6; transition: all 0.3s; }
-        .tab.active { background: #9CAF88; color: white; }
+        .admin-panel { background: #111111; border-radius: 24px; padding: 30px; border: 1px solid #222222; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+        .tab { padding: 12px 24px; cursor: pointer; background: transparent; border: 1px solid #222222; border-radius: 40px; color: #888888; transition: all 0.3s; }
+        .tab.active { background: #00D4FF; border-color: #00D4FF; color: #0A0A0A; }
+        
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
-        /* Tabla de pedidos */
-        .tabla-pedidos { width: 100%; border-collapse: collapse; background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .tabla-pedidos th, .tabla-pedidos td { padding: 15px; text-align: left; border-bottom: 1px solid #E8E6E1; vertical-align: top; }
-        .tabla-pedidos th { background: #9CAF88; color: white; font-weight: 500; }
-        .tabla-pedidos tr:hover { background: #FDFBF7; }
+        /* Formulario de producto */
+        .form-section { background: #0A0A0A; border-radius: 20px; padding: 20px; margin-bottom: 30px; border: 1px solid #222222; }
+        .form-section h3 { color: #00D4FF; margin-bottom: 20px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .form-grid input, .form-grid select, .form-grid textarea { padding: 12px; background: #111111; border: 1px solid #222222; border-radius: 12px; color: #FFFFFF; }
+        .form-grid input:focus, .form-grid select:focus { border-color: #00D4FF; outline: none; }
         
-        /* Estados */
-        .estado { display: inline-block; padding: 4px 12px; border-radius: 30px; font-size: 0.75em; font-weight: 500; }
-        .estado-pendiente { background: #FFE8E0; color: #D4A5A5; }
-        .estado-pagado { background: #E8F0E8; color: #9CAF88; }
-        .estado-enviado { background: #E0E8FF; color: #6B8CBF; }
-        .estado-entregado { background: #E0F0E8; color: #6B9C7F; }
+        /* Colores */
+        .colores-list { margin: 20px 0; }
+        .color-item { background: #111111; border-radius: 16px; padding: 15px; margin-bottom: 15px; border: 1px solid #222222; }
+        .color-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .color-header input { padding: 10px; background: #0A0A0A; border: 1px solid #222222; border-radius: 8px; color: #FFFFFF; flex: 1; margin-right: 10px; }
+        .btn-eliminar-color { background: rgba(255,68,68,0.2); color: #FF4444; border: 1px solid #FF4444; padding: 8px 16px; border-radius: 8px; cursor: pointer; }
         
-        /* Selector de estado */
-        select.estado-select { padding: 6px 12px; border-radius: 20px; border: 1px solid #E8E6E1; background: white; cursor: pointer; }
+        /* Tallas */
+        .tallas-list { margin-left: 20px; padding: 10px; background: #0A0A0A; border-radius: 12px; }
+        .talla-item { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+        .talla-item input { padding: 8px; background: #111111; border: 1px solid #222222; border-radius: 8px; color: #FFFFFF; }
+        .btn-agregar-talla { background: rgba(0,212,255,0.2); color: #00D4FF; border: 1px solid #00D4FF; padding: 6px 12px; border-radius: 8px; cursor: pointer; margin-top: 10px; }
+        .btn-eliminar-talla { background: none; color: #FF4444; border: none; cursor: pointer; padding: 5px 10px; }
         
-        /* Filtros */
-        .filtros-pedidos { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .filtro-estado { padding: 8px 20px; border: 1.5px solid #E8E6E1; border-radius: 30px; background: white; cursor: pointer; transition: all 0.3s; }
-        .filtro-estado.active { background: #9CAF88; color: white; border-color: #9CAF88; }
+        /* Botones principales */
+        .btn-primario { background: linear-gradient(135deg, #00D4FF, #0099CC); color: #0A0A0A; border: none; padding: 14px 28px; border-radius: 12px; cursor: pointer; font-weight: 600; margin-right: 10px; }
+        .btn-secundario { background: transparent; border: 1px solid #222222; color: #888888; padding: 14px 28px; border-radius: 12px; cursor: pointer; }
+        .btn-agregar-color { background: rgba(0,212,255,0.2); color: #00D4FF; border: 1px solid #00D4FF; padding: 10px 20px; border-radius: 12px; cursor: pointer; margin-top: 10px; }
         
-        /* Productos */
-        .producto-item { background: #F9F9F9; padding: 15px; margin: 10px 0; border-radius: 16px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-eliminar { background: #D4A5A5; color: white; border: none; padding: 6px 14px; border-radius: 30px; cursor: pointer; }
-        .form-producto { background: #F9F9F9; padding: 20px; border-radius: 24px; margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
-        .form-producto input, .form-producto select { padding: 10px; border: 1.5px solid #E8E6E1; border-radius: 30px; flex: 1; min-width: 150px; }
-        .form-producto button { background: #9CAF88; color: white; padding: 10px 20px; border: none; border-radius: 30px; cursor: pointer; }
+        /* Lista de productos */
+        .productos-lista { display: grid; gap: 15px; margin-top: 20px; }
+        .producto-admin-card { background: #0A0A0A; border-radius: 16px; padding: 15px; border: 1px solid #222222; }
+        .producto-admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px; }
+        .producto-admin-header strong { color: #00D4FF; }
+        .producto-colores { font-size: 0.8em; color: #888888; margin: 5px 0; }
+        .btn-eliminar-producto { background: rgba(255,68,68,0.2); color: #FF4444; border: 1px solid #FF4444; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
         
-        .url-info { background: #E8F0E8; color: #6B9C7F; padding: 12px; border-radius: 20px; margin-bottom: 20px; text-align: center; }
-        .btn-refresh { background: #9CAF88; color: white; border: none; padding: 8px 16px; border-radius: 30px; cursor: pointer; margin-bottom: 20px; }
+        .mensaje { background: #00D4FF; color: #0A0A0A; padding: 12px; border-radius: 12px; margin-bottom: 20px; display: none; }
+        .url-info { background: rgba(0,212,255,0.1); padding: 12px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
         
-        @media (max-width: 768px) {
-            .tabla-pedidos { font-size: 0.75em; }
-            .tabla-pedidos th, .tabla-pedidos td { padding: 8px; }
-        }
+        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -73,209 +77,338 @@
         <div class="url-info">
             🔗 Tu tienda está en: <strong id="tiendaUrl">Cargando...</strong>
         </div>
+        <div id="mensaje" class="mensaje"></div>
         
         <div class="tabs">
-            <button class="tab active" data-tab="pedidos">📦 Pedidos</button>
-            <button class="tab" data-tab="productos">🛍️ Gestionar Productos</button>
+            <button class="tab active" data-tab="agregar">➕ Agregar Producto</button>
+            <button class="tab" data-tab="listar">📋 Listar Productos</button>
+            <button class="tab" data-tab="ayuda">❓ Ayuda</button>
         </div>
         
-        <!-- Tab Pedidos -->
-        <div id="tab-pedidos" class="tab-content active">
-            <h2>📋 Gestión de Pedidos</h2>
-            <div class="filtros-pedidos">
-                <button class="filtro-estado active" data-filtro="todos">Todos</button>
-                <button class="filtro-estado" data-filtro="Pendiente">⏳ Pendientes</button>
-                <button class="filtro-estado" data-filtro="Pagado">✅ Pagados</button>
-                <button class="filtro-estado" data-filtro="Enviado">📦 Enviados</button>
-                <button class="filtro-estado" data-filtro="Entregado">🏠 Entregados</button>
-                <button class="btn-refresh" onclick="cargarPedidos()">🔄 Refrescar</button>
+        <!-- Tab Agregar Producto -->
+        <div id="tab-agregar" class="tab-content active">
+            <div class="form-section">
+                <h3>📦 Información Básica</h3>
+                <div class="form-grid">
+                    <input type="text" id="prod-nombre" placeholder="Nombre del producto">
+                    <input type="number" id="prod-precio-base" placeholder="Precio base" step="0.01">
+                    <select id="prod-origen">
+                        <option value="Amazon">Amazon</option>
+                        <option value="Temu">Temu</option>
+                    </select>
+                    <input type="text" id="prod-imagen" placeholder="URL imagen principal">
+                    <input type="text" id="prod-enlace" placeholder="URL producto original (Amazon/Temu)">
+                    <select id="prod-genero">
+                        <option value="unisex">Unisex</option>
+                        <option value="hombre">Hombre</option>
+                        <option value="mujer">Mujer</option>
+                        <option value="niño">Niño</option>
+                        <option value="niña">Niña</option>
+                    </select>
+                    <textarea id="prod-descripcion" rows="3" placeholder="Descripción del producto"></textarea>
+                </div>
             </div>
-            <div id="pedidos-lista">
-                <p>Cargando pedidos...</p>
+            
+            <div class="form-section">
+                <h3>🎨 Colores y Tallas</h3>
+                <div id="colores-container"></div>
+                <button id="agregar-color" class="btn-agregar-color">+ Agregar Color</button>
+            </div>
+            
+            <div class="form-section">
+                <button id="generar-json" class="btn-primario">📝 Generar JSON para Google Sheets</button>
+                <button id="limpiar-form" class="btn-secundario">🗑️ Limpiar Formulario</button>
+            </div>
+            
+            <div id="json-output" style="display:none; margin-top:20px; background:#0A0A0A; padding:20px; border-radius:16px; border:1px solid #00D4FF;">
+                <h4 style="color:#00D4FF; margin-bottom:10px;">📋 JSON generado:</h4>
+                <textarea id="json-textarea" readonly style="width:100%; height:200px; background:#111111; border:1px solid #222222; border-radius:12px; color:#FFFFFF; padding:12px; font-family:monospace;"></textarea>
+                <button id="copiar-json" class="btn-primario" style="margin-top:10px;">📋 Copiar JSON</button>
+                <p style="margin-top:10px; font-size:0.8em; color:#888888;">⚠️ Copia este JSON y pégalo en la fila correspondiente de Google Sheets (hoja "productos")</p>
             </div>
         </div>
         
-        <!-- Tab Productos -->
-        <div id="tab-productos" class="tab-content">
-            <h2>➕ Agregar nuevo producto</h2>
-            <div class="form-producto">
-                <input type="text" id="prod-nombre" placeholder="Nombre del producto">
-                <input type="number" id="prod-precio" placeholder="Precio" step="0.01">
-                <select id="prod-origen">
-                    <option value="Amazon">Amazon</option>
-                    <option value="Temu">Temu</option>
-                </select>
-                <input type="text" id="prod-imagen" placeholder="URL de la imagen">
-                <input type="text" id="prod-enlace" placeholder="URL del producto (Amazon/Temu)">
-                <button onclick="agregarProducto()">➕ Agregar</button>
+        <!-- Tab Listar Productos -->
+        <div id="tab-listar" class="tab-content">
+            <h3>📋 Productos Existentes</h3>
+            <div id="productos-lista" class="productos-lista">
+                <p>Cargando productos...</p>
             </div>
-            <h2>📋 Productos existentes</h2>
-            <div id="lista-productos"></div>
+        </div>
+        
+        <!-- Tab Ayuda -->
+        <div id="tab-ayuda" class="tab-content">
+            <h3>❓ Cómo usar este panel</h3>
+            <div class="form-section">
+                <h4>📝 Para agregar un producto:</h4>
+                <ol style="margin-left: 20px; line-height: 1.8;">
+                    <li>Completa la información básica (nombre, precio, origen, etc.)</li>
+                    <li>Agrega colores usando el botón "+ Agregar Color"</li>
+                    <li>Para cada color, puedes agregar tallas con precios específicos</li>
+                    <li>Haz clic en "Generar JSON"</li>
+                    <li>Copia el JSON generado</li>
+                    <li>Ve a Google Sheets (hoja "productos") y pega en una nueva fila</li>
+                    <li>Espera 1 minuto y refresca tu tienda</li>
+                </ol>
+                <h4 style="margin-top:20px;">📋 Formato de la hoja "productos":</h4>
+                <p style="background:#0A0A0A; padding:10px; border-radius:8px; font-family:monospace; font-size:0.8em;">
+                    A: id | B: nombre | C: precio | D: origen | E: imagen | F: activo (SI) | G: descripcion | H: tiene_variantes (SI) | I: variantes | J: enlace | K: categoria_genero | L: colores_nombres | M: colores_imagenes | N: colores_precios
+                </p>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-// ==================== CONFIGURACIÓN ====================
-const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
 const ADMIN_PASSWORD = 'admin123';
-let pedidos = [];
-let filtroActual = 'todos';
+const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
+let productosActuales = [];
 
-// ==================== LOGIN ====================
 function login() {
     const pass = document.getElementById('password').value;
     if (pass === ADMIN_PASSWORD) {
         document.getElementById('login').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'block';
-        document.getElementById('tiendaUrl').textContent = window.location.origin.replace('/admin.html', '');
-        cargarPedidos();
-        cargarProductosAdmin();
+        document.getElementById('tiendaUrl').textContent = 'https://alex21-c.github.io/tienda-privada/';
+        cargarProductosExistentes();
     } else {
         alert('❌ Contraseña incorrecta');
     }
 }
 
-// ==================== CARGAR PEDIDOS ====================
-async function cargarPedidos() {
-    try {
-        const response = await fetch(`${API_URL}?action=getPedidos`);
-        const datos = await response.json();
-        
-        if (datos.error) {
-            document.getElementById('pedidos-lista').innerHTML = `<p>❌ Error: ${datos.error}</p>`;
-            return;
-        }
-        
-        pedidos = datos;
-        mostrarPedidos();
-    } catch (error) {
-        document.getElementById('pedidos-lista').innerHTML = '<p>❌ Error cargando pedidos</p>';
-    }
-}
-
-// ==================== MOSTRAR PEDIDOS ====================
-function mostrarPedidos() {
-    const container = document.getElementById('pedidos-lista');
-    const pedidosFiltrados = filtroActual === 'todos' 
-        ? pedidos 
-        : pedidos.filter(p => p.estado === filtroActual);
-    
-    if (pedidosFiltrados.length === 0) {
-        container.innerHTML = '<p>📭 No hay pedidos en esta categoría</p>';
-        return;
-    }
-    
-    let html = `
-        <table class="tabla-pedidos">
-            <thead>
-                <tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Dirección</th><th>Método Pago</th><th>Productos</th><th>Total</th><th>Estado</th><th>Acciones</th></tr>
-            </thead>
-            <tbody>
-    `;
-    
-    pedidosFiltrados.forEach(pedido => {
-        html += `
-            <tr>
-                <td>${pedido.idPedido || pedido.id}</td>
-                <td>${pedido.fecha}</td>
-                <td><strong>${pedido.nombre}</strong></td>
-                <td>${pedido.direccion}</td>
-                <td>${pedido.metodoPago}</td>
-                <td><small>${(pedido.productos || '').substring(0, 100)}...</small></td>
-                <td><strong>$${pedido.total.toFixed(2)}</strong></td>
-                <td><span class="estado estado-${pedido.estado.toLowerCase()}">${pedido.estado}</span></td>
-                <td>
-                    <select class="estado-select" onchange="cambiarEstado(${pedido.id}, this.value)">
-                        <option value="Pendiente" ${pedido.estado === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
-                        <option value="Pagado" ${pedido.estado === 'Pagado' ? 'selected' : ''}>✅ Pagado</option>
-                        <option value="Enviado" ${pedido.estado === 'Enviado' ? 'selected' : ''}>📦 Enviado</option>
-                        <option value="Entregado" ${pedido.estado === 'Entregado' ? 'selected' : ''}>🏠 Entregado</option>
-                    </select>
-                </td>
-            </tr>
-        `;
-    });
-    
-    html += `</tbody></table>`;
-    container.innerHTML = html;
-}
-
-// ==================== CAMBIAR ESTADO ====================
-async function cambiarEstado(id, nuevoEstado) {
-    try {
-        await fetch(API_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ action: 'actualizarEstado', fila: id, estado: nuevoEstado })
-        });
-        
-        // Actualizar localmente
-        const pedido = pedidos.find(p => p.id === id);
-        if (pedido) pedido.estado = nuevoEstado;
-        mostrarPedidos();
-        
-        alert(`✅ Estado actualizado a: ${nuevoEstado}`);
-    } catch (error) {
-        alert('❌ Error al actualizar estado');
-    }
-}
-
-// ==================== FILTROS ====================
-function configurarFiltros() {
-    document.querySelectorAll('.filtro-estado').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.filtro-estado').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            filtroActual = btn.dataset.filtro;
-            mostrarPedidos();
-        });
-    });
-}
-
-// ==================== PRODUCTOS ADMIN ====================
-let productosAdmin = [];
-
-async function cargarProductosAdmin() {
+async function cargarProductosExistentes() {
     try {
         const response = await fetch(`${API_URL}?action=getProductos`);
-        productosAdmin = await response.json();
+        productosActuales = await response.json();
         mostrarListaProductos();
     } catch (error) {
-        document.getElementById('lista-productos').innerHTML = '<p>❌ Error cargando productos</p>';
+        document.getElementById('productos-lista').innerHTML = '<p>❌ Error cargando productos</p>';
     }
 }
 
 function mostrarListaProductos() {
-    const container = document.getElementById('lista-productos');
-    if (!productosAdmin || productosAdmin.length === 0) {
-        container.innerHTML = '<p>No hay productos. Agrega uno.</p>';
+    const container = document.getElementById('productos-lista');
+    if (!productosActuales || productosActuales.length === 0) {
+        container.innerHTML = '<p>📦 No hay productos</p>';
         return;
     }
     
     container.innerHTML = '';
-    productosAdmin.forEach(prod => {
+    productosActuales.forEach(prod => {
         const div = document.createElement('div');
-        div.className = 'producto-item';
+        div.className = 'producto-admin-card';
         div.innerHTML = `
-            <div>
-                <strong>${prod.nombre}</strong><br>
-                $${prod.precio} - ${prod.origen}
-                ${prod.enlace ? `<br><small>🔗 <a href="${prod.enlace}" target="_blank">Ver original</a></small>` : ''}
+            <div class="producto-admin-header">
+                <strong>#${prod.id} - ${prod.nombre}</strong>
+                <button class="btn-eliminar-producto" onclick="eliminarProducto(${prod.id})">🗑️ Eliminar</button>
             </div>
-            <button class="btn-eliminar" onclick="eliminarProducto(${prod.id})">🗑️ Eliminar</button>
+            <div>💰 Precio: $${prod.precio} | 📦 Origen: ${prod.origen} | 👤 Género: ${prod.genero || 'unisex'}</div>
+            <div class="producto-colores">🎨 Colores: ${prod.colores && prod.colores.length > 0 ? prod.colores.map(c => c.nombre).join(', ') : 'Sin colores'}</div>
+            <div class="producto-colores">📏 Tallas: ${prod.variantes && prod.variantes.length > 0 ? prod.variantes.map(v => v.talla).join(', ') : 'Sin tallas'}</div>
         `;
         container.appendChild(div);
     });
 }
 
-function agregarProducto() {
-    alert('📝 Para agregar productos, edita directamente en Google Sheets (hoja "productos")');
+function eliminarProducto(id) {
+    alert(`🗑️ Para eliminar el producto #${id}, edita directamente en Google Sheets (hoja "productos") y elimina la fila correspondiente.`);
 }
 
-function eliminarProducto(id) {
-    alert('🗑️ Para eliminar productos, edita directamente en Google Sheets (hoja "productos")');
+// ==================== GESTIÓN DE COLORES Y TALLAS ====================
+let colores = [];
+
+function agregarColor() {
+    const colorId = Date.now();
+    colores.push({
+        id: colorId,
+        nombre: '',
+        imagen: '',
+        precio: '',
+        tallas: []
+    });
+    renderizarColores();
+}
+
+function eliminarColor(colorId) {
+    colores = colores.filter(c => c.id !== colorId);
+    renderizarColores();
+}
+
+function actualizarColor(colorId, campo, valor) {
+    const color = colores.find(c => c.id === colorId);
+    if (color) color[campo] = valor;
+}
+
+function agregarTalla(colorId) {
+    const color = colores.find(c => c.id === colorId);
+    if (color) {
+        color.tallas.push({ talla: '', precio: '' });
+        renderizarColores();
+    }
+}
+
+function eliminarTalla(colorId, tallaIndex) {
+    const color = colores.find(c => c.id === colorId);
+    if (color) {
+        color.tallas.splice(tallaIndex, 1);
+        renderizarColores();
+    }
+}
+
+function actualizarTalla(colorId, tallaIndex, campo, valor) {
+    const color = colores.find(c => c.id === colorId);
+    if (color && color.tallas[tallaIndex]) {
+        color.tallas[tallaIndex][campo] = valor;
+    }
+}
+
+function renderizarColores() {
+    const container = document.getElementById('colores-container');
+    if (!container) return;
+    
+    if (colores.length === 0) {
+        container.innerHTML = '<p style="color:#888888;">No hay colores agregados. Haz clic en "+ Agregar Color"</p>';
+        return;
+    }
+    
+    container.innerHTML = '';
+    colores.forEach((color, idx) => {
+        const colorDiv = document.createElement('div');
+        colorDiv.className = 'color-item';
+        colorDiv.innerHTML = `
+            <div class="color-header">
+                <input type="text" placeholder="Nombre del color (ej: Rojo, Azul)" value="${color.nombre}" onchange="actualizarColor(${color.id}, 'nombre', this.value)">
+                <button class="btn-eliminar-color" onclick="eliminarColor(${color.id})">🗑️ Eliminar Color</button>
+            </div>
+            <div style="display:flex; gap:10px; margin-bottom:10px;">
+                <input type="text" placeholder="URL imagen para este color" value="${color.imagen}" style="flex:2;" onchange="actualizarColor(${color.id}, 'imagen', this.value)">
+                <input type="number" placeholder="Precio para este color" value="${color.precio}" step="0.01" style="flex:1;" onchange="actualizarColor(${color.id}, 'precio', parseFloat(this.value))">
+            </div>
+            <div class="tallas-list">
+                <strong>📏 Tallas y precios:</strong>
+                <div id="tallas-${color.id}">
+                    ${color.tallas.map((t, tIdx) => `
+                        <div class="talla-item">
+                            <input type="text" placeholder="Talla (ej: S, M, L, 7, 8)" value="${t.talla}" style="width:100px;" onchange="actualizarTalla(${color.id}, ${tIdx}, 'talla', this.value)">
+                            <input type="number" placeholder="Precio" value="${t.precio}" step="0.01" style="width:120px;" onchange="actualizarTalla(${color.id}, ${tIdx}, 'precio', parseFloat(this.value))">
+                            <button class="btn-eliminar-talla" onclick="eliminarTalla(${color.id}, ${tIdx})">✕</button>
+                        </div>
+                    `).join('')}
+                </div>
+                <button class="btn-agregar-talla" onclick="agregarTalla(${color.id})">+ Agregar Talla</button>
+            </div>
+        `;
+        container.appendChild(colorDiv);
+    });
+}
+
+// ==================== GENERAR JSON ====================
+function generarJSON() {
+    const nombre = document.getElementById('prod-nombre').value;
+    const precioBase = parseFloat(document.getElementById('prod-precio-base').value);
+    const origen = document.getElementById('prod-origen').value;
+    const imagen = document.getElementById('prod-imagen').value;
+    const enlace = document.getElementById('prod-enlace').value;
+    const genero = document.getElementById('prod-genero').value;
+    const descripcion = document.getElementById('prod-descripcion').value;
+    
+    if (!nombre || !precioBase) {
+        mostrarMensaje('⚠️ Completa al menos el nombre y precio base', 'error');
+        return;
+    }
+    
+    // Construir colores_nombres, colores_imagenes, colores_precios
+    const coloresNombres = colores.map(c => c.nombre).filter(n => n).join(',');
+    const coloresImagenes = colores.map(c => c.imagen).filter(i => i).join(',');
+    const coloresPrecios = colores.map(c => c.precio).filter(p => p).join(',');
+    
+    // Construir variantes (tallas por color)
+    let variantesTexto = '';
+    if (colores.length > 0) {
+        const variantesPorColor = colores.filter(c => c.tallas && c.tallas.length > 0).map(c => {
+            const tallasTexto = c.tallas.filter(t => t.talla && t.precio).map(t => `${t.talla}:${t.precio}`).join(',');
+            return tallasTexto ? `${c.nombre}:${tallasTexto}` : null;
+        }).filter(v => v);
+        variantesTexto = variantesPorColor.join('|');
+    }
+    
+    // Generar ID (número siguiente)
+    const nuevoId = productosActuales.length > 0 ? Math.max(...productosActuales.map(p => p.id)) + 1 : 1;
+    
+    const productoJSON = {
+        id: nuevoId,
+        nombre: nombre,
+        precio: precioBase,
+        origen: origen,
+        imagen: imagen || 'https://via.placeholder.com/300x200',
+        activo: 'SI',
+        descripcion: descripcion || 'Producto de alta calidad',
+        tiene_variantes: colores.length > 0 || variantesTexto ? 'SI' : 'NO',
+        variantes: variantesTexto,
+        enlace: enlace || '',
+        categoria_genero: genero,
+        colores_nombres: coloresNombres,
+        colores_imagenes: coloresImagenes,
+        colores_precios: coloresPrecios
+    };
+    
+    // Formatear para Google Sheets
+    const filaSheet = [
+        productoJSON.id,
+        productoJSON.nombre,
+        productoJSON.precio,
+        productoJSON.origen,
+        productoJSON.imagen,
+        productoJSON.activo,
+        productoJSON.descripcion,
+        productoJSON.tiene_variantes,
+        productoJSON.variantes,
+        productoJSON.enlace,
+        productoJSON.categoria_genero,
+        productoJSON.colores_nombres,
+        productoJSON.colores_imagenes,
+        productoJSON.colores_precios
+    ];
+    
+    // Mostrar JSON
+    const jsonTextarea = document.getElementById('json-textarea');
+    const jsonOutput = document.getElementById('json-output');
+    
+    jsonTextarea.value = filaSheet.join('\t');
+    jsonOutput.style.display = 'block';
+    
+    mostrarMensaje('✅ JSON generado correctamente', 'success');
+}
+
+function copiarJSON() {
+    const textarea = document.getElementById('json-textarea');
+    textarea.select();
+    document.execCommand('copy');
+    mostrarMensaje('📋 JSON copiado al portapapeles', 'success');
+}
+
+function limpiarFormulario() {
+    document.getElementById('prod-nombre').value = '';
+    document.getElementById('prod-precio-base').value = '';
+    document.getElementById('prod-imagen').value = '';
+    document.getElementById('prod-enlace').value = '';
+    document.getElementById('prod-descripcion').value = '';
+    document.getElementById('prod-genero').value = 'unisex';
+    colores = [];
+    renderizarColores();
+    document.getElementById('json-output').style.display = 'none';
+    mostrarMensaje('🧹 Formulario limpiado', 'success');
+}
+
+function mostrarMensaje(texto, tipo) {
+    const msgDiv = document.getElementById('mensaje');
+    msgDiv.textContent = texto;
+    msgDiv.style.display = 'block';
+    msgDiv.style.background = tipo === 'error' ? '#FF4444' : '#00D4FF';
+    msgDiv.style.color = '#0A0A0A';
+    setTimeout(() => {
+        msgDiv.style.display = 'none';
+    }, 3000);
 }
 
 // ==================== TABS ====================
@@ -286,8 +419,7 @@ function configurarTabs() {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             tab.classList.add('active');
             document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
-            if (tab.dataset.tab === 'productos') cargarProductosAdmin();
-            if (tab.dataset.tab === 'pedidos') cargarPedidos();
+            if (tab.dataset.tab === 'listar') cargarProductosExistentes();
         });
     });
 }
@@ -295,7 +427,11 @@ function configurarTabs() {
 // ==================== INICIAR ====================
 function init() {
     configurarTabs();
-    configurarFiltros();
+    document.getElementById('agregar-color').onclick = agregarColor;
+    document.getElementById('generar-json').onclick = generarJSON;
+    document.getElementById('limpiar-form').onclick = limpiarFormulario;
+    document.getElementById('copiar-json').onclick = copiarJSON;
+    renderizarColores();
 }
 
 init();
