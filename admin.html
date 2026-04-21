@@ -405,9 +405,12 @@ function mostrarListaProductos() {
         div.innerHTML = `
             <div class="producto-admin-header">
                 <strong>#${prod.id} - ${prod.nombre.substring(0, 50)}${prod.nombre.length > 50 ? '...' : ''}</strong>
-                <button class="btn-eliminar-producto" onclick="eliminarProducto(${prod.id})">🗑️ Eliminar</button>
+                <div>
+                    <button class="btn-editar-precio" onclick="editarPrecioProducto(${prod.id}, '${prod.nombre.replace(/'/g, "\\'")}', ${prod.precio})">✏️ Editar Precio</button>
+                    <button class="btn-eliminar-producto" onclick="eliminarProducto(${prod.id})">🗑️ Eliminar</button>
+                </div>
             </div>
-            <div>💰 Precio: $${prod.precio} | 📦 Origen: ${prod.origen} | 👤 Género: ${prod.genero || 'unisex'}</div>
+            <div>💰 Precio actual: <strong style="color:#00D4FF;">$${prod.precio.toFixed(2)}</strong> | 📦 Origen: ${prod.origen} | 👤 Género: ${prod.genero || 'unisex'}</div>
             <div class="producto-colores">🎨 Colores: ${prod.colores && prod.colores.length > 0 ? prod.colores.map(c => c.nombre).join(', ') : 'Sin colores'}</div>
             <div class="producto-colores">📏 Tallas: ${prod.variantes && prod.variantes.length > 0 ? prod.variantes.map(v => v.talla).join(', ') : 'Sin tallas'}</div>
         `;
