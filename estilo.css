@@ -1019,3 +1019,44 @@ h2 {
         width: 95%;
     }
 }
+/* ========== SECCIÓN DE ENVÍO INFORMATIVA ========== */
+.carrito-envio-info {
+    padding: 16px 28px;
+    border-top: 1px solid #E5E5E5;
+    background: #FDFBF7;
+    margin-top: 10px;
+}
+
+.envio-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.envio-info span:first-child {
+    color: #9CA3AF;
+}
+
+.envio-info span:last-child {
+    font-weight: 600;
+    color: #F4A0B5;
+}
+
+.envio-nota {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed #E5E5E5;
+    text-align: center;
+}
+
+.envio-nota span {
+    font-size: 0.7em;
+    color: #D4A5A5;
+    background: #FFF0F0;
+    padding: 4px 12px;
+    border-radius: 50px;
+    display: inline-block;
+}
