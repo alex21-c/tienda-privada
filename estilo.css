@@ -1278,3 +1278,164 @@ h2 {
     background: #D4A5A5;
     color: white;
 }
+/* ========== FACTURA AESTHETIC MEJORADA ========== */
+.factura-content {
+    max-width: 550px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border-radius: 32px !important;
+}
+
+.factura-container {
+    padding: 25px;
+    background: white;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.factura-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px dashed #E5E5E5;
+}
+
+.factura-header h2 {
+    color: #A3B8A4;
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.factura-header p {
+    color: #9CA3AF;
+    font-size: 0.75em;
+    margin: 3px 0;
+}
+
+.factura-info {
+    background: #FDFBF7;
+    padding: 12px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+}
+
+.factura-info p {
+    margin: 5px 0;
+    font-size: 0.8em;
+    color: #4A4A4A;
+}
+
+.factura-info strong {
+    color: #A3B8A4;
+}
+
+.factura-productos {
+    margin: 15px 0;
+}
+
+.factura-productos h4 {
+    color: #A3B8A4;
+    margin-bottom: 10px;
+    font-size: 0.9em;
+}
+
+.producto-linea {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #E5E5E5;
+    font-size: 0.75em;
+}
+
+.factura-totales {
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 2px solid #E5E5E5;
+}
+
+.factura-total-linea {
+    display: flex;
+    justify-content: space-between;
+    margin: 6px 0;
+    font-size: 0.85em;
+}
+
+.factura-total-linea.envio {
+    color: #D4A5A5;
+}
+
+.factura-total-linea.total {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #E5E5E5;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.factura-total-linea.total .valor {
+    color: #F4A0B5;
+}
+
+.factura-envio-nota {
+    background: #FFF0F0;
+    padding: 12px;
+    border-radius: 15px;
+    margin-top: 15px;
+    text-align: center;
+    font-size: 0.7em;
+    color: #D4A5A5;
+    line-height: 1.5;
+}
+
+.factura-footer {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 12px;
+    border-top: 1px solid #E5E5E5;
+    font-size: 0.65em;
+    color: #9CA3AF;
+}
+
+.factura-actions {
+    display: flex;
+    gap: 12px;
+    padding: 15px;
+    background: #FDFBF7;
+    border-top: 1px solid #E5E5E5;
+}
+
+.btn-descargar {
+    flex: 1;
+    background: #A3B8A4;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.85em;
+    transition: all 0.3s;
+}
+
+.btn-descargar:hover {
+    background: #F4A0B5;
+    transform: translateY(-2px);
+}
+
+.btn-cerrar-factura {
+    flex: 1;
+    background: #E5E5E5;
+    color: #4A4A4A;
+    border: none;
+    padding: 10px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.85em;
+    transition: all 0.3s;
+}
+
+.btn-cerrar-factura:hover {
+    background: #D4A5A5;
+    color: white;
+}
