@@ -681,4 +681,161 @@ async function guardarProductoAutomatico() {
     mostrarMensaje('💾 Guardando producto...', 'success');
     
     const productoData = {
-        action: 'agregarProduct
+        action: 'agregarProducto',
+        nombre: nombre,
+        precio: precioBase,
+        origen: origen,
+        imagen: imagen || 'https://via.placeholder.com/300x200',
+        descripcion: descripcion || 'Producto de alta calidad',
+        tiene_variantes: colores.length > 0 || variantesTexto ? 'SI' : 'NO',
+        variantes: variantesTexto,
+        enlace: enlace || '',
+        categoria_genero: genero,
+        colores_nombres: coloresNombres,
+        colores_imagenes: coloresImagenes,
+        colores_precios: coloresPrecios
+    };
+    
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(productoData)
+        });
+        
+        mostrarMensaje(`✅ Producto "${nombre}" enviado. Refresca la tienda en 1 minuto.`, 'success');
+        limpiarFormulario();
+        
+        setTimeout(() => {
+            cargarProductosExistentes();
+        }, 3000);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarMensaje('❌ Error al guardar. Revisa tu conexión.', 'error');
+    }
+}
+
+// ==================== GENERAR JSON ====================
+function generarJSON() {
+    const nombre = document.getElementById('prod-nombre').value;
+    const precioBase = parseFloat(document.getElementById('prod-precio-base').value);
+    const origen = document.getElementById('prod-origen').value;
+    const imagen = document.getElementById('prod-imagen').value;
+    const enlace = document.getElementById('prod-enlace').value;
+    const genero = document.getElementById('prod-genero').value;
+    const descripcion = document.getElementById('prod-descripcion').value;
+    
+    if (!nombre || !precioBase) {
+        mostrarMensaje('⚠️ Completa al menos el nombre y precio base', 'error');
+        return;
+    }
+    
+    const coloresNombres = colores.map(c => c.nombre).filter(n => n).join(',');
+    const coloresImagenes = colores.map(c => c.imagen).filter(i => i).join(',');
+    const coloresPrecios = colores.map(c => c.precio).filter(p => p).join(',');
+    
+    let variantesTexto = '';
+    if (colores.length > 0) {
+        const variantesPorColor = colores.filter(c => c.tallas && c.tallas.length > 0).map(c => {
+            const tallasTexto = c.tallas.filter(t => t.talla && t.precio).map(t => `${t.talla}:${t.precio}`).join(',');
+            return tallasTexto ? `${c.nombre}:${tallasTexto}` : null;
+        }).filter(v => v);
+        variantesTexto = variantesPorColor.join('|');
+    }
+    
+    const nuevoId = productosActuales.length > 0 ? Math.max(...productosActuales.map(p => p.id)) + 1 : 1;
+    
+    const productoJSON = {
+        id: nuevoId,
+        nombre: nombre,
+        precio: precioBase,
+        origen: origen,
+        imagen: imagen || 'https://via.placeholder.com/300x200',
+        activo: 'SI',
+        descripcion: descripcion || 'Producto de alta calidad',
+        tiene_variantes: colores.length > 0 || variantesTexto ? 'SI' : 'NO',
+        variantes: variantesTexto,
+        enlace: enlace || '',
+        categoria_genero: genero,
+        colores_nombres: coloresNombres,
+        colores_imagenes: coloresImagenes,
+        colores_precios: coloresPrecios
+    };
+    
+    const filaSheet = [
+        productoJSON.id,
+        productoJSON.nombre,
+        productoJSON.precio,
+        productoJSON.origen,
+        productoJSON.imagen,
+        productoJSON.activo,
+        productoJSON.descripcion,
+        productoJSON.tiene_variantes,
+        productoJSON.variantes,
+        productoJSON.enlace,
+        productoJSON.categoria_genero,
+        productoJSON.colores_nombres,
+        productoJSON.colores_imagenes,
+        productoJSON.colores_precios
+    ];
+    
+    const jsonTextarea = document.getElementById('json-textarea');
+    const jsonOutput = document.getElementById('json-output');
+    
+    jsonTextarea.value = filaSheet.join('\t');
+    jsonOutput.style.display = 'block';
+    
+    mostrarMensaje('✅ JSON generado correctamente', 'success');
+}
+
+function copiarJSON() {
+    const textarea = document.getElementById('json-textarea');
+    textarea.select();
+    document.execCommand('copy');
+    mostrarMensaje('📋 JSON copiado al portapapeles', 'success');
+}
+
+function limpiarFormulario() {
+    document.getElementById('prod-nombre').value = '';
+    document.getElementById('prod-precio-base').value = '';
+    document.getElementById('prod-imagen').value = '';
+    document.getElementById('prod-enlace').value = '';
+    document.getElementById('prod-descripcion').value = '';
+    document.getElementById('prod-genero').value = 'unisex';
+    colores = [];
+    renderizarColores();
+    document.getElementById('json-output').style.display = 'none';
+    mostrarMensaje('🧹 Formulario limpiado', 'success');
+}
+
+// ==================== TABS ====================
+function configurarTabs() {
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+            if (tab.dataset.tab === 'listar') cargarProductosExistentes();
+            if (tab.dataset.tab === 'pedidos') cargarPedidosAdmin();
+        });
+    });
+}
+
+// ==================== INICIAR ====================
+function init() {
+    configurarTabs();
+    document.getElementById('agregar-color').onclick = agregarColor;
+    document.getElementById('guardar-producto').onclick = guardarProductoAutomatico;
+    document.getElementById('generar-json').onclick = generarJSON;
+    document.getElementById('limpiar-form').onclick = limpiarFormulario;
+    document.getElementById('copiar-json').onclick = copiarJSON;
+    renderizarColores();
+}
+
+init();
+</script>
+</body>
+</html>
