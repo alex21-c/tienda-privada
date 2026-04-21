@@ -69,22 +69,7 @@
             <div class="loading">Cargando productos...</div>
         </div>
         
-        <!-- Panel de Mis Pedidos (desplegable) -->
-        <div id="mis-pedidos-panel" class="mis-pedidos-panel" style="display:none;">
-            <div class="mis-pedidos-header">
-                <h3>📋 Mis Pedidos</h3>
-                <button id="cerrar-mis-pedidos" class="cerrar-mis-pedidos">&times;</button>
-            </div>
-            <div class="mis-pedidos-busqueda">
-                <input type="text" id="nombre-consulta" placeholder="Ingresa tu nombre completo" required>
-                <button id="buscar-pedidos" class="btn-buscar">🔍 Buscar</button>
-            </div>
-            <div id="resultado-pedidos" class="resultado-pedidos">
-                <p class="vacio">Ingresa tu nombre para ver tus pedidos</p>
-            </div>
-        </div>
-        
-        <!-- Formulario de pedido (oculto inicialmente) -->
+        <!-- Formulario de pedido viejo (oculto) - se reemplaza por modal -->
         <div id="formulario-datos" style="display:none;" class="formulario-pedido">
             <h2>📋 Completa tus datos</h2>
             <form id="pedido-form">
@@ -144,6 +129,53 @@
                 </div>
                 
                 <button id="modal-agregar" class="btn-agregar">➕ Agregar al carrito</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de formulario de pago -->
+    <div id="pago-modal" class="modal">
+        <div class="modal-content" style="max-width: 550px;">
+            <span class="modal-cerrar-pago">&times;</span>
+            <div id="modal-pago-contenido">
+                <h2>📋 Completa tus datos</h2>
+                <form id="pedido-form-modal">
+                    <label>👤 Nombre completo:</label>
+                    <input type="text" id="nombre-modal" required>
+                    
+                    <label>📱 Número de teléfono:</label>
+                    <input type="tel" id="telefono-modal" required placeholder="Ej: 6123-4567">
+                    
+                    <label>📍 Dirección de entrega:</label>
+                    <textarea id="direccion-modal" required rows="3"></textarea>
+                    
+                    <label>💳 Método de pago:</label>
+                    <select id="metodo-pago-modal" required>
+                        <option value="">Selecciona...</option>
+                        <option value="Efectivo contra entrega">💵 Efectivo (pagas al recibir)</option>
+                        <option value="Yappy">📱 Yappy (te enviamos el número)</option>
+                        <option value="Transferencia">🏦 Transferencia bancaria</option>
+                    </select>
+                    
+                    <button type="submit" class="btn-confirmar">✅ Confirmar Pedido</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Mis Pedidos -->
+    <div id="mis-pedidos-modal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="modal-cerrar-mis-pedidos">&times;</span>
+            <div id="modal-mis-pedidos-contenido">
+                <h3>📋 Mis Pedidos</h3>
+                <div class="mis-pedidos-busqueda-modal">
+                    <input type="text" id="nombre-consulta-modal" placeholder="Ingresa tu nombre completo" required>
+                    <button id="buscar-pedidos-modal" class="btn-buscar">🔍 Buscar</button>
+                </div>
+                <div id="resultado-pedidos-modal" class="resultado-pedidos">
+                    <p class="vacio">Ingresa tu nombre para ver tus pedidos</p>
+                </div>
             </div>
         </div>
     </div>
