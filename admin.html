@@ -116,7 +116,8 @@
             </div>
             
             <div class="form-section">
-                <button id="generar-json" class="btn-primario">📝 Generar JSON para Google Sheets</button>
+                <button id="guardar-producto" class="btn-primario">💾 Guardar Producto (Auto)</button>
+                <button id="generar-json" class="btn-secundario">📝 Generar JSON (Manual)</button>
                 <button id="limpiar-form" class="btn-secundario">🗑️ Limpiar Formulario</button>
             </div>
             
@@ -145,10 +146,8 @@
                     <li>Completa la información básica (nombre, precio, origen, etc.)</li>
                     <li>Agrega colores usando el botón "+ Agregar Color"</li>
                     <li>Para cada color, puedes agregar tallas con precios específicos</li>
-                    <li>Haz clic en "Generar JSON"</li>
-                    <li>Copia el JSON generado</li>
-                    <li>Ve a Google Sheets (hoja "productos") y pega en una nueva fila</li>
-                    <li>Espera 1 minuto y refresca tu tienda</li>
+                    <li>Haz clic en "Guardar Producto (Auto)" para guardar automáticamente</li>
+                    <li>O usa "Generar JSON (Manual)" para copiar y pegar manualmente</li>
                 </ol>
                 <h4 style="margin-top:20px;">📋 Formato de la hoja "productos":</h4>
                 <p style="background:#0A0A0A; padding:10px; border-radius:8px; font-family:monospace; font-size:0.8em;">
@@ -199,7 +198,7 @@ function mostrarListaProductos() {
         div.className = 'producto-admin-card';
         div.innerHTML = `
             <div class="producto-admin-header">
-                <strong>#${prod.id} - ${prod.nombre}</strong>
+                <strong>#${prod.id} - ${prod.nombre.substring(0, 50)}${prod.nombre.length > 50 ? '...' : ''}</strong>
                 <button class="btn-eliminar-producto" onclick="eliminarProducto(${prod.id})">🗑️ Eliminar</button>
             </div>
             <div>💰 Precio: $${prod.precio} | 📦 Origen: ${prod.origen} | 👤 Género: ${prod.genero || 'unisex'}</div>
@@ -300,6 +299,75 @@ function renderizarColores() {
         `;
         container.appendChild(colorDiv);
     });
+}
+
+// ==================== GUARDAR PRODUCTO AUTOMÁTICAMENTE ====================
+async function guardarProductoAutomatico() {
+    const nombre = document.getElementById('prod-nombre').value;
+    const precioBase = parseFloat(document.getElementById('prod-precio-base').value);
+    const origen = document.getElementById('prod-origen').value;
+    const imagen = document.getElementById('prod-imagen').value;
+    const enlace = document.getElementById('prod-enlace').value;
+    const genero = document.getElementById('prod-genero').value;
+    const descripcion = document.getElementById('prod-descripcion').value;
+    
+    if (!nombre || !precioBase) {
+        mostrarMensaje('⚠️ Completa al menos el nombre y precio base', 'error');
+        return;
+    }
+    
+    // Construir colores_nombres, colores_imagenes, colores_precios
+    const coloresNombres = colores.map(c => c.nombre).filter(n => n).join(',');
+    const coloresImagenes = colores.map(c => c.imagen).filter(i => i).join(',');
+    const coloresPrecios = colores.map(c => c.precio).filter(p => p).join(',');
+    
+    // Construir variantes (tallas por color)
+    let variantesTexto = '';
+    if (colores.length > 0) {
+        const variantesPorColor = colores.filter(c => c.tallas && c.tallas.length > 0).map(c => {
+            const tallasTexto = c.tallas.filter(t => t.talla && t.precio).map(t => `${t.talla}:${t.precio}`).join(',');
+            return tallasTexto ? `${c.nombre}:${tallasTexto}` : null;
+        }).filter(v => v);
+        variantesTexto = variantesPorColor.join('|');
+    }
+    
+    mostrarMensaje('💾 Guardando producto...', 'success');
+    
+    const productoData = {
+        action: 'agregarProducto',
+        nombre: nombre,
+        precio: precioBase,
+        origen: origen,
+        imagen: imagen || 'https://via.placeholder.com/300x200',
+        descripcion: descripcion || 'Producto de alta calidad',
+        tiene_variantes: colores.length > 0 || variantesTexto ? 'SI' : 'NO',
+        variantes: variantesTexto,
+        enlace: enlace || '',
+        categoria_genero: genero,
+        colores_nombres: coloresNombres,
+        colores_imagenes: coloresImagenes,
+        colores_precios: coloresPrecios
+    };
+    
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(productoData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            mostrarMensaje(`✅ Producto "${nombre}" guardado correctamente! ID: ${result.id}`, 'success');
+            limpiarFormulario();
+            cargarProductosExistentes();
+        } else {
+            mostrarMensaje(`❌ Error: ${result.error}`, 'error');
+        }
+    } catch (error) {
+        mostrarMensaje('❌ Error al guardar. Revisa tu conexión.', 'error');
+    }
 }
 
 // ==================== GENERAR JSON ====================
@@ -428,6 +496,7 @@ function configurarTabs() {
 function init() {
     configurarTabs();
     document.getElementById('agregar-color').onclick = agregarColor;
+    document.getElementById('guardar-producto').onclick = guardarProductoAutomatico;
     document.getElementById('generar-json').onclick = generarJSON;
     document.getElementById('limpiar-form').onclick = limpiarFormulario;
     document.getElementById('copiar-json').onclick = copiarJSON;
