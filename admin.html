@@ -57,6 +57,23 @@
         .producto-colores { font-size: 0.8em; color: #888888; margin: 5px 0; }
         .btn-eliminar-producto { background: rgba(255,68,68,0.2); color: #FF4444; border: 1px solid #FF4444; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
         
+        /* ========== BOTÓN EDITAR PRECIO ========== */
+        .btn-editar-precio {
+            background: rgba(0,212,255,0.2);
+            color: #00D4FF;
+            border: 1px solid #00D4FF;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-editar-precio:hover {
+            background: #00D4FF;
+            color: #0A0A0A;
+        }
+        
         .mensaje { background: #00D4FF; color: #0A0A0A; padding: 12px; border-radius: 12px; margin-bottom: 20px; display: none; }
         .url-info { background: rgba(0,212,255,0.1); padding: 12px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
         
@@ -442,6 +459,44 @@ async function eliminarProducto(id) {
             console.error('Error:', error);
             mostrarMensaje('❌ Error al eliminar producto', 'error');
         }
+    }
+}
+
+// ==================== EDITAR PRECIO ====================
+function editarPrecioProducto(id, nombre, precioActual) {
+    const nuevoPrecio = prompt(`✏️ Editar precio de:\n"${nombre}"\n\nPrecio actual: $${precioActual.toFixed(2)}\n\nIngresa el nuevo precio:`, precioActual.toFixed(2));
+    
+    if (nuevoPrecio === null) return; // Cancelar
+    
+    const nuevoPrecioNum = parseFloat(nuevoPrecio);
+    if (isNaN(nuevoPrecioNum) || nuevoPrecioNum <= 0) {
+        mostrarMensaje('❌ Ingresa un precio válido', 'error');
+        return;
+    }
+    
+    mostrarMensaje('💾 Actualizando precio...', 'success');
+    
+    try {
+        fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                action: 'actualizarPrecio', 
+                id: id, 
+                precio: nuevoPrecioNum 
+            })
+        });
+        
+        mostrarMensaje(`✅ Precio actualizado a $${nuevoPrecioNum.toFixed(2)}`, 'success');
+        
+        setTimeout(() => {
+            cargarProductosExistentes();
+        }, 2000);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarMensaje('❌ Error al actualizar precio', 'error');
     }
 }
 
