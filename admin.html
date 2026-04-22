@@ -456,6 +456,7 @@ function mostrarPedidosAdmin() {
         container.appendChild(card);
     });
 }
+
 async function cambiarEstadoPedido(id, nuevoEstado) {
     try {
         await fetch(API_URL, {
@@ -472,6 +473,125 @@ async function cambiarEstadoPedido(id, nuevoEstado) {
     } catch (error) {
         mostrarMensaje('❌ Error al actualizar estado', 'error');
     }
+}
+
+// ==================== REGISTRAR PAGO ====================
+let pedidoPagoActual = null;
+
+function registrarPagoModal(id, total, nombre) {
+    pedidoPagoActual = { id: id, total: total, nombre: nombre };
+    
+    const montoPagado = prompt(`💰 Registrar pago para:\n"${nombre}"\n\nTotal del pedido: $${total.toFixed(2)}\n\nIngresa el monto pagado por el cliente:`, total.toFixed(2));
+    
+    if (montoPagado === null) return;
+    
+    const monto = parseFloat(montoPagado);
+    if (isNaN(monto) || monto <= 0) {
+        mostrarMensaje('❌ Ingresa un monto válido', 'error');
+        return;
+    }
+    
+    const metodoPago = prompt(`💳 Método de pago:\n\nSelecciona el método:\n1 - Efectivo\n2 - Yappy\n3 - Transferencia\n4 - Tarjeta`, "1");
+    
+    let metodoTexto = '';
+    switch(metodoPago) {
+        case '1': metodoTexto = 'Efectivo'; break;
+        case '2': metodoTexto = 'Yappy'; break;
+        case '3': metodoTexto = 'Transferencia'; break;
+        case '4': metodoTexto = 'Tarjeta'; break;
+        default: metodoTexto = 'Otro';
+    }
+    
+    const referencia = prompt(`📝 Número de referencia/comprobante (opcional):`, "");
+    
+    mostrarMensaje('💾 Registrando pago...', 'success');
+    
+    try {
+        fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'registrarPago',
+                idPedido: id,
+                fila: id,
+                metodoPagoReal: metodoTexto,
+                montoPagado: monto,
+                referencia: referencia || ''
+            })
+        });
+        
+        // Cambiar estado a Pagado localmente
+        const pedido = pedidosAdmin.find(p => p.id === id);
+        if (pedido) pedido.estado = 'Pagado';
+        
+        mostrarPedidosAdmin();
+        mostrarMensaje(`✅ Pago registrado correctamente para "${pedidoPagoActual.nombre}" por $${monto.toFixed(2)}`, 'success');
+        
+        // Generar factura en PDF
+        generarFacturaSimple(pedidoPagoActual.nombre, total, monto, metodoTexto, referencia);
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarMensaje('❌ Error al registrar pago', 'error');
+    }
+}
+
+function generarFacturaSimple(nombre, total, montoPagado, metodoPago, referencia) {
+    const ventana = window.open('', '_blank');
+    const fecha = new Date().toLocaleString();
+    const comprobante = `FACT-${Date.now()}`;
+    
+    ventana.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Factura de Pago</title>
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { font-family: 'Courier New', monospace; padding: 40px; background: #FDFBF7; }
+                .factura { max-width: 600px; margin: 0 auto; background: white; border: 1px solid #E5E5E5; padding: 30px; border-radius: 24px; }
+                .header { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px dashed #E5E5E5; }
+                .header h2 { color: #A3B8A4; }
+                .info { background: #FDFBF7; padding: 15px; border-radius: 16px; margin-bottom: 20px; }
+                .info p { margin: 5px 0; }
+                .total { text-align: right; margin-top: 20px; padding-top: 15px; border-top: 1px solid #E5E5E5; font-size: 1.2em; }
+                .total strong { color: #F4A0B5; }
+                .footer { text-align: center; margin-top: 25px; font-size: 0.7em; color: #9CA3AF; }
+                button { margin-top: 20px; padding: 10px 20px; background: #A3B8A4; color: white; border: none; border-radius: 50px; cursor: pointer; }
+                button:hover { background: #F4A0B5; }
+            </style>
+        </head>
+        <body>
+            <div class="factura">
+                <div class="header">
+                    <h2>🎀 FACTURA DE PAGO</h2>
+                    <p>Comprobante de pago</p>
+                    <p><strong>N°:</strong> ${comprobante}</p>
+                </div>
+                <div class="info">
+                    <p><strong>📅 Fecha:</strong> ${fecha}</p>
+                    <p><strong>👤 Cliente:</strong> ${nombre}</p>
+                    <p><strong>💳 Método de pago:</strong> ${metodoPago}</p>
+                    ${referencia ? `<p><strong>📝 Referencia:</strong> ${referencia}</p>` : ''}
+                </div>
+                <div class="total">
+                    <p>💰 Total pagado: <strong>$${montoPagado.toFixed(2)}</strong></p>
+                </div>
+                <div class="footer">
+                    ¡Gracias por tu compra!<br>
+                    https://alex21-c.github.io/tienda-privada/
+                </div>
+                <div style="text-align:center;">
+                    <button onclick="window.print()">🖨️ Imprimir</button>
+                </div>
+            </div>
+        </body>
+        </html>
+    `);
+    
+    ventana.document.close();
 }
 
 function configurarFiltrosPedidos() {
