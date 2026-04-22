@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Inter', 'Poppins', 'Segoe UI', sans-serif;
-            background: #FDFBF7;
+            background: linear-gradient(135deg, #FDFBF7 0%, #f5f0eb 100%);
             padding: 20px;
             color: #4A4A4A;
         }
@@ -22,17 +22,18 @@
             max-width: 1200px;
             margin: 0 auto;
             background: white;
-            border-radius: 32px;
+            border-radius: 48px;
             padding: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-            border: 1px solid #E5E5E5;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(163, 184, 164, 0.2);
         }
 
         h1 {
             text-align: center;
             color: #A3B8A4;
             margin-bottom: 10px;
-            font-size: 1.8rem;
+            font-size: 2rem;
+            font-weight: 600;
         }
 
         .subtitle {
@@ -48,22 +49,23 @@
             justify-content: flex-end;
             align-items: center;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             flex-wrap: wrap;
         }
 
         .btn-mis-pedidos {
             background: transparent;
-            border: 1px solid #A3B8A4;
+            border: 1.5px solid #A3B8A4;
             color: #A3B8A4;
-            padding: 10px 20px;
-            border-radius: 50px;
+            padding: 10px 24px;
+            border-radius: 60px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 0.9rem;
         }
 
         .btn-mis-pedidos:hover {
@@ -74,9 +76,9 @@
 
         .carrito-resumen {
             background: #FDFBF7;
-            border: 1px solid #E5E5E5;
-            border-radius: 50px;
-            padding: 8px 20px;
+            border: 1.5px solid #E5E5E5;
+            border-radius: 60px;
+            padding: 8px 24px;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -87,6 +89,7 @@
         .carrito-resumen:hover {
             border-color: #F4A0B5;
             background: #FFF8F0;
+            transform: translateY(-2px);
         }
 
         .carrito-icono {
@@ -101,8 +104,8 @@
         .carrito-cantidad {
             background: #F4A0B5;
             color: white;
-            border-radius: 50px;
-            padding: 2px 10px;
+            border-radius: 60px;
+            padding: 2px 12px;
             font-size: 0.75rem;
             font-weight: 600;
         }
@@ -110,17 +113,17 @@
         /* Filtros */
         .filtros {
             display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-bottom: 35px;
             flex-wrap: wrap;
             justify-content: center;
         }
 
         .filtro-btn {
-            padding: 8px 20px;
+            padding: 8px 24px;
             background: transparent;
-            border: 1px solid #E5E5E5;
-            border-radius: 50px;
+            border: 1.5px solid #E5E5E5;
+            border-radius: 60px;
             cursor: pointer;
             transition: all 0.3s;
             color: #9CA3AF;
@@ -142,23 +145,24 @@
         .productos-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
+            gap: 28px;
             margin-bottom: 40px;
         }
 
-        /* Tarjeta de producto */
+        /* Tarjeta de producto - más redondita */
         .producto-card {
             background: white;
-            border-radius: 24px;
+            border-radius: 32px;
             overflow: hidden;
-            transition: all 0.3s;
+            transition: all 0.35s ease;
             border: 1px solid #E5E5E5;
             cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
         }
 
         .producto-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 35px rgba(163, 184, 164, 0.15);
             border-color: #F4A0B5;
         }
 
@@ -166,13 +170,14 @@
             position: relative;
             overflow: hidden;
             background: #FDFBF7;
+            cursor: zoom-in;
         }
 
         .producto-imagen {
             width: 100%;
-            height: 250px;
+            height: 260px;
             object-fit: cover;
-            transition: transform 0.3s ease;
+            transition: transform 0.4s ease;
         }
 
         .producto-card:hover .producto-imagen {
@@ -180,24 +185,24 @@
         }
 
         .producto-info {
-            padding: 16px;
+            padding: 18px;
         }
 
-        .producto-titulo {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #2d3436;
-            margin-bottom: 8px;
-            line-height: 1.4;
+        .producto-header-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .producto-origen {
             display: inline-block;
-            padding: 4px 10px;
-            border-radius: 50px;
+            padding: 4px 12px;
+            border-radius: 60px;
             font-size: 0.7rem;
             font-weight: 600;
-            margin-bottom: 10px;
         }
 
         .origen-amazon {
@@ -212,8 +217,31 @@
             border: 1px solid #e74c3c40;
         }
 
+        .producto-genero {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 60px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: #F8F9FA;
+            color: #A3B8A4;
+            border: 1px solid #E5E5E5;
+        }
+
+        .producto-titulo {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
         .producto-precio {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: #A3B8A4;
             margin-bottom: 15px;
@@ -225,7 +253,7 @@
             color: white;
             border: none;
             padding: 12px;
-            border-radius: 50px;
+            border-radius: 60px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
@@ -236,7 +264,7 @@
             transform: translateY(-2px);
         }
 
-        /* ========== MODAL DEL CARRITO ========== */
+        /* ========== MODAL CARRITO ========== */
         .modal-carrito {
             display: none;
             position: fixed;
@@ -260,7 +288,7 @@
             max-width: 550px;
             width: 90%;
             max-height: 85vh;
-            border-radius: 32px;
+            border-radius: 48px;
             overflow: hidden;
             animation: slideUp 0.3s ease;
             display: flex;
@@ -270,7 +298,7 @@
         .modal-carrito-header {
             background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
             color: white;
-            padding: 20px;
+            padding: 22px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -283,9 +311,9 @@
         .btn-cerrar-modal {
             background: rgba(255,255,255,0.2);
             border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            border-radius: 60px;
             cursor: pointer;
             font-size: 18px;
             color: white;
@@ -307,10 +335,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
+            padding: 14px;
             border-bottom: 1px solid #E5E5E5;
             flex-wrap: wrap;
             gap: 10px;
+            border-radius: 24px;
         }
 
         .item-info-modal {
@@ -336,33 +365,33 @@
             background: #FFF0E6;
             color: #D4A5A5;
             border: 1px solid #D4A5A5;
-            padding: 6px 12px;
-            border-radius: 50px;
+            padding: 6px 14px;
+            border-radius: 60px;
             cursor: pointer;
             font-size: 0.7rem;
         }
 
         .envio-info {
             background: #F8F9FA;
-            border-radius: 16px;
-            padding: 15px;
-            margin: 15px 0;
+            border-radius: 28px;
+            padding: 16px;
+            margin: 15px 20px;
         }
 
         .envio-info p {
-            margin: 5px 0;
+            margin: 6px 0;
             font-size: 0.85rem;
         }
 
         .envio-info .nota {
             color: #F4A0B5;
             font-size: 0.7rem;
-            margin-top: 8px;
+            margin-top: 10px;
         }
 
         .total-modal {
             text-align: right;
-            padding: 15px;
+            padding: 15px 20px;
             border-top: 2px solid #E5E5E5;
             font-size: 1.2rem;
             font-weight: 700;
@@ -380,7 +409,7 @@
             color: white;
             border: none;
             padding: 14px;
-            border-radius: 50px;
+            border-radius: 60px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -391,7 +420,7 @@
             transform: translateY(-2px);
         }
 
-        /* ========== MODAL DEL PRODUCTO (DETALLE) ========== */
+        /* ========== MODAL PRODUCTO ========== */
         .modal-producto {
             display: none;
             position: fixed;
@@ -412,33 +441,35 @@
 
         .modal-producto-contenido {
             background: white;
-            max-width: 500px;
+            max-width: 520px;
             width: 90%;
             max-height: 85vh;
-            border-radius: 32px;
+            border-radius: 48px;
             overflow-y: auto;
             animation: slideUp 0.3s ease;
         }
 
         .modal-producto-header {
             position: relative;
+            cursor: zoom-in;
         }
 
         .modal-producto-imagen {
             width: 100%;
-            height: 280px;
+            height: 300px;
             object-fit: cover;
+            border-radius: 48px 48px 0 0;
         }
 
         .btn-cerrar-producto {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 18px;
+            right: 18px;
             background: rgba(0,0,0,0.5);
             border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            border-radius: 60px;
             cursor: pointer;
             font-size: 18px;
             color: white;
@@ -451,71 +482,87 @@
         }
 
         .modal-producto-body {
-            padding: 20px;
+            padding: 24px;
         }
 
         .modal-producto-titulo {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: 700;
             color: #2d3436;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+        }
+
+        .modal-producto-meta {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
         }
 
         .modal-producto-origen {
             display: inline-block;
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            margin-bottom: 15px;
+            padding: 5px 14px;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .modal-producto-genero {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #F8F9FA;
+            color: #A3B8A4;
+            border: 1px solid #E5E5E5;
         }
 
         .modal-producto-descripcion {
             color: #666;
-            line-height: 1.5;
-            margin-bottom: 15px;
+            line-height: 1.6;
+            margin-bottom: 20px;
             font-size: 0.9rem;
         }
 
         .modal-producto-precio {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 700;
             color: #A3B8A4;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .seccion-colores {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        .seccion-colores h4 {
+        .seccion-colores h4, .seccion-tallas h4 {
             color: #A3B8A4;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             font-size: 0.9rem;
         }
 
         .color-badge {
             display: inline-block;
-            padding: 6px 14px;
+            padding: 8px 18px;
             background: #FDFBF7;
-            border: 1px solid #E5E5E5;
-            border-radius: 50px;
-            margin: 0 5px 5px 0;
+            border: 1.5px solid #E5E5E5;
+            border-radius: 60px;
+            margin: 0 6px 8px 0;
             font-size: 0.8rem;
         }
 
-        .seccion-tallas h4 {
-            color: #A3B8A4;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
+        .seccion-tallas {
+            margin-bottom: 20px;
         }
 
         .talla-badge {
             display: inline-block;
-            padding: 6px 14px;
+            padding: 8px 18px;
             background: #FDFBF7;
-            border: 1px solid #E5E5E5;
-            border-radius: 50px;
-            margin: 0 5px 5px 0;
+            border: 1.5px solid #E5E5E5;
+            border-radius: 60px;
+            margin: 0 6px 8px 0;
             font-size: 0.8rem;
             cursor: pointer;
             transition: all 0.3s;
@@ -532,11 +579,11 @@
             background: #A3B8A4;
             color: white;
             border: none;
-            padding: 14px;
-            border-radius: 50px;
+            padding: 15px;
+            border-radius: 60px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 15px;
             transition: all 0.3s;
         }
 
@@ -545,7 +592,54 @@
             transform: translateY(-2px);
         }
 
-        /* ========== FORMULARIO EN MODAL ========== */
+        /* Modal Zoom Imagen */
+        .modal-zoom {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 10002;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+
+        .modal-zoom.active {
+            display: flex;
+        }
+
+        .modal-zoom-contenido {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+
+        .modal-zoom-imagen {
+            width: auto;
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 32px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-cerrar-zoom {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 60px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Formulario */
         .formulario-pago {
             display: none;
         }
@@ -556,22 +650,22 @@
 
         .formulario-pago h3 {
             color: #A3B8A4;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         .formulario-pago input,
         .formulario-pago textarea,
         .formulario-pago select {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            border: 1px solid #E5E5E5;
-            border-radius: 50px;
+            padding: 14px;
+            margin-bottom: 14px;
+            border: 1.5px solid #E5E5E5;
+            border-radius: 60px;
             font-family: inherit;
         }
 
         .formulario-pago textarea {
-            border-radius: 20px;
+            border-radius: 28px;
             resize: vertical;
         }
 
@@ -581,13 +675,13 @@
             color: white;
             border: none;
             padding: 14px;
-            border-radius: 50px;
+            border-radius: 60px;
             font-weight: 600;
             cursor: pointer;
             margin-top: 10px;
         }
 
-        /* ========== MODAL PEDIDOS ========== */
+        /* Modal Pedidos */
         .modal-pedido {
             display: none;
             position: fixed;
@@ -597,7 +691,7 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(4px);
-            z-index: 10002;
+            z-index: 10003;
             justify-content: center;
             align-items: center;
         }
@@ -610,8 +704,8 @@
             background: white;
             max-width: 500px;
             width: 90%;
-            border-radius: 32px;
-            padding: 25px;
+            border-radius: 48px;
+            padding: 28px;
             max-height: 85vh;
             overflow-y: auto;
         }
@@ -619,8 +713,8 @@
         .input-buscar {
             width: 100%;
             padding: 14px;
-            border: 1px solid #E5E5E5;
-            border-radius: 50px;
+            border: 1.5px solid #E5E5E5;
+            border-radius: 60px;
             margin-bottom: 15px;
         }
 
@@ -629,7 +723,7 @@
             color: white;
             border: none;
             padding: 12px;
-            border-radius: 50px;
+            border-radius: 60px;
             cursor: pointer;
             width: 100%;
             margin-bottom: 20px;
@@ -637,16 +731,16 @@
 
         .resultado-pedido {
             background: #FDFBF7;
-            border-radius: 20px;
-            padding: 15px;
+            border-radius: 28px;
+            padding: 16px;
             border: 1px solid #E5E5E5;
             margin-top: 15px;
         }
 
         .estado-pedido {
             display: inline-block;
-            padding: 4px 12px;
-            border-radius: 50px;
+            padding: 4px 14px;
+            border-radius: 60px;
             font-size: 0.75rem;
             font-weight: 600;
         }
@@ -661,13 +755,14 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .vacio { text-align: center; color: #9CA3AF; padding: 30px; }
-        .loading { text-align: center; padding: 40px; color: #9CA3AF; }
+        .vacio { text-align: center; color: #9CA3AF; padding: 35px; }
+        .loading { text-align: center; padding: 50px; color: #9CA3AF; }
 
         @media (max-width: 768px) {
-            .container { padding: 20px; }
+            .container { padding: 20px; border-radius: 32px; }
             .productos-grid { grid-template-columns: 1fr; }
             .top-bar { justify-content: center; }
+            .modal-producto-titulo { font-size: 1.2rem; }
         }
     </style>
 </head>
@@ -708,7 +803,7 @@
                 <p class="vacio">El carrito está vacío</p>
             </div>
             <div class="total-modal" id="modal-total">Total: $0.00</div>
-            <div class="envio-info" id="envio-info" style="display: none; margin: 0 20px 20px 20px;">
+            <div class="envio-info" id="envio-info" style="display: none;">
                 <p>🚚 <strong>Costos de envío (se pagan al recibir en Panamá):</strong></p>
                 <p>📦 Por libra: $3.50</p>
                 <p>🏠 Delivery: $1.00</p>
@@ -730,13 +825,13 @@
                         <option value="Transferencia bancaria">🏦 Transferencia bancaria</option>
                     </select>
                     <button class="btn-confirmar-pago" onclick="confirmarPedido()">✅ Confirmar Pedido</button>
-                    <button class="btn-cerrar-modal" style="margin-top: 10px; background: #E5E5E5; color: #4A4A4A;" onclick="volverAlCarrito()">← Volver al carrito</button>
+                    <button class="btn-cerrar-modal" style="margin-top: 12px; background: #E5E5E5; color: #4A4A4A;" onclick="volverAlCarrito()">← Volver al carrito</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL PRODUCTO (DETALLE) -->
+    <!-- MODAL PRODUCTO -->
     <div id="modal-producto" class="modal-producto">
         <div class="modal-producto-contenido">
             <div class="modal-producto-header">
@@ -745,19 +840,30 @@
             </div>
             <div class="modal-producto-body">
                 <h2 class="modal-producto-titulo" id="modal-producto-titulo"></h2>
-                <span class="modal-producto-origen" id="modal-producto-origen"></span>
+                <div class="modal-producto-meta">
+                    <span class="modal-producto-origen" id="modal-producto-origen"></span>
+                    <span class="modal-producto-genero" id="modal-producto-genero"></span>
+                </div>
                 <p class="modal-producto-descripcion" id="modal-producto-descripcion"></p>
                 <div class="modal-producto-precio" id="modal-producto-precio"></div>
-                <div class="seccion-colores" id="seccion-colores">
+                <div class="seccion-colores">
                     <h4>🎨 Colores disponibles</h4>
                     <div id="colores-lista"></div>
                 </div>
-                <div class="seccion-tallas" id="seccion-tallas" style="display: none;">
+                <div class="seccion-tallas" id="seccion-tallas">
                     <h4>📏 Tallas disponibles</h4>
                     <div id="tallas-lista"></div>
                 </div>
-                <button class="btn-agregar-modal" id="btn-agregar-modal" onclick="agregarProductoDesdeModal()">➕ Agregar al carrito</button>
+                <button class="btn-agregar-modal" onclick="agregarProductoDesdeModal()">➕ Agregar al carrito</button>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL ZOOM IMAGEN -->
+    <div id="modal-zoom" class="modal-zoom" onclick="cerrarZoom()">
+        <div class="modal-zoom-contenido">
+            <img id="modal-zoom-imagen" class="modal-zoom-imagen" alt="Imagen ampliada">
+            <button class="btn-cerrar-zoom" onclick="cerrarZoom()">✕</button>
         </div>
     </div>
 
@@ -769,7 +875,7 @@
             <input type="tel" id="buscar-telefono" class="input-buscar" placeholder="Ej: 61234567">
             <button class="btn-buscar" onclick="buscarPedido()">🔍 Buscar mi pedido</button>
             <div id="resultado-pedido"></div>
-            <button class="btn-cerrar-modal" style="margin-top: 15px; width: 100%;" onclick="cerrarModalPedidos()">Cerrar</button>
+            <button class="btn-cerrar-modal" style="margin-top: 15px; width: 100%; background: #E5E5E5; color: #4A4A4A;" onclick="cerrarModalPedidos()">Cerrar</button>
         </div>
     </div>
 
@@ -781,7 +887,6 @@
         let productoSeleccionado = null;
         let tallaSeleccionada = null;
 
-        // Cargar productos
         async function cargarProductos() {
             try {
                 const response = await fetch(`${API_URL}?action=getProductos`);
@@ -803,44 +908,53 @@
 
             contenedor.innerHTML = '';
             productosFiltrados.forEach(producto => {
+                const genero = producto.genero || producto.categoria_genero || 'unisex';
+                const generoTexto = { hombre: '👨 Hombre', mujer: '👩 Mujer', niño: '👦 Niño', niña: '👧 Niña', unisex: '👥 Unisex' }[genero] || '👥 Unisex';
+                
                 const card = document.createElement('div');
                 card.className = 'producto-card';
-                card.onclick = () => abrirModalProducto(producto);
                 card.innerHTML = `
-                    <div class="producto-imagen-container">
+                    <div class="producto-imagen-container" onclick="abrirZoomImagen('${producto.imagen_url || producto.imagen || 'https://via.placeholder.com/300x200'}')">
                         <img src="${producto.imagen_url || producto.imagen || 'https://via.placeholder.com/300x200'}" 
                              class="producto-imagen" onerror="this.src='https://via.placeholder.com/300x200'">
                     </div>
                     <div class="producto-info">
-                        <div class="producto-origen origen-${(producto.origen || 'temu').toLowerCase()}">${producto.origen || 'Temu'}</div>
+                        <div class="producto-header-info">
+                            <span class="producto-origen origen-${(producto.origen || 'temu').toLowerCase()}">${producto.origen || 'Temu'}</span>
+                            <span class="producto-genero">${generoTexto}</span>
+                        </div>
                         <h3 class="producto-titulo">${producto.nombre}</h3>
                         <div class="producto-precio">$${(producto.precio || 0).toFixed(2)}</div>
-                        <button class="btn-agregar" onclick="event.stopPropagation(); agregarAlCarrito(${producto.id})">➕ Agregar</button>
+                        <button class="btn-agregar" onclick="event.stopPropagation(); abrirModalProducto(${producto.id})">➕ Ver detalles</button>
                     </div>
                 `;
                 contenedor.appendChild(card);
             });
         }
 
-        // MODAL PRODUCTO
-        function abrirModalProducto(producto) {
+        function abrirModalProducto(id) {
+            const producto = productos.find(p => p.id == id);
+            if (!producto) return;
             productoSeleccionado = producto;
             tallaSeleccionada = null;
+            
+            const genero = producto.genero || producto.categoria_genero || 'unisex';
+            const generoTexto = { hombre: '👨 Hombre', mujer: '👩 Mujer', niño: '👦 Niño', niña: '👧 Niña', unisex: '👥 Unisex' }[genero] || '👥 Unisex';
             
             document.getElementById('modal-producto-imagen').src = producto.imagen_url || producto.imagen || 'https://via.placeholder.com/300x200';
             document.getElementById('modal-producto-titulo').textContent = producto.nombre;
             document.getElementById('modal-producto-origen').textContent = producto.origen || 'Temu';
             document.getElementById('modal-producto-origen').className = `modal-producto-origen origen-${(producto.origen || 'temu').toLowerCase()}`;
-            document.getElementById('modal-producto-descripcion').textContent = producto.descripcion || 'Producto de alta calidad';
+            document.getElementById('modal-producto-genero').textContent = generoTexto;
+            document.getElementById('modal-producto-descripcion').textContent = producto.descripcion || 'Producto de alta calidad. Consulta disponibilidad con nosotros.';
             document.getElementById('modal-producto-precio').textContent = `$${(producto.precio || 0).toFixed(2)}`;
             
             // Colores
             const coloresDiv = document.getElementById('colores-lista');
             if (producto.colores && producto.colores.length > 0) {
                 coloresDiv.innerHTML = producto.colores.map(c => `<span class="color-badge">🎨 ${c.nombre}</span>`).join('');
-                document.getElementById('seccion-colores').style.display = 'block';
             } else {
-                coloresDiv.innerHTML = '<span class="color-badge">Color único</span>';
+                coloresDiv.innerHTML = '<span class="color-badge">🎨 Color único</span>';
             }
             
             // Tallas
@@ -849,7 +963,8 @@
                 tallasDiv.innerHTML = producto.variantes.map(v => `<span class="talla-badge" data-talla="${v.talla}" onclick="seleccionarTalla('${v.talla}')">📏 ${v.talla}</span>`).join('');
                 document.getElementById('seccion-tallas').style.display = 'block';
             } else {
-                document.getElementById('seccion-tallas').style.display = 'none';
+                tallasDiv.innerHTML = '<span class="talla-badge">📏 Talla única</span>';
+                document.getElementById('seccion-tallas').style.display = 'block';
             }
             
             document.getElementById('modal-producto').classList.add('active');
@@ -873,6 +988,18 @@
 
         function cerrarModalProducto() {
             document.getElementById('modal-producto').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ZOOM IMAGEN
+        function abrirZoomImagen(url) {
+            document.getElementById('modal-zoom-imagen').src = url;
+            document.getElementById('modal-zoom').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarZoom() {
+            document.getElementById('modal-zoom').classList.remove('active');
             document.body.style.overflow = '';
         }
 
@@ -954,7 +1081,6 @@
             }
         }
 
-        // MODAL CARRITO
         function abrirModalCarrito() {
             actualizarModalCarrito();
             document.getElementById('modal-carrito').classList.add('active');
@@ -1061,15 +1187,20 @@
                 const response = await fetch(`${API_URL}?action=getPedidosPorTelefono&telefono=${encodeURIComponent(telefono)}`);
                 const pedidos = await response.json();
                 if (!pedidos || pedidos.length === 0) {
-                    resultadoDiv.innerHTML = '<p>📭 No encontramos pedidos</p>';
+                    resultadoDiv.innerHTML = '<p>📭 No encontramos pedidos con ese número</p>';
                     return;
                 }
                 let html = '';
                 pedidos.forEach(p => {
                     const fecha = new Date(p.fecha).toLocaleDateString();
                     html += `<div class="resultado-pedido">
-                        <div style="display:flex; justify-content:space-between;"><strong>#${p.idPedido || p.id}</strong><span class="estado-pedido estado-${p.estado}">${p.estado}</span></div>
-                        <p>📅 ${fecha}</p><p>💰 $${(p.total || 0).toFixed(2)}</p><p>📍 ${p.direccion || 'N/E'}</p>
+                        <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
+                            <strong>#${p.idPedido || p.id}</strong>
+                            <span class="estado-pedido estado-${p.estado}">${p.estado}</span>
+                        </div>
+                        <p>📅 ${fecha}</p>
+                        <p>💰 $${(p.total || 0).toFixed(2)}</p>
+                        <p>📍 ${p.direccion || 'No especificada'}</p>
                     </div>`;
                 });
                 resultadoDiv.innerHTML = html;
@@ -1081,7 +1212,7 @@
         function mostrarMensaje(texto) {
             const msg = document.createElement('div');
             msg.textContent = texto;
-            msg.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#A3B8A4; color:white; padding:12px 24px; border-radius:50px; z-index:99999; animation:fadeInOut 2s ease';
+            msg.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#A3B8A4; color:white; padding:12px 28px; border-radius:60px; z-index:99999; animation:fadeInOut 2s ease; font-weight:500;';
             document.body.appendChild(msg);
             setTimeout(() => msg.remove(), 2000);
         }
@@ -1092,6 +1223,7 @@
                 cerrarModalProducto();
                 cerrarModalCarrito();
                 cerrarModalPedidos();
+                cerrarZoom();
             }
         });
 
