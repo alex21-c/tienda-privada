@@ -1371,3 +1371,5 @@ async function init() {
     // ✅✅✅ AGREGAR ESTA LÍNEA ✅✅✅
     configurarZoomModal();
 }
+// Llamada a init
+init();
