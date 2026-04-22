@@ -2,1256 +2,252 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Tienda Privada</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', 'Poppins', 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #FDFBF7 0%, #f5f0eb 100%);
-            padding: 20px;
-            color: #4A4A4A;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 48px;
-            padding: 30px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(163, 184, 164, 0.2);
-        }
-
-        h1 {
-            text-align: center;
-            color: #A3B8A4;
-            margin-bottom: 10px;
-            font-size: 2rem;
-            font-weight: 600;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #9CA3AF;
-            margin-bottom: 30px;
-            font-size: 0.9rem;
-        }
-
-        /* Barra superior */
-        .top-bar {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-
-        .btn-mis-pedidos {
-            background: transparent;
-            border: 1.5px solid #A3B8A4;
-            color: #A3B8A4;
-            padding: 10px 24px;
-            border-radius: 60px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
-        }
-
-        .btn-mis-pedidos:hover {
-            background: #A3B8A4;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .carrito-resumen {
-            background: #FDFBF7;
-            border: 1.5px solid #E5E5E5;
-            border-radius: 60px;
-            padding: 8px 24px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .carrito-resumen:hover {
-            border-color: #F4A0B5;
-            background: #FFF8F0;
-            transform: translateY(-2px);
-        }
-
-        .carrito-icono {
-            font-size: 1.2rem;
-        }
-
-        .carrito-total-resumen {
-            font-weight: 700;
-            color: #A3B8A4;
-        }
-
-        .carrito-cantidad {
-            background: #F4A0B5;
-            color: white;
-            border-radius: 60px;
-            padding: 2px 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        /* Filtros */
-        .filtros {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 35px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .filtro-btn {
-            padding: 8px 24px;
-            background: transparent;
-            border: 1.5px solid #E5E5E5;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: #9CA3AF;
-            font-weight: 500;
-        }
-
-        .filtro-btn.active {
-            background: #F4A0B5;
-            border-color: #F4A0B5;
-            color: white;
-        }
-
-        .filtro-btn:hover:not(.active) {
-            border-color: #A3B8A4;
-            color: #A3B8A4;
-        }
-
-        /* Grid de productos */
-        .productos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 28px;
-            margin-bottom: 40px;
-        }
-
-        /* Tarjeta de producto - más redondita */
-        .producto-card {
-            background: white;
-            border-radius: 32px;
-            overflow: hidden;
-            transition: all 0.35s ease;
-            border: 1px solid #E5E5E5;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-        }
-
-        .producto-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 35px rgba(163, 184, 164, 0.15);
-            border-color: #F4A0B5;
-        }
-
-        .producto-imagen-container {
-            position: relative;
-            overflow: hidden;
-            background: #FDFBF7;
-            cursor: zoom-in;
-        }
-
-        .producto-imagen {
-            width: 100%;
-            height: 260px;
-            object-fit: cover;
-            transition: transform 0.4s ease;
-        }
-
-        .producto-card:hover .producto-imagen {
-            transform: scale(1.05);
-        }
-
-        .producto-info {
-            padding: 18px;
-        }
-
-        .producto-header-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .producto-origen {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 60px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        .origen-amazon {
-            background: #ff990020;
-            color: #ff9900;
-            border: 1px solid #ff990040;
-        }
-
-        .origen-temu {
-            background: #e74c3c20;
-            color: #e74c3c;
-            border: 1px solid #e74c3c40;
-        }
-
-        .producto-genero {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 60px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            background: #F8F9FA;
-            color: #A3B8A4;
-            border: 1px solid #E5E5E5;
-        }
-
-        .producto-titulo {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #2d3436;
-            margin-bottom: 10px;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .producto-precio {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #A3B8A4;
-            margin-bottom: 15px;
-        }
-
-        .btn-agregar {
-            width: 100%;
-            background: #A3B8A4;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 60px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .btn-agregar:hover {
-            background: #F4A0B5;
-            transform: translateY(-2px);
-        }
-
-        /* ========== MODAL CARRITO ========== */
-        .modal-carrito {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            z-index: 10000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-carrito.active {
-            display: flex;
-        }
-
-        .modal-carrito-contenido {
-            background: white;
-            max-width: 550px;
-            width: 90%;
-            max-height: 85vh;
-            border-radius: 48px;
-            overflow: hidden;
-            animation: slideUp 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .modal-carrito-header {
-            background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
-            color: white;
-            padding: 22px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-carrito-header h2 {
-            font-size: 1.3rem;
-        }
-
-        .btn-cerrar-modal {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 60px;
-            cursor: pointer;
-            font-size: 18px;
-            color: white;
-            transition: all 0.3s;
-        }
-
-        .btn-cerrar-modal:hover {
-            background: rgba(255,255,255,0.4);
-            transform: scale(1.1);
-        }
-
-        .modal-carrito-body {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-        }
-
-        .item-carrito-modal {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px;
-            border-bottom: 1px solid #E5E5E5;
-            flex-wrap: wrap;
-            gap: 10px;
-            border-radius: 24px;
-        }
-
-        .item-info-modal {
-            flex: 1;
-        }
-
-        .item-nombre-modal {
-            font-weight: 600;
-            color: #2d3436;
-        }
-
-        .item-detalle-modal {
-            font-size: 0.75rem;
-            color: #9CA3AF;
-        }
-
-        .item-precio-modal {
-            font-weight: 600;
-            color: #A3B8A4;
-        }
-
-        .btn-eliminar-modal {
-            background: #FFF0E6;
-            color: #D4A5A5;
-            border: 1px solid #D4A5A5;
-            padding: 6px 14px;
-            border-radius: 60px;
-            cursor: pointer;
-            font-size: 0.7rem;
-        }
-
-        .envio-info {
-            background: #F8F9FA;
-            border-radius: 28px;
-            padding: 16px;
-            margin: 15px 20px;
-        }
-
-        .envio-info p {
-            margin: 6px 0;
-            font-size: 0.85rem;
-        }
-
-        .envio-info .nota {
-            color: #F4A0B5;
-            font-size: 0.7rem;
-            margin-top: 10px;
-        }
-
-        .total-modal {
-            text-align: right;
-            padding: 15px 20px;
-            border-top: 2px solid #E5E5E5;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #A3B8A4;
-        }
-
-        .modal-carrito-footer {
-            padding: 20px;
-            border-top: 1px solid #E5E5E5;
-        }
-
-        .btn-continuar {
-            width: 100%;
-            background: #A3B8A4;
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 60px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-continuar:hover {
-            background: #F4A0B5;
-            transform: translateY(-2px);
-        }
-
-        /* ========== MODAL PRODUCTO ========== */
-        .modal-producto {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            z-index: 10001;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-producto.active {
-            display: flex;
-        }
-
-        .modal-producto-contenido {
-            background: white;
-            max-width: 520px;
-            width: 90%;
-            max-height: 85vh;
-            border-radius: 48px;
-            overflow-y: auto;
-            animation: slideUp 0.3s ease;
-        }
-
-        .modal-producto-header {
-            position: relative;
-            cursor: zoom-in;
-        }
-
-        .modal-producto-imagen {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            border-radius: 48px 48px 0 0;
-        }
-
-        .btn-cerrar-producto {
-            position: absolute;
-            top: 18px;
-            right: 18px;
-            background: rgba(0,0,0,0.5);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 60px;
-            cursor: pointer;
-            font-size: 18px;
-            color: white;
-            transition: all 0.3s;
-        }
-
-        .btn-cerrar-producto:hover {
-            background: #F4A0B5;
-            transform: scale(1.1);
-        }
-
-        .modal-producto-body {
-            padding: 24px;
-        }
-
-        .modal-producto-titulo {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #2d3436;
-            margin-bottom: 12px;
-        }
-
-        .modal-producto-meta {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-
-        .modal-producto-origen {
-            display: inline-block;
-            padding: 5px 14px;
-            border-radius: 60px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .modal-producto-genero {
-            display: inline-block;
-            padding: 5px 14px;
-            border-radius: 60px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: #F8F9FA;
-            color: #A3B8A4;
-            border: 1px solid #E5E5E5;
-        }
-
-        .modal-producto-descripcion {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-        }
-
-        .modal-producto-precio {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #A3B8A4;
-            margin-bottom: 20px;
-        }
-
-        .seccion-colores {
-            margin-bottom: 20px;
-        }
-
-        .seccion-colores h4, .seccion-tallas h4 {
-            color: #A3B8A4;
-            margin-bottom: 12px;
-            font-size: 0.9rem;
-        }
-
-        .color-badge {
-            display: inline-block;
-            padding: 8px 18px;
-            background: #FDFBF7;
-            border: 1.5px solid #E5E5E5;
-            border-radius: 60px;
-            margin: 0 6px 8px 0;
-            font-size: 0.8rem;
-        }
-
-        .seccion-tallas {
-            margin-bottom: 20px;
-        }
-
-        .talla-badge {
-            display: inline-block;
-            padding: 8px 18px;
-            background: #FDFBF7;
-            border: 1.5px solid #E5E5E5;
-            border-radius: 60px;
-            margin: 0 6px 8px 0;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .talla-badge:hover, .talla-badge.selected {
-            background: #F4A0B5;
-            border-color: #F4A0B5;
-            color: white;
-        }
-
-        .btn-agregar-modal {
-            width: 100%;
-            background: #A3B8A4;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 60px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: all 0.3s;
-        }
-
-        .btn-agregar-modal:hover {
-            background: #F4A0B5;
-            transform: translateY(-2px);
-        }
-
-        /* Modal Zoom Imagen */
-        .modal-zoom {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 10002;
-            justify-content: center;
-            align-items: center;
-            cursor: zoom-out;
-        }
-
-        .modal-zoom.active {
-            display: flex;
-        }
-
-        .modal-zoom-contenido {
-            max-width: 90%;
-            max-height: 90%;
-            position: relative;
-        }
-
-        .modal-zoom-imagen {
-            width: auto;
-            max-width: 100%;
-            max-height: 85vh;
-            object-fit: contain;
-            border-radius: 32px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-        }
-
-        .btn-cerrar-zoom {
-            position: absolute;
-            top: -20px;
-            right: -20px;
-            background: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 60px;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        /* Formulario */
-        .formulario-pago {
-            display: none;
-        }
-
-        .formulario-pago.visible {
-            display: block;
-        }
-
-        .formulario-pago h3 {
-            color: #A3B8A4;
-            margin-bottom: 18px;
-        }
-
-        .formulario-pago input,
-        .formulario-pago textarea,
-        .formulario-pago select {
-            width: 100%;
-            padding: 14px;
-            margin-bottom: 14px;
-            border: 1.5px solid #E5E5E5;
-            border-radius: 60px;
-            font-family: inherit;
-        }
-
-        .formulario-pago textarea {
-            border-radius: 28px;
-            resize: vertical;
-        }
-
-        .btn-confirmar-pago {
-            width: 100%;
-            background: #A3B8A4;
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 60px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        /* Modal Pedidos */
-        .modal-pedido {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            z-index: 10003;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-pedido.active {
-            display: flex;
-        }
-
-        .modal-pedido-contenido {
-            background: white;
-            max-width: 500px;
-            width: 90%;
-            border-radius: 48px;
-            padding: 28px;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        .input-buscar {
-            width: 100%;
-            padding: 14px;
-            border: 1.5px solid #E5E5E5;
-            border-radius: 60px;
-            margin-bottom: 15px;
-        }
-
-        .btn-buscar {
-            background: #A3B8A4;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 60px;
-            cursor: pointer;
-            width: 100%;
-            margin-bottom: 20px;
-        }
-
-        .resultado-pedido {
-            background: #FDFBF7;
-            border-radius: 28px;
-            padding: 16px;
-            border: 1px solid #E5E5E5;
-            margin-top: 15px;
-        }
-
-        .estado-pedido {
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 60px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .estado-Pendiente { background: #FFF0E6; color: #D4A5A5; }
-        .estado-Pagado { background: #E8F0E8; color: #A3B8A4; }
-        .estado-Enviado { background: #E8F0E8; color: #A3B8A4; }
-        .estado-Entregado { background: #E8F0E8; color: #A3B8A4; }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .vacio { text-align: center; color: #9CA3AF; padding: 35px; }
-        .loading { text-align: center; padding: 50px; color: #9CA3AF; }
-
-        @media (max-width: 768px) {
-            .container { padding: 20px; border-radius: 32px; }
-            .productos-grid { grid-template-columns: 1fr; }
-            .top-bar { justify-content: center; }
-            .modal-producto-titulo { font-size: 1.2rem; }
-        }
-    </style>
+    <link rel="stylesheet" href="estilo.css">
 </head>
 <body>
     <div class="container">
-        <h1>🛍️ Mi Tienda Privada</h1>
-        <p class="subtitle">Productos seleccionados especialmente para ti</p>
-
+        <h1>🛒 Bienvenido a la Tienda Privada</h1>
+        
+        <!-- Panel de administración (solo visible para ti) -->
+        <div id="admin-panel" style="display:none;" class="admin-quick-panel">
+            <a href="admin.html" class="btn-admin">📊 Ir al Panel de Administrador</a>
+        </div>
+        
+        <!-- Barra superior con filtros, mis pedidos y carrito -->
         <div class="top-bar">
-            <button class="btn-mis-pedidos" onclick="abrirModalPedidos()">📋 Mis Pedidos</button>
-            <div class="carrito-resumen" onclick="abrirModalCarrito()">
-                <span class="carrito-icono">🛒</span>
-                <span class="carrito-cantidad" id="carrito-cantidad">0</span>
-                <span class="carrito-total-resumen" id="carrito-total-resumen">$0.00</span>
-                <span>▼</span>
+            <div class="filtros-plataforma">
+                <button class="filtro-btn active" data-filtro="todos">Todos</button>
+                <button class="filtro-btn" data-filtro="Amazon">Amazon</button>
+                <button class="filtro-btn" data-filtro="Temu">Temu</button>
+            </div>
+            
+            <div class="acciones-top">
+                <!-- Botón Mis Pedidos -->
+                <button id="toggle-mis-pedidos" class="mis-pedidos-top-btn">
+                    📦 Mis Pedidos
+                </button>
+                
+                <!-- Carrito -->
+                <div class="carrito-top">
+                    <button id="carrito-toggle" class="carrito-toggle-btn">
+                        🛒 Carrito
+                        <span id="carrito-contador" class="carrito-contador">0</span>
+                    </button>
+                </div>
             </div>
         </div>
-
-        <div class="filtros">
-            <button class="filtro-btn active" data-filtro="todos">Todos</button>
-            <button class="filtro-btn" data-filtro="Amazon">Amazon</button>
-            <button class="filtro-btn" data-filtro="Temu">Temu</button>
+        
+        <!-- Filtros de género (aparecen después de seleccionar plataforma) -->
+        <div id="filtros-genero" style="display:none;" class="filtros-genero">
+            <button class="filtro-genero-btn active" data-genero="todos">Todos</button>
+            <button class="filtro-genero-btn" data-genero="hombre">👨 Hombre</button>
+            <button class="filtro-genero-btn" data-genero="mujer">👩 Mujer</button>
+            <button class="filtro-genero-btn" data-genero="niño">👦 Niño</button>
+            <button class="filtro-genero-btn" data-genero="niña">👧 Niña</button>
         </div>
-
+        
+        <!-- Panel desplegable del carrito -->
+        <div id="carrito-panel" class="carrito-panel">
+            <div class="carrito-panel-header">
+                <h3>Mi Carrito</h3>
+                <button id="cerrar-carrito" class="cerrar-carrito">✕</button>
+            </div>
+            <div id="carrito-lista-panel" class="carrito-lista-panel">
+                <div class="vacio">✨ Tu carrito está vacío</div>
+            </div>
+            <div class="carrito-total-panel">
+                <strong>Total productos</strong>
+                <span id="total-panel">$0.00</span>
+            </div>
+            
+            <!-- Sección de envío (solo informativo) -->
+            <div class="carrito-envio-info">
+                <div class="envio-info">
+                    <span>📦 Envío (por libra)</span>
+                    <span>$3.50</span>
+                </div>
+                <div class="envio-info">
+                    <span>🚚 Delivery</span>
+                    <span>$1.00</span>
+                </div>
+                <div class="envio-nota">
+                    <span>⚠️ Estos costos se pagarán al recibir el paquete en Panamá</span>
+                </div>
+            </div>
+            
+            <button id="ir-pagar" class="btn-pagar">Ir a pagar</button>
+        </div>
+        
+        <!-- Contenedor de productos -->
         <div id="productos" class="productos-grid">
             <div class="loading">Cargando productos...</div>
         </div>
-    </div>
-
-    <!-- MODAL CARRITO -->
-    <div id="modal-carrito" class="modal-carrito">
-        <div class="modal-carrito-contenido">
-            <div class="modal-carrito-header">
-                <h2>🛒 Mi Carrito</h2>
-                <button class="btn-cerrar-modal" onclick="cerrarModalCarrito()">✕</button>
-            </div>
-            <div class="modal-carrito-body" id="modal-carrito-body">
-                <p class="vacio">El carrito está vacío</p>
-            </div>
-            <div class="total-modal" id="modal-total">Total: $0.00</div>
-            <div class="envio-info" id="envio-info" style="display: none;">
-                <p>🚚 <strong>Costos de envío (se pagan al recibir en Panamá):</strong></p>
-                <p>📦 Por libra: $3.50</p>
-                <p>🏠 Delivery: $1.00</p>
-                <p class="nota">✨ El costo final se calculará cuando el paquete llegue a Panamá según el peso real</p>
-            </div>
-            <div class="modal-carrito-footer" id="modal-carrito-footer" style="display: none;">
-                <button class="btn-continuar" onclick="mostrarFormularioPago()">💳 Continuar con el pago</button>
-            </div>
-            <div class="modal-carrito-footer" id="formulario-pago-container" style="display: none;">
-                <div class="formulario-pago visible">
-                    <h3>📋 Datos para la entrega</h3>
-                    <input type="text" id="nombre-pago" placeholder="Nombre completo" required>
-                    <input type="tel" id="telefono-pago" placeholder="Teléfono / WhatsApp" required>
-                    <textarea id="direccion-pago" rows="3" placeholder="Dirección completa" required></textarea>
-                    <select id="metodo-pago-select" required>
-                        <option value="">Selecciona método de pago</option>
-                        <option value="Efectivo contra entrega">💵 Efectivo (pagas al recibir)</option>
-                        <option value="Yappy">📱 Yappy (te enviaremos el número)</option>
-                        <option value="Transferencia bancaria">🏦 Transferencia bancaria</option>
-                    </select>
-                    <button class="btn-confirmar-pago" onclick="confirmarPedido()">✅ Confirmar Pedido</button>
-                    <button class="btn-cerrar-modal" style="margin-top: 12px; background: #E5E5E5; color: #4A4A4A;" onclick="volverAlCarrito()">← Volver al carrito</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL PRODUCTO -->
-    <div id="modal-producto" class="modal-producto">
-        <div class="modal-producto-contenido">
-            <div class="modal-producto-header">
-                <img id="modal-producto-imagen" class="modal-producto-imagen" src="" alt="">
-                <button class="btn-cerrar-producto" onclick="cerrarModalProducto()">✕</button>
-            </div>
-            <div class="modal-producto-body">
-                <h2 class="modal-producto-titulo" id="modal-producto-titulo"></h2>
-                <div class="modal-producto-meta">
-                    <span class="modal-producto-origen" id="modal-producto-origen"></span>
-                    <span class="modal-producto-genero" id="modal-producto-genero"></span>
-                </div>
-                <p class="modal-producto-descripcion" id="modal-producto-descripcion"></p>
-                <div class="modal-producto-precio" id="modal-producto-precio"></div>
-                <div class="seccion-colores">
-                    <h4>🎨 Colores disponibles</h4>
-                    <div id="colores-lista"></div>
-                </div>
-                <div class="seccion-tallas" id="seccion-tallas">
-                    <h4>📏 Tallas disponibles</h4>
-                    <div id="tallas-lista"></div>
-                </div>
-                <button class="btn-agregar-modal" onclick="agregarProductoDesdeModal()">➕ Agregar al carrito</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL ZOOM IMAGEN -->
-    <div id="modal-zoom" class="modal-zoom" onclick="cerrarZoom()">
-        <div class="modal-zoom-contenido">
-            <img id="modal-zoom-imagen" class="modal-zoom-imagen" alt="Imagen ampliada">
-            <button class="btn-cerrar-zoom" onclick="cerrarZoom()">✕</button>
-        </div>
-    </div>
-
-    <!-- MODAL PEDIDOS -->
-    <div id="modal-pedido" class="modal-pedido">
-        <div class="modal-pedido-contenido">
-            <h3>📋 Consultar mi Pedido</h3>
-            <p style="text-align: center; color: #9CA3AF; margin-bottom: 15px;">Ingresa tu número de teléfono</p>
-            <input type="tel" id="buscar-telefono" class="input-buscar" placeholder="Ej: 61234567">
-            <button class="btn-buscar" onclick="buscarPedido()">🔍 Buscar mi pedido</button>
-            <div id="resultado-pedido"></div>
-            <button class="btn-cerrar-modal" style="margin-top: 15px; width: 100%; background: #E5E5E5; color: #4A4A4A;" onclick="cerrarModalPedidos()">Cerrar</button>
-        </div>
-    </div>
-
-    <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
-        let productos = [];
-        let carrito = [];
-        let filtroActual = 'todos';
-        let productoSeleccionado = null;
-        let tallaSeleccionada = null;
-
-        async function cargarProductos() {
-            try {
-                const response = await fetch(`${API_URL}?action=getProductos`);
-                productos = await response.json();
-                mostrarProductos();
-            } catch (error) {
-                document.getElementById('productos').innerHTML = '<p class="loading">❌ Error cargando productos</p>';
-            }
-        }
-
-        function mostrarProductos() {
-            const contenedor = document.getElementById('productos');
-            const productosFiltrados = filtroActual === 'todos' ? productos : productos.filter(p => p.origen === filtroActual);
-
-            if (!productosFiltrados || productosFiltrados.length === 0) {
-                contenedor.innerHTML = '<p class="loading">📦 No hay productos</p>';
-                return;
-            }
-
-            contenedor.innerHTML = '';
-            productosFiltrados.forEach(producto => {
-                const genero = producto.genero || producto.categoria_genero || 'unisex';
-                const generoTexto = { hombre: '👨 Hombre', mujer: '👩 Mujer', niño: '👦 Niño', niña: '👧 Niña', unisex: '👥 Unisex' }[genero] || '👥 Unisex';
+        
+        <!-- Formulario de pedido viejo (oculto) - se reemplaza por modal -->
+        <div id="formulario-datos" style="display:none;" class="formulario-pedido">
+            <h2>📋 Completa tus datos</h2>
+            <form id="pedido-form">
+                <label>👤 Nombre completo:</label>
+                <input type="text" id="nombre" required>
                 
-                const card = document.createElement('div');
-                card.className = 'producto-card';
-                card.innerHTML = `
-                    <div class="producto-imagen-container" onclick="abrirZoomImagen('${producto.imagen_url || producto.imagen || 'https://via.placeholder.com/300x200'}')">
-                        <img src="${producto.imagen_url || producto.imagen || 'https://via.placeholder.com/300x200'}" 
-                             class="producto-imagen" onerror="this.src='https://via.placeholder.com/300x200'">
+                <label>📱 Número de teléfono:</label>
+                <input type="tel" id="telefono" required placeholder="Ej: 6123-4567">
+                
+                <label>📍 Dirección de entrega:</label>
+                <textarea id="direccion" required rows="3"></textarea>
+                
+                <label>💳 Método de pago:</label>
+                <select id="metodo-pago" required>
+                    <option value="">Selecciona...</option>
+                    <option value="Efectivo contra entrega">💵 Efectivo (pagas al recibir)</option>
+                    <option value="Yappy">📱 Yappy (te enviamos el número)</option>
+                    <option value="Transferencia">🏦 Transferencia bancaria</option>
+                </select>
+                
+                <button type="submit" class="btn-confirmar">✅ Confirmar Pedido</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal de detalle de producto -->
+    <div id="producto-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-cerrar">&times;</span>
+            <div id="modal-contenido">
+                <img id="modal-imagen" src="" alt="">
+                <h2 id="modal-nombre"></h2>
+                <p id="modal-origen"></p>
+                <p id="modal-genero" style="margin:5px 0; color:#C4B7A6;"></p>
+                <p id="modal-precio"></p>
+                <p id="modal-descripcion"></p>
+                
+                <!-- Selector de colores -->
+                <div id="modal-colores" style="margin:15px 0;">
+                    <label style="font-weight:bold; display:block; margin-bottom:8px;">🎨 Color:</label>
+                    <div id="selector-color" style="display:flex; gap:10px; flex-wrap:wrap;">
                     </div>
-                    <div class="producto-info">
-                        <div class="producto-header-info">
-                            <span class="producto-origen origen-${(producto.origen || 'temu').toLowerCase()}">${producto.origen || 'Temu'}</span>
-                            <span class="producto-genero">${generoTexto}</span>
-                        </div>
-                        <h3 class="producto-titulo">${producto.nombre}</h3>
-                        <div class="producto-precio">$${(producto.precio || 0).toFixed(2)}</div>
-                        <button class="btn-agregar" onclick="event.stopPropagation(); abrirModalProducto(${producto.id})">➕ Ver detalles</button>
-                    </div>
-                `;
-                contenedor.appendChild(card);
-            });
-        }
-
-        function abrirModalProducto(id) {
-            const producto = productos.find(p => p.id == id);
-            if (!producto) return;
-            productoSeleccionado = producto;
-            tallaSeleccionada = null;
-            
-            const genero = producto.genero || producto.categoria_genero || 'unisex';
-            const generoTexto = { hombre: '👨 Hombre', mujer: '👩 Mujer', niño: '👦 Niño', niña: '👧 Niña', unisex: '👥 Unisex' }[genero] || '👥 Unisex';
-            
-            document.getElementById('modal-producto-imagen').src = producto.imagen_url || producto.imagen || 'https://via.placeholder.com/300x200';
-            document.getElementById('modal-producto-titulo').textContent = producto.nombre;
-            document.getElementById('modal-producto-origen').textContent = producto.origen || 'Temu';
-            document.getElementById('modal-producto-origen').className = `modal-producto-origen origen-${(producto.origen || 'temu').toLowerCase()}`;
-            document.getElementById('modal-producto-genero').textContent = generoTexto;
-            document.getElementById('modal-producto-descripcion').textContent = producto.descripcion || 'Producto de alta calidad. Consulta disponibilidad con nosotros.';
-            document.getElementById('modal-producto-precio').textContent = `$${(producto.precio || 0).toFixed(2)}`;
-            
-            // Colores
-            const coloresDiv = document.getElementById('colores-lista');
-            if (producto.colores && producto.colores.length > 0) {
-                coloresDiv.innerHTML = producto.colores.map(c => `<span class="color-badge">🎨 ${c.nombre}</span>`).join('');
-            } else {
-                coloresDiv.innerHTML = '<span class="color-badge">🎨 Color único</span>';
-            }
-            
-            // Tallas
-            const tallasDiv = document.getElementById('tallas-lista');
-            if (producto.variantes && producto.variantes.length > 0) {
-                tallasDiv.innerHTML = producto.variantes.map(v => `<span class="talla-badge" data-talla="${v.talla}" onclick="seleccionarTalla('${v.talla}')">📏 ${v.talla}</span>`).join('');
-                document.getElementById('seccion-tallas').style.display = 'block';
-            } else {
-                tallasDiv.innerHTML = '<span class="talla-badge">📏 Talla única</span>';
-                document.getElementById('seccion-tallas').style.display = 'block';
-            }
-            
-            document.getElementById('modal-producto').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function seleccionarTalla(talla) {
-            tallaSeleccionada = talla;
-            document.querySelectorAll('.talla-badge').forEach(el => {
-                el.classList.remove('selected');
-                if (el.dataset.talla === talla) el.classList.add('selected');
-            });
-        }
-
-        function agregarProductoDesdeModal() {
-            if (productoSeleccionado) {
-                agregarAlCarrito(productoSeleccionado.id);
-                cerrarModalProducto();
-            }
-        }
-
-        function cerrarModalProducto() {
-            document.getElementById('modal-producto').classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        // ZOOM IMAGEN
-        function abrirZoomImagen(url) {
-            document.getElementById('modal-zoom-imagen').src = url;
-            document.getElementById('modal-zoom').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function cerrarZoom() {
-            document.getElementById('modal-zoom').classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        // CARRITO
-        function agregarAlCarrito(id) {
-            const producto = productos.find(p => p.id == id);
-            if (!producto) return;
-            
-            const existente = carrito.find(item => item.id === id);
-            if (existente) {
-                existente.cantidad++;
-            } else {
-                carrito.push({ ...producto, cantidad: 1 });
-            }
-            
-            guardarCarrito();
-            actualizarResumenCarrito();
-            mostrarMensaje(`✅ ${producto.nombre} agregado`);
-        }
-
-        function eliminarDelCarrito(id) {
-            carrito = carrito.filter(item => item.id !== id);
-            guardarCarrito();
-            actualizarResumenCarrito();
-            actualizarModalCarrito();
-            mostrarMensaje(`🗑️ Producto eliminado`);
-        }
-
-        function actualizarResumenCarrito() {
-            const cantidad = carrito.reduce((s, i) => s + i.cantidad, 0);
-            const total = carrito.reduce((s, i) => s + (i.precio * i.cantidad), 0);
-            document.getElementById('carrito-cantidad').textContent = cantidad;
-            document.getElementById('carrito-total-resumen').textContent = `$${total.toFixed(2)}`;
-        }
-
-        function actualizarModalCarrito() {
-            const body = document.getElementById('modal-carrito-body');
-            const total = carrito.reduce((s, i) => s + (i.precio * i.cantidad), 0);
-            const envioDiv = document.getElementById('envio-info');
-            const footer = document.getElementById('modal-carrito-footer');
-            
-            if (carrito.length === 0) {
-                body.innerHTML = '<p class="vacio">🛒 El carrito está vacío</p>';
-                document.getElementById('modal-total').innerHTML = 'Total: $0.00';
-                envioDiv.style.display = 'none';
-                footer.style.display = 'none';
-                return;
-            }
-            
-            body.innerHTML = '';
-            carrito.forEach(item => {
-                const subtotal = item.precio * item.cantidad;
-                body.innerHTML += `
-                    <div class="item-carrito-modal">
-                        <div class="item-info-modal">
-                            <div class="item-nombre-modal">${item.nombre}</div>
-                            <div class="item-detalle-modal">${item.origen} | Cantidad: ${item.cantidad}</div>
-                        </div>
-                        <div class="item-precio-modal">$${subtotal.toFixed(2)}</div>
-                        <button class="btn-eliminar-modal" onclick="eliminarDelCarrito(${item.id})">🗑️</button>
-                    </div>
-                `;
-            });
-            
-            document.getElementById('modal-total').innerHTML = `Total productos: $${total.toFixed(2)}`;
-            envioDiv.style.display = 'block';
-            footer.style.display = 'block';
-        }
-
-        function guardarCarrito() {
-            localStorage.setItem('carritoTienda', JSON.stringify(carrito));
-        }
-
-        function cargarCarritoGuardado() {
-            const guardado = localStorage.getItem('carritoTienda');
-            if (guardado) {
-                carrito = JSON.parse(guardado);
-                actualizarResumenCarrito();
-            }
-        }
-
-        function abrirModalCarrito() {
-            actualizarModalCarrito();
-            document.getElementById('modal-carrito').classList.add('active');
-            document.getElementById('formulario-pago-container').style.display = 'none';
-            document.getElementById('modal-carrito-body').style.display = 'block';
-            document.getElementById('modal-total').style.display = 'block';
-            document.getElementById('envio-info').style.display = carrito.length > 0 ? 'block' : 'none';
-            document.getElementById('modal-carrito-footer').style.display = carrito.length > 0 ? 'block' : 'none';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function cerrarModalCarrito() {
-            document.getElementById('modal-carrito').classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        function mostrarFormularioPago() {
-            if (carrito.length === 0) {
-                mostrarMensaje('⚠️ No hay productos en el carrito');
-                return;
-            }
-            document.getElementById('modal-carrito-body').style.display = 'none';
-            document.getElementById('modal-total').style.display = 'none';
-            document.getElementById('envio-info').style.display = 'none';
-            document.getElementById('modal-carrito-footer').style.display = 'none';
-            document.getElementById('formulario-pago-container').style.display = 'block';
-        }
-
-        function volverAlCarrito() {
-            document.getElementById('formulario-pago-container').style.display = 'none';
-            document.getElementById('modal-carrito-body').style.display = 'block';
-            document.getElementById('modal-total').style.display = 'block';
-            document.getElementById('envio-info').style.display = carrito.length > 0 ? 'block' : 'none';
-            document.getElementById('modal-carrito-footer').style.display = carrito.length > 0 ? 'block' : 'none';
-        }
-
-        async function confirmarPedido() {
-            const nombre = document.getElementById('nombre-pago').value;
-            const telefono = document.getElementById('telefono-pago').value;
-            const direccion = document.getElementById('direccion-pago').value;
-            const metodoPago = document.getElementById('metodo-pago-select').value;
-            
-            if (!nombre || !telefono || !direccion || !metodoPago) {
-                mostrarMensaje('⚠️ Completa todos los campos');
-                return;
-            }
-            
-            let detalleProductos = '';
-            let total = 0;
-            carrito.forEach(item => {
-                const subtotal = item.precio * item.cantidad;
-                total += subtotal;
-                detalleProductos += `${item.nombre} (${item.origen}) - $${item.precio} x ${item.cantidad} = $${subtotal}\n`;
-            });
-            
-            const pedidoData = {
-                action: 'crearPedido',
-                nombre: nombre,
-                telefono: telefono,
-                direccion: direccion,
-                metodoPago: metodoPago,
-                total: total,
-                productosTexto: detalleProductos,
-                fecha: new Date().toISOString(),
-                estado: 'Pendiente'
-            };
-            
-            try {
-                await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedidoData) });
-                alert('✅ ¡Pedido enviado! Te contactaremos pronto.');
-                carrito = [];
-                guardarCarrito();
-                actualizarResumenCarrito();
-                cerrarModalCarrito();
-                document.getElementById('nombre-pago').value = '';
-                document.getElementById('telefono-pago').value = '';
-                document.getElementById('direccion-pago').value = '';
-                document.getElementById('metodo-pago-select').value = '';
-            } catch (error) {
-                alert('❌ Error al enviar el pedido');
-            }
-        }
-
-        // MODAL PEDIDOS
-        function abrirModalPedidos() {
-            document.getElementById('modal-pedido').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function cerrarModalPedidos() {
-            document.getElementById('modal-pedido').classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        async function buscarPedido() {
-            const telefono = document.getElementById('buscar-telefono').value.trim();
-            const resultadoDiv = document.getElementById('resultado-pedido');
-            if (!telefono) {
-                resultadoDiv.innerHTML = '<p style="color:#D4A5A5">⚠️ Ingresa tu teléfono</p>';
-                return;
-            }
-            resultadoDiv.innerHTML = '<p>🔍 Buscando...</p>';
-            try {
-                const response = await fetch(`${API_URL}?action=getPedidosPorTelefono&telefono=${encodeURIComponent(telefono)}`);
-                const pedidos = await response.json();
-                if (!pedidos || pedidos.length === 0) {
-                    resultadoDiv.innerHTML = '<p>📭 No encontramos pedidos con ese número</p>';
-                    return;
-                }
-                let html = '';
-                pedidos.forEach(p => {
-                    const fecha = new Date(p.fecha).toLocaleDateString();
-                    html += `<div class="resultado-pedido">
-                        <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:10px;">
-                            <strong>#${p.idPedido || p.id}</strong>
-                            <span class="estado-pedido estado-${p.estado}">${p.estado}</span>
-                        </div>
-                        <p>📅 ${fecha}</p>
-                        <p>💰 $${(p.total || 0).toFixed(2)}</p>
-                        <p>📍 ${p.direccion || 'No especificada'}</p>
-                    </div>`;
-                });
-                resultadoDiv.innerHTML = html;
-            } catch (error) {
-                resultadoDiv.innerHTML = '<p>❌ Error al consultar</p>';
-            }
-        }
-
-        function mostrarMensaje(texto) {
-            const msg = document.createElement('div');
-            msg.textContent = texto;
-            msg.style.cssText = 'position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#A3B8A4; color:white; padding:12px 28px; border-radius:60px; z-index:99999; animation:fadeInOut 2s ease; font-weight:500;';
-            document.body.appendChild(msg);
-            setTimeout(() => msg.remove(), 2000);
-        }
-
-        // Cerrar modales con ESC
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                cerrarModalProducto();
-                cerrarModalCarrito();
-                cerrarModalPedidos();
-                cerrarZoom();
-            }
-        });
-
-        document.getElementById('modal-carrito').addEventListener('click', (e) => { if (e.target === document.getElementById('modal-carrito')) cerrarModalCarrito(); });
-        document.getElementById('modal-producto').addEventListener('click', (e) => { if (e.target === document.getElementById('modal-producto')) cerrarModalProducto(); });
-        document.getElementById('modal-pedido').addEventListener('click', (e) => { if (e.target === document.getElementById('modal-pedido')) cerrarModalPedidos(); });
-
-        function configurarFiltros() {
-            document.querySelectorAll('.filtro-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    filtroActual = btn.dataset.filtro;
-                    mostrarProductos();
-                });
-            });
-        }
-
-        const style = document.createElement('style');
-        style.textContent = `@keyframes fadeInOut{0%{opacity:0;transform:translateX(-50%) translateY(20px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}85%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(-20px)}}`;
-        document.head.appendChild(style);
-
-        function init() {
-            cargarProductos();
-            cargarCarritoGuardado();
-            configurarFiltros();
-        }
-        init();
-    </script>
+                </div>
+                
+                <!-- Selector de tallas (se actualiza según color seleccionado) -->
+                <div id="modal-variantes" style="display:none; margin:15px 0;">
+                    <label style="font-weight:bold;">📏 Talla / Variante:</label>
+                    <select id="selector-variante" style="width:100%; padding:10px; margin-top:5px; border-radius:8px; border:1px solid #ccc;">
+                    </select>
+                </div>
+                
+                <!-- Enlace oculto para admin -->
+                <div id="modal-enlace-admin" style="display:none; margin:15px 0; padding:12px; background:#1A1A1A; border-radius:16px;">
+                    <label style="font-weight:500; color:#00D4FF; display:block; margin-bottom:8px;">🔗 Enlace original del producto:</label>
+                    <a id="modal-enlace" href="#" target="_blank" style="color:#9D00FF; text-decoration:none; word-break:break-all; font-size:0.85em;">Cargando...</a>
+                    <button id="copiar-enlace" style="margin-top:8px; background:#00D4FF; color:#0A0A0A; border:none; padding:6px 12px; border-radius:20px; cursor:pointer; font-size:0.75em; font-weight:500;">📋 Copiar enlace</button>
+                </div>
+                
+                <button id="modal-agregar" class="btn-agregar">➕ Agregar al carrito</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de formulario de pago -->
+    <div id="pago-modal" class="modal">
+        <div class="modal-content" style="max-width: 550px;">
+            <span class="modal-cerrar-pago">&times;</span>
+            <div id="modal-pago-contenido">
+                <h2>📋 Completa tus datos</h2>
+                <form id="pedido-form-modal">
+                    <label>👤 Nombre completo:</label>
+                    <input type="text" id="nombre-modal" required>
+                    
+                    <label>📱 Número de teléfono:</label>
+                    <input type="tel" id="telefono-modal" required placeholder="Ej: 6123-4567">
+                    
+                    <label>📍 Dirección de entrega:</label>
+                    <textarea id="direccion-modal" required rows="3"></textarea>
+                    
+                    <label>💳 Método de pago:</label>
+                    <select id="metodo-pago-modal" required>
+                        <option value="">Selecciona...</option>
+                        <option value="Efectivo contra entrega">💵 Efectivo (pagas al recibir)</option>
+                        <option value="Yappy">📱 Yappy (te enviamos el número)</option>
+                        <option value="Transferencia">🏦 Transferencia bancaria</option>
+                    </select>
+                    
+                    <button type="submit" class="btn-confirmar">✅ Confirmar Pedido</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Yappy (para mostrar número de pago) -->
+    <div id="yappy-modal" class="modal">
+        <div class="modal-content" style="max-width: 450px; text-align: center;">
+            <span class="modal-cerrar-yappy">&times;</span>
+            <div id="modal-yappy-contenido">
+                <div class="yappy-icon">📱</div>
+                <h3>Pagar con Yappy</h3>
+                <p>Escanea el código QR o copia el número:</p>
+                <div class="yappy-numero">
+                    <span id="yappy-telefono">6474-5914</span>
+                    <button id="copiar-yappy" class="btn-copiar">📋 Copiar</button>
+                </div>
+                <div class="yappy-instrucciones">
+                    <p>⚠️ <strong>Importante:</strong></p>
+                    <p>Al realizar el pago, escribe en <strong>COMENTARIOS</strong> tu <strong>nombre completo</strong> para identificar tu pedido.</p>
+                </div>
+                <button id="ya-pague" class="btn-yappy-pague">✅ Ya hice el pago</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de confirmación de pago (MEJORADO) -->
+    <div id="confirmar-pago-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="modal-cerrar-confirmar">&times;</span>
+            <div id="modal-confirmar-contenido">
+                <div class="confirmar-icon">🔍</div>
+                <h3>Confirmar Pago</h3>
+                <p class="confirmar-descripcion">Ingresa tu nombre completo para verificar tu pago:</p>
+                <input type="text" id="nombre-verificar" class="confirmar-input" placeholder="Tu nombre completo">
+                <button id="verificar-pago" class="btn-verificar">✅ Verificar y generar factura</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Factura Aesthetic -->
+    <div id="factura-modal" class="modal">
+        <div class="modal-content factura-content">
+            <span class="modal-cerrar-factura">&times;</span>
+            <div id="factura-contenido" class="factura-container">
+                <!-- La factura se genera dinámicamente -->
+            </div>
+            <div class="factura-actions">
+                <button id="descargar-factura" class="btn-descargar">📄 Descargar Factura</button>
+                <button id="cerrar-factura" class="btn-cerrar-factura">✖ Cerrar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Mis Pedidos -->
+    <div id="mis-pedidos-modal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="modal-cerrar-mis-pedidos">&times;</span>
+            <div id="modal-mis-pedidos-contenido">
+                <h3>📋 Mis Pedidos</h3>
+                <div class="mis-pedidos-busqueda-modal">
+                    <input type="text" id="nombre-consulta-modal" placeholder="Ingresa tu nombre completo" required>
+                    <button id="buscar-pedidos-modal" class="btn-buscar">🔍 Buscar</button>
+                </div>
+                <div id="resultado-pedidos-modal" class="resultado-pedidos">
+                    <p class="vacio">Ingresa tu nombre para ver tus pedidos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Overlay para cerrar carrito -->
+    <div id="overlay" class="overlay"></div>
+    
+    <script src="script.js"></script>
 </body>
 </html>
