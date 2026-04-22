@@ -181,8 +181,10 @@ function mostrarModal(productoId) {
     
     modal.style.display = 'flex';
     console.log("Modal mostrado");
+    
+    // ✅✅✅ AGREGAR ESTA LÍNEA AQUÍ - Configurar zoom en la imagen ✅✅✅
+    configurarZoomEnModalProducto();
 }
-
 // ==================== MOSTRAR TALLAS DIRECTAS ====================
 function mostrarTallasDirectas(variantes) {
     const variantesDiv = document.getElementById('modal-variantes');
@@ -1270,5 +1272,83 @@ function testModalPago() {
         alert('Error: No se encuentra el modal de pago en el HTML');
         return false;
     }
+}
+// ==================== ZOOM EN IMAGEN DEL MODAL ====================
+function configurarZoomEnModalProducto() {
+    setTimeout(function() {
+        const modalImagen = document.getElementById('modal-imagen');
+        
+        if (modalImagen) {
+            // Cambiar cursor a zoom-in
+            modalImagen.style.cursor = 'zoom-in';
+            modalImagen.style.transition = 'transform 0.2s ease';
+            
+            // Remover eventos anteriores para evitar duplicados
+            const nuevaImagen = modalImagen.cloneNode(true);
+            if (modalImagen.parentNode) {
+                modalImagen.parentNode.replaceChild(nuevaImagen, modalImagen);
+            }
+            
+            const imagenFinal = document.getElementById('modal-imagen');
+            if (imagenFinal) {
+                imagenFinal.style.cursor = 'zoom-in';
+                imagenFinal.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const urlImagen = this.src;
+                    if (urlImagen && window.abrirZoomImagen) {
+                        window.abrirZoomImagen(urlImagen);
+                    }
+                });
+            }
+        }
+    }, 150);
+}
+
+// Función para abrir el zoom
+window.abrirZoomImagen = function(urlImagen) {
+    const zoomModal = document.getElementById('zoom-imagen-modal');
+    const zoomImagen = document.getElementById('zoom-imagen');
+    
+    if (zoomImagen && urlImagen) {
+        zoomImagen.src = urlImagen;
+        if (zoomModal) {
+            zoomModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+};
+
+// Función para cerrar el zoom
+window.cerrarZoomImagen = function() {
+    const zoomModal = document.getElementById('zoom-imagen-modal');
+    if (zoomModal) {
+        zoomModal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+};
+
+// Configurar eventos del zoom
+function configurarZoomModal() {
+    const zoomModal = document.getElementById('zoom-imagen-modal');
+    const zoomCerrar = document.getElementById('zoom-cerrar');
+    
+    if (zoomModal) {
+        zoomModal.addEventListener('click', function(e) {
+            if (e.target === zoomModal) {
+                window.cerrarZoomImagen();
+            }
+        });
+    }
+    
+    if (zoomCerrar) {
+        zoomCerrar.addEventListener('click', window.cerrarZoomImagen);
+    }
+    
+    // Cerrar con tecla ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            window.cerrarZoomImagen();
+        }
+    });
 }
 init();
