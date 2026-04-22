@@ -438,7 +438,6 @@ function mostrarListaProductos() {
         const div = document.createElement('div');
         div.className = 'producto-admin-card';
         
-        // Construir HTML de enlaces si existen
         let enlaceHtml = '';
         if (prod.enlace && prod.enlace !== '') {
             enlaceHtml = `<div class="producto-enlace-admin">
@@ -494,7 +493,7 @@ async function eliminarProducto(id) {
 function editarPrecioProducto(id, nombre, precioActual) {
     const nuevoPrecio = prompt(`✏️ Editar precio de:\n"${nombre}"\n\nPrecio actual: $${precioActual.toFixed(2)}\n\nIngresa el nuevo precio:`, precioActual.toFixed(2));
     
-    if (nuevoPrecio === null) return; // Cancelar
+    if (nuevoPrecio === null) return;
     
     const nuevoPrecioNum = parseFloat(nuevoPrecio);
     if (isNaN(nuevoPrecioNum) || nuevoPrecioNum <= 0) {
@@ -548,6 +547,7 @@ async function cargarPedidosAdmin() {
     }
 }
 
+// ==================== MOSTRAR PEDIDOS ADMIN (CORREGIDA) ====================
 function mostrarPedidosAdmin() {
     const container = document.getElementById('pedidos-lista-admin');
     
@@ -567,6 +567,20 @@ function mostrarPedidosAdmin() {
         const estadoClass = getEstadoClass(pedido.estado);
         const estadoIcono = getEstadoIcono(pedido.estado);
         
+        // Calcular total si no viene
+        let totalMostrar = pedido.total;
+        if (!totalMostrar || totalMostrar === 0) {
+            totalMostrar = 0;
+            const productos = pedido.productosTexto || pedido.productos || '';
+            const lineas = productos.split('\n');
+            for (const linea of lineas) {
+                const match = linea.match(/\$(\d+\.?\d*)/);
+                if (match) {
+                    totalMostrar += parseFloat(match[1]);
+                }
+            }
+        }
+        
         let productosHtml = '';
         if (pedido.productosConEnlaces && pedido.productosConEnlaces.length > 0) {
             productosHtml = pedido.productosConEnlaces.map(prod => {
@@ -580,7 +594,7 @@ function mostrarPedidosAdmin() {
                 }
             }).join('');
         } else {
-            const productosLista = pedido.productosTexto ? pedido.productosTexto.split('\n').filter(p => p.trim()) : [];
+            const productosLista = pedido.productosTexto ? pedido.productosTexto.split('\n').filter(p => p.trim()) : (pedido.productos ? pedido.productos.split('\n').filter(p => p.trim()) : []);
             productosHtml = productosLista.map(prod => `<div class="producto-item-pedido">📦 ${prod}</div>`).join('');
         }
         
@@ -603,7 +617,7 @@ function mostrarPedidosAdmin() {
                 ${productosHtml}
             </div>
             <div class="pedido-total">
-                💰 Total: $${pedido.total.toFixed(2)}
+                💰 Total: $${totalMostrar.toFixed(2)}
             </div>
             <div class="pedido-actions">
                 <select onchange="cambiarEstadoPedido(${pedido.id}, this.value)" class="btn-cambiar-estado">
