@@ -2,252 +2,775 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Mi Tienda Privada</title>
-    <link rel="stylesheet" href="estilo.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Poppins', 'Segoe UI', sans-serif;
+            background: #FDFBF7;
+            padding: 20px;
+            color: #4A4A4A;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 32px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            border: 1px solid #E5E5E5;
+        }
+
+        h1 {
+            text-align: center;
+            color: #A3B8A4;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #9CA3AF;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        /* Filtros */
+        .filtros {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filtro-btn {
+            padding: 8px 20px;
+            background: transparent;
+            border: 1px solid #E5E5E5;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #9CA3AF;
+            font-weight: 500;
+        }
+
+        .filtro-btn.active {
+            background: #F4A0B5;
+            border-color: #F4A0B5;
+            color: white;
+        }
+
+        .filtro-btn:hover:not(.active) {
+            border-color: #A3B8A4;
+            color: #A3B8A4;
+        }
+
+        /* Grid de productos */
+        .productos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        /* Tarjeta de producto */
+        .producto-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.3s;
+            border: 1px solid #E5E5E5;
+            cursor: pointer;
+        }
+
+        .producto-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-color: #F4A0B5;
+        }
+
+        /* Contenedor de imagen con cursor de zoom */
+        .producto-imagen-container {
+            position: relative;
+            overflow: hidden;
+            background: #FDFBF7;
+            cursor: zoom-in;
+        }
+
+        .producto-imagen {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .producto-card:hover .producto-imagen {
+            transform: scale(1.05);
+        }
+
+        .producto-info {
+            padding: 16px;
+        }
+
+        .producto-titulo {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2d3436;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .producto-origen {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .origen-amazon {
+            background: #ff990020;
+            color: #ff9900;
+            border: 1px solid #ff990040;
+        }
+
+        .origen-temu {
+            background: #e74c3c20;
+            color: #e74c3c;
+            border: 1px solid #e74c3c40;
+        }
+
+        .producto-precio {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #A3B8A4;
+            margin-bottom: 15px;
+        }
+
+        .btn-agregar {
+            width: 100%;
+            background: #A3B8A4;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-agregar:hover {
+            background: #F4A0B5;
+            transform: translateY(-2px);
+        }
+
+        /* Carrito */
+        .carrito-section {
+            background: #FDFBF7;
+            border-radius: 24px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #E5E5E5;
+        }
+
+        .carrito-section h2 {
+            color: #A3B8A4;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .carrito-lista {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .item-carrito {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #E5E5E5;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-nombre {
+            font-weight: 600;
+            color: #2d3436;
+        }
+
+        .item-detalle {
+            font-size: 0.8rem;
+            color: #9CA3AF;
+        }
+
+        .item-precio {
+            font-weight: 600;
+            color: #A3B8A4;
+        }
+
+        .btn-eliminar {
+            background: #FFF0E6;
+            color: #D4A5A5;
+            border: 1px solid #D4A5A5;
+            padding: 6px 12px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-eliminar:hover {
+            background: #D4A5A5;
+            color: white;
+        }
+
+        .carrito-total {
+            text-align: right;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid #E5E5E5;
+            font-size: 1.2rem;
+        }
+
+        /* Formulario */
+        .formulario-pedido {
+            margin-top: 30px;
+            padding: 20px;
+            background: #FFF8F0;
+            border-radius: 24px;
+            border: 1px solid #F0E6D8;
+        }
+
+        .formulario-pedido h2 {
+            color: #A3B8A4;
+            margin-bottom: 20px;
+        }
+
+        .formulario-pedido label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 600;
+            color: #4A4A4A;
+        }
+
+        .formulario-pedido input,
+        .formulario-pedido textarea,
+        .formulario-pedido select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #E5E5E5;
+            border-radius: 50px;
+            font-family: inherit;
+        }
+
+        .formulario-pedido textarea {
+            border-radius: 20px;
+            resize: vertical;
+        }
+
+        .btn-confirmar {
+            margin-top: 20px;
+            background: #A3B8A4;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .btn-confirmar:hover {
+            background: #F4A0B5;
+            transform: translateY(-2px);
+        }
+
+        .vacio {
+            text-align: center;
+            color: #9CA3AF;
+            padding: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #9CA3AF;
+        }
+
+        /* ========== MODAL PARA ZOOM DE IMAGEN ========== */
+        .modal-zoom {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+
+        .modal-zoom.active {
+            display: flex;
+        }
+
+        .modal-contenido {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+            animation: zoomIn 0.3s ease;
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-imagen {
+            width: auto;
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-cerrar-modal {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #333;
+        }
+
+        .btn-cerrar-modal:hover {
+            background: #F4A0B5;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .productos-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal-imagen {
+                max-height: 70vh;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>🛒 Bienvenido a la Tienda Privada</h1>
-        
-        <!-- Panel de administración (solo visible para ti) -->
-        <div id="admin-panel" style="display:none;" class="admin-quick-panel">
-            <a href="admin.html" class="btn-admin">📊 Ir al Panel de Administrador</a>
+        <h1>🛍️ Mi Tienda Privada</h1>
+        <p class="subtitle">Productos seleccionados especialmente para ti</p>
+
+        <!-- Filtros -->
+        <div class="filtros">
+            <button class="filtro-btn active" data-filtro="todos">Todos</button>
+            <button class="filtro-btn" data-filtro="Amazon">Amazon</button>
+            <button class="filtro-btn" data-filtro="Temu">Temu</button>
         </div>
-        
-        <!-- Barra superior con filtros, mis pedidos y carrito -->
-        <div class="top-bar">
-            <div class="filtros-plataforma">
-                <button class="filtro-btn active" data-filtro="todos">Todos</button>
-                <button class="filtro-btn" data-filtro="Amazon">Amazon</button>
-                <button class="filtro-btn" data-filtro="Temu">Temu</button>
-            </div>
-            
-            <div class="acciones-top">
-                <!-- Botón Mis Pedidos -->
-                <button id="toggle-mis-pedidos" class="mis-pedidos-top-btn">
-                    📦 Mis Pedidos
-                </button>
-                
-                <!-- Carrito -->
-                <div class="carrito-top">
-                    <button id="carrito-toggle" class="carrito-toggle-btn">
-                        🛒 Carrito
-                        <span id="carrito-contador" class="carrito-contador">0</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Filtros de género (aparecen después de seleccionar plataforma) -->
-        <div id="filtros-genero" style="display:none;" class="filtros-genero">
-            <button class="filtro-genero-btn active" data-genero="todos">Todos</button>
-            <button class="filtro-genero-btn" data-genero="hombre">👨 Hombre</button>
-            <button class="filtro-genero-btn" data-genero="mujer">👩 Mujer</button>
-            <button class="filtro-genero-btn" data-genero="niño">👦 Niño</button>
-            <button class="filtro-genero-btn" data-genero="niña">👧 Niña</button>
-        </div>
-        
-        <!-- Panel desplegable del carrito -->
-        <div id="carrito-panel" class="carrito-panel">
-            <div class="carrito-panel-header">
-                <h3>Mi Carrito</h3>
-                <button id="cerrar-carrito" class="cerrar-carrito">✕</button>
-            </div>
-            <div id="carrito-lista-panel" class="carrito-lista-panel">
-                <div class="vacio">✨ Tu carrito está vacío</div>
-            </div>
-            <div class="carrito-total-panel">
-                <strong>Total productos</strong>
-                <span id="total-panel">$0.00</span>
-            </div>
-            
-            <!-- Sección de envío (solo informativo) -->
-            <div class="carrito-envio-info">
-                <div class="envio-info">
-                    <span>📦 Envío (por libra)</span>
-                    <span>$3.50</span>
-                </div>
-                <div class="envio-info">
-                    <span>🚚 Delivery</span>
-                    <span>$1.00</span>
-                </div>
-                <div class="envio-nota">
-                    <span>⚠️ Estos costos se pagarán al recibir el paquete en Panamá</span>
-                </div>
-            </div>
-            
-            <button id="ir-pagar" class="btn-pagar">Ir a pagar</button>
-        </div>
-        
-        <!-- Contenedor de productos -->
+
+        <!-- Productos -->
         <div id="productos" class="productos-grid">
             <div class="loading">Cargando productos...</div>
         </div>
-        
-        <!-- Formulario de pedido viejo (oculto) - se reemplaza por modal -->
-        <div id="formulario-datos" style="display:none;" class="formulario-pedido">
+
+        <!-- Carrito -->
+        <div class="carrito-section">
+            <h2>🛒 Tu Carrito</h2>
+            <div id="carrito-lista" class="carrito-lista">
+                <p class="vacio">El carrito está vacío</p>
+            </div>
+            <div class="carrito-total">
+                <strong>Total: $<span id="total">0.00</span></strong>
+            </div>
+        </div>
+
+        <!-- Formulario -->
+        <div id="formulario-datos" style="display: none;" class="formulario-pedido">
             <h2>📋 Completa tus datos</h2>
             <form id="pedido-form">
-                <label>👤 Nombre completo:</label>
-                <input type="text" id="nombre" required>
-                
-                <label>📱 Número de teléfono:</label>
-                <input type="tel" id="telefono" required placeholder="Ej: 6123-4567">
-                
-                <label>📍 Dirección de entrega:</label>
-                <textarea id="direccion" required rows="3"></textarea>
-                
-                <label>💳 Método de pago:</label>
+                <label>Nombre completo:</label>
+                <input type="text" id="nombre" required placeholder="Ej: María González">
+
+                <label>Teléfono / WhatsApp:</label>
+                <input type="tel" id="telefono" placeholder="Ej: 6123-4567">
+
+                <label>Dirección de entrega:</label>
+                <textarea id="direccion" required rows="3" placeholder="Calle, número, ciudad, código postal..."></textarea>
+
+                <label>Método de pago:</label>
                 <select id="metodo-pago" required>
                     <option value="">Selecciona...</option>
-                    <option value="Efectivo contra entrega">💵 Efectivo (pagas al recibir)</option>
-                    <option value="Yappy">📱 Yappy (te enviamos el número)</option>
-                    <option value="Transferencia">🏦 Transferencia bancaria</option>
+                    <option value="Efectivo contra entrega">💵 Efectivo - Pagas al recibir</option>
+                    <option value="Yappy">📱 Yappy - Te enviaremos el número</option>
+                    <option value="Transferencia bancaria">🏦 Transferencia bancaria</option>
                 </select>
-                
+
                 <button type="submit" class="btn-confirmar">✅ Confirmar Pedido</button>
             </form>
         </div>
     </div>
-    
-    <!-- Modal de detalle de producto -->
-    <div id="producto-modal" class="modal">
-        <div class="modal-content">
-            <span class="modal-cerrar">&times;</span>
-            <div id="modal-contenido">
-                <img id="modal-imagen" src="" alt="">
-                <h2 id="modal-nombre"></h2>
-                <p id="modal-origen"></p>
-                <p id="modal-genero" style="margin:5px 0; color:#C4B7A6;"></p>
-                <p id="modal-precio"></p>
-                <p id="modal-descripcion"></p>
-                
-                <!-- Selector de colores -->
-                <div id="modal-colores" style="margin:15px 0;">
-                    <label style="font-weight:bold; display:block; margin-bottom:8px;">🎨 Color:</label>
-                    <div id="selector-color" style="display:flex; gap:10px; flex-wrap:wrap;">
+
+    <!-- Modal para zoom de imagen -->
+    <div id="modal-zoom" class="modal-zoom">
+        <div class="modal-contenido">
+            <button class="btn-cerrar-modal" onclick="cerrarZoom()">✕</button>
+            <img id="modal-imagen" class="modal-imagen" alt="Imagen ampliada">
+        </div>
+    </div>
+
+    <script>
+        // Configuración
+        const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
+        let productos = [];
+        let carrito = [];
+        let filtroActual = 'todos';
+
+        // Cargar productos desde Google Sheets
+        async function cargarProductos() {
+            try {
+                const response = await fetch(`${API_URL}?action=getProductos`);
+                productos = await response.json();
+                mostrarProductos();
+            } catch (error) {
+                console.error('Error cargando productos:', error);
+                document.getElementById('productos').innerHTML = '<p class="loading">❌ Error cargando productos. Recarga la página.</p>';
+            }
+        }
+
+        // Mostrar productos con filtro
+        function mostrarProductos() {
+            const contenedor = document.getElementById('productos');
+            const productosFiltrados = filtroActual === 'todos' 
+                ? productos 
+                : productos.filter(p => p.origen === filtroActual);
+
+            if (!productosFiltrados || productosFiltrados.length === 0) {
+                contenedor.innerHTML = '<p class="loading">📦 No hay productos en esta categoría</p>';
+                return;
+            }
+
+            contenedor.innerHTML = '';
+            productosFiltrados.forEach(producto => {
+                const card = document.createElement('div');
+                card.className = 'producto-card';
+                card.innerHTML = `
+                    <div class="producto-imagen-container" onclick="abrirZoom('${producto.imagen_url || producto.imagen || 'https://via.placeholder.com/300x200?text=Sin+imagen'}', '${producto.nombre}')">
+                        <img src="${producto.imagen_url || producto.imagen || 'https://via.placeholder.com/300x200?text=Sin+imagen'}" 
+                             alt="${producto.nombre}" 
+                             class="producto-imagen"
+                             onerror="this.src='https://via.placeholder.com/300x200?text=Imagen+no+disponible'">
                     </div>
-                </div>
+                    <div class="producto-info">
+                        <div class="producto-origen origen-${(producto.origen || 'temu').toLowerCase()}">${producto.origen || 'Temu'}</div>
+                        <h3 class="producto-titulo">${producto.nombre}</h3>
+                        <div class="producto-precio">$${(producto.precio || 0).toFixed(2)}</div>
+                        <button class="btn-agregar" onclick="agregarAlCarrito(${producto.id})">➕ Agregar al carrito</button>
+                    </div>
+                `;
+                contenedor.appendChild(card);
+            });
+        }
+
+        // ========== FUNCIONES DE ZOOM ==========
+        function abrirZoom(urlImagen, nombreProducto) {
+            const modal = document.getElementById('modal-zoom');
+            const imgModal = document.getElementById('modal-imagen');
+            
+            imgModal.src = urlImagen;
+            imgModal.alt = nombreProducto;
+            modal.classList.add('active');
+            
+            // Prevenir scroll del body
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarZoom() {
+            const modal = document.getElementById('modal-zoom');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Cerrar modal con tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                cerrarZoom();
+            }
+        });
+
+        // Cerrar modal haciendo clic fuera de la imagen
+        document.getElementById('modal-zoom').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cerrarZoom();
+            }
+        });
+
+        // ========== CARRITO ==========
+        function agregarAlCarrito(id) {
+            const producto = productos.find(p => p.id == id);
+            if (!producto) return;
+
+            const existente = carrito.find(item => item.id === id);
+            if (existente) {
+                existente.cantidad++;
+            } else {
+                carrito.push({
+                    id: producto.id,
+                    nombre: producto.nombre,
+                    precio: producto.precio,
+                    origen: producto.origen,
+                    imagen: producto.imagen_url || producto.imagen,
+                    cantidad: 1
+                });
+            }
+
+            guardarCarrito();
+            actualizarCarrito();
+            mostrarMensajeTemporal(`✅ ${producto.nombre} agregado al carrito`);
+        }
+
+        function eliminarDelCarrito(id) {
+            const producto = carrito.find(item => item.id === id);
+            carrito = carrito.filter(item => item.id !== id);
+            guardarCarrito();
+            actualizarCarrito();
+            if (producto) {
+                mostrarMensajeTemporal(`🗑️ ${producto.nombre} eliminado del carrito`);
+            }
+        }
+
+        function actualizarCarrito() {
+            const listaCarrito = document.getElementById('carrito-lista');
+            const totalSpan = document.getElementById('total');
+            const formularioDiv = document.getElementById('formulario-datos');
+
+            if (carrito.length === 0) {
+                listaCarrito.innerHTML = '<p class="vacio">El carrito está vacío</p>';
+                totalSpan.textContent = '0.00';
+                formularioDiv.style.display = 'none';
+                return;
+            }
+
+            formularioDiv.style.display = 'block';
+            listaCarrito.innerHTML = '';
+            let total = 0;
+
+            carrito.forEach(item => {
+                const subtotal = item.precio * item.cantidad;
+                total += subtotal;
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'item-carrito';
+                itemDiv.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-nombre">${item.nombre}</div>
+                        <div class="item-detalle">${item.origen} | Cantidad: ${item.cantidad}</div>
+                    </div>
+                    <div class="item-precio">$${subtotal.toFixed(2)}</div>
+                    <button class="btn-eliminar" onclick="eliminarDelCarrito(${item.id})">🗑️ Eliminar</button>
+                `;
+                listaCarrito.appendChild(itemDiv);
+            });
+
+            totalSpan.textContent = total.toFixed(2);
+        }
+
+        function guardarCarrito() {
+            localStorage.setItem('carritoTienda', JSON.stringify(carrito));
+        }
+
+        function cargarCarritoGuardado() {
+            const guardado = localStorage.getItem('carritoTienda');
+            if (guardado) {
+                carrito = JSON.parse(guardado);
+                actualizarCarrito();
+            }
+        }
+
+        // Mensaje temporal flotante
+        function mostrarMensajeTemporal(mensaje) {
+            const msgDiv = document.createElement('div');
+            msgDiv.textContent = mensaje;
+            msgDiv.style.position = 'fixed';
+            msgDiv.style.bottom = '20px';
+            msgDiv.style.left = '50%';
+            msgDiv.style.transform = 'translateX(-50%)';
+            msgDiv.style.backgroundColor = '#A3B8A4';
+            msgDiv.style.color = 'white';
+            msgDiv.style.padding = '12px 24px';
+            msgDiv.style.borderRadius = '50px';
+            msgDiv.style.fontWeight = '600';
+            msgDiv.style.zIndex = '9999';
+            msgDiv.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            msgDiv.style.animation = 'fadeInOut 2s ease';
+            
+            document.body.appendChild(msgDiv);
+            
+            setTimeout(() => {
+                msgDiv.style.opacity = '0';
+                setTimeout(() => msgDiv.remove(), 500);
+            }, 2000);
+        }
+
+        // Estilo para animación del mensaje
+        const styleAnim = document.createElement('style');
+        styleAnim.textContent = `
+            @keyframes fadeInOut {
+                0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+                15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+                100% { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(styleAnim);
+
+        // ========== ENVIAR PEDIDO ==========
+        async function enviarPedido(datosCliente) {
+            let detalleProductos = '';
+            let total = 0;
+
+            carrito.forEach(item => {
+                const subtotal = item.precio * item.cantidad;
+                total += subtotal;
+                detalleProductos += `${item.nombre} (${item.origen}) - $${item.precio} x ${item.cantidad} = $${subtotal}\n`;
+            });
+
+            const mensaje = `
+🛍️ NUEVO PEDIDO 🛍️
+
+📋 DATOS DEL CLIENTE:
+Nombre: ${datosCliente.nombre}
+Teléfono: ${datosCliente.telefono || 'No especificado'}
+Dirección: ${datosCliente.direccion}
+Método de pago: ${datosCliente.metodoPago}
+
+🛒 PRODUCTOS:
+${detalleProductos}
+
+💰 TOTAL: $${total.toFixed(2)}
+
+Este pedido fue generado desde la tienda privada.
+            `;
+
+            // Enviar a Google Sheets vía webhook
+            const pedidoData = {
+                action: 'crearPedido',
+                nombre: datosCliente.nombre,
+                telefono: datosCliente.telefono || '',
+                direccion: datosCliente.direccion,
+                metodoPago: datosCliente.metodoPago,
+                total: total,
+                productosTexto: detalleProductos,
+                fecha: new Date().toISOString()
+            };
+
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(pedidoData)
+                });
+
+                alert('✅ ¡Pedido enviado con éxito! Nos pondremos en contacto contigo.');
                 
-                <!-- Selector de tallas (se actualiza según color seleccionado) -->
-                <div id="modal-variantes" style="display:none; margin:15px 0;">
-                    <label style="font-weight:bold;">📏 Talla / Variante:</label>
-                    <select id="selector-variante" style="width:100%; padding:10px; margin-top:5px; border-radius:8px; border:1px solid #ccc;">
-                    </select>
-                </div>
+                // Vaciar carrito
+                carrito = [];
+                guardarCarrito();
+                actualizarCarrito();
                 
-                <!-- Enlace oculto para admin -->
-                <div id="modal-enlace-admin" style="display:none; margin:15px 0; padding:12px; background:#1A1A1A; border-radius:16px;">
-                    <label style="font-weight:500; color:#00D4FF; display:block; margin-bottom:8px;">🔗 Enlace original del producto:</label>
-                    <a id="modal-enlace" href="#" target="_blank" style="color:#9D00FF; text-decoration:none; word-break:break-all; font-size:0.85em;">Cargando...</a>
-                    <button id="copiar-enlace" style="margin-top:8px; background:#00D4FF; color:#0A0A0A; border:none; padding:6px 12px; border-radius:20px; cursor:pointer; font-size:0.75em; font-weight:500;">📋 Copiar enlace</button>
-                </div>
-                
-                <button id="modal-agregar" class="btn-agregar">➕ Agregar al carrito</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal de formulario de pago -->
-    <div id="pago-modal" class="modal">
-        <div class="modal-content" style="max-width: 550px;">
-            <span class="modal-cerrar-pago">&times;</span>
-            <div id="modal-pago-contenido">
-                <h2>📋 Completa tus datos</h2>
-                <form id="pedido-form-modal">
-                    <label>👤 Nombre completo:</label>
-                    <input type="text" id="nombre-modal" required>
-                    
-                    <label>📱 Número de teléfono:</label>
-                    <input type="tel" id="telefono-modal" required placeholder="Ej: 6123-4567">
-                    
-                    <label>📍 Dirección de entrega:</label>
-                    <textarea id="direccion-modal" required rows="3"></textarea>
-                    
-                    <label>💳 Método de pago:</label>
-                    <select id="metodo-pago-modal" required>
-                        <option value="">Selecciona...</option>
-                        <option value="Efectivo contra entrega">💵 Efectivo (pagas al recibir)</option>
-                        <option value="Yappy">📱 Yappy (te enviamos el número)</option>
-                        <option value="Transferencia">🏦 Transferencia bancaria</option>
-                    </select>
-                    
-                    <button type="submit" class="btn-confirmar">✅ Confirmar Pedido</button>
-                </form>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal de Yappy (para mostrar número de pago) -->
-    <div id="yappy-modal" class="modal">
-        <div class="modal-content" style="max-width: 450px; text-align: center;">
-            <span class="modal-cerrar-yappy">&times;</span>
-            <div id="modal-yappy-contenido">
-                <div class="yappy-icon">📱</div>
-                <h3>Pagar con Yappy</h3>
-                <p>Escanea el código QR o copia el número:</p>
-                <div class="yappy-numero">
-                    <span id="yappy-telefono">6474-5914</span>
-                    <button id="copiar-yappy" class="btn-copiar">📋 Copiar</button>
-                </div>
-                <div class="yappy-instrucciones">
-                    <p>⚠️ <strong>Importante:</strong></p>
-                    <p>Al realizar el pago, escribe en <strong>COMENTARIOS</strong> tu <strong>nombre completo</strong> para identificar tu pedido.</p>
-                </div>
-                <button id="ya-pague" class="btn-yappy-pague">✅ Ya hice el pago</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal de confirmación de pago (MEJORADO) -->
-    <div id="confirmar-pago-modal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
-            <span class="modal-cerrar-confirmar">&times;</span>
-            <div id="modal-confirmar-contenido">
-                <div class="confirmar-icon">🔍</div>
-                <h3>Confirmar Pago</h3>
-                <p class="confirmar-descripcion">Ingresa tu nombre completo para verificar tu pago:</p>
-                <input type="text" id="nombre-verificar" class="confirmar-input" placeholder="Tu nombre completo">
-                <button id="verificar-pago" class="btn-verificar">✅ Verificar y generar factura</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal de Factura Aesthetic -->
-    <div id="factura-modal" class="modal">
-        <div class="modal-content factura-content">
-            <span class="modal-cerrar-factura">&times;</span>
-            <div id="factura-contenido" class="factura-container">
-                <!-- La factura se genera dinámicamente -->
-            </div>
-            <div class="factura-actions">
-                <button id="descargar-factura" class="btn-descargar">📄 Descargar Factura</button>
-                <button id="cerrar-factura" class="btn-cerrar-factura">✖ Cerrar</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal de Mis Pedidos -->
-    <div id="mis-pedidos-modal" class="modal">
-        <div class="modal-content" style="max-width: 600px;">
-            <span class="modal-cerrar-mis-pedidos">&times;</span>
-            <div id="modal-mis-pedidos-contenido">
-                <h3>📋 Mis Pedidos</h3>
-                <div class="mis-pedidos-busqueda-modal">
-                    <input type="text" id="nombre-consulta-modal" placeholder="Ingresa tu nombre completo" required>
-                    <button id="buscar-pedidos-modal" class="btn-buscar">🔍 Buscar</button>
-                </div>
-                <div id="resultado-pedidos-modal" class="resultado-pedidos">
-                    <p class="vacio">Ingresa tu nombre para ver tus pedidos</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Overlay para cerrar carrito -->
-    <div id="overlay" class="overlay"></div>
-    
-    <script src="script.js"></script>
+                // Limpiar formulario
+                document.getElementById('pedido-form').reset();
+                return true;
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Hubo un error al enviar el pedido. Por favor, intenta de nuevo.');
+                return false;
+            }
+        }
+
+        // Configurar formulario
+        function configurarFormulario() {
+            const form = document.getElementById('pedido-form');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const nombre = document.getElementById('nombre').value;
+                const telefono = document.getElementById('telefono').value;
+                const direccion = document.getElementById('direccion').value;
+                const metodoPago = document.getElementById('metodo-pago').value;
+
+                if (!nombre || !direccion || !metodoPago) {
+                    alert('⚠️ Por favor, completa todos los campos obligatorios');
+                    return;
+                }
+
+                if (carrito.length === 0) {
+                    alert('⚠️ Tu carrito está vacío. Agrega productos antes de confirmar.');
+                    return;
+                }
+
+                const datosCliente = { nombre, telefono, direccion, metodoPago };
+                await enviarPedido(datosCliente);
+            });
+        }
+
+        // Configurar filtros
+        function configurarFiltros() {
+            document.querySelectorAll('.filtro-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    filtroActual = btn.dataset.filtro;
+                    mostrarProductos();
+                });
+            });
+        }
+
+        // Inicializar
+        function init() {
+            cargarProductos();
+            cargarCarritoGuardado();
+            configurarFormulario();
+            configurarFiltros();
+        }
+
+        init();
+    </script>
 </body>
 </html>
