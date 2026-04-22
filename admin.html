@@ -450,13 +450,12 @@ function mostrarPedidosAdmin() {
                     <option value="Enviado" ${pedido.estado === 'Enviado' ? 'selected' : ''}>📦 Enviado</option>
                     <option value="Entregado" ${pedido.estado === 'Entregado' ? 'selected' : ''}>🏠 Entregado</option>
                 </select>
-                <button class="btn-registrar-pago" onclick="alert('Función de registro de pago en desarrollo')">💰 Registrar Pago</button>
+                <button class="btn-registrar-pago" onclick="registrarPagoModal(${pedido.id}, ${totalMostrar}, '${pedido.nombre.replace(/'/g, "\\'")}')">💰 Registrar Pago</button>
             </div>
         `;
         container.appendChild(card);
     });
 }
-
 async function cambiarEstadoPedido(id, nuevoEstado) {
     try {
         await fetch(API_URL, {
