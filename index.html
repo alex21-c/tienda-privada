@@ -5,6 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Tienda Privada</title>
     <link rel="stylesheet" href="estilo.css">
+    <style>
+        /* Estilos adicionales para el zoom de imagen en modal */
+        .modal-producto-imagen-container {
+            cursor: zoom-in;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+        }
+        
+        .modal-producto-imagen-container img {
+            width: 100%;
+            height: auto;
+            transition: transform 0.3s ease;
+            display: block;
+        }
+        
+        .modal-producto-imagen-container img:hover {
+            transform: scale(1.02);
+        }
+        
+        /* Modal de zoom de imagen */
+        .zoom-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 20000;
+            justify-content: center;
+            align-items: center;
+            cursor: zoom-out;
+        }
+        
+        .zoom-modal.active {
+            display: flex;
+        }
+        
+        .zoom-modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .zoom-modal-img {
+            width: auto;
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+        
+        .zoom-modal-close {
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            background: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .zoom-modal-close:hover {
+            background: #F4A0B5;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            .zoom-modal-close {
+                top: -30px;
+                right: 0;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -116,7 +200,10 @@
         <div class="modal-content">
             <span class="modal-cerrar">&times;</span>
             <div id="modal-contenido">
-                <img id="modal-imagen" src="" alt="">
+                <!-- CONTENEDOR DE IMAGEN CON ZOOM -->
+                <div id="modal-imagen-container" class="modal-producto-imagen-container">
+                    <img id="modal-imagen" src="" alt="">
+                </div>
                 <h2 id="modal-nombre"></h2>
                 <p id="modal-origen"></p>
                 <p id="modal-genero" style="margin:5px 0; color:#C4B7A6;"></p>
@@ -146,6 +233,14 @@
                 
                 <button id="modal-agregar" class="btn-agregar">➕ Agregar al carrito</button>
             </div>
+        </div>
+    </div>
+    
+    <!-- Modal de zoom de imagen (para hacer zoom en la imagen del producto) -->
+    <div id="zoom-imagen-modal" class="zoom-modal">
+        <div class="zoom-modal-content">
+            <img id="zoom-imagen" class="zoom-modal-img" src="" alt="Imagen ampliada">
+            <button class="zoom-modal-close" id="zoom-cerrar">✕</button>
         </div>
     </div>
     
@@ -249,5 +344,86 @@
     <div id="overlay" class="overlay"></div>
     
     <script src="script.js"></script>
+    <script>
+        // ========== FUNCIONALIDAD DE ZOOM EN IMAGEN DEL MODAL DE PRODUCTO ==========
+        // Esta función se agregará al script.js o se puede poner aquí directamente
+        
+        // Esperar a que el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Referencias a los elementos
+            const modalProducto = document.getElementById('producto-modal');
+            const zoomModal = document.getElementById('zoom-imagen-modal');
+            const zoomImagen = document.getElementById('zoom-imagen');
+            const zoomCerrar = document.getElementById('zoom-cerrar');
+            
+            // Función para abrir el zoom (se llamará desde el script.js cuando se cargue la imagen)
+            window.abrirZoomImagen = function(urlImagen) {
+                if (zoomImagen && urlImagen) {
+                    zoomImagen.src = urlImagen;
+                    zoomModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            };
+            
+            // Función para cerrar el zoom
+            window.cerrarZoomImagen = function() {
+                zoomModal.classList.remove('active');
+                document.body.style.overflow = '';
+            };
+            
+            // Cerrar zoom con clic en el fondo
+            if (zoomModal) {
+                zoomModal.addEventListener('click', function(e) {
+                    if (e.target === zoomModal) {
+                        window.cerrarZoomImagen();
+                    }
+                });
+            }
+            
+            // Cerrar zoom con tecla ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && zoomModal && zoomModal.classList.contains('active')) {
+                    window.cerrarZoomImagen();
+                }
+            });
+            
+            // Cerrar zoom con el botón X
+            if (zoomCerrar) {
+                zoomCerrar.addEventListener('click', window.cerrarZoomImagen);
+            }
+        });
+        
+        // Esta función se integrará con el script.js para agregar el evento de clic a la imagen del modal
+        // Cuando se abra un producto, se debe llamar a esta configuración
+        window.configurarZoomEnModalProducto = function() {
+            setTimeout(function() {
+                const modalImagen = document.getElementById('modal-imagen');
+                const imagenContainer = document.getElementById('modal-imagen-container');
+                
+                if (modalImagen && imagenContainer) {
+                    // Agregar cursor pointer y evento de clic
+                    modalImagen.style.cursor = 'zoom-in';
+                    
+                    // Remover eventos anteriores para evitar duplicados
+                    const nuevoElemento = modalImagen.cloneNode(true);
+                    if (modalImagen.parentNode) {
+                        modalImagen.parentNode.replaceChild(nuevoElemento, modalImagen);
+                    }
+                    
+                    const nuevaImagen = document.getElementById('modal-imagen');
+                    if (nuevaImagen) {
+                        nuevaImagen.style.cursor = 'zoom-in';
+                        nuevaImagen.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            const urlImagen = this.src;
+                            if (urlImagen && window.abrirZoomImagen) {
+                                window.abrirZoomImagen(urlImagen);
+                            }
+                        });
+                    }
+                }
+            }, 100);
+        };
+    </script>
 </body>
 </html>
