@@ -533,7 +533,7 @@ function registrarPagoModal(id, total, nombre) {
         mostrarPedidosAdmin();
         mostrarMensaje(`✅ Pago registrado correctamente para "${pedidoPagoActual.nombre}" por $${monto.toFixed(2)}`, 'success');
         
-        // Generar factura en modal (sin ventana emergente)
+        // Generar factura con selector de tamaño de papel (sin IVA)
         generarFacturaSimple(pedidoPagoActual.nombre, total, monto, metodoTexto, referencia || '');
         
     } catch (error) {
@@ -544,95 +544,262 @@ function registrarPagoModal(id, total, nombre) {
     }
 }
 
-// ==================== GENERAR FACTURA EN MODAL ====================
+// ==================== GENERAR FACTURA CON SELECTOR DE TAMAÑO (SIN IVA) ====================
 function generarFacturaSimple(nombre, total, montoPagado, metodoPago, referencia) {
     const comprobante = `FACT-${Date.now()}`;
-    const fechaFormateada = new Date().toLocaleDateString();
-    const horaFormateada = new Date().toLocaleTimeString();
+    const fecha = new Date();
+    const fechaFormateada = fecha.toLocaleDateString('es-ES');
+    const horaFormateada = fecha.toLocaleTimeString('es-ES');
     
-    // Crear modal de factura en el mismo panel
+    // Mostrar diálogo para seleccionar tamaño de papel
+    const tamanioPapel = prompt(
+        '📏 SELECCIONA EL TAMAÑO DE PAPEL DE TU IMPRESORA FISCAL:\n\n' +
+        '1 - 58mm (ticket pequeño, 32 caracteres por línea)\n' +
+        '2 - 80mm (ticket estándar, 42 caracteres por línea)\n' +
+        '3 - 76mm (ticket intermedio, 40 caracteres)\n' +
+        '4 - Personalizado (ingresa el ancho en mm)\n\n' +
+        '👉 Escribe el número de opción (1, 2, 3 o 4):',
+        '2'
+    );
+    
+    let anchoMM = 80;
+    let charsPorLinea = 42;
+    let nombreTamanio = '80mm';
+    
+    if (tamanioPapel === '1') {
+        anchoMM = 58;
+        charsPorLinea = 32;
+        nombreTamanio = '58mm';
+    } else if (tamanioPapel === '2') {
+        anchoMM = 80;
+        charsPorLinea = 42;
+        nombreTamanio = '80mm';
+    } else if (tamanioPapel === '3') {
+        anchoMM = 76;
+        charsPorLinea = 40;
+        nombreTamanio = '76mm';
+    } else if (tamanioPapel === '4') {
+        const personalizado = prompt('📏 Ingresa el ancho del papel en mm (ejemplo: 58, 76, 80, 100):', '80');
+        anchoMM = parseInt(personalizado) || 80;
+        charsPorLinea = Math.floor(anchoMM * 0.52);
+        charsPorLinea = Math.min(48, Math.max(24, charsPorLinea));
+        nombreTamanio = `${anchoMM}mm`;
+    }
+    
+    // Función para centrar texto
+    function centrar(texto) {
+        const espacios = charsPorLinea - texto.length;
+        const izquierda = Math.floor(espacios / 2);
+        return ' '.repeat(Math.max(0, izquierda)) + texto + ' '.repeat(Math.max(0, espacios - izquierda));
+    }
+    
+    // Función para alinear izquierda
+    function izquierda(texto) {
+        return texto + ' '.repeat(Math.max(0, charsPorLinea - texto.length));
+    }
+    
+    // Función para dos columnas
+    function dosColumnas(col1, col2) {
+        const espacioCol1 = Math.floor(charsPorLinea * 0.6);
+        const texto1 = col1.length > espacioCol1 ? col1.substring(0, espacioCol1 - 3) + '...' : col1;
+        const texto2 = col2.padStart(charsPorLinea - texto1.length);
+        return texto1 + texto2;
+    }
+    
+    // Generar líneas de borde
+    const lineaSimple = '─'.repeat(charsPorLinea);
+    const bordeSuperior = '╔' + '═'.repeat(charsPorLinea - 2) + '╗';
+    const bordeInferior = '╚' + '═'.repeat(charsPorLinea - 2) + '╝';
+    const separador = '╠' + '═'.repeat(charsPorLinea - 2) + '╣';
+    
+    let facturaTexto = '';
+    
+    if (anchoMM >= 70) {
+        facturaTexto = `
+${bordeSuperior}
+║${centrar('🎀 FACTURA DE PAGO')}║
+║${centrar('COMPROBANTE DE PAGO')}║
+${separador}
+║${izquierda(`N°: ${comprobante}`)}║
+║${izquierda(`Fecha: ${fechaFormateada}  ${horaFormateada}`)}║
+${separador}
+║${izquierda('👤 CLIENTE:')}║
+║${izquierda(`${nombre.substring(0, charsPorLinea - 4)}`)}║
+${separador}
+║${izquierda('💰 DETALLE DEL PAGO:')}║
+║${izquierda(`${lineaSimple}`)}║
+║${dosColumnas('TOTAL PEDIDO:', `$${total.toFixed(2)}`)}║
+║${dosColumnas('MONTO PAGADO:', `$${montoPagado.toFixed(2)}`)}║
+${separador}
+║${izquierda(`💳 MÉTODO: ${metodoPago}`)}║
+${referencia && referencia !== '' && referencia !== 'N/A' ? `║${izquierda(`📝 REFERENCIA: ${referencia.substring(0, charsPorLinea - 15)}`)}║` : ''}
+${separador}
+║${centrar('✨ ¡GRACIAS POR SU COMPRA! ✨')}║
+║${centrar('https://alex21-c.github.io/tienda-privada/')}║
+${bordeInferior}
+        `;
+    } else {
+        facturaTexto = `
+┌${'─'.repeat(charsPorLinea - 2)}┐
+│${centrar('FACTURA')}│
+│${centrar('COMPROBANTE')}│
+├${'─'.repeat(charsPorLinea - 2)}┤
+│${comprobante.padEnd(charsPorLinea - 2)}│
+│${fechaFormateada} ${horaFormateada.padEnd(charsPorLinea - 14)}│
+├${'─'.repeat(charsPorLinea - 2)}┤
+│${nombre.substring(0, charsPorLinea - 4).padEnd(charsPorLinea - 2)}│
+├${'─'.repeat(charsPorLinea - 2)}┤
+│Total: $${total.toFixed(2).padStart(charsPorLinea - 9)}│
+│Pagado: $${montoPagado.toFixed(2).padStart(charsPorLinea - 10)}│
+├${'─'.repeat(charsPorLinea - 2)}┤
+│${metodoPago.padEnd(charsPorLinea - 2)}│
+${referencia && referencia !== '' && referencia !== 'N/A' ? `│${referencia.substring(0, charsPorLinea - 4).padEnd(charsPorLinea - 2)}│` : ''}
+├${'─'.repeat(charsPorLinea - 2)}┤
+│${centrar('¡GRACIAS!')}│
+└${'─'.repeat(charsPorLinea - 2)}┘
+        `;
+    }
+    
+    const margenMM = Math.max(2, Math.floor(anchoMM * 0.05));
+    const fontSize = anchoMM <= 58 ? '7pt' : (anchoMM <= 76 ? '8pt' : '9pt');
+    
+    // Crear ventana de impresión
+    const ventana = window.open('', '_blank', `width=${Math.min(800, anchoMM * 4)},height=650,toolbar=yes,scrollbars=yes,resizable=yes`);
+    
+    if (!ventana) {
+        mostrarFacturaEnModal(facturaTexto, anchoMM, nombreTamanio, fontSize);
+        return;
+    }
+    
+    ventana.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Factura - ${comprobante}</title>
+            <style>
+                @page {
+                    size: ${anchoMM}mm auto;
+                    margin: ${margenMM}mm;
+                }
+                * {
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }
+                body {
+                    font-family: 'Courier New', 'Courier', 'Fira Code', monospace;
+                    font-size: ${fontSize};
+                    width: ${anchoMM}mm;
+                    margin: 0 auto;
+                    padding: 2px;
+                    background: white;
+                }
+                .factura {
+                    white-space: pre;
+                    font-family: 'Courier New', monospace;
+                    font-size: ${fontSize};
+                    line-height: 1.2;
+                    letter-spacing: normal;
+                    word-break: keep-all;
+                }
+                .info-impresion {
+                    margin-top: 10px;
+                    padding: 8px 12px;
+                    background: #f0f0f0;
+                    border-radius: 8px;
+                    font-family: Arial, sans-serif;
+                    font-size: 10pt;
+                    text-align: center;
+                }
+                .btn-group {
+                    margin-top: 15px;
+                    text-align: center;
+                    position: sticky;
+                    bottom: 10px;
+                    background: white;
+                    padding: 10px;
+                    border-top: 1px solid #ddd;
+                }
+                button {
+                    font-family: Arial, sans-serif;
+                    padding: 10px 20px;
+                    margin: 5px;
+                    cursor: pointer;
+                    border: none;
+                    border-radius: 50px;
+                    font-size: 10pt;
+                    font-weight: 600;
+                    transition: all 0.3s;
+                }
+                .btn-imprimir {
+                    background: #A3B8A4;
+                    color: white;
+                }
+                .btn-imprimir:hover {
+                    background: #8ba08c;
+                    transform: translateY(-2px);
+                }
+                .btn-cerrar {
+                    background: #E5E5E5;
+                    color: #4A4A4A;
+                }
+                .btn-cerrar:hover {
+                    background: #d5d5d5;
+                    transform: translateY(-2px);
+                }
+                @media print {
+                    .no-print {
+                        display: none;
+                    }
+                    body {
+                        margin: 0;
+                        padding: 0;
+                    }
+                    .factura {
+                        margin: 0;
+                        padding: 0;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="factura">${facturaTexto.replace(/\n/g, '<br>')}</div>
+            <div class="info-impresion no-print">
+                🖨️ <strong>Configuración actual:</strong> ${nombreTamanio} (${charsPorLinea} caracteres/línea)<br>
+                ✅ Verifica que tu impresora fiscal esté configurada en <strong>${nombreTamanio}</strong>
+            </div>
+            <div class="btn-group no-print">
+                <button class="btn-imprimir" onclick="window.print()">🖨️ Imprimir Factura</button>
+                <button class="btn-cerrar" onclick="window.close()">✖ Cerrar</button>
+            </div>
+        </body>
+        </html>
+    `);
+    
+    ventana.document.close();
+}
+
+// Función de respaldo para mostrar factura en modal
+function mostrarFacturaEnModal(facturaTexto, anchoMM, nombreTamanio, fontSize) {
     const modalHTML = `
-        <div id="factura-emergente" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:10000; display:flex; justify-content:center; align-items:center;">
-            <div style="background:white; max-width:550px; width:90%; max-height:85vh; overflow-y:auto; border-radius:32px; padding:25px; box-shadow:0 20px 40px rgba(0,0,0,0.1);">
-                <div style="text-align:center; margin-bottom:20px; padding-bottom:15px; border-bottom:2px dashed #E5E5E5;">
-                    <h2 style="color:#A3B8A4; margin-bottom:5px;">🎀 FACTURA DE PAGO</h2>
-                    <p style="color:#9CA3AF;">Comprobante de pago oficial</p>
-                    <p style="margin-top:5px;"><strong>N°:</strong> ${comprobante}</p>
+        <div id="factura-print-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px); z-index:10001; display:flex; justify-content:center; align-items:center;">
+            <div style="background:white; max-width:600px; width:90%; max-height:85vh; overflow-y:auto; border-radius:32px; padding:20px; box-shadow:0 20px 40px rgba(0,0,0,0.2);">
+                <div style="text-align:center; margin-bottom:15px; padding-bottom:10px; border-bottom:2px solid #E5E5E5;">
+                    <h3 style="color:#A3B8A4;">🖨️ Vista previa - ${nombreTamanio}</h3>
+                    <p style="font-size:0.8em; color:#9CA3AF;">${anchoMM}mm | ${fontSize}</p>
                 </div>
-                
-                <div style="background:#FDFBF7; padding:15px; border-radius:16px; margin-bottom:20px;">
-                    <p style="margin:5px 0;"><strong>📅 Fecha:</strong> ${fechaFormateada} - ${horaFormateada}</p>
-                    <p style="margin:5px 0;"><strong>👤 Cliente:</strong> ${nombre}</p>
-                    <p style="margin:5px 0;"><strong>💰 Total del pedido:</strong> $${total.toFixed(2)}</p>
+                <div style="font-family:'Courier New', monospace; font-size:${fontSize}; white-space:pre; background:#FDFBF7; padding:15px; border-radius:16px; overflow-x:auto;">
+                    ${facturaTexto}
                 </div>
-                
-                <div style="background:#E8F0E8; padding:10px; border-radius:12px; margin-bottom:15px; text-align:center;">
-                    💳 <strong>Método de pago:</strong> <span style="color:#A3B8A4;">${metodoPago}</span>
-                </div>
-                
-                ${referencia && referencia !== 'N/A' && referencia !== '' ? `
-                <div style="background:#FFF0E6; padding:8px; border-radius:10px; margin-bottom:15px; text-align:center; font-size:0.8em;">
-                    📝 <strong>Referencia/Comprobante:</strong> ${referencia}
-                </div>
-                ` : ''}
-                
-                <div style="margin:20px 0;">
-                    <table style="width:100%; border-collapse:collapse;">
-                        <tr style="border-bottom:1px solid #E5E5E5;">
-                            <th style="text-align:left; padding:8px; color:#A3B8A4;">Concepto</th>
-                            <th style="text-align:left; padding:8px; color:#A3B8A4;">Monto</th>
-                        </tr>
-                        <tr style="border-bottom:1px solid #E5E5E5;">
-                            <td style="padding:8px;">Total del pedido</td>
-                            <td style="padding:8px;">$${total.toFixed(2)}</td>
-                        </tr>
-                        <tr style="border-bottom:1px solid #E5E5E5;">
-                            <td style="padding:8px;"><strong>Monto pagado</strong></td>
-                            <td style="padding:8px;"><strong style="color:#F4A0B5;">$${montoPagado.toFixed(2)}</strong></td>
-                        </tr>
-                    </table>
-                </div>
-                
-                <div style="text-align:right; margin-top:15px; padding-top:15px; border-top:2px solid #E5E5E5;">
-                    💰 <strong>TOTAL PAGADO: <span style="color:#F4A0B5;">$${montoPagado.toFixed(2)}</span></strong>
-                </div>
-                
-                <div style="text-align:center; margin-top:20px; padding-top:15px; border-top:1px solid #E5E5E5; font-size:0.7em; color:#9CA3AF;">
-                    ¡Gracias por tu compra!<br>
-                    https://alex21-c.github.io/tienda-privada/
-                </div>
-                
                 <div style="text-align:center; margin-top:20px;">
-                    <button onclick="window.print()" style="background:#A3B8A4; color:white; border:none; padding:10px 20px; border-radius:50px; cursor:pointer; margin-right:10px; transition:all 0.3s;">🖨️ Imprimir</button>
-                    <button onclick="document.getElementById('factura-emergente').remove()" style="background:#E5E5E5; color:#4A4A4A; border:none; padding:10px 20px; border-radius:50px; cursor:pointer; transition:all 0.3s;">✖ Cerrar</button>
+                    <button onclick="window.print()" style="background:#A3B8A4; color:white; border:none; padding:10px 20px; border-radius:50px; cursor:pointer; margin-right:10px;">🖨️ Imprimir</button>
+                    <button onclick="document.getElementById('factura-print-modal').remove()" style="background:#E5E5E5; color:#4A4A4A; border:none; padding:10px 20px; border-radius:50px; cursor:pointer;">✖ Cerrar</button>
                 </div>
             </div>
         </div>
     `;
-    
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    
-    // Cerrar modal al hacer clic fuera del contenido
-    const modal = document.getElementById('factura-emergente');
-    if (modal) {
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                modal.remove();
-            }
-        });
-    }
-    
-    // Cerrar con tecla ESC
-    const cerrarConEsc = function(e) {
-        if (e.key === 'Escape') {
-            const modalFactura = document.getElementById('factura-emergente');
-            if (modalFactura) {
-                modalFactura.remove();
-                document.removeEventListener('keydown', cerrarConEsc);
-            }
-        }
-    };
-    document.addEventListener('keydown', cerrarConEsc);
 }
 
 function configurarFiltrosPedidos() {
