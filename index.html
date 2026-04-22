@@ -25,80 +25,217 @@
             transform: scale(1.02);
         }
         
-/* Modal de zoom de imagen - VERSIÓN CORREGIDA */
-.zoom-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    z-index: 99999;
-    justify-content: center;
-    align-items: center;
-}
+        /* Modal de zoom de imagen - VERSIÓN CORREGIDA */
+        .zoom-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+        }
 
-.zoom-modal.active {
-    display: flex;
-}
+        .zoom-modal.active {
+            display: flex;
+        }
 
-.zoom-modal-content {
-    position: relative;
-    max-width: 90vw;
-    max-height: 90vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+        .zoom-modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-.zoom-modal-img {
-    max-width: 100%;
-    max-height: 85vh;
-    object-fit: contain;
-    border-radius: 16px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-}
+        .zoom-modal-img {
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
 
-/* Botón de cerrar - SIEMPRE AL FRENTE */
-.zoom-modal-close {
-    position: fixed !important;
-    top: 20px !important;
-    right: 20px !important;
-    background: rgba(0, 0, 0, 0.7) !important;
-    backdrop-filter: blur(8px) !important;
-    border: 2px solid rgba(255, 255, 255, 0.5) !important;
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 50% !important;
-    font-size: 28px !important;
-    cursor: pointer !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    color: white !important;
-    z-index: 100000 !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
-}
+        /* Botón de cerrar zoom - SIEMPRE AL FRENTE */
+        .zoom-modal-close {
+            position: fixed !important;
+            top: 20px !important;
+            right: 20px !important;
+            background: rgba(0, 0, 0, 0.7) !important;
+            backdrop-filter: blur(8px) !important;
+            border: 2px solid rgba(255, 255, 255, 0.5) !important;
+            width: 48px !important;
+            height: 48px !important;
+            border-radius: 50% !important;
+            font-size: 28px !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: white !important;
+            z-index: 100000 !important;
+            transition: all 0.3s ease !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
+        }
 
-.zoom-modal-close:hover {
-    background: #F4A0B5 !important;
-    color: white !important;
-    transform: scale(1.1) !important;
-    border-color: #F4A0B5 !important;
-}
+        .zoom-modal-close:hover {
+            background: #F4A0B5 !important;
+            color: white !important;
+            transform: scale(1.1) !important;
+            border-color: #F4A0B5 !important;
+        }
 
-/* Para móviles */
-@media (max-width: 768px) {
-    .zoom-modal-close {
-        top: 15px !important;
-        right: 15px !important;
-        width: 50px !important;
-        height: 50px !important;
-        font-size: 30px !important;
-    }
-}
+        /* Para móviles */
+        @media (max-width: 768px) {
+            .zoom-modal-close {
+                top: 15px !important;
+                right: 15px !important;
+                width: 50px !important;
+                height: 50px !important;
+                font-size: 30px !important;
+            }
+        }
+
+        /* ========== ESTILOS CORREGIDOS PARA LA "X" DEL MODAL DE PRODUCTO ========== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 500px;
+            width: 90%;
+            max-height: 85vh;
+            border-radius: 28px;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+
+        /* Botón de cerrar del modal de producto - CORREGIDO */
+        .modal-cerrar {
+            position: sticky !important;
+            top: 15px !important;
+            left: auto !important;
+            right: 15px !important;
+            float: right !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+            backdrop-filter: blur(4px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            font-size: 24px !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: white !important;
+            z-index: 10001 !important;
+            transition: all 0.3s ease !important;
+            margin: 0 !important;
+        }
+
+        .modal-cerrar:hover {
+            background: #F4A0B5 !important;
+            color: white !important;
+            transform: scale(1.1) !important;
+            border-color: #F4A0B5 !important;
+        }
+
+        /* Botones de cerrar para otros modales */
+        .modal-cerrar-pago,
+        .modal-cerrar-yappy,
+        .modal-cerrar-confirmar,
+        .modal-cerrar-factura,
+        .modal-cerrar-mis-pedidos {
+            position: sticky !important;
+            top: 15px !important;
+            left: auto !important;
+            right: 15px !important;
+            float: right !important;
+            background: rgba(0, 0, 0, 0.6) !important;
+            backdrop-filter: blur(4px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            width: 40px !important;
+            height: 40px !important;
+            border-radius: 50% !important;
+            font-size: 24px !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: white !important;
+            z-index: 10001 !important;
+            transition: all 0.3s ease !important;
+            margin: 0 !important;
+        }
+
+        .modal-cerrar-pago:hover,
+        .modal-cerrar-yappy:hover,
+        .modal-cerrar-confirmar:hover,
+        .modal-cerrar-factura:hover,
+        .modal-cerrar-mis-pedidos:hover {
+            background: #F4A0B5 !important;
+            color: white !important;
+            transform: scale(1.1) !important;
+            border-color: #F4A0B5 !important;
+        }
+
+        /* Asegurar que el contenido del modal no tape el botón */
+        .modal-content {
+            padding-top: 10px;
+        }
+
+        /* El primer elemento dentro del modal-content debe dar espacio */
+        .modal-content > *:first-child {
+            margin-top: 5px;
+        }
+
+        /* Para móviles, botón más grande */
+        @media (max-width: 768px) {
+            .modal-cerrar,
+            .modal-cerrar-pago,
+            .modal-cerrar-yappy,
+            .modal-cerrar-confirmar,
+            .modal-cerrar-factura,
+            .modal-cerrar-mis-pedidos {
+                width: 45px !important;
+                height: 45px !important;
+                font-size: 28px !important;
+                top: 10px !important;
+                right: 10px !important;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -357,7 +494,6 @@
     <script src="script.js"></script>
     <script>
         // ========== FUNCIONALIDAD DE ZOOM EN IMAGEN DEL MODAL DE PRODUCTO ==========
-        // Esta función se agregará al script.js o se puede poner aquí directamente
         
         // Esperar a que el DOM esté listo
         document.addEventListener('DOMContentLoaded', function() {
@@ -367,7 +503,7 @@
             const zoomImagen = document.getElementById('zoom-imagen');
             const zoomCerrar = document.getElementById('zoom-cerrar');
             
-            // Función para abrir el zoom (se llamará desde el script.js cuando se cargue la imagen)
+            // Función para abrir el zoom
             window.abrirZoomImagen = function(urlImagen) {
                 if (zoomImagen && urlImagen) {
                     zoomImagen.src = urlImagen;
@@ -404,27 +540,24 @@
             }
         });
         
-        // Esta función se integrará con el script.js para agregar el evento de clic a la imagen del modal
-        // Cuando se abra un producto, se debe llamar a esta configuración
+        // Configurar zoom en la imagen del modal de producto
         window.configurarZoomEnModalProducto = function() {
             setTimeout(function() {
                 const modalImagen = document.getElementById('modal-imagen');
-                const imagenContainer = document.getElementById('modal-imagen-container');
                 
-                if (modalImagen && imagenContainer) {
-                    // Agregar cursor pointer y evento de clic
+                if (modalImagen) {
                     modalImagen.style.cursor = 'zoom-in';
                     
-                    // Remover eventos anteriores para evitar duplicados
-                    const nuevoElemento = modalImagen.cloneNode(true);
+                    // Remover eventos anteriores
+                    const nuevaImagen = modalImagen.cloneNode(true);
                     if (modalImagen.parentNode) {
-                        modalImagen.parentNode.replaceChild(nuevoElemento, modalImagen);
+                        modalImagen.parentNode.replaceChild(nuevaImagen, modalImagen);
                     }
                     
-                    const nuevaImagen = document.getElementById('modal-imagen');
-                    if (nuevaImagen) {
-                        nuevaImagen.style.cursor = 'zoom-in';
-                        nuevaImagen.addEventListener('click', function(e) {
+                    const imagenFinal = document.getElementById('modal-imagen');
+                    if (imagenFinal) {
+                        imagenFinal.style.cursor = 'zoom-in';
+                        imagenFinal.addEventListener('click', function(e) {
                             e.stopPropagation();
                             const urlImagen = this.src;
                             if (urlImagen && window.abrirZoomImagen) {
