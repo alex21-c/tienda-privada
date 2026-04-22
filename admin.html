@@ -547,141 +547,81 @@ function registrarPagoModal(id, total, nombre) {
 }
 
 function generarFacturaSimple(nombre, total, montoPagado, metodoPago, referencia) {
-    // Usar window.open con nombre específico para evitar bloqueos
-    const ventana = window.open('', '_blank', 'width=800,height=600,toolbar=yes,scrollbars=yes,resizable=yes');
-    
-    if (!ventana) {
-        // Si el navegador bloqueó la ventana emergente
-        alert('⚠️ Tu navegador bloqueó la ventana emergente. Por favor, permite las ventanas emergentes para este sitio y vuelve a intentarlo.');
-        return;
-    }
-    
     const fecha = new Date().toLocaleString();
     const comprobante = `FACT-${Date.now()}`;
     const fechaFormateada = new Date().toLocaleDateString();
     const horaFormateada = new Date().toLocaleTimeString();
     
-    ventana.document.write(`
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>Factura de Pago - ${comprobante}</title>
-            <style>
-                * { margin: 0; padding: 0; box-sizing: border-box; }
-                body { font-family: 'Courier New', monospace; padding: 40px; background: #FDFBF7; }
-                .factura { max-width: 600px; margin: 0 auto; background: white; border: 1px solid #E5E5E5; padding: 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-                .header { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px dashed #E5E5E5; }
-                .header h2 { color: #A3B8A4; font-size: 1.5em; }
-                .header p { color: #9CA3AF; font-size: 0.8em; margin-top: 5px; }
-                .info { background: #FDFBF7; padding: 15px; border-radius: 16px; margin-bottom: 20px; }
-                .info p { margin: 8px 0; font-size: 0.9em; }
-                .info strong { color: #A3B8A4; }
-                .detalle { margin: 20px 0; }
-                .detalle table { width: 100%; border-collapse: collapse; }
-                .detalle th, .detalle td { padding: 8px; text-align: left; border-bottom: 1px solid #E5E5E5; }
-                .detalle th { color: #A3B8A4; }
-                .total { text-align: right; margin-top: 20px; padding-top: 15px; border-top: 2px solid #E5E5E5; font-size: 1.2em; }
-                .total strong { color: #F4A0B5; font-size: 1.3em; }
-                .metodo-pago { background: #E8F0E8; padding: 10px; border-radius: 12px; margin-top: 15px; text-align: center; }
-                .metodo-pago span { color: #A3B8A4; font-weight: bold; }
-                .footer { text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px solid #E5E5E5; font-size: 0.7em; color: #9CA3AF; }
-                .referencia { background: #FFF0E6; padding: 8px; border-radius: 10px; margin-top: 10px; text-align: center; font-size: 0.8em; }
-                .buttons { text-align: center; margin-top: 20px; }
-                button { padding: 10px 20px; background: #A3B8A4; color: white; border: none; border-radius: 50px; cursor: pointer; margin: 0 5px; transition: all 0.3s; }
-                button:hover { background: #F4A0B5; transform: translateY(-2px); }
-                @media print {
-                    body { padding: 0; background: white; }
-                    .buttons { display: none; }
-                }
-            </style>
-        </head>
-        <body>
-            <div class="factura">
-                <div class="header">
-                    <h2>🎀 FACTURA DE PAGO</h2>
-                    <p>Comprobante de pago oficial</p>
+    // Crear modal de factura en el mismo panel
+    const modalHTML = `
+        <div id="factura-emergente" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:10000; display:flex; justify-content:center; align-items:center;">
+            <div style="background:white; max-width:550px; width:90%; max-height:85vh; overflow-y:auto; border-radius:32px; padding:25px; box-shadow:0 20px 40px rgba(0,0,0,0.1);">
+                <div style="text-align:center; margin-bottom:20px; padding-bottom:15px; border-bottom:2px dashed #E5E5E5;">
+                    <h2 style="color:#A3B8A4;">🎀 FACTURA DE PAGO</h2>
+                    <p style="color:#9CA3AF;">Comprobante de pago oficial</p>
                     <p><strong>N°:</strong> ${comprobante}</p>
                 </div>
                 
-                <div class="info">
+                <div style="background:#FDFBF7; padding:15px; border-radius:16px; margin-bottom:20px;">
                     <p><strong>📅 Fecha:</strong> ${fechaFormateada} - ${horaFormateada}</p>
                     <p><strong>👤 Cliente:</strong> ${nombre}</p>
                     <p><strong>💰 Total del pedido:</strong> $${total.toFixed(2)}</p>
                 </div>
                 
-                <div class="metodo-pago">
-                    💳 <strong>Método de pago:</strong> <span>${metodoPago}</span>
+                <div style="background:#E8F0E8; padding:10px; border-radius:12px; margin-bottom:15px; text-align:center;">
+                    💳 <strong>Método de pago:</strong> <span style="color:#A3B8A4;">${metodoPago}</span>
                 </div>
                 
                 ${referencia && referencia !== 'N/A' ? `
-                <div class="referencia">
-                    📝 <strong>Referencia/Comprobante:</strong> ${referencia}
+                <div style="background:#FFF0E6; padding:8px; border-radius:10px; margin-bottom:15px; text-align:center; font-size:0.8em;">
+                    📝 <strong>Referencia:</strong> ${referencia}
                 </div>
                 ` : ''}
                 
-                <div class="detalle">
-                    <h4>📋 Detalle del pago:</h4>
-                    <table>
-                        <tr>
-                            <th>Concepto</th>
-                            <th>Monto</th>
+                <div style="margin:20px 0;">
+                    <table style="width:100%; border-collapse:collapse;">
+                        <tr style="border-bottom:1px solid #E5E5E5;">
+                            <th style="text-align:left; padding:8px; color:#A3B8A4;">Concepto</th>
+                            <th style="text-align:left; padding:8px; color:#A3B8A4;">Monto</th>
+                        </tr>
+                        <tr style="border-bottom:1px solid #E5E5E5;">
+                            <td style="padding:8px;">Total del pedido</td>
+                            <td style="padding:8px;">$${total.toFixed(2)}</td>
                         </tr>
                         <tr>
-                            <td>Total del pedido</td>
-                            <td>$${total.toFixed(2)}</td>
-                        </tr>
-                        <tr>
-                            <td>Monto pagado</td>
-                            <td><strong>$${montoPagado.toFixed(2)}</strong></td>
+                            <td style="padding:8px;"><strong>Monto pagado</strong></td>
+                            <td style="padding:8px;"><strong style="color:#F4A0B5;">$${montoPagado.toFixed(2)}</strong></td>
                         </tr>
                     </table>
                 </div>
                 
-                <div class="total">
-                    💰 TOTAL PAGADO: <strong>$${montoPagado.toFixed(2)}</strong>
+                <div style="text-align:right; margin-top:15px; padding-top:15px; border-top:2px solid #E5E5E5;">
+                    💰 <strong>TOTAL PAGADO: <span style="color:#F4A0B5;">$${montoPagado.toFixed(2)}</span></strong>
                 </div>
                 
-                <div class="footer">
+                <div style="text-align:center; margin-top:20px; padding-top:15px; border-top:1px solid #E5E5E5; font-size:0.7em; color:#9CA3AF;">
                     ¡Gracias por tu compra!<br>
                     https://alex21-c.github.io/tienda-privada/
                 </div>
                 
-                <div class="buttons">
-                    <button onclick="window.print()">🖨️ Imprimir Factura</button>
-                    <button onclick="window.close()">✖ Cerrar</button>
+                <div style="text-align:center; margin-top:20px;">
+                    <button onclick="window.print()" style="background:#A3B8A4; color:white; border:none; padding:10px 20px; border-radius:50px; cursor:pointer; margin-right:10px;">🖨️ Imprimir</button>
+                    <button onclick="document.getElementById('factura-emergente').remove()" style="background:#E5E5E5; color:#4A4A4A; border:none; padding:10px 20px; border-radius:50px; cursor:pointer;">✖ Cerrar</button>
                 </div>
             </div>
-            <script>
-                // Auto-imprimir opcional (descomentar si se quiere)
-                // setTimeout(() => { window.print(); }, 500);
-            <\/script>
-        </body>
-        </html>
-    `);
+        </div>
+    `;
     
-    ventana.document.close();
-}
-
-function configurarFiltrosPedidos() {
-    document.querySelectorAll('.filtro-pedido').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.filtro-pedido').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            filtroPedidoActual = btn.dataset.filtro;
-            mostrarPedidosAdmin();
-        });
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Agregar evento para cerrar con ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('factura-emergente');
+            if (modal) modal.remove();
+        }
     });
 }
-
-function mostrarMensaje(texto, tipo) {
-    const msgDiv = document.getElementById('mensaje');
-    msgDiv.textContent = texto;
-    msgDiv.style.display = 'block';
-    msgDiv.style.background = tipo === 'error' ? '#D4A5A5' : '#A3B8A4';
-    setTimeout(() => { msgDiv.style.display = 'none'; }, 3000);
-}
-
 // ==================== GESTIÓN DE COLORES Y TALLAS ====================
 let colores = [];
 
