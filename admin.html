@@ -491,7 +491,7 @@ function registrarPagoModal(id, total, nombre) {
         return;
     }
     
-    const metodoPago = prompt(`💳 Método de pago:\n\nSelecciona el método:\n1 - Efectivo\n2 - Yappy\n3 - Transferencia\n4 - Tarjeta`, "1");
+    const metodoPago = prompt(`💳 Método de pago:\n\nSelecciona el método:\n1 - Efectivo\n2 - Yappy\n3 - Transferencia\n4 - Tarjeta\n\nIngresa el número (1, 2, 3 o 4):`, "1");
     
     let metodoTexto = '';
     switch(metodoPago) {
@@ -499,10 +499,15 @@ function registrarPagoModal(id, total, nombre) {
         case '2': metodoTexto = 'Yappy'; break;
         case '3': metodoTexto = 'Transferencia'; break;
         case '4': metodoTexto = 'Tarjeta'; break;
-        default: metodoTexto = 'Otro';
+        default: 
+            if (metodoPago && metodoPago !== '') {
+                metodoTexto = metodoPago;
+            } else {
+                metodoTexto = 'Otro';
+            }
     }
     
-    const referencia = prompt(`📝 Número de referencia/comprobante (opcional):`, "");
+    const referencia = prompt(`📝 Número de referencia/comprobante (opcional):\n\nPara Yappy, ingresa el número de teléfono o ID de la transacción:`, "");
     
     mostrarMensaje('💾 Registrando pago...', 'success');
     
@@ -528,65 +533,129 @@ function registrarPagoModal(id, total, nombre) {
         mostrarPedidosAdmin();
         mostrarMensaje(`✅ Pago registrado correctamente para "${pedidoPagoActual.nombre}" por $${monto.toFixed(2)}`, 'success');
         
-        // Generar factura en PDF
-        generarFacturaSimple(pedidoPagoActual.nombre, total, monto, metodoTexto, referencia);
+        // Generar factura en PDF (SIEMPRE se genera, sin importar el método)
+        setTimeout(() => {
+            generarFacturaSimple(pedidoPagoActual.nombre, total, monto, metodoTexto, referencia || 'N/A');
+        }, 500);
         
     } catch (error) {
         console.error('Error:', error);
         mostrarMensaje('❌ Error al registrar pago', 'error');
+        // Aún así intentamos generar la factura
+        generarFacturaSimple(pedidoPagoActual.nombre, total, monto, metodoTexto, referencia || 'N/A');
     }
 }
 
 function generarFacturaSimple(nombre, total, montoPagado, metodoPago, referencia) {
-    const ventana = window.open('', '_blank');
+    // Usar window.open con nombre específico para evitar bloqueos
+    const ventana = window.open('', '_blank', 'width=800,height=600,toolbar=yes,scrollbars=yes,resizable=yes');
+    
+    if (!ventana) {
+        // Si el navegador bloqueó la ventana emergente
+        alert('⚠️ Tu navegador bloqueó la ventana emergente. Por favor, permite las ventanas emergentes para este sitio y vuelve a intentarlo.');
+        return;
+    }
+    
     const fecha = new Date().toLocaleString();
     const comprobante = `FACT-${Date.now()}`;
+    const fechaFormateada = new Date().toLocaleDateString();
+    const horaFormateada = new Date().toLocaleTimeString();
     
     ventana.document.write(`
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
-            <title>Factura de Pago</title>
+            <title>Factura de Pago - ${comprobante}</title>
             <style>
                 * { margin: 0; padding: 0; box-sizing: border-box; }
                 body { font-family: 'Courier New', monospace; padding: 40px; background: #FDFBF7; }
-                .factura { max-width: 600px; margin: 0 auto; background: white; border: 1px solid #E5E5E5; padding: 30px; border-radius: 24px; }
+                .factura { max-width: 600px; margin: 0 auto; background: white; border: 1px solid #E5E5E5; padding: 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
                 .header { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px dashed #E5E5E5; }
-                .header h2 { color: #A3B8A4; }
+                .header h2 { color: #A3B8A4; font-size: 1.5em; }
+                .header p { color: #9CA3AF; font-size: 0.8em; margin-top: 5px; }
                 .info { background: #FDFBF7; padding: 15px; border-radius: 16px; margin-bottom: 20px; }
-                .info p { margin: 5px 0; }
-                .total { text-align: right; margin-top: 20px; padding-top: 15px; border-top: 1px solid #E5E5E5; font-size: 1.2em; }
-                .total strong { color: #F4A0B5; }
-                .footer { text-align: center; margin-top: 25px; font-size: 0.7em; color: #9CA3AF; }
-                button { margin-top: 20px; padding: 10px 20px; background: #A3B8A4; color: white; border: none; border-radius: 50px; cursor: pointer; }
-                button:hover { background: #F4A0B5; }
+                .info p { margin: 8px 0; font-size: 0.9em; }
+                .info strong { color: #A3B8A4; }
+                .detalle { margin: 20px 0; }
+                .detalle table { width: 100%; border-collapse: collapse; }
+                .detalle th, .detalle td { padding: 8px; text-align: left; border-bottom: 1px solid #E5E5E5; }
+                .detalle th { color: #A3B8A4; }
+                .total { text-align: right; margin-top: 20px; padding-top: 15px; border-top: 2px solid #E5E5E5; font-size: 1.2em; }
+                .total strong { color: #F4A0B5; font-size: 1.3em; }
+                .metodo-pago { background: #E8F0E8; padding: 10px; border-radius: 12px; margin-top: 15px; text-align: center; }
+                .metodo-pago span { color: #A3B8A4; font-weight: bold; }
+                .footer { text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px solid #E5E5E5; font-size: 0.7em; color: #9CA3AF; }
+                .referencia { background: #FFF0E6; padding: 8px; border-radius: 10px; margin-top: 10px; text-align: center; font-size: 0.8em; }
+                .buttons { text-align: center; margin-top: 20px; }
+                button { padding: 10px 20px; background: #A3B8A4; color: white; border: none; border-radius: 50px; cursor: pointer; margin: 0 5px; transition: all 0.3s; }
+                button:hover { background: #F4A0B5; transform: translateY(-2px); }
+                @media print {
+                    body { padding: 0; background: white; }
+                    .buttons { display: none; }
+                }
             </style>
         </head>
         <body>
             <div class="factura">
                 <div class="header">
                     <h2>🎀 FACTURA DE PAGO</h2>
-                    <p>Comprobante de pago</p>
+                    <p>Comprobante de pago oficial</p>
                     <p><strong>N°:</strong> ${comprobante}</p>
                 </div>
+                
                 <div class="info">
-                    <p><strong>📅 Fecha:</strong> ${fecha}</p>
+                    <p><strong>📅 Fecha:</strong> ${fechaFormateada} - ${horaFormateada}</p>
                     <p><strong>👤 Cliente:</strong> ${nombre}</p>
-                    <p><strong>💳 Método de pago:</strong> ${metodoPago}</p>
-                    ${referencia ? `<p><strong>📝 Referencia:</strong> ${referencia}</p>` : ''}
+                    <p><strong>💰 Total del pedido:</strong> $${total.toFixed(2)}</p>
                 </div>
+                
+                <div class="metodo-pago">
+                    💳 <strong>Método de pago:</strong> <span>${metodoPago}</span>
+                </div>
+                
+                ${referencia && referencia !== 'N/A' ? `
+                <div class="referencia">
+                    📝 <strong>Referencia/Comprobante:</strong> ${referencia}
+                </div>
+                ` : ''}
+                
+                <div class="detalle">
+                    <h4>📋 Detalle del pago:</h4>
+                    <table>
+                        <tr>
+                            <th>Concepto</th>
+                            <th>Monto</th>
+                        </tr>
+                        <tr>
+                            <td>Total del pedido</td>
+                            <td>$${total.toFixed(2)}</td>
+                        </tr>
+                        <tr>
+                            <td>Monto pagado</td>
+                            <td><strong>$${montoPagado.toFixed(2)}</strong></td>
+                        </tr>
+                    </table>
+                </div>
+                
                 <div class="total">
-                    <p>💰 Total pagado: <strong>$${montoPagado.toFixed(2)}</strong></p>
+                    💰 TOTAL PAGADO: <strong>$${montoPagado.toFixed(2)}</strong>
                 </div>
+                
                 <div class="footer">
                     ¡Gracias por tu compra!<br>
                     https://alex21-c.github.io/tienda-privada/
                 </div>
-                <div style="text-align:center;">
-                    <button onclick="window.print()">🖨️ Imprimir</button>
+                
+                <div class="buttons">
+                    <button onclick="window.print()">🖨️ Imprimir Factura</button>
+                    <button onclick="window.close()">✖ Cerrar</button>
                 </div>
             </div>
+            <script>
+                // Auto-imprimir opcional (descomentar si se quiere)
+                // setTimeout(() => { window.print(); }, 500);
+            <\/script>
         </body>
         </html>
     `);
