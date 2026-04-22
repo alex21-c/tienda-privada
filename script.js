@@ -1351,4 +1351,19 @@ function configurarZoomModal() {
         }
     });
 }
-init();
+async function init() {
+    verificarAdmin();
+    await cargarProductos();
+    const carritoGuardado = localStorage.getItem('carrito');
+    if (carritoGuardado) carrito = JSON.parse(carritoGuardado);
+    actualizarCarrito();
+    configurarFiltros();
+    configurarFormularioModal();
+    configurarModal();
+    configurarCarritoTop();
+    configurarMisPedidos();
+    configurarModalesPago();
+    
+    // ✅✅✅ AGREGAR ESTA LÍNEA ✅✅✅
+    configurarZoomModal();
+}
