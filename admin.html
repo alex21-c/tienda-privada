@@ -544,130 +544,18 @@ function registrarPagoModal(id, total, nombre) {
     }
 }
 
-// ==================== GENERAR FACTURA CON SELECTOR DE TAMAÑO (SIN IVA) ====================
+// ==================== FACTURA BONITA Y PROFESIONAL (SIN BOTONES AL IMPRIMIR) ====================
 function generarFacturaSimple(nombre, total, montoPagado, metodoPago, referencia) {
     const comprobante = `FACT-${Date.now()}`;
     const fecha = new Date();
     const fechaFormateada = fecha.toLocaleDateString('es-ES');
     const horaFormateada = fecha.toLocaleTimeString('es-ES');
+    const cambio = montoPagado - total;
     
-    // Mostrar diálogo para seleccionar tamaño de papel
-    const tamanioPapel = prompt(
-        '📏 SELECCIONA EL TAMAÑO DE PAPEL DE TU IMPRESORA FISCAL:\n\n' +
-        '1 - 58mm (ticket pequeño, 32 caracteres por línea)\n' +
-        '2 - 80mm (ticket estándar, 42 caracteres por línea)\n' +
-        '3 - 76mm (ticket intermedio, 40 caracteres)\n' +
-        '4 - Personalizado (ingresa el ancho en mm)\n\n' +
-        '👉 Escribe el número de opción (1, 2, 3 o 4):',
-        '2'
-    );
-    
-    let anchoMM = 80;
-    let charsPorLinea = 42;
-    let nombreTamanio = '80mm';
-    
-    if (tamanioPapel === '1') {
-        anchoMM = 58;
-        charsPorLinea = 32;
-        nombreTamanio = '58mm';
-    } else if (tamanioPapel === '2') {
-        anchoMM = 80;
-        charsPorLinea = 42;
-        nombreTamanio = '80mm';
-    } else if (tamanioPapel === '3') {
-        anchoMM = 76;
-        charsPorLinea = 40;
-        nombreTamanio = '76mm';
-    } else if (tamanioPapel === '4') {
-        const personalizado = prompt('📏 Ingresa el ancho del papel en mm (ejemplo: 58, 76, 80, 100):', '80');
-        anchoMM = parseInt(personalizado) || 80;
-        charsPorLinea = Math.floor(anchoMM * 0.52);
-        charsPorLinea = Math.min(48, Math.max(24, charsPorLinea));
-        nombreTamanio = `${anchoMM}mm`;
-    }
-    
-    // Función para centrar texto
-    function centrar(texto) {
-        const espacios = charsPorLinea - texto.length;
-        const izquierda = Math.floor(espacios / 2);
-        return ' '.repeat(Math.max(0, izquierda)) + texto + ' '.repeat(Math.max(0, espacios - izquierda));
-    }
-    
-    // Función para alinear izquierda
-    function izquierda(texto) {
-        return texto + ' '.repeat(Math.max(0, charsPorLinea - texto.length));
-    }
-    
-    // Función para dos columnas
-    function dosColumnas(col1, col2) {
-        const espacioCol1 = Math.floor(charsPorLinea * 0.6);
-        const texto1 = col1.length > espacioCol1 ? col1.substring(0, espacioCol1 - 3) + '...' : col1;
-        const texto2 = col2.padStart(charsPorLinea - texto1.length);
-        return texto1 + texto2;
-    }
-    
-    // Generar líneas de borde
-    const lineaSimple = '─'.repeat(charsPorLinea);
-    const bordeSuperior = '╔' + '═'.repeat(charsPorLinea - 2) + '╗';
-    const bordeInferior = '╚' + '═'.repeat(charsPorLinea - 2) + '╝';
-    const separador = '╠' + '═'.repeat(charsPorLinea - 2) + '╣';
-    
-    let facturaTexto = '';
-    
-    if (anchoMM >= 70) {
-        facturaTexto = `
-${bordeSuperior}
-║${centrar('🎀 FACTURA DE PAGO')}║
-║${centrar('COMPROBANTE DE PAGO')}║
-${separador}
-║${izquierda(`N°: ${comprobante}`)}║
-║${izquierda(`Fecha: ${fechaFormateada}  ${horaFormateada}`)}║
-${separador}
-║${izquierda('👤 CLIENTE:')}║
-║${izquierda(`${nombre.substring(0, charsPorLinea - 4)}`)}║
-${separador}
-║${izquierda('💰 DETALLE DEL PAGO:')}║
-║${izquierda(`${lineaSimple}`)}║
-║${dosColumnas('TOTAL PEDIDO:', `$${total.toFixed(2)}`)}║
-║${dosColumnas('MONTO PAGADO:', `$${montoPagado.toFixed(2)}`)}║
-${separador}
-║${izquierda(`💳 MÉTODO: ${metodoPago}`)}║
-${referencia && referencia !== '' && referencia !== 'N/A' ? `║${izquierda(`📝 REFERENCIA: ${referencia.substring(0, charsPorLinea - 15)}`)}║` : ''}
-${separador}
-║${centrar('✨ ¡GRACIAS POR SU COMPRA! ✨')}║
-║${centrar('https://alex21-c.github.io/tienda-privada/')}║
-${bordeInferior}
-        `;
-    } else {
-        facturaTexto = `
-┌${'─'.repeat(charsPorLinea - 2)}┐
-│${centrar('FACTURA')}│
-│${centrar('COMPROBANTE')}│
-├${'─'.repeat(charsPorLinea - 2)}┤
-│${comprobante.padEnd(charsPorLinea - 2)}│
-│${fechaFormateada} ${horaFormateada.padEnd(charsPorLinea - 14)}│
-├${'─'.repeat(charsPorLinea - 2)}┤
-│${nombre.substring(0, charsPorLinea - 4).padEnd(charsPorLinea - 2)}│
-├${'─'.repeat(charsPorLinea - 2)}┤
-│Total: $${total.toFixed(2).padStart(charsPorLinea - 9)}│
-│Pagado: $${montoPagado.toFixed(2).padStart(charsPorLinea - 10)}│
-├${'─'.repeat(charsPorLinea - 2)}┤
-│${metodoPago.padEnd(charsPorLinea - 2)}│
-${referencia && referencia !== '' && referencia !== 'N/A' ? `│${referencia.substring(0, charsPorLinea - 4).padEnd(charsPorLinea - 2)}│` : ''}
-├${'─'.repeat(charsPorLinea - 2)}┤
-│${centrar('¡GRACIAS!')}│
-└${'─'.repeat(charsPorLinea - 2)}┘
-        `;
-    }
-    
-    const margenMM = Math.max(2, Math.floor(anchoMM * 0.05));
-    const fontSize = anchoMM <= 58 ? '7pt' : (anchoMM <= 76 ? '8pt' : '9pt');
-    
-    // Crear ventana de impresión
-    const ventana = window.open('', '_blank', `width=${Math.min(800, anchoMM * 4)},height=650,toolbar=yes,scrollbars=yes,resizable=yes`);
+    const ventana = window.open('', '_blank', 'width=450,height=650,toolbar=no,scrollbars=yes,resizable=yes');
     
     if (!ventana) {
-        mostrarFacturaEnModal(facturaTexto, anchoMM, nombreTamanio, fontSize);
+        alert('⚠️ Permite ventanas emergentes para este sitio');
         return;
     }
     
@@ -678,108 +566,351 @@ ${referencia && referencia !== '' && referencia !== 'N/A' ? `│${referencia.sub
             <meta charset="UTF-8">
             <title>Factura - ${comprobante}</title>
             <style>
-                @page {
-                    size: ${anchoMM}mm auto;
-                    margin: ${margenMM}mm;
-                }
                 * {
                     margin: 0;
                     padding: 0;
                     box-sizing: border-box;
                 }
+                
                 body {
-                    font-family: 'Courier New', 'Courier', 'Fira Code', monospace;
-                    font-size: ${fontSize};
-                    width: ${anchoMM}mm;
-                    margin: 0 auto;
-                    padding: 2px;
-                    background: white;
+                    font-family: 'Segoe UI', 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
+                    background: #f5f5f5;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    min-height: 100vh;
+                    padding: 20px;
                 }
+                
+                /* Contenedor principal de la factura */
                 .factura {
-                    white-space: pre;
-                    font-family: 'Courier New', monospace;
-                    font-size: ${fontSize};
-                    line-height: 1.2;
-                    letter-spacing: normal;
-                    word-break: keep-all;
-                }
-                .info-impresion {
-                    margin-top: 10px;
-                    padding: 8px 12px;
-                    background: #f0f0f0;
-                    border-radius: 8px;
-                    font-family: Arial, sans-serif;
-                    font-size: 10pt;
-                    text-align: center;
-                }
-                .btn-group {
-                    margin-top: 15px;
-                    text-align: center;
-                    position: sticky;
-                    bottom: 10px;
+                    max-width: 380px;
+                    width: 100%;
                     background: white;
-                    padding: 10px;
-                    border-top: 1px solid #ddd;
+                    border-radius: 24px;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+                    overflow: hidden;
                 }
-                button {
-                    font-family: Arial, sans-serif;
-                    padding: 10px 20px;
-                    margin: 5px;
-                    cursor: pointer;
+                
+                /* Encabezado elegante */
+                .factura-header {
+                    background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
+                    padding: 28px 20px;
+                    text-align: center;
+                    color: white;
+                }
+                
+                .factura-header h2 {
+                    font-size: 1.6rem;
+                    font-weight: 600;
+                    letter-spacing: 1px;
+                    margin-bottom: 5px;
+                }
+                
+                .factura-header p {
+                    font-size: 0.75rem;
+                    opacity: 0.9;
+                }
+                
+                .comprobante-badge {
+                    display: inline-block;
+                    background: rgba(255,255,255,0.25);
+                    padding: 4px 12px;
+                    border-radius: 50px;
+                    font-size: 0.7rem;
+                    margin-top: 10px;
+                    font-family: monospace;
+                }
+                
+                /* Cuerpo de la factura */
+                .factura-body {
+                    padding: 24px;
+                }
+                
+                /* Sección de información */
+                .info-card {
+                    background: #F8F9FA;
+                    border-radius: 16px;
+                    padding: 14px;
+                    margin-bottom: 20px;
+                }
+                
+                .info-row {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 10px;
+                    font-size: 0.85rem;
+                }
+                
+                .info-row:last-child {
+                    margin-bottom: 0;
+                }
+                
+                .info-label {
+                    color: #6c757d;
+                    font-weight: 500;
+                }
+                
+                .info-value {
+                    color: #2d3436;
+                    font-weight: 600;
+                }
+                
+                /* Sección de montos */
+                .montos-card {
+                    background: linear-gradient(135deg, #FDFBF7 0%, #fff8f0 100%);
+                    border-radius: 20px;
+                    padding: 20px;
+                    text-align: center;
+                    margin-bottom: 20px;
+                    border: 1px solid #f0e6d8;
+                }
+                
+                .monto-label {
+                    font-size: 0.7rem;
+                    text-transform: uppercase;
+                    letter-spacing: 1.5px;
+                    color: #A3B8A4;
+                    font-weight: 600;
+                }
+                
+                .monto-grande {
+                    font-size: 2.2rem;
+                    font-weight: 700;
+                    color: #2d3436;
+                    margin: 8px 0;
+                }
+                
+                .monto-pagado {
+                    font-size: 1.6rem;
+                    font-weight: 700;
+                    color: #A3B8A4;
+                    margin-top: 10px;
+                }
+                
+                .cambio {
+                    font-size: 0.8rem;
+                    margin-top: 8px;
+                    padding: 4px 8px;
+                    display: inline-block;
+                    border-radius: 20px;
+                }
+                
+                .cambio-positivo {
+                    background: #E8F0E8;
+                    color: #A3B8A4;
+                }
+                
+                .cambio-negativo {
+                    background: #FFF0E6;
+                    color: #D4A5A5;
+                }
+                
+                /* Método de pago */
+                .metodo-card {
+                    background: #F8F9FA;
+                    border-radius: 14px;
+                    padding: 12px;
+                    text-align: center;
+                    margin-bottom: 15px;
+                }
+                
+                .metodo-card strong {
+                    color: #A3B8A4;
+                }
+                
+                /* Referencia */
+                .referencia-card {
+                    background: #F8F9FA;
+                    border-radius: 12px;
+                    padding: 10px;
+                    text-align: center;
+                    font-size: 0.75rem;
+                    color: #6c757d;
+                    border: 1px dashed #dee2e6;
+                    margin-bottom: 20px;
+                    word-break: break-all;
+                }
+                
+                /* Footer */
+                .factura-footer {
+                    text-align: center;
+                    padding: 16px 24px;
+                    border-top: 1px solid #eee;
+                    font-size: 0.65rem;
+                    color: #adb5bd;
+                }
+                
+                .factura-footer a {
+                    color: #A3B8A4;
+                    text-decoration: none;
+                }
+                
+                /* BOTONES - SOLO VISIBLES EN PANTALLA, NO EN IMPRESIÓN */
+                .btn-group {
+                    display: flex;
+                    gap: 12px;
+                    padding: 16px 24px;
+                    background: white;
+                    border-top: 1px solid #eee;
+                }
+                
+                .btn {
+                    flex: 1;
+                    padding: 12px;
                     border: none;
                     border-radius: 50px;
-                    font-size: 10pt;
                     font-weight: 600;
-                    transition: all 0.3s;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                    font-size: 0.85rem;
                 }
+                
                 .btn-imprimir {
                     background: #A3B8A4;
                     color: white;
                 }
+                
                 .btn-imprimir:hover {
                     background: #8ba08c;
-                    transform: translateY(-2px);
+                    transform: translateY(-1px);
                 }
+                
                 .btn-cerrar {
-                    background: #E5E5E5;
-                    color: #4A4A4A;
+                    background: #e9ecef;
+                    color: #495057;
                 }
+                
                 .btn-cerrar:hover {
-                    background: #d5d5d5;
-                    transform: translateY(-2px);
+                    background: #dee2e6;
+                    transform: translateY(-1px);
                 }
+                
+                /* ========== ESTILOS PARA IMPRESIÓN ========== */
                 @media print {
-                    .no-print {
-                        display: none;
-                    }
                     body {
-                        margin: 0;
+                        background: white;
                         padding: 0;
+                        margin: 0;
                     }
+                    
+                    /* Ocultar los botones al imprimir */
+                    .btn-group {
+                        display: none !important;
+                    }
+                    
+                    /* Eliminar sombras y bordes al imprimir */
                     .factura {
-                        margin: 0;
-                        padding: 0;
+                        box-shadow: none;
+                        max-width: 100%;
+                        border-radius: 0;
+                    }
+                    
+                    /* Asegurar colores sólidos al imprimir */
+                    .factura-header {
+                        background: #A3B8A4;
+                        -webkit-print-color-adjust: exact;
+                        print-color-adjust: exact;
+                    }
+                    
+                    .montos-card {
+                        background: #FDFBF7;
+                        -webkit-print-color-adjust: exact;
+                        print-color-adjust: exact;
+                    }
+                    
+                    .cambio-positivo {
+                        background: #E8F0E8;
+                        -webkit-print-color-adjust: exact;
+                        print-color-adjust: exact;
+                    }
+                    
+                    /* Configuración para impresora fiscal (80mm) */
+                    @page {
+                        size: 80mm auto;
+                        margin: 3mm;
+                    }
+                    
+                    body, .factura, .factura-body {
+                        width: 74mm;
+                        margin: 0 auto;
                     }
                 }
             </style>
         </head>
         <body>
-            <div class="factura">${facturaTexto.replace(/\n/g, '<br>')}</div>
-            <div class="info-impresion no-print">
-                🖨️ <strong>Configuración actual:</strong> ${nombreTamanio} (${charsPorLinea} caracteres/línea)<br>
-                ✅ Verifica que tu impresora fiscal esté configurada en <strong>${nombreTamanio}</strong>
+            <div class="factura">
+                <div class="factura-header">
+                    <h2>🎀 FACTURA</h2>
+                    <p>Comprobante oficial de pago</p>
+                    <div class="comprobante-badge">${comprobante}</div>
+                </div>
+                
+                <div class="factura-body">
+                    <!-- Información del cliente y fecha -->
+                    <div class="info-card">
+                        <div class="info-row">
+                            <span class="info-label">📅 Fecha</span>
+                            <span class="info-value">${fechaFormateada}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">⏰ Hora</span>
+                            <span class="info-value">${horaFormateada}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">👤 Cliente</span>
+                            <span class="info-value">${nombre.substring(0, 28)}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Montos -->
+                    <div class="montos-card">
+                        <div class="monto-label">TOTAL DEL PEDIDO</div>
+                        <div class="monto-grande">$${total.toFixed(2)}</div>
+                        <div class="monto-label">MONTO PAGADO</div>
+                        <div class="monto-pagado">$${montoPagado.toFixed(2)}</div>
+                        ${cambio > 0 ? `<div class="cambio cambio-positivo">✨ Cambio: $${cambio.toFixed(2)}</div>` : ''}
+                        ${cambio < 0 ? `<div class="cambio cambio-negativo">⚠️ Saldo pendiente: $${Math.abs(cambio).toFixed(2)}</div>` : ''}
+                        ${cambio === 0 ? `<div class="cambio" style="background:#E8F0E8; color:#A3B8A4;">✅ Pago exacto</div>` : ''}
+                    </div>
+                    
+                    <!-- Método de pago -->
+                    <div class="metodo-card">
+                        💳 <strong>Método de pago</strong><br>
+                        ${metodoPago}
+                    </div>
+                    
+                    <!-- Referencia (si existe) -->
+                    ${referencia && referencia !== '' && referencia !== 'N/A' ? `
+                    <div class="referencia-card">
+                        📝 <strong>Referencia / Comprobante</strong><br>
+                        ${referencia}
+                    </div>
+                    ` : ''}
+                </div>
+                
+                <div class="factura-footer">
+                    ¡Gracias por tu compra!<br>
+                    <a href="https://alex21-c.github.io/tienda-privada/">https://alex21-c.github.io/tienda-privada/</a>
+                </div>
             </div>
-            <div class="btn-group no-print">
-                <button class="btn-imprimir" onclick="window.print()">🖨️ Imprimir Factura</button>
-                <button class="btn-cerrar" onclick="window.close()">✖ Cerrar</button>
+            
+            <!-- Botones (SOLO VISIBLES EN PANTALLA, NO APARECEN AL IMPRIMIR) -->
+            <div class="btn-group" style="max-width: 380px; margin: 0 auto;">
+                <button class="btn btn-imprimir" onclick="window.print()">🖨️ Imprimir Factura</button>
+                <button class="btn btn-cerrar" onclick="window.close()">✖ Cerrar</button>
             </div>
+            
+            <script>
+                // Opcional: auto-imprimir después de 500ms (descomenta si quieres)
+                // setTimeout(() => { window.print(); }, 500);
+            <\/script>
         </body>
         </html>
     `);
     
     ventana.document.close();
 }
-
 // Función de respaldo para mostrar factura en modal
 function mostrarFacturaEnModal(facturaTexto, anchoMM, nombreTamanio, fontSize) {
     const modalHTML = `
