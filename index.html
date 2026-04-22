@@ -200,15 +200,16 @@
         </div>
     </div>
     
-    <!-- Modal de confirmación de pago -->
+    <!-- Modal de confirmación de pago (MEJORADO) -->
     <div id="confirmar-pago-modal" class="modal">
         <div class="modal-content" style="max-width: 500px;">
             <span class="modal-cerrar-confirmar">&times;</span>
             <div id="modal-confirmar-contenido">
-                <h3>🔍 Confirmar Pago</h3>
-                <p>Ingresa tu nombre completo para verificar tu pago:</p>
-                <input type="text" id="nombre-verificar" placeholder="Tu nombre completo" style="width:100%; padding:12px; margin:15px 0; border-radius:50px; border:1px solid #E5E5E5;">
-                <button id="verificar-pago" class="btn-verificar">🔍 Verificar y generar factura</button>
+                <div class="confirmar-icon">🔍</div>
+                <h3>Confirmar Pago</h3>
+                <p class="confirmar-descripcion">Ingresa tu nombre completo para verificar tu pago:</p>
+                <input type="text" id="nombre-verificar" class="confirmar-input" placeholder="Tu nombre completo">
+                <button id="verificar-pago" class="btn-verificar">✅ Verificar y generar factura</button>
             </div>
         </div>
     </div>
