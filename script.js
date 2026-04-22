@@ -387,8 +387,12 @@ function cerrarModal() {
     productoActual = null;
     colorSeleccionado = null;
     tallaSeleccionada = null;
+    
+    // ✅ Cerrar zoom si estaba abierto
+    if (window.cerrarZoomImagen) {
+        window.cerrarZoomImagen();
+    }
 }
-
 function configurarModal() {
     const modal = document.getElementById('producto-modal');
     const cerrar = document.querySelector('.modal-cerrar');
