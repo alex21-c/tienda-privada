@@ -6,35 +6,27 @@
     <title>TIENDA PRIVADA</title>
     <link rel="stylesheet" href="estilo.css">
     <style>
-        /* ========== ESTILOS DEL LOGO - VERSIÓN MINIMALISTA ========== */
+        /* ========== ESTILOS DEL LOGO CON IMAGEN ========== */
         .logo-container {
             text-align: center;
             margin-bottom: 30px;
-            padding: 15px;
+            padding: 20px;
+            background: transparent;
         }
 
         .logo {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 15px;
+            gap: 20px;
             flex-wrap: wrap;
         }
 
-        .logo-icon {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #A3B8A4 0%, #F4A0B5 100%);
-            width: 70px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            box-shadow: 0 4px 15px rgba(163, 184, 164, 0.3);
-        }
-
-        .logo-icon span {
-            font-size: 2rem;
+        .logo-imagen {
+            height: 80px;
+            width: auto;
+            object-fit: contain;
+            border-radius: 12px;
         }
 
         .logo-text {
@@ -58,26 +50,31 @@
         }
 
         @media (max-width: 768px) {
-            .logo-icon {
-                width: 50px;
-                height: 50px;
+            .logo-container {
+                padding: 10px;
+                margin-bottom: 20px;
             }
-            .logo-icon span {
-                font-size: 1.4rem;
+            
+            .logo {
+                gap: 12px;
             }
+            
+            .logo-imagen {
+                height: 55px;
+            }
+            
             .logo-title {
                 font-size: 1.1rem;
                 letter-spacing: 1px;
             }
+            
             .logo-subtitle {
                 font-size: 0.55rem;
                 letter-spacing: 1px;
             }
+            
             .logo-text {
                 text-align: center;
-            }
-            .logo {
-                gap: 10px;
             }
         }
 
@@ -307,12 +304,10 @@
     </style>
 </head>
 <body>
-    <!-- LOGO DE LA TIENDA - VERSIÓN MINIMALISTA -->
+    <!-- LOGO DE LA TIENDA -->
     <div class="logo-container">
         <div class="logo">
-            <div class="logo-icon">
-                <span>🛍️</span>
-            </div>
+            <img src="logo.png" alt="TIENDA PRIVADA" class="logo-imagen">
             <div class="logo-text">
                 <h1 class="logo-title">TIENDA PRIVADA</h1>
                 <p class="logo-subtitle">ESTILO · EXCLUSIVIDAD · SEGURIDAD</p>
