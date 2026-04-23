@@ -245,18 +245,10 @@ function mostrarModal(productoId) {
         if (modalColores) modalColores.style.display = 'block';
         mostrarSelectoresColor(producto.colores);
     } 
-   else if (producto.tiene_variantes && producto.variantes && producto.variantes !== '') {
-    // Verificar si es formato de presentaciones (frascos)
-    if (producto.variantes.includes('frasco')) {
+    else if (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0) {
         if (modalColores) modalColores.style.display = 'none';
-        if (variantesDiv) variantesDiv.style.display = 'none';
-        mostrarPresentaciones(producto.variantes);
-    } else {
-        // Para tallas con o sin colores
-        if (modalColores) modalColores.style.display = 'block';
         mostrarTallasDirectas(producto.variantes);
     }
-}
     else {
         if (modalColores) modalColores.style.display = 'none';
         if (variantesDiv) variantesDiv.style.display = 'none';
@@ -283,50 +275,23 @@ function mostrarModal(productoId) {
     configurarZoomEnModalProducto();
 }
 
-// ==================== MOSTRAR TALLAS DIRECTAS (con colores y tallas) ====================
-function mostrarTallasDirectas(variantesTexto) {
+// ==================== MOSTRAR TALLAS DIRECTAS ====================
+function mostrarTallasDirectas(variantes) {
     const variantesDiv = document.getElementById('modal-variantes');
     const selectorVariante = document.getElementById('selector-variante');
-    const modalColores = document.getElementById('modal-colores');
-    const selectorColor = document.getElementById('selector-color');
     
     if (!variantesDiv) return;
     
-    // Si no hay variantes, ocultar todo
-    if (!variantesTexto || variantesTexto === '') {
-        variantesDiv.style.display = 'none';
-        if (modalColores) modalColores.style.display = 'none';
-        return;
-    }
-    
-    // Verificar si el formato es con colores (contiene | y :)
-    if (variantesTexto.includes('|') && variantesTexto.includes(':')) {
-        // Formato: color1:talla1:precio1,talla2:precio2|color2:talla1:precio1,talla2:precio2
-        mostrarVariantesConColores(variantesTexto);
-    } 
-    // Verificar si es formato de presentaciones (frascos)
-    else if (variantesTexto.includes('frasco')) {
-        // Esto se maneja en mostrarPresentaciones
-        if (modalColores) modalColores.style.display = 'none';
-        variantesDiv.style.display = 'none';
-    }
-    // Formato simple: talla:precio,talla:precio
-    else if (variantesTexto.includes(':')) {
+    if (variantes && variantes.length > 0) {
         variantesDiv.style.display = 'block';
         selectorVariante.innerHTML = '<option value="">Selecciona una talla</option>';
         
-        const partes = variantesTexto.split(',');
-        partes.forEach(parte => {
-            const match = parte.match(/([^:]+):([\d.]+)/);
-            if (match) {
-                const talla = match[1].trim();
-                const precio = parseFloat(match[2]);
-                const option = document.createElement('option');
-                option.value = precio;
-                option.setAttribute('data-talla', talla);
-                option.textContent = `${talla} - $${precio.toFixed(2)}`;
-                selectorVariante.appendChild(option);
-            }
+        variantes.forEach(t => {
+            const option = document.createElement('option');
+            option.value = t.precio;
+            option.setAttribute('data-talla', t.talla);
+            option.textContent = `${t.talla} - $${t.precio.toFixed(2)}`;
+            selectorVariante.appendChild(option);
         });
         
         selectorVariante.onchange = function() {
@@ -352,114 +317,109 @@ function mostrarTallasDirectas(variantesTexto) {
         };
     } else {
         variantesDiv.style.display = 'none';
+        tallaSeleccionada = null;
     }
 }
 
-// ==================== MOSTRAR VARIANTES CON COLORES ====================
-function mostrarVariantesConColores(variantesTexto) {
-    const variantesDiv = document.getElementById('modal-variantes');
-    const modalColores = document.getElementById('modal-colores');
-    const selectorColor = document.getElementById('selector-color');
-    const selectorVariante = document.getElementById('selector-variante');
+// ==================== SELECTORES DE COLOR ====================
+function mostrarSelectoresColor(colores) {
+    const container = document.getElementById('selector-color');
+    if (!container) return;
     
-    // Parsear el texto de variantes
-    const coloresData = [];
-    const coloresParts = variantesTexto.split('|');
+    container.innerHTML = '';
     
-    coloresParts.forEach(part => {
-        const [color, tallasStr] = part.split(':');
-        if (color && tallasStr) {
-            const tallas = [];
-            const tallasParts = tallasStr.split(',');
-            tallasParts.forEach(tallaPart => {
-                const tallaMatch = tallaPart.match(/([^:]+):([\d.]+)/);
-                if (tallaMatch) {
-                    tallas.push({
-                        talla: tallaMatch[1].trim(),
-                        precio: parseFloat(tallaMatch[2])
-                    });
-                }
+    colores.forEach((color, index) => {
+        const btn = document.createElement('button');
+        btn.textContent = color.nombre;
+        btn.style.padding = '8px 20px';
+        btn.style.border = index === 0 ? '2px solid #00D4FF' : '2px solid #222222';
+        btn.style.background = index === 0 ? '#00D4FF' : 'transparent';
+        btn.style.borderRadius = '40px';
+        btn.style.color = index === 0 ? '#0A0A0A' : '#888888';
+        btn.style.cursor = 'pointer';
+        btn.style.fontWeight = '500';
+        btn.style.transition = 'all 0.3s ease';
+        
+        btn.onclick = () => {
+            document.querySelectorAll('#selector-color button').forEach(b => {
+                b.style.border = '2px solid #222222';
+                b.style.background = 'transparent';
+                b.style.color = '#888888';
             });
-            if (tallas.length > 0) {
-                coloresData.push({
-                    nombre: color.trim(),
-                    tallas: tallas
-                });
+            btn.style.border = '2px solid #00D4FF';
+            btn.style.background = '#00D4FF';
+            btn.style.color = '#0A0A0A';
+            
+            colorSeleccionado = color;
+            
+            const modalImagen = document.getElementById('modal-imagen');
+            if (modalImagen) modalImagen.src = color.imagen;
+            
+            const modalPrecio = document.getElementById('modal-precio');
+            if (modalPrecio) {
+                modalPrecio.textContent = `$${color.precio.toFixed(2)}`;
+                modalPrecio.style.color = '#00D4FF';
             }
-        }
+            
+            mostrarTallas(color.tallas);
+        };
+        
+        container.appendChild(btn);
     });
     
-    if (coloresData.length > 0 && modalColores) {
-        // Mostrar selectores de color
-        modalColores.style.display = 'block';
-        selectorColor.innerHTML = '';
+    if (colores.length > 0) {
+        colorSeleccionado = colores[0];
+        const modalPrecio = document.getElementById('modal-precio');
+        if (modalPrecio) {
+            modalPrecio.textContent = `$${colores[0].precio.toFixed(2)}`;
+        }
+        mostrarTallas(colores[0].tallas);
+    }
+}
+
+// ==================== MOSTRAR TALLAS ====================
+function mostrarTallas(tallas) {
+    const variantesDiv = document.getElementById('modal-variantes');
+    const selectorVariante = document.getElementById('selector-variante');
+    
+    if (!variantesDiv) return;
+    
+    if (tallas && tallas.length > 0) {
+        variantesDiv.style.display = 'block';
+        selectorVariante.innerHTML = '<option value="">Selecciona una talla</option>';
         
-        let colorSeleccionadoData = null;
-        
-        coloresData.forEach((color, index) => {
-            const btn = document.createElement('button');
-            btn.textContent = color.nombre;
-            btn.style.padding = '8px 16px';
-            btn.style.border = index === 0 ? '2px solid #00D4FF' : '2px solid #ccc';
-            btn.style.background = index === 0 ? '#00D4FF' : 'white';
-            btn.style.borderRadius = '40px';
-            btn.style.cursor = 'pointer';
-            btn.style.margin = '5px';
-            btn.style.transition = 'all 0.3s';
-            
-            btn.onclick = () => {
-                document.querySelectorAll('#selector-color button').forEach(b => {
-                    b.style.border = '2px solid #ccc';
-                    b.style.background = 'white';
-                    b.style.color = '#333';
-                });
-                btn.style.border = '2px solid #00D4FF';
-                btn.style.background = '#00D4FF';
-                btn.style.color = 'white';
-                
-                colorSeleccionadoData = color;
-                actualizarSelectorTallas(color.tallas);
-            };
-            
-            selectorColor.appendChild(btn);
+        tallas.forEach(t => {
+            const option = document.createElement('option');
+            option.value = t.precio;
+            option.setAttribute('data-talla', t.talla);
+            option.textContent = `${t.talla} - $${t.precio.toFixed(2)}`;
+            selectorVariante.appendChild(option);
         });
         
-        // Seleccionar el primer color por defecto
-        if (coloresData.length > 0) {
-            colorSeleccionadoData = coloresData[0];
-            actualizarSelectorTallas(coloresData[0].tallas);
-        }
-        
-        function actualizarSelectorTallas(tallas) {
-            variantesDiv.style.display = 'block';
-            selectorVariante.innerHTML = '<option value="">Selecciona una talla</option>';
-            
-            tallas.forEach(t => {
-                const option = document.createElement('option');
-                option.value = t.precio;
-                option.setAttribute('data-talla', t.talla);
-                option.textContent = `${t.talla} - $${t.precio.toFixed(2)}`;
-                selectorVariante.appendChild(option);
-            });
-            
-            selectorVariante.onchange = function() {
-                if (this.value) {
-                    const precioSeleccionado = parseFloat(this.value);
-                    const tallaSeleccionadaNombre = this.options[this.selectedIndex].getAttribute('data-talla');
-                    tallaSeleccionada = {
-                        talla: tallaSeleccionadaNombre,
-                        precio: precioSeleccionado
-                    };
-                    const modalPrecio = document.getElementById('modal-precio');
-                    if (modalPrecio) {
-                        modalPrecio.textContent = `$${precioSeleccionado.toFixed(2)}`;
-                        modalPrecio.style.fontWeight = 'bold';
-                    }
-                } else {
-                    tallaSeleccionada = null;
+        selectorVariante.onchange = function() {
+            if (this.value) {
+                const precioSeleccionado = parseFloat(this.value);
+                const tallaSeleccionadaNombre = this.options[this.selectedIndex].getAttribute('data-talla');
+                tallaSeleccionada = {
+                    talla: tallaSeleccionadaNombre,
+                    precio: precioSeleccionado
+                };
+                const modalPrecio = document.getElementById('modal-precio');
+                if (modalPrecio) {
+                    modalPrecio.textContent = `$${precioSeleccionado.toFixed(2)}`;
+                    modalPrecio.style.fontWeight = 'bold';
                 }
-            };
-        }
+            } else {
+                tallaSeleccionada = null;
+                const modalPrecio = document.getElementById('modal-precio');
+                if (modalPrecio && colorSeleccionado) {
+                    modalPrecio.textContent = `$${colorSeleccionado.precio.toFixed(2)}`;
+                }
+            }
+        };
+    } else {
+        variantesDiv.style.display = 'none';
+        tallaSeleccionada = null;
     }
 }
 
