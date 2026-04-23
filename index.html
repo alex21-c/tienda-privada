@@ -78,6 +78,52 @@
             }
         }
 
+        /* ========== ESTILOS PARA EL LOGO EN LA FACTURA ========== */
+        .factura-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px dashed #E5E5E5;
+        }
+
+        .factura-logo-imagen {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .factura-logo-texto {
+            text-align: left;
+        }
+
+        .factura-logo-texto h2 {
+            font-size: 1.2rem;
+            color: #A3B8A4;
+            margin: 0;
+        }
+
+        .factura-logo-texto p {
+            font-size: 0.6rem;
+            color: #9CA3AF;
+            margin: 5px 0 0 0;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .factura-logo-imagen {
+                height: 35px;
+            }
+            .factura-logo-texto h2 {
+                font-size: 0.9rem;
+            }
+            .factura-logo-texto p {
+                font-size: 0.5rem;
+            }
+        }
+
         /* Estilos adicionales para el zoom de imagen en modal */
         .modal-producto-imagen-container {
             cursor: zoom-in;
