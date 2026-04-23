@@ -3,9 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Tienda Privada</title>
+    <title>TIENDA PRIVADA</title>
     <link rel="stylesheet" href="estilo.css">
     <style>
+        /* ========== ESTILOS DEL LOGO ========== */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px 20px;
+            background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
+            border-radius: 60px;
+            box-shadow: 0 10px 30px rgba(163, 184, 164, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo-icon {
+            font-size: 4rem;
+            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
+        }
+
+        .logo-text {
+            text-align: center;
+        }
+
+        .logo-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: white;
+            margin: 0;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .logo-subtitle {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.9);
+            margin: 8px 0 0 0;
+            letter-spacing: 1.5px;
+        }
+
+        /* Ocultar el h1 original */
+        .container > h1 {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .logo-icon {
+                font-size: 2.8rem;
+            }
+            .logo-title {
+                font-size: 1.4rem;
+                letter-spacing: 2px;
+            }
+            .logo-subtitle {
+                font-size: 0.7rem;
+            }
+            .logo-container {
+                padding: 18px;
+                margin-bottom: 20px;
+            }
+        }
+
         /* Estilos adicionales para el zoom de imagen en modal */
         .modal-producto-imagen-container {
             cursor: zoom-in;
@@ -25,7 +94,7 @@
             transform: scale(1.02);
         }
         
-        /* Modal de zoom de imagen - VERSIÓN CORREGIDA */
+        /* Modal de zoom de imagen */
         .zoom-modal {
             display: none;
             position: fixed;
@@ -60,7 +129,6 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
-        /* Botón de cerrar zoom - SIEMPRE AL FRENTE */
         .zoom-modal-close {
             position: fixed !important;
             top: 20px !important;
@@ -89,7 +157,6 @@
             border-color: #F4A0B5 !important;
         }
 
-        /* Para móviles */
         @media (max-width: 768px) {
             .zoom-modal-close {
                 top: 15px !important;
@@ -100,7 +167,7 @@
             }
         }
 
-        /* ========== ESTILOS CORREGIDOS PARA LA "X" DEL MODAL DE PRODUCTO ========== */
+        /* Estilos para el modal de producto */
         .modal {
             display: none;
             position: fixed;
@@ -130,7 +197,6 @@
             animation: slideUp 0.3s ease;
         }
 
-        /* Botón de cerrar del modal de producto - CORREGIDO */
         .modal-cerrar {
             position: sticky !important;
             top: 15px !important;
@@ -161,7 +227,6 @@
             border-color: #F4A0B5 !important;
         }
 
-        /* Botones de cerrar para otros modales */
         .modal-cerrar-pago,
         .modal-cerrar-yappy,
         .modal-cerrar-confirmar,
@@ -200,17 +265,14 @@
             border-color: #F4A0B5 !important;
         }
 
-        /* Asegurar que el contenido del modal no tape el botón */
         .modal-content {
             padding-top: 10px;
         }
 
-        /* El primer elemento dentro del modal-content debe dar espacio */
         .modal-content > *:first-child {
             margin-top: 5px;
         }
 
-        /* Para móviles, botón más grande */
         @media (max-width: 768px) {
             .modal-cerrar,
             .modal-cerrar-pago,
@@ -240,7 +302,16 @@
 </head>
 <body>
     <div class="container">
-        <h1>🛒 Bienvenido a la Tienda Privada</h1>
+        <!-- LOGO DE LA TIENDA -->
+        <div class="logo-container">
+            <div class="logo">
+                <span class="logo-icon">🛍️</span>
+                <div class="logo-text">
+                    <h1 class="logo-title">TIENDA PRIVADA</h1>
+                    <p class="logo-subtitle">ESTILO, EXCLUSIVIDAD Y SEGURIDAD</p>
+                </div>
+            </div>
+        </div>
         
         <!-- Panel de administración (solo visible para ti) -->
         <div id="admin-panel" style="display:none;" class="admin-quick-panel">
@@ -256,12 +327,10 @@
             </div>
             
             <div class="acciones-top">
-                <!-- Botón Mis Pedidos -->
                 <button id="toggle-mis-pedidos" class="mis-pedidos-top-btn">
                     📦 Mis Pedidos
                 </button>
                 
-                <!-- Carrito -->
                 <div class="carrito-top">
                     <button id="carrito-toggle" class="carrito-toggle-btn">
                         🛒 Carrito
@@ -271,7 +340,7 @@
             </div>
         </div>
         
-        <!-- Filtros de género (aparecen después de seleccionar plataforma) -->
+        <!-- Filtros de género -->
         <div id="filtros-genero" style="display:none;" class="filtros-genero">
             <button class="filtro-genero-btn active" data-genero="todos">Todos</button>
             <button class="filtro-genero-btn" data-genero="hombre">👨 Hombre</button>
@@ -294,7 +363,6 @@
                 <span id="total-panel">$0.00</span>
             </div>
             
-            <!-- Sección de envío (solo informativo) -->
             <div class="carrito-envio-info">
                 <div class="envio-info">
                     <span>📦 Envío (por libra)</span>
@@ -317,7 +385,7 @@
             <div class="loading">Cargando productos...</div>
         </div>
         
-        <!-- Formulario de pedido viejo (oculto) - se reemplaza por modal -->
+        <!-- Formulario de pedido (oculto) -->
         <div id="formulario-datos" style="display:none;" class="formulario-pedido">
             <h2>📋 Completa tus datos</h2>
             <form id="pedido-form">
@@ -348,7 +416,6 @@
         <div class="modal-content">
             <span class="modal-cerrar">&times;</span>
             <div id="modal-contenido">
-                <!-- CONTENEDOR DE IMAGEN CON ZOOM -->
                 <div id="modal-imagen-container" class="modal-producto-imagen-container">
                     <img id="modal-imagen" src="" alt="">
                 </div>
@@ -358,21 +425,16 @@
                 <p id="modal-precio"></p>
                 <p id="modal-descripcion"></p>
                 
-                <!-- Selector de colores -->
                 <div id="modal-colores" style="margin:15px 0;">
                     <label style="font-weight:bold; display:block; margin-bottom:8px;">🎨 Color:</label>
-                    <div id="selector-color" style="display:flex; gap:10px; flex-wrap:wrap;">
-                    </div>
+                    <div id="selector-color" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
                 </div>
                 
-                <!-- Selector de tallas (se actualiza según color seleccionado) -->
                 <div id="modal-variantes" style="display:none; margin:15px 0;">
                     <label style="font-weight:bold;">📏 Talla / Variante:</label>
-                    <select id="selector-variante" style="width:100%; padding:10px; margin-top:5px; border-radius:8px; border:1px solid #ccc;">
-                    </select>
+                    <select id="selector-variante" style="width:100%; padding:10px; margin-top:5px; border-radius:8px; border:1px solid #ccc;"></select>
                 </div>
                 
-                <!-- Enlace oculto para admin -->
                 <div id="modal-enlace-admin" style="display:none; margin:15px 0; padding:12px; background:#1A1A1A; border-radius:16px;">
                     <label style="font-weight:500; color:#00D4FF; display:block; margin-bottom:8px;">🔗 Enlace original del producto:</label>
                     <a id="modal-enlace" href="#" target="_blank" style="color:#9D00FF; text-decoration:none; word-break:break-all; font-size:0.85em;">Cargando...</a>
@@ -384,7 +446,7 @@
         </div>
     </div>
     
-    <!-- Modal de zoom de imagen (para hacer zoom en la imagen del producto) -->
+    <!-- Modal de zoom de imagen -->
     <div id="zoom-imagen-modal" class="zoom-modal">
         <div class="zoom-modal-content">
             <img id="zoom-imagen" class="zoom-modal-img" src="" alt="Imagen ampliada">
@@ -392,7 +454,7 @@
         </div>
     </div>
     
-    <!-- Modal de formulario de pago -->
+    <!-- Modales adicionales -->
     <div id="pago-modal" class="modal">
         <div class="modal-content" style="max-width: 550px;">
             <span class="modal-cerrar-pago">&times;</span>
@@ -401,28 +463,23 @@
                 <form id="pedido-form-modal">
                     <label>👤 Nombre completo:</label>
                     <input type="text" id="nombre-modal" required>
-                    
                     <label>📱 Número de teléfono:</label>
-                    <input type="tel" id="telefono-modal" required placeholder="Ej: 6123-4567">
-                    
+                    <input type="tel" id="telefono-modal" required>
                     <label>📍 Dirección de entrega:</label>
                     <textarea id="direccion-modal" required rows="3"></textarea>
-                    
                     <label>💳 Método de pago:</label>
                     <select id="metodo-pago-modal" required>
                         <option value="">Selecciona...</option>
-                        <option value="Efectivo contra entrega">💵 Efectivo (pagas al recibir)</option>
-                        <option value="Yappy">📱 Yappy (te enviamos el número)</option>
-                        <option value="Transferencia">🏦 Transferencia bancaria</option>
+                        <option value="Efectivo contra entrega">💵 Efectivo</option>
+                        <option value="Yappy">📱 Yappy</option>
+                        <option value="Transferencia">🏦 Transferencia</option>
                     </select>
-                    
                     <button type="submit" class="btn-confirmar">✅ Confirmar Pedido</button>
                 </form>
             </div>
         </div>
     </div>
     
-    <!-- Modal de Yappy (para mostrar número de pago) -->
     <div id="yappy-modal" class="modal">
         <div class="modal-content" style="max-width: 450px; text-align: center;">
             <span class="modal-cerrar-yappy">&times;</span>
@@ -435,15 +492,13 @@
                     <button id="copiar-yappy" class="btn-copiar">📋 Copiar</button>
                 </div>
                 <div class="yappy-instrucciones">
-                    <p>⚠️ <strong>Importante:</strong></p>
-                    <p>Al realizar el pago, escribe en <strong>COMENTARIOS</strong> tu <strong>nombre completo</strong> para identificar tu pedido.</p>
+                    <p>⚠️ <strong>Importante:</strong> Escribe en <strong>COMENTARIOS</strong> tu <strong>nombre completo</strong>.</p>
                 </div>
                 <button id="ya-pague" class="btn-yappy-pague">✅ Ya hice el pago</button>
             </div>
         </div>
     </div>
     
-    <!-- Modal de confirmación de pago (MEJORADO) -->
     <div id="confirmar-pago-modal" class="modal">
         <div class="modal-content" style="max-width: 500px;">
             <span class="modal-cerrar-confirmar">&times;</span>
@@ -457,13 +512,10 @@
         </div>
     </div>
     
-    <!-- Modal de Factura Aesthetic -->
     <div id="factura-modal" class="modal">
         <div class="modal-content factura-content">
             <span class="modal-cerrar-factura">&times;</span>
-            <div id="factura-contenido" class="factura-container">
-                <!-- La factura se genera dinámicamente -->
-            </div>
+            <div id="factura-contenido" class="factura-container"></div>
             <div class="factura-actions">
                 <button id="descargar-factura" class="btn-descargar">📄 Descargar Factura</button>
                 <button id="cerrar-factura" class="btn-cerrar-factura">✖ Cerrar</button>
@@ -471,7 +523,6 @@
         </div>
     </div>
     
-    <!-- Modal de Mis Pedidos -->
     <div id="mis-pedidos-modal" class="modal">
         <div class="modal-content" style="max-width: 600px;">
             <span class="modal-cerrar-mis-pedidos">&times;</span>
@@ -488,86 +539,8 @@
         </div>
     </div>
     
-    <!-- Overlay para cerrar carrito -->
     <div id="overlay" class="overlay"></div>
     
     <script src="script.js"></script>
-    <script>
-        // ========== FUNCIONALIDAD DE ZOOM EN IMAGEN DEL MODAL DE PRODUCTO ==========
-        
-        // Esperar a que el DOM esté listo
-        document.addEventListener('DOMContentLoaded', function() {
-            // Referencias a los elementos
-            const modalProducto = document.getElementById('producto-modal');
-            const zoomModal = document.getElementById('zoom-imagen-modal');
-            const zoomImagen = document.getElementById('zoom-imagen');
-            const zoomCerrar = document.getElementById('zoom-cerrar');
-            
-            // Función para abrir el zoom
-            window.abrirZoomImagen = function(urlImagen) {
-                if (zoomImagen && urlImagen) {
-                    zoomImagen.src = urlImagen;
-                    zoomModal.classList.add('active');
-                    document.body.style.overflow = 'hidden';
-                }
-            };
-            
-            // Función para cerrar el zoom
-            window.cerrarZoomImagen = function() {
-                zoomModal.classList.remove('active');
-                document.body.style.overflow = '';
-            };
-            
-            // Cerrar zoom con clic en el fondo
-            if (zoomModal) {
-                zoomModal.addEventListener('click', function(e) {
-                    if (e.target === zoomModal) {
-                        window.cerrarZoomImagen();
-                    }
-                });
-            }
-            
-            // Cerrar zoom con tecla ESC
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && zoomModal && zoomModal.classList.contains('active')) {
-                    window.cerrarZoomImagen();
-                }
-            });
-            
-            // Cerrar zoom con el botón X
-            if (zoomCerrar) {
-                zoomCerrar.addEventListener('click', window.cerrarZoomImagen);
-            }
-        });
-        
-        // Configurar zoom en la imagen del modal de producto
-        window.configurarZoomEnModalProducto = function() {
-            setTimeout(function() {
-                const modalImagen = document.getElementById('modal-imagen');
-                
-                if (modalImagen) {
-                    modalImagen.style.cursor = 'zoom-in';
-                    
-                    // Remover eventos anteriores
-                    const nuevaImagen = modalImagen.cloneNode(true);
-                    if (modalImagen.parentNode) {
-                        modalImagen.parentNode.replaceChild(nuevaImagen, modalImagen);
-                    }
-                    
-                    const imagenFinal = document.getElementById('modal-imagen');
-                    if (imagenFinal) {
-                        imagenFinal.style.cursor = 'zoom-in';
-                        imagenFinal.addEventListener('click', function(e) {
-                            e.stopPropagation();
-                            const urlImagen = this.src;
-                            if (urlImagen && window.abrirZoomImagen) {
-                                window.abrirZoomImagen(urlImagen);
-                            }
-                        });
-                    }
-                }
-            }, 100);
-        };
-    </script>
 </body>
 </html>
