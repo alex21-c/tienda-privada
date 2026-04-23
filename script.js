@@ -710,8 +710,10 @@ async function guardarPedido(pedido) {
     }
 }
 
-// ==================== MOSTRAR FACTURA ====================
+// ==================== MOSTRAR FACTURA CON LOGO ====================
 function mostrarFactura(pedido) {
+    console.log("Pedido recibido en mostrarFactura:", pedido);
+    
     const facturaDiv = document.getElementById('factura-contenido');
     
     let totalProductos = 0;
@@ -729,10 +731,10 @@ function mostrarFactura(pedido) {
     
     facturaDiv.innerHTML = `
         <div class="factura-logo">
-            <span class="factura-logo-icon">🛍️</span>
-            <div>
+            <img src="logo.png" alt="TIENDA PRIVADA" class="factura-logo-imagen" onerror="this.style.display='none'">
+            <div class="factura-logo-texto">
                 <h2>TIENDA PRIVADA</h2>
-                <p>ESTILO, EXCLUSIVIDAD Y SEGURIDAD</p>
+                <p>ESTILO · EXCLUSIVIDAD · SEGURIDAD</p>
             </div>
         </div>
         <div class="factura-header">
@@ -818,9 +820,9 @@ function descargarFactura() {
             body { font-family: 'Courier New', monospace; padding: 40px; background: #fff; }
             .factura { max-width: 800px; margin: 0 auto; border: 1px solid #ddd; padding: 30px; border-radius: 20px; }
             .factura-logo { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; }
-            .factura-logo-icon { font-size: 2.5rem; }
-            .factura-logo h2 { color: #A3B8A4; margin: 0; }
-            .factura-logo p { font-size: 0.7rem; color: #9CA3AF; margin: 5px 0 0 0; }
+            .factura-logo-imagen { height: 50px; width: auto; object-fit: contain; }
+            .factura-logo-texto h2 { color: #A3B8A4; margin: 0; font-size: 1.2rem; }
+            .factura-logo-texto p { font-size: 0.7rem; color: #9CA3AF; margin: 5px 0 0 0; }
             .factura-header { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px dashed #ddd; }
             .factura-info { background: #f9f9f9; padding: 15px; border-radius: 15px; margin-bottom: 20px; }
             .producto-linea { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
@@ -829,6 +831,11 @@ function descargarFactura() {
             .factura-total-linea.total { margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 1.2em; font-weight: bold; }
             .factura-envio-nota { background: #FFF0F0; padding: 12px; border-radius: 15px; margin-top: 20px; text-align: center; font-size: 0.75em; }
             .factura-footer { text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 0.7em; }
+            @media (max-width: 768px) {
+                .factura-logo-imagen { height: 35px; }
+                .factura-logo-texto h2 { font-size: 0.9rem; }
+                .factura-logo-texto p { font-size: 0.55rem; }
+            }
         </style>
     </head>
     <body><div class="factura">${facturaElement.innerHTML}</div></body>
