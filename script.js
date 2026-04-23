@@ -182,9 +182,9 @@ function mostrarModal(productoId) {
     modal.style.display = 'flex';
     console.log("Modal mostrado");
     
-    // ✅✅✅ AGREGAR ESTA LÍNEA AQUÍ - Configurar zoom en la imagen ✅✅✅
     configurarZoomEnModalProducto();
 }
+
 // ==================== MOSTRAR TALLAS DIRECTAS ====================
 function mostrarTallasDirectas(variantes) {
     const variantesDiv = document.getElementById('modal-variantes');
@@ -388,11 +388,11 @@ function cerrarModal() {
     colorSeleccionado = null;
     tallaSeleccionada = null;
     
-    // ✅ Cerrar zoom si estaba abierto
     if (window.cerrarZoomImagen) {
         window.cerrarZoomImagen();
     }
 }
+
 function configurarModal() {
     const modal = document.getElementById('producto-modal');
     const cerrar = document.querySelector('.modal-cerrar');
@@ -543,7 +543,7 @@ function cerrarCarrito() {
     if (overlay) overlay.classList.remove('active');
 }
 
-// ==================== MODAL DE PAGO MODIFICADO ====================
+// ==================== MODAL DE PAGO ====================
 function abrirModalPago() {
     const modal = document.getElementById('pago-modal');
     if (modal) modal.style.display = 'flex';
@@ -592,13 +592,8 @@ async function enviarPedidoModal() {
         idPedido: Date.now().toString()
     };
     
-    // 🔴 IMPORTANTE: Guardar el pedido AHORA MISMO
     await guardarPedido(pedido);
-    
-    // Guardar el pedido pendiente para la verificación
     pedidoPendiente = pedido;
-    
-    // Cerrar modal de pago y carrito
     cerrarModalPago();
     cerrarCarrito();
     
@@ -608,6 +603,7 @@ async function enviarPedidoModal() {
         mostrarFactura(pedido);
     }
 }
+
 // ==================== YAPPY MODAL ====================
 function abrirModalYappy() {
     const modal = document.getElementById('yappy-modal');
@@ -649,17 +645,14 @@ async function verificarPagoYGenerarFactura() {
         return;
     }
     
-    // Buscar el pedido por nombre en lugar de usar pedidoPendiente
     try {
         const response = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombreVerificar)}`);
         const pedidos = await response.json();
         
         if (pedidos && pedidos.length > 0) {
-            // Encontrar el pedido más reciente con estado "Pendiente de pago"
             const pedidoEncontrado = pedidos.find(p => p.estado === 'Pendiente de pago');
             
             if (pedidoEncontrado) {
-                // Actualizar estado del pedido a "Pagado"
                 await fetch(API_URL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -671,7 +664,6 @@ async function verificarPagoYGenerarFactura() {
                     })
                 });
                 
-                // Recargar los datos del pedido para la factura
                 const pedidoCompleto = {
                     nombre: pedidoEncontrado.nombre,
                     telefono: pedidoEncontrado.telefono,
@@ -688,16 +680,17 @@ async function verificarPagoYGenerarFactura() {
                 cerrarConfirmarPago();
                 mostrarFactura(pedidoCompleto);
             } else {
-                alert('❌ No encontramos un pedido pendiente con ese nombre. Verifica que escribiste el mismo nombre que usaste al hacer el pedido.');
+                alert('❌ No encontramos un pedido pendiente con ese nombre.');
             }
         } else {
-            alert('❌ No encontramos un pedido con ese nombre. Verifica que escribiste el mismo nombre que usaste al hacer el pedido.');
+            alert('❌ No encontramos un pedido con ese nombre.');
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('❌ Error al verificar el pago. Intenta nuevamente.');
+        alert('❌ Error al verificar el pago.');
     }
 }
+
 // ==================== GUARDAR PEDIDO ====================
 async function guardarPedido(pedido) {
     try {
@@ -717,40 +710,33 @@ async function guardarPedido(pedido) {
     }
 }
 
-// ==================== MOSTRAR FACTURA AESTHETIC ====================
+// ==================== MOSTRAR FACTURA ====================
 function mostrarFactura(pedido) {
-    console.log("Pedido recibido en mostrarFactura:", pedido); // Para depurar
-    
     const facturaDiv = document.getElementById('factura-contenido');
     
-    // Obtener el total de productos de diferentes formas posibles
     let totalProductos = 0;
-    
     if (pedido.totalProductos) {
         totalProductos = parseFloat(pedido.totalProductos);
     } else if (pedido.total) {
         totalProductos = parseFloat(pedido.total);
-    } else if (pedido.totalProductos === 0 && pedido.productos) {
-        // Calcular desde los productos
-        const lineas = pedido.productos.split('\n');
-        for (const linea of lineas) {
-            const match = linea.match(/\$(\d+\.?\d*)/);
-            if (match) {
-                totalProductos += parseFloat(match[1]);
-            }
-        }
     }
     
     const envioLibra = 3.50;
     const delivery = 1.00;
     
-    // Procesar productos para mostrar en lista
     const productosLista = pedido.productos ? pedido.productos.split('\n').filter(p => p.trim()) : [];
     const productosHtml = productosLista.map(p => `<div class="producto-linea"><span>${p}</span></div>`).join('');
     
     facturaDiv.innerHTML = `
+        <div class="factura-logo">
+            <span class="factura-logo-icon">🛍️</span>
+            <div>
+                <h2>TIENDA PRIVADA</h2>
+                <p>ESTILO, EXCLUSIVIDAD Y SEGURIDAD</p>
+            </div>
+        </div>
         <div class="factura-header">
-            <h2>🎀 FACTURA DE COMPRA</h2>
+            <h3>🎀 FACTURA DE COMPRA</h3>
             <p>Comprobante de pago</p>
             <p><strong>N°:</strong> ${pedido.idPedido || 'N/A'}</p>
         </div>
@@ -800,56 +786,29 @@ function mostrarFactura(pedido) {
         </div>
     `;
     
-    // Mostrar el modal de factura
     const modal = document.getElementById('factura-modal');
-    if (modal) {
-        modal.style.display = 'flex';
-    }
+    if (modal) modal.style.display = 'flex';
     
-    // Configurar botones
     const descargarBtn = document.getElementById('descargar-factura');
     const cerrarBtn = document.getElementById('cerrar-factura');
     const cerrarX = document.querySelector('.modal-cerrar-factura');
     
-    if (descargarBtn) {
-        descargarBtn.onclick = function() {
-            descargarFactura();
-        };
-    }
+    if (descargarBtn) descargarBtn.onclick = descargarFactura;
+    if (cerrarBtn) cerrarBtn.onclick = () => modal.style.display = 'none';
+    if (cerrarX) cerrarX.onclick = () => modal.style.display = 'none';
     
-    if (cerrarBtn) {
-        cerrarBtn.onclick = function() {
-            modal.style.display = 'none';
-        };
-    }
-    
-    if (cerrarX) {
-        cerrarX.onclick = function() {
-            modal.style.display = 'none';
-        };
-    }
-    
-    // Limpiar campos
-    const nombreModal = document.getElementById('nombre-modal');
-    const telefonoModal = document.getElementById('telefono-modal');
-    const direccionModal = document.getElementById('direccion-modal');
-    const metodoPagoModal = document.getElementById('metodo-pago-modal');
-    const nombreVerificar = document.getElementById('nombre-verificar');
-    
-    if (nombreModal) nombreModal.value = '';
-    if (telefonoModal) telefonoModal.value = '';
-    if (direccionModal) direccionModal.value = '';
-    if (metodoPagoModal) metodoPagoModal.value = '';
-    if (nombreVerificar) nombreVerificar.value = '';
-    
+    document.getElementById('nombre-modal').value = '';
+    document.getElementById('telefono-modal').value = '';
+    document.getElementById('direccion-modal').value = '';
+    document.getElementById('metodo-pago-modal').value = '';
+    document.getElementById('nombre-verificar').value = '';
     pedidoPendiente = null;
 }
 
 // ==================== DESCARGAR FACTURA ====================
 function descargarFactura() {
     const facturaElement = document.getElementById('factura-contenido');
-    const htmlContent = `
-    <!DOCTYPE html>
+    const htmlContent = `<!DOCTYPE html>
     <html>
     <head>
         <meta charset="UTF-8">
@@ -858,10 +817,12 @@ function descargarFactura() {
             * { margin: 0; padding: 0; box-sizing: border-box; }
             body { font-family: 'Courier New', monospace; padding: 40px; background: #fff; }
             .factura { max-width: 800px; margin: 0 auto; border: 1px solid #ddd; padding: 30px; border-radius: 20px; }
+            .factura-logo { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; }
+            .factura-logo-icon { font-size: 2.5rem; }
+            .factura-logo h2 { color: #A3B8A4; margin: 0; }
+            .factura-logo p { font-size: 0.7rem; color: #9CA3AF; margin: 5px 0 0 0; }
             .factura-header { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px dashed #ddd; }
-            .factura-header h2 { color: #A3B8A4; }
             .factura-info { background: #f9f9f9; padding: 15px; border-radius: 15px; margin-bottom: 20px; }
-            .factura-info p { margin: 5px 0; }
             .producto-linea { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
             .factura-totales { margin-top: 20px; padding-top: 15px; border-top: 2px solid #ddd; }
             .factura-total-linea { display: flex; justify-content: space-between; margin: 8px 0; }
@@ -870,13 +831,8 @@ function descargarFactura() {
             .factura-footer { text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 0.7em; }
         </style>
     </head>
-    <body>
-        <div class="factura">
-            ${facturaElement.innerHTML}
-        </div>
-    </body>
-    </html>
-    `;
+    <body><div class="factura">${facturaElement.innerHTML}</div></body>
+    </html>`;
     
     const blob = new Blob([htmlContent], { type: 'text/html' });
     const link = document.createElement('a');
@@ -952,62 +908,7 @@ async function buscarPedidosPorNombreModal() {
         
     } catch (error) {
         console.error('Error:', error);
-        resultadoDiv.innerHTML = '<p class="error">❌ Error al consultar tus pedidos. Intenta nuevamente.</p>';
-    }
-}
-
-// ==================== ENVIAR PEDIDO ====================
-async function enviarPedido(datosCliente) {
-    let detalleProductos = '';
-    let total = 0;
-    
-    carrito.forEach(item => {
-        const subtotal = item.precio * item.cantidad;
-        total += subtotal;
-        detalleProductos += `${item.nombre} (${item.origen}) x${item.cantidad} - $${subtotal.toFixed(2)}\n`;
-    });
-    
-    const costoEnvioLibra = 3.50;
-    const costoDelivery = 1.00;
-    
-    const pedido = {
-        nombre: datosCliente.nombre,
-        telefono: datosCliente.telefono,
-        direccion: datosCliente.direccion,
-        metodoPago: datosCliente.metodoPago,
-        estadoPago: 'Pendiente',
-        productos: detalleProductos,
-        total: total.toFixed(2),
-        idPedido: Date.now().toString()
-    };
-    
-    try {
-        await fetch(API_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(pedido)
-        });
-        
-        alert(`✅ ¡PEDIDO CONFIRMADO! ✅
-        
-📦 TOTAL PRODUCTOS: $${total.toFixed(2)}
-🚚 COSTOS DE ENVÍO: $${(costoEnvioLibra + costoDelivery).toFixed(2)} (SE PAGAN AL RECIBIR)
-
-💰 Pagas ahora: $${total.toFixed(2)}
-💰 Pagas al recibir: Envío por libra ($${costoEnvioLibra.toFixed(2)}) + Delivery ($${costoDelivery.toFixed(2)})
-
-⚠️ Los costos de envío se pagan cuando el paquete llegue a Panamá.`);
-        
-        carrito = [];
-        guardarCarrito();
-        actualizarCarrito();
-        const form = document.getElementById('pedido-form');
-        if (form) form.reset();
-        return true;
-    } catch (error) {
-        alert('❌ Error al enviar. Por favor intenta de nuevo.');
-        return false;
+        resultadoDiv.innerHTML = '<p class="error">❌ Error al consultar tus pedidos.</p>';
     }
 }
 
@@ -1043,26 +944,6 @@ function configurarFiltros() {
             mostrarProductos();
         });
     });
-}
-
-function configurarFormulario() {
-    const form = document.getElementById('pedido-form');
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const nombre = document.getElementById('nombre').value;
-            const telefono = document.getElementById('telefono').value;
-            const direccion = document.getElementById('direccion').value;
-            const metodoPago = document.getElementById('metodo-pago').value;
-            
-            if (!nombre || !telefono || !direccion || !metodoPago) {
-                alert('Completa todos los campos');
-                return;
-            }
-            
-            await enviarPedido({nombre, telefono, direccion, metodoPago});
-        });
-    }
 }
 
 function configurarFormularioModal() {
@@ -1186,12 +1067,9 @@ function configurarCarritoTop() {
     const pagarBtn = document.getElementById('ir-pagar');
     const overlay = document.getElementById('overlay');
     
-    console.log("Configurando carrito top");
-    console.log("Botón pagar encontrado:", pagarBtn);
-    
     if (toggleBtn) toggleBtn.onclick = toggleCarrito;
     if (cerrarBtn) cerrarBtn.onclick = cerrarCarrito;
-    if (pagarBtn) pagarBtn.onclick = irAPagar;  // 👈 Esta línea es clave
+    if (pagarBtn) pagarBtn.onclick = irAPagar;
     if (overlay) overlay.onclick = cerrarCarrito;
 }
 
@@ -1226,68 +1104,15 @@ function configurarMisPedidos() {
     }
 }
 
-// ==================== INICIAR ====================
-async function init() {
-    verificarAdmin();
-    await cargarProductos();
-    const carritoGuardado = localStorage.getItem('carrito');
-    if (carritoGuardado) carrito = JSON.parse(carritoGuardado);
-    actualizarCarrito();
-    configurarFiltros();
-    configurarFormularioModal();
-    configurarModal();
-    configurarCarritoTop();
-    configurarMisPedidos();
-    configurarModalesPago();
-}
-// ==================== IR A PAGAR ====================
-function irAPagar() {
-    console.log("irAPagar llamado");
-    cerrarCarrito();
-    abrirModalPago();
-}
-
-function abrirModalPago() {
-    console.log("abrirModalPago llamado");
-    const modal = document.getElementById('pago-modal');
-    if (modal) {
-        modal.style.display = 'flex';
-        console.log("Modal abierto");
-    } else {
-        console.error("Modal de pago no encontrado");
-        alert('Error: No se encontró el formulario de pago');
-    }
-}
-
-function cerrarModalPago() {
-    const modal = document.getElementById('pago-modal');
-    if (modal) modal.style.display = 'none';
-}
-
-// Función de prueba temporal
-function testModalPago() {
-    const modal = document.getElementById('pago-modal');
-    if (modal) {
-        modal.style.display = 'flex';
-        console.log('Modal abierto manualmente');
-        return true;
-    } else {
-        console.error('Modal no encontrado');
-        alert('Error: No se encuentra el modal de pago en el HTML');
-        return false;
-    }
-}
-// ==================== ZOOM EN IMAGEN DEL MODAL ====================
+// ==================== ZOOM EN IMAGEN ====================
 function configurarZoomEnModalProducto() {
     setTimeout(function() {
         const modalImagen = document.getElementById('modal-imagen');
         
         if (modalImagen) {
-            // Cambiar cursor a zoom-in
             modalImagen.style.cursor = 'zoom-in';
             modalImagen.style.transition = 'transform 0.2s ease';
             
-            // Remover eventos anteriores para evitar duplicados
             const nuevaImagen = modalImagen.cloneNode(true);
             if (modalImagen.parentNode) {
                 modalImagen.parentNode.replaceChild(nuevaImagen, modalImagen);
@@ -1308,7 +1133,6 @@ function configurarZoomEnModalProducto() {
     }, 150);
 }
 
-// Función para abrir el zoom
 window.abrirZoomImagen = function(urlImagen) {
     const zoomModal = document.getElementById('zoom-imagen-modal');
     const zoomImagen = document.getElementById('zoom-imagen');
@@ -1322,7 +1146,6 @@ window.abrirZoomImagen = function(urlImagen) {
     }
 };
 
-// Función para cerrar el zoom
 window.cerrarZoomImagen = function() {
     const zoomModal = document.getElementById('zoom-imagen-modal');
     if (zoomModal) {
@@ -1331,7 +1154,6 @@ window.cerrarZoomImagen = function() {
     }
 };
 
-// Configurar eventos del zoom
 function configurarZoomModal() {
     const zoomModal = document.getElementById('zoom-imagen-modal');
     const zoomCerrar = document.getElementById('zoom-cerrar');
@@ -1348,13 +1170,20 @@ function configurarZoomModal() {
         zoomCerrar.addEventListener('click', window.cerrarZoomImagen);
     }
     
-    // Cerrar con tecla ESC
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             window.cerrarZoomImagen();
         }
     });
 }
+
+// ==================== IR A PAGAR ====================
+function irAPagar() {
+    cerrarCarrito();
+    abrirModalPago();
+}
+
+// ==================== INICIAR ====================
 async function init() {
     verificarAdmin();
     await cargarProductos();
@@ -1367,9 +1196,7 @@ async function init() {
     configurarCarritoTop();
     configurarMisPedidos();
     configurarModalesPago();
-    
-    // ✅✅✅ AGREGAR ESTA LÍNEA ✅✅✅
     configurarZoomModal();
 }
-// Llamada a init
+
 init();
