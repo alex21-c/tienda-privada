@@ -7,6 +7,7 @@ let productoActual = null;
 let esAdmin = false;
 let colorSeleccionado = null;
 let tallaSeleccionada = null;
+let presentacionSeleccionada = null; // Variable para presentaciones (frascos)
 let pedidoPendiente = null;
 
 // ==================== VARIABLES DE FILTROS ====================
@@ -107,6 +108,78 @@ function mostrarProductos() {
     });
 }
 
+// ==================== PROCESAR PRESENTACIONES (FRASCOS) ====================
+function mostrarPresentaciones(variantesTexto) {
+    const presentacionesDiv = document.getElementById('modal-presentaciones');
+    const selectorPresentacion = document.getElementById('selector-presentacion');
+    
+    if (!presentacionesDiv) return;
+    
+    // Limpiar selector
+    if (selectorPresentacion) selectorPresentacion.innerHTML = '<option value="">Selecciona una opción</option>';
+    
+    // Buscar presentaciones en el texto de variantes (formato: 1frasco:4.62,2frascos:9.24)
+    const presentacionesEncontradas = [];
+    
+    if (variantesTexto && typeof variantesTexto === 'string') {
+        // Dividir por comas
+        const partes = variantesTexto.split(',');
+        for (const parte of partes) {
+            // Buscar patrón como "1frasco:4.62" o "2frascos:9.24"
+            const match = parte.match(/(\d+)\s*(frasco|frascos)\s*:\s*([\d.]+)/i);
+            if (match) {
+                presentacionesEncontradas.push({
+                    cantidad: parseInt(match[1]),
+                    texto: match[1] + ' ' + match[2],
+                    precio: parseFloat(match[3])
+                });
+            }
+        }
+    }
+    
+    if (presentacionesEncontradas.length > 0) {
+        presentacionesDiv.style.display = 'block';
+        if (selectorPresentacion) {
+            presentacionesEncontradas.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.precio;
+                option.setAttribute('data-cantidad', p.cantidad);
+                option.setAttribute('data-texto', p.texto);
+                option.textContent = `${p.texto} - $${p.precio.toFixed(2)}`;
+                selectorPresentacion.appendChild(option);
+            });
+            
+            selectorPresentacion.onchange = function() {
+                if (this.value) {
+                    const precioSeleccionado = parseFloat(this.value);
+                    const cantidadSeleccionada = parseInt(this.options[this.selectedIndex].getAttribute('data-cantidad'));
+                    const textoSeleccionado = this.options[this.selectedIndex].getAttribute('data-texto');
+                    presentacionSeleccionada = {
+                        cantidad: cantidadSeleccionada,
+                        texto: textoSeleccionado,
+                        precio: precioSeleccionado
+                    };
+                    const modalPrecio = document.getElementById('modal-precio');
+                    if (modalPrecio) {
+                        modalPrecio.textContent = `$${precioSeleccionado.toFixed(2)}`;
+                        modalPrecio.style.fontWeight = 'bold';
+                        modalPrecio.style.color = '#F4A0B5';
+                    }
+                } else {
+                    presentacionSeleccionada = null;
+                    const modalPrecio = document.getElementById('modal-precio');
+                    if (modalPrecio && productoActual) {
+                        modalPrecio.textContent = `$${productoActual.precio.toFixed(2)}`;
+                        modalPrecio.style.color = '#2ecc71';
+                    }
+                }
+            };
+        }
+    } else {
+        presentacionesDiv.style.display = 'none';
+    }
+}
+
 // ==================== MOSTRAR MODAL ====================
 function mostrarModal(productoId) {
     console.log("Mostrando modal para producto:", productoId);
@@ -122,6 +195,7 @@ function mostrarModal(productoId) {
     productoActual = producto;
     colorSeleccionado = null;
     tallaSeleccionada = null;
+    presentacionSeleccionada = null;
     
     const modal = document.getElementById('producto-modal');
     const modalImagen = document.getElementById('modal-imagen');
@@ -166,6 +240,7 @@ function mostrarModal(productoId) {
     
     mostrarEnlaceAdmin(producto.enlace);
     
+    // Procesar colores
     if (producto.colores && producto.colores.length > 0) {
         if (modalColores) modalColores.style.display = 'block';
         mostrarSelectoresColor(producto.colores);
@@ -177,6 +252,21 @@ function mostrarModal(productoId) {
     else {
         if (modalColores) modalColores.style.display = 'none';
         if (variantesDiv) variantesDiv.style.display = 'none';
+    }
+    
+    // Procesar presentaciones (frascos)
+    if (producto.variantes && producto.variantes !== '') {
+        // Verificar si tiene presentaciones (formato: 1frasco:4.62,2frascos:9.24)
+        if (producto.variantes.includes('frasco') || producto.variantes.includes('pack')) {
+            mostrarPresentaciones(producto.variantes);
+        } else {
+            // Si no tiene presentaciones, ocultar el selector
+            const presentacionesDiv = document.getElementById('modal-presentaciones');
+            if (presentacionesDiv) presentacionesDiv.style.display = 'none';
+        }
+    } else {
+        const presentacionesDiv = document.getElementById('modal-presentaciones');
+        if (presentacionesDiv) presentacionesDiv.style.display = 'none';
     }
     
     modal.style.display = 'flex';
@@ -340,7 +430,13 @@ function agregarDesdeModal() {
     let precioFinal = productoActual.precio;
     let nombreFinal = productoActual.nombre;
     
-    if (productoActual.colores && productoActual.colores.length > 0) {
+    // Priorizar presentación (frascos) si está seleccionada
+    if (presentacionSeleccionada) {
+        precioFinal = presentacionSeleccionada.precio;
+        nombreFinal = `${productoActual.nombre} (${presentacionSeleccionada.texto})`;
+    }
+    // Si no hay presentación, verificar colores y tallas
+    else if (productoActual.colores && productoActual.colores.length > 0) {
         if (!colorSeleccionado) {
             alert('⚠️ Por favor selecciona un color');
             return;
@@ -354,12 +450,21 @@ function agregarDesdeModal() {
         }
     } 
     else if (productoActual.tiene_variantes && productoActual.variantes && productoActual.variantes.length > 0) {
-        if (!tallaSeleccionada) {
-            alert('⚠️ Por favor selecciona una talla');
+        // Verificar si son tallas o presentaciones
+        if (!tallaSeleccionada && !presentacionSeleccionada) {
+            // Si hay variantes pero no es presentación ni talla seleccionada
+            const tienePresentaciones = productoActual.variantes.includes('frasco') || productoActual.variantes.includes('pack');
+            if (tienePresentaciones) {
+                alert('⚠️ Por favor selecciona una opción de frascos');
+            } else {
+                alert('⚠️ Por favor selecciona una talla');
+            }
             return;
         }
-        precioFinal = tallaSeleccionada.precio;
-        nombreFinal = `${productoActual.nombre} (Talla: ${tallaSeleccionada.talla})`;
+        if (tallaSeleccionada) {
+            precioFinal = tallaSeleccionada.precio;
+            nombreFinal = `${productoActual.nombre} (Talla: ${tallaSeleccionada.talla})`;
+        }
     }
     
     const existente = carrito.find(item => item.id === productoActual.id && item.nombre === nombreFinal);
@@ -387,6 +492,7 @@ function cerrarModal() {
     productoActual = null;
     colorSeleccionado = null;
     tallaSeleccionada = null;
+    presentacionSeleccionada = null;
     
     if (window.cerrarZoomImagen) {
         window.cerrarZoomImagen();
