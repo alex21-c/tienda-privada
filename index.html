@@ -6,86 +6,135 @@
     <title>TIENDA PRIVADA</title>
     <link rel="stylesheet" href="estilo.css">
     <style>
-        /* ========== ESTILOS DEL LOGO ========== */
-        .logo-container {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 25px 20px;
-            background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
-            border-radius: 60px;
-            box-shadow: 0 10px 30px rgba(163, 184, 164, 0.3);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .logo-icon {
-            font-size: 4rem;
-            filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.2));
-        }
-
-        .logo-text {
-            text-align: center;
-        }
-
-        .logo-title {
-            font-size: 2rem;
-            font-weight: 800;
-            color: white;
-            margin: 0;
-            letter-spacing: 3px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .logo-subtitle {
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.9);
-            margin: 8px 0 0 0;
-            letter-spacing: 1.5px;
-        }
-
-        /* Ocultar el h1 original */
-        .container > h1 {
-            display: none;
-        }
-/* Estilos para la imagen del logo */
-.logo-imagen {
-    height: 80px;
-    width: auto;
-    max-width: 200px;
-    object-fit: contain;
-    border-radius: 12px;
+    /* ========== ESTILOS DEL LOGO - VERSIÓN MEJORADA ========== */
+.logo-container {
+    text-align: center;
+    margin-bottom: 35px;
+    padding: 20px 30px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f5f0 100%);
+    border-radius: 80px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(163, 184, 164, 0.3);
+    position: relative;
+    overflow: hidden;
 }
-        @media (max-width: 768px) {
-            .logo {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .logo-icon {
-                font-size: 2.8rem;
-            }
-            .logo-title {
-                font-size: 1.4rem;
-                letter-spacing: 2px;
-            }
-            .logo-subtitle {
-                font-size: 0.7rem;
-            }
-            .logo-container {
-                padding: 18px;
-                margin-bottom: 20px;
-            }
-         .logo-imagen {
-        height: 55px;
-        max-width: 150px;
+
+.logo-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(163, 184, 164, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.logo-container:hover::before {
+    left: 100%;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+}
+
+.logo-icon-wrapper {
+    position: relative;
+}
+
+.logo-icon {
+    font-size: 3.5rem;
+    filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.1));
+    transition: transform 0.3s ease;
+}
+
+.logo-icon:hover {
+    transform: scale(1.05);
+}
+
+.logo-icon-badge {
+    position: absolute;
+    bottom: -5px;
+    right: -10px;
+    background: #F4A0B5;
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.logo-text {
+    text-align: left;
+}
+
+.logo-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2d3436;
+    margin: 0;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+}
+
+.logo-subtitle {
+    font-size: 0.7rem;
+    color: #9CA3AF;
+    margin: 5px 0 0 0;
+    letter-spacing: 2px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.logo-divider {
+    width: 2px;
+    height: 40px;
+    background: linear-gradient(135deg, #A3B8A4 0%, #F4A0B5 100%);
+    margin: 0 10px;
+}
+
+@media (max-width: 768px) {
+    .logo-container {
+        padding: 15px 20px;
+        border-radius: 60px;
+        margin-bottom: 25px;
+    }
+    
+    .logo {
+        gap: 12px;
+    }
+    
+    .logo-icon {
+        font-size: 2.5rem;
+    }
+    
+    .logo-title {
+        font-size: 1.2rem;
+    }
+    
+    .logo-subtitle {
+        font-size: 0.55rem;
+        letter-spacing: 1.5px;
+    }
+    
+    .logo-divider {
+        height: 30px;
+    }
+    
+    .logo-text {
+        text-align: center;
     }
 }
-
         /* Estilos adicionales para el zoom de imagen en modal */
         .modal-producto-imagen-container {
             cursor: zoom-in;
