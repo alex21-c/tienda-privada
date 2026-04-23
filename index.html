@@ -6,135 +6,81 @@
     <title>TIENDA PRIVADA</title>
     <link rel="stylesheet" href="estilo.css">
     <style>
-    /* ========== ESTILOS DEL LOGO - VERSIÓN MEJORADA ========== */
-.logo-container {
-    text-align: center;
-    margin-bottom: 35px;
-    padding: 20px 30px;
-    background: linear-gradient(135deg, #ffffff 0%, #f8f5f0 100%);
-    border-radius: 80px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(163, 184, 164, 0.3);
-    position: relative;
-    overflow: hidden;
-}
+        /* ========== ESTILOS DEL LOGO - VERSIÓN MINIMALISTA ========== */
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px;
+        }
 
-.logo-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(163, 184, 164, 0.1), transparent);
-    transition: left 0.5s ease;
-}
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
 
-.logo-container:hover::before {
-    left: 100%;
-}
+        .logo-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #A3B8A4 0%, #F4A0B5 100%);
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(163, 184, 164, 0.3);
+        }
 
-.logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    position: relative;
-    z-index: 1;
-}
+        .logo-icon span {
+            font-size: 2rem;
+        }
 
-.logo-icon-wrapper {
-    position: relative;
-}
+        .logo-text {
+            text-align: left;
+        }
 
-.logo-icon {
-    font-size: 3.5rem;
-    filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.1));
-    transition: transform 0.3s ease;
-}
+        .logo-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3436;
+            margin: 0;
+            letter-spacing: 2px;
+        }
 
-.logo-icon:hover {
-    transform: scale(1.05);
-}
+        .logo-subtitle {
+            font-size: 0.65rem;
+            color: #A3B8A4;
+            margin: 5px 0 0 0;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+        }
 
-.logo-icon-badge {
-    position: absolute;
-    bottom: -5px;
-    right: -10px;
-    background: #F4A0B5;
-    color: white;
-    font-size: 0.7rem;
-    padding: 2px 6px;
-    border-radius: 20px;
-    font-weight: bold;
-}
+        @media (max-width: 768px) {
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+            }
+            .logo-icon span {
+                font-size: 1.4rem;
+            }
+            .logo-title {
+                font-size: 1.1rem;
+                letter-spacing: 1px;
+            }
+            .logo-subtitle {
+                font-size: 0.55rem;
+                letter-spacing: 1px;
+            }
+            .logo-text {
+                text-align: center;
+            }
+            .logo {
+                gap: 10px;
+            }
+        }
 
-.logo-text {
-    text-align: left;
-}
-
-.logo-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #2d3436;
-    margin: 0;
-    letter-spacing: 1px;
-    background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: none;
-}
-
-.logo-subtitle {
-    font-size: 0.7rem;
-    color: #9CA3AF;
-    margin: 5px 0 0 0;
-    letter-spacing: 2px;
-    font-weight: 500;
-    text-transform: uppercase;
-}
-
-.logo-divider {
-    width: 2px;
-    height: 40px;
-    background: linear-gradient(135deg, #A3B8A4 0%, #F4A0B5 100%);
-    margin: 0 10px;
-}
-
-@media (max-width: 768px) {
-    .logo-container {
-        padding: 15px 20px;
-        border-radius: 60px;
-        margin-bottom: 25px;
-    }
-    
-    .logo {
-        gap: 12px;
-    }
-    
-    .logo-icon {
-        font-size: 2.5rem;
-    }
-    
-    .logo-title {
-        font-size: 1.2rem;
-    }
-    
-    .logo-subtitle {
-        font-size: 0.55rem;
-        letter-spacing: 1.5px;
-    }
-    
-    .logo-divider {
-        height: 30px;
-    }
-    
-    .logo-text {
-        text-align: center;
-    }
-}
         /* Estilos adicionales para el zoom de imagen en modal */
         .modal-producto-imagen-container {
             cursor: zoom-in;
@@ -361,18 +307,20 @@
     </style>
 </head>
 <body>
-    <div class="container">
-    <!-- LOGO DE LA TIENDA -->
-<div class="logo-container">
-    <div class="logo">
-        <img src="logo.png" alt="TIENDA PRIVADA" class="logo-imagen">
-        <div class="logo-text">
-            <h1 class="logo-title">TIENDA PRIVADA</h1>
-            <p class="logo-subtitle">ESTILO, EXCLUSIVIDAD Y SEGURIDAD</p>
+    <!-- LOGO DE LA TIENDA - VERSIÓN MINIMALISTA -->
+    <div class="logo-container">
+        <div class="logo">
+            <div class="logo-icon">
+                <span>🛍️</span>
+            </div>
+            <div class="logo-text">
+                <h1 class="logo-title">TIENDA PRIVADA</h1>
+                <p class="logo-subtitle">ESTILO · EXCLUSIVIDAD · SEGURIDAD</p>
+            </div>
         </div>
     </div>
-</div>
-        
+
+    <div class="container">
         <!-- Panel de administración (solo visible para ti) -->
         <div id="admin-panel" style="display:none;" class="admin-quick-panel">
             <a href="admin.html" class="btn-admin">📊 Ir al Panel de Administrador</a>
