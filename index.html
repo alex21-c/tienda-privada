@@ -79,67 +79,409 @@
         }
 
         /* ========== ESTILOS PARA EL LOGO EN LA FACTURA ========== */
-.factura-logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 15px;
-    padding-bottom: 12px;
-    border-bottom: 1px dashed #E5E5E5;
-}
+        .factura-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #E5E5E5;
+        }
 
-.factura-logo-imagen {
-    height: 35px;
-    width: auto;
-    object-fit: contain;
-}
+        .factura-logo-imagen {
+            height: 35px;
+            width: auto;
+            object-fit: contain;
+        }
 
-.factura-logo-texto {
-    text-align: left;
-}
+        .factura-logo-texto {
+            text-align: left;
+        }
 
-.factura-logo-texto h2 {
-    font-size: 0.9rem;
-    color: #A3B8A4;
-    margin: 0;
-}
+        .factura-logo-texto h2 {
+            font-size: 0.9rem;
+            color: #A3B8A4;
+            margin: 0;
+        }
 
-.factura-logo-texto p {
-    font-size: 0.5rem;
-    color: #9CA3AF;
-    margin: 3px 0 0 0;
-    letter-spacing: 1px;
-}
+        .factura-logo-texto p {
+            font-size: 0.5rem;
+            color: #9CA3AF;
+            margin: 3px 0 0 0;
+            letter-spacing: 1px;
+        }
 
-@media (max-width: 768px) {
-    .factura-logo-imagen {
-        height: 25px;
-    }
-    .factura-logo-texto h2 {
-        font-size: 0.75rem;
-    }
-    .factura-logo-texto p {
-        font-size: 0.45rem;
-    }
-}
-        /* Estilos adicionales para el zoom de imagen en modal */
+        @media (max-width: 768px) {
+            .factura-logo-imagen {
+                height: 25px;
+            }
+            .factura-logo-texto h2 {
+                font-size: 0.75rem;
+            }
+            .factura-logo-texto p {
+                font-size: 0.45rem;
+            }
+        }
+
+        /* ========== MODAL DE PRODUCTO - DISEÑO FUTURISTA ========== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,245,240,0.98) 100%);
+            backdrop-filter: blur(0px);
+            max-width: 520px;
+            width: 90%;
+            max-height: 85vh;
+            border-radius: 48px;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUpFuturistic 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 1px solid rgba(163, 184, 164, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(163, 184, 164, 0.1) inset;
+        }
+
+        @keyframes slideUpFuturistic {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.96);
+                filter: blur(4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        /* Botón de cerrar futurista */
+        .modal-cerrar {
+            position: sticky !important;
+            top: 20px !important;
+            left: auto !important;
+            right: 20px !important;
+            float: right !important;
+            background: rgba(163, 184, 164, 0.15) !important;
+            backdrop-filter: blur(8px) !important;
+            border: 1px solid rgba(163, 184, 164, 0.4) !important;
+            width: 44px !important;
+            height: 44px !important;
+            border-radius: 30px !important;
+            font-size: 20px !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            color: #4A4A4A !important;
+            z-index: 10001 !important;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1) !important;
+            margin: 0 !important;
+            font-weight: 300 !important;
+        }
+
+        .modal-cerrar:hover {
+            background: #F4A0B5 !important;
+            color: white !important;
+            transform: scale(1.1) rotate(90deg) !important;
+            border-color: #F4A0B5 !important;
+        }
+
+        /* Contenedor de imagen futurista */
         .modal-producto-imagen-container {
             cursor: zoom-in;
             position: relative;
             overflow: hidden;
-            border-radius: 20px;
+            border-radius: 32px;
+            margin: 20px 20px 0 20px;
+            background: linear-gradient(135deg, #f8f5f0 0%, #ede8e0 100%);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(163, 184, 164, 0.2);
         }
-        
+
         .modal-producto-imagen-container img {
             width: 100%;
             height: auto;
-            transition: transform 0.3s ease;
+            transition: transform 0.4s ease;
             display: block;
         }
-        
-        .modal-producto-imagen-container img:hover {
-            transform: scale(1.02);
+
+        .modal-producto-imagen-container:hover img {
+            transform: scale(1.03);
+        }
+
+        /* Título del producto */
+        #modal-nombre {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #2d3436;
+            margin-bottom: 12px;
+            line-height: 1.3;
+            letter-spacing: -0.5px;
+            padding: 0 20px;
+        }
+
+        /* Badges (origen y género) */
+        .modal-producto-meta {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            padding: 0 20px;
+        }
+
+        #modal-origen {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
+            color: white;
+            letter-spacing: 0.5px;
+        }
+
+        #modal-genero {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(244, 160, 181, 0.15);
+            color: #F4A0B5;
+            border: 1px solid rgba(244, 160, 181, 0.3);
+        }
+
+        /* Descripción */
+        #modal-descripcion {
+            color: #6c757d;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+            background: #F8F9FA;
+            padding: 16px;
+            border-radius: 24px;
+            border-left: 3px solid #A3B8A4;
+            margin: 0 20px 20px 20px;
+        }
+
+        /* Sección de precio */
+        .modal-precio-section {
+            background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
+            border-radius: 40px;
+            padding: 16px 20px;
+            margin: 0 20px 20px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 20px -8px rgba(163, 184, 164, 0.4);
+        }
+
+        .modal-precio-label {
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+            opacity: 0.9;
+            letter-spacing: 1px;
+        }
+
+        #modal-precio {
+            color: white;
+            font-size: 2rem;
+            font-weight: 800;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Selectores de color */
+        #modal-colores {
+            margin: 0 20px 20px 20px;
+        }
+
+        #modal-colores label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 12px;
+            color: #4A4A4A;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        #selector-color {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        #selector-color button {
+            padding: 10px 20px;
+            border: 1.5px solid #E5E5E5;
+            border-radius: 40px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+
+        #selector-color button:hover {
+            transform: translateY(-2px);
+            border-color: #A3B8A4;
+            box-shadow: 0 4px 12px rgba(163, 184, 164, 0.2);
+        }
+
+        /* Selector de tallas */
+        #modal-variantes {
+            margin: 0 20px 20px 20px;
+        }
+
+        #modal-variantes label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 12px;
+            color: #4A4A4A;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        #selector-variante {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 44px;
+            border: 1.5px solid #E5E5E5;
+            background: white;
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        #selector-variante:focus {
+            outline: none;
+            border-color: #A3B8A4;
+            box-shadow: 0 0 0 3px rgba(163, 184, 164, 0.2);
+        }
+
+        /* Botón de agregar futurista */
+        #modal-agregar {
+            width: calc(100% - 40px);
+            margin: 0 20px 20px 20px;
+            background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 44px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        #modal-agregar:hover {
+            background: linear-gradient(135deg, #F4A0B5 0%, #e08ca1 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -8px rgba(244, 160, 181, 0.5);
+        }
+
+        #modal-agregar:active {
+            transform: translateY(0);
+        }
+
+        /* Enlace admin */
+        #modal-enlace-admin {
+            margin: 0 20px 20px 20px;
+            padding: 14px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 24px;
+        }
+
+        /* Scrollbar personalizada */
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: #F5F5F5;
+            border-radius: 10px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: #A3B8A4;
+            border-radius: 10px;
+        }
+
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: #F4A0B5;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .modal-content {
+                border-radius: 32px;
+                max-height: 80vh;
+            }
+            
+            .modal-producto-imagen-container {
+                margin: 15px 15px 0 15px;
+                border-radius: 24px;
+            }
+            
+            #modal-nombre {
+                font-size: 1.3rem;
+                padding: 0 15px;
+            }
+            
+            .modal-precio-section {
+                padding: 12px 16px;
+                margin: 0 15px 20px 15px;
+            }
+            
+            #modal-precio {
+                font-size: 1.6rem;
+            }
+            
+            .modal-cerrar {
+                width: 40px !important;
+                height: 40px !important;
+                top: 12px !important;
+                right: 12px !important;
+            }
+            
+            #modal-colores,
+            #modal-variantes,
+            #modal-agregar,
+            #modal-descripcion,
+            .modal-producto-meta {
+                margin-left: 15px;
+                margin-right: 15px;
+            }
+            
+            #modal-agregar {
+                width: calc(100% - 30px);
+            }
+        }
+
+        /* Estilos adicionales para el zoom de imagen en modal */
+        .modal-producto-imagen-container {
+            cursor: zoom-in;
         }
         
         /* Modal de zoom de imagen */
@@ -215,66 +557,7 @@
             }
         }
 
-        /* Estilos para el modal de producto */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(4px);
-            z-index: 10000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            max-width: 500px;
-            width: 90%;
-            max-height: 85vh;
-            border-radius: 28px;
-            overflow-y: auto;
-            position: relative;
-            animation: slideUp 0.3s ease;
-        }
-
-        .modal-cerrar {
-            position: sticky !important;
-            top: 15px !important;
-            left: auto !important;
-            right: 15px !important;
-            float: right !important;
-            background: rgba(0, 0, 0, 0.6) !important;
-            backdrop-filter: blur(4px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.3) !important;
-            width: 40px !important;
-            height: 40px !important;
-            border-radius: 50% !important;
-            font-size: 24px !important;
-            cursor: pointer !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            color: white !important;
-            z-index: 10001 !important;
-            transition: all 0.3s ease !important;
-            margin: 0 !important;
-        }
-
-        .modal-cerrar:hover {
-            background: #F4A0B5 !important;
-            color: white !important;
-            transform: scale(1.1) !important;
-            border-color: #F4A0B5 !important;
-        }
-
+        /* Otros modales */
         .modal-cerrar-pago,
         .modal-cerrar-yappy,
         .modal-cerrar-confirmar,
@@ -311,29 +594,6 @@
             color: white !important;
             transform: scale(1.1) !important;
             border-color: #F4A0B5 !important;
-        }
-
-        .modal-content {
-            padding-top: 10px;
-        }
-
-        .modal-content > *:first-child {
-            margin-top: 5px;
-        }
-
-        @media (max-width: 768px) {
-            .modal-cerrar,
-            .modal-cerrar-pago,
-            .modal-cerrar-yappy,
-            .modal-cerrar-confirmar,
-            .modal-cerrar-factura,
-            .modal-cerrar-mis-pedidos {
-                width: 45px !important;
-                height: 45px !important;
-                font-size: 28px !important;
-                top: 10px !important;
-                right: 10px !important;
-            }
         }
 
         @keyframes slideUp {
@@ -468,22 +728,29 @@
                     <img id="modal-imagen" src="" alt="">
                 </div>
                 <h2 id="modal-nombre"></h2>
-                <p id="modal-origen"></p>
-                <p id="modal-genero" style="margin:5px 0; color:#C4B7A6;"></p>
-                <p id="modal-precio"></p>
+                <div class="modal-producto-meta">
+                    <p id="modal-origen"></p>
+                    <p id="modal-genero"></p>
+                </div>
                 <p id="modal-descripcion"></p>
+                <div class="modal-precio-section">
+                    <span class="modal-precio-label">PRECIO</span>
+                    <span id="modal-precio"></span>
+                </div>
                 
                 <div id="modal-colores" style="margin:15px 0;">
-                    <label style="font-weight:bold; display:block; margin-bottom:8px;">🎨 Color:</label>
+                    <label>🎨 Color:</label>
                     <div id="selector-color" style="display:flex; gap:10px; flex-wrap:wrap;"></div>
                 </div>
                 
-                <div id="modal-variantes" style="display:none; margin:15px 0;">
-                    <label style="font-weight:bold;">📏 Talla / Variante:</label>
-                    <select id="selector-variante" style="width:100%; padding:10px; margin-top:5px; border-radius:8px; border:1px solid #ccc;"></select>
+                <div id="modal-variantes" style="display:none;">
+                    <label>📏 Talla / Variante:</label>
+                    <select id="selector-variante" style="width:100%; padding:10px; margin-top:5px; border-radius:8px; border:1px solid #ccc;">
+                        <option value="">Selecciona una opción</option>
+                    </select>
                 </div>
                 
-                <div id="modal-enlace-admin" style="display:none; margin:15px 0; padding:12px; background:#1A1A1A; border-radius:16px;">
+                <div id="modal-enlace-admin" style="display:none; padding:12px; background:#1A1A1A; border-radius:16px;">
                     <label style="font-weight:500; color:#00D4FF; display:block; margin-bottom:8px;">🔗 Enlace original del producto:</label>
                     <a id="modal-enlace" href="#" target="_blank" style="color:#9D00FF; text-decoration:none; word-break:break-all; font-size:0.85em;">Cargando...</a>
                     <button id="copiar-enlace" style="margin-top:8px; background:#00D4FF; color:#0A0A0A; border:none; padding:6px 12px; border-radius:20px; cursor:pointer; font-size:0.75em; font-weight:500;">📋 Copiar enlace</button>
