@@ -245,10 +245,18 @@ function mostrarModal(productoId) {
         if (modalColores) modalColores.style.display = 'block';
         mostrarSelectoresColor(producto.colores);
     } 
-    else if (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0) {
+   else if (producto.tiene_variantes && producto.variantes && producto.variantes !== '') {
+    // Verificar si es formato de presentaciones (frascos)
+    if (producto.variantes.includes('frasco')) {
         if (modalColores) modalColores.style.display = 'none';
+        if (variantesDiv) variantesDiv.style.display = 'none';
+        mostrarPresentaciones(producto.variantes);
+    } else {
+        // Para tallas con o sin colores
+        if (modalColores) modalColores.style.display = 'block';
         mostrarTallasDirectas(producto.variantes);
     }
+}
     else {
         if (modalColores) modalColores.style.display = 'none';
         if (variantesDiv) variantesDiv.style.display = 'none';
