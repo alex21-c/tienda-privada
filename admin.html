@@ -17,7 +17,7 @@
         
         .container { max-width: 1400px; margin: 0 auto; }
         
-        /* ========== LOGIN MODERNO ========== */
+        /* Login Moderno */
         .login-box { 
             background: white; 
             max-width: 420px; 
@@ -27,69 +27,18 @@
             text-align: center; 
             border: 1px solid rgba(163, 184, 164, 0.2);
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
         }
         
-        .login-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 30px 60px -12px rgba(163, 184, 164, 0.3);
-        }
+        .login-box h2 { color: #A3B8A4; margin-bottom: 25px; font-size: 1.8rem; }
+        .login-box input { width: 100%; padding: 16px; margin: 12px 0; background: #FDFBF7; border: 1.5px solid #E5E5E5; border-radius: 60px; }
+        .login-box input:focus { outline: none; border-color: #A3B8A4; }
+        .login-box button { background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%); color: white; padding: 16px; border: none; border-radius: 60px; cursor: pointer; font-weight: 600; width: 100%; }
+        .login-box button:hover { background: linear-gradient(135deg, #F4A0B5 0%, #e08ca1 100%); transform: translateY(-2px); }
         
-        .login-box h2 { 
-            color: #A3B8A4; 
-            margin-bottom: 25px;
-            font-size: 1.8rem;
-            font-weight: 600;
-        }
+        /* Panel Admin */
+        .admin-panel { background: white; border-radius: 40px; padding: 30px; border: 1px solid rgba(163, 184, 164, 0.15); }
         
-        .login-box input { 
-            width: 100%; 
-            padding: 16px; 
-            margin: 12px 0; 
-            background: #FDFBF7; 
-            border: 1.5px solid #E5E5E5; 
-            border-radius: 60px; 
-            color: #4A4A4A;
-            font-size: 1rem;
-            transition: all 0.2s;
-        }
-        
-        .login-box input:focus {
-            outline: none;
-            border-color: #A3B8A4;
-            box-shadow: 0 0 0 3px rgba(163, 184, 164, 0.1);
-        }
-        
-        .login-box button { 
-            background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
-            color: white; 
-            padding: 16px 28px; 
-            border: none; 
-            border-radius: 60px; 
-            cursor: pointer; 
-            font-weight: 600; 
-            transition: all 0.3s;
-            width: 100%;
-            font-size: 1rem;
-        }
-        
-        .login-box button:hover { 
-            background: linear-gradient(135deg, #F4A0B5 0%, #e08ca1 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(244, 160, 181, 0.3);
-        }
-        
-        /* ========== PANEL ADMIN MODERNO ========== */
-        .admin-panel { 
-            background: white; 
-            border-radius: 40px; 
-            padding: 30px; 
-            border: 1px solid rgba(163, 184, 164, 0.15);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.03);
-        }
-        
-        /* Header moderno */
+        /* Header */
         .header-modern {
             background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
             border-radius: 32px;
@@ -101,43 +50,13 @@
             flex-wrap: wrap;
             gap: 20px;
         }
+        .header-title { display: flex; align-items: center; gap: 12px; }
+        .header-title h1 { color: white; font-size: 1.4rem; }
+        .header-badge { background: rgba(255,255,255,0.2); padding: 5px 14px; border-radius: 60px; font-size: 0.7rem; color: white; }
+        .url-info-modern { background: rgba(255,255,255,0.15); padding: 8px 20px; border-radius: 60px; font-size: 0.8rem; color: white; }
+        .url-info-modern a { color: white; text-decoration: none; }
         
-        .header-title {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .header-title h1 {
-            color: white;
-            font-size: 1.4rem;
-            font-weight: 600;
-        }
-        
-        .header-badge {
-            background: rgba(255,255,255,0.2);
-            padding: 5px 14px;
-            border-radius: 60px;
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: white;
-        }
-        
-        .url-info-modern {
-            background: rgba(255,255,255,0.15);
-            padding: 8px 20px;
-            border-radius: 60px;
-            font-size: 0.8rem;
-            color: white;
-        }
-        
-        .url-info-modern a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        
-        /* Tabs modernos */
+        /* Tabs */
         .tabs-modern {
             display: flex;
             gap: 8px;
@@ -148,7 +67,6 @@
             border-radius: 60px;
             border: 1px solid #E5E5E5;
         }
-        
         .tab-modern {
             padding: 12px 28px;
             cursor: pointer;
@@ -157,228 +75,87 @@
             border-radius: 50px;
             color: #9CA3AF;
             font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: all 0.3s;
             font-size: 0.85rem;
         }
+        .tab-modern.active { background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%); color: white; }
+        .tab-modern:hover:not(.active) { background: rgba(163, 184, 164, 0.1); color: #A3B8A4; }
         
-        .tab-modern.active {
-            background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
-            color: white;
-            box-shadow: 0 4px 12px rgba(163, 184, 164, 0.3);
-        }
+        /* Contenido tabs */
+        .tab-content-modern { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content-modern.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .tab-modern:hover:not(.active) {
-            background: rgba(163, 184, 164, 0.1);
-            color: #A3B8A4;
-        }
-        
-        /* Contenido de tabs */
-        .tab-content-modern {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-        
-        .tab-content-modern.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Cards modernas */
-        .card-modern {
-            background: #FDFBF7;
-            border-radius: 28px;
-            padding: 24px;
-            margin-bottom: 25px;
-            border: 1px solid #E5E5E5;
-            transition: all 0.3s;
-        }
-        
-        .card-modern:hover {
-            border-color: rgba(163, 184, 164, 0.4);
-            box-shadow: 0 8px 25px rgba(163, 184, 164, 0.05);
-        }
-        
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #A3B8A4;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid rgba(163, 184, 164, 0.2);
-        }
+        /* Cards */
+        .card-modern { background: #FDFBF7; border-radius: 28px; padding: 24px; margin-bottom: 25px; border: 1px solid #E5E5E5; }
+        .card-title { font-size: 1.1rem; font-weight: 600; color: #A3B8A4; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 2px solid rgba(163, 184, 164, 0.2); }
         
         /* Formulario grid */
-        .form-grid-modern {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 18px;
-            margin-bottom: 20px;
-        }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-bottom: 20px; }
+        .form-grid input, .form-grid select, .form-grid textarea { padding: 14px 16px; background: white; border: 1.5px solid #E5E5E5; border-radius: 24px; }
+        .form-grid input:focus { outline: none; border-color: #A3B8A4; }
         
-        .form-grid-modern input,
-        .form-grid-modern select,
-        .form-grid-modern textarea {
-            padding: 14px 16px;
-            background: white;
-            border: 1.5px solid #E5E5E5;
+        /* Botones */
+        .btn-modern { background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%); color: white; border: none; padding: 12px 28px; border-radius: 40px; cursor: pointer; font-weight: 600; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-modern:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(163, 184, 164, 0.3); }
+        .btn-modern-secondary { background: transparent; color: #9CA3AF; border: 1.5px solid #E5E5E5; }
+        .btn-modern-secondary:hover { background: rgba(163, 184, 164, 0.1); border-color: #A3B8A4; color: #A3B8A4; }
+        .btn-modern-danger { background: linear-gradient(135deg, #D4A5A5 0%, #c49494 100%); }
+        
+        /* TABLA EDITABLE (como Google Sheets) */
+        .tabla-editor-container {
+            overflow-x: auto;
             border-radius: 24px;
-            color: #4A4A4A;
-            font-family: inherit;
-            transition: all 0.2s;
+            border: 1px solid #E5E5E5;
+            background: white;
         }
-        
-        .form-grid-modern input:focus,
-        .form-grid-modern select:focus,
-        .form-grid-modern textarea:focus {
-            outline: none;
-            border-color: #A3B8A4;
-            box-shadow: 0 0 0 3px rgba(163, 184, 164, 0.1);
+        .tabla-editor {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            min-width: 1200px;
         }
-        
-        /* Botones modernos */
-        .btn-modern {
+        .tabla-editor th {
             background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
             color: white;
-            border: none;
-            padding: 12px 28px;
-            border-radius: 40px;
-            cursor: pointer;
+            padding: 14px 10px;
+            text-align: left;
             font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            font-size: 0.85rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        
-        .btn-modern:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(163, 184, 164, 0.3);
+        .tabla-editor td {
+            padding: 10px;
+            border-bottom: 1px solid #E5E5E5;
+            vertical-align: middle;
         }
-        
-        .btn-modern-secondary {
-            background: transparent;
-            color: #9CA3AF;
-            border: 1.5px solid #E5E5E5;
-            box-shadow: none;
-        }
-        
-        .btn-modern-secondary:hover {
-            background: rgba(163, 184, 164, 0.1);
-            border-color: #A3B8A4;
-            color: #A3B8A4;
-            transform: translateY(-2px);
-        }
-        
-        .btn-modern-danger {
-            background: linear-gradient(135deg, #D4A5A5 0%, #c49494 100%);
-        }
-        
-        .btn-modern-danger:hover {
-            background: linear-gradient(135deg, #c49494 0%, #b48484 100%);
-        }
-        
-        /* Colores y tallas */
-        .color-item-modern {
-            background: white;
-            border-radius: 24px;
-            padding: 18px;
-            margin-bottom: 16px;
+        .tabla-editor tr:hover { background: rgba(163, 184, 164, 0.05); }
+        .tabla-editor input, .tabla-editor select, .tabla-editor textarea {
+            width: 100%;
+            padding: 8px;
             border: 1px solid #E5E5E5;
-            transition: all 0.2s;
-        }
-        
-        .color-item-modern:hover {
-            border-color: #A3B8A4;
-        }
-        
-        .tallas-list-modern {
-            margin-left: 20px;
-            padding: 12px;
-            background: #FDFBF7;
-            border-radius: 20px;
-            margin-top: 12px;
-        }
-        
-        /* Lista de productos */
-        .productos-grid-admin {
-            display: grid;
-            gap: 16px;
-        }
-        
-        .producto-card-admin {
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.75rem;
             background: white;
-            border-radius: 24px;
-            padding: 18px;
-            border: 1px solid #E5E5E5;
-            transition: all 0.3s;
         }
+        .tabla-editor input:focus, .tabla-editor select:focus { outline: none; border-color: #A3B8A4; }
+        .tabla-editor textarea { resize: vertical; min-height: 50px; }
         
-        .producto-card-admin:hover {
-            border-color: #F4A0B5;
-            box-shadow: 0 8px 25px rgba(244, 160, 181, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        /* Pedidos */
-        .pedidos-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            max-height: 600px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-        
-        .pedido-card-modern {
-            background: white;
-            border-radius: 28px;
-            padding: 22px;
-            border: 1px solid #E5E5E5;
-            transition: all 0.3s;
-        }
-        
-        .pedido-card-modern:hover {
-            border-color: #F4A0B5;
-            box-shadow: 0 8px 25px rgba(244, 160, 181, 0.1);
-        }
-        
-        /* Estados de pedido */
-        .estado-pendiente { background: #FFF0E6; color: #D4A5A5; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; display: inline-block; }
-        .estado-pagado { background: #E8F0E8; color: #A3B8A4; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; display: inline-block; }
-        .estado-enviado { background: #E8F0E8; color: #A3B8A4; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; display: inline-block; }
-        .estado-entregado { background: #E8F0E8; color: #A3B8A4; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; font-weight: 600; display: inline-block; }
-        
-        /* Filtros */
-        .filtros-modern {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .filtro-pedido-modern {
-            background: transparent;
-            border: 1.5px solid #E5E5E5;
-            padding: 8px 22px;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: #9CA3AF;
-        }
-        
-        .filtro-pedido-modern.active {
-            background: #F4A0B5;
-            border-color: #F4A0B5;
+        .btn-guardar-fila {
+            background: #A3B8A4;
             color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: all 0.2s;
         }
+        .btn-guardar-fila:hover { background: #F4A0B5; transform: scale(1.05); }
+        
+        .vacio { text-align: center; padding: 40px; color: #9CA3AF; }
         
         /* Mensaje flotante */
         .mensaje-flotante {
@@ -392,39 +169,30 @@
             font-weight: 600;
             z-index: 1000;
             animation: slideInRight 0.3s ease;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
-        
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateX(100px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
         
         /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #F5F5F5; border-radius: 10px; }
         ::-webkit-scrollbar-thumb { background: #A3B8A4; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #F4A0B5; }
         
         @media (max-width: 768px) {
-            .form-grid-modern { grid-template-columns: 1fr; }
-            .tabs-modern { border-radius: 28px; padding: 6px; }
-            .tab-modern { padding: 10px 18px; font-size: 0.75rem; }
-            .header-modern { flex-direction: column; text-align: center; }
-            .pedido-card-modern { padding: 16px; }
+            .form-grid { grid-template-columns: 1fr; }
+            .tab-modern { padding: 10px 18px; font-size: 0.7rem; }
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <!-- Login Moderno -->
+    <!-- Login -->
     <div id="login" class="login-box">
         <h2>🔐 Panel de Administración</h2>
         <input type="password" id="password" placeholder="Contraseña" autofocus>
         <button onclick="login()">Ingresar</button>
     </div>
     
-    <!-- Panel Admin Moderno -->
+    <!-- Panel Admin -->
     <div id="adminPanel" class="admin-panel" style="display:none">
         <div class="header-modern">
             <div class="header-title">
@@ -438,56 +206,59 @@
         
         <div class="tabs-modern">
             <button class="tab-modern active" data-tab="agregar">➕ Agregar Producto</button>
+            <button class="tab-modern" data-tab="editar">📝 Editar Productos</button>
             <button class="tab-modern" data-tab="pedidos">📦 Pedidos</button>
-            <button class="tab-modern" data-tab="listar">📋 Productos</button>
+            <button class="tab-modern" data-tab="listar">📋 Lista</button>
             <button class="tab-modern" data-tab="ayuda">❓ Ayuda</button>
         </div>
         
         <!-- Tab Agregar Producto -->
         <div id="tab-agregar" class="tab-content-modern active">
             <div class="card-modern">
-                <div class="card-title">
-                    <span>📦</span> Información Básica
-                </div>
-                <div class="form-grid-modern">
+                <div class="card-title">📦 Información Básica</div>
+                <div class="form-grid">
                     <input type="text" id="prod-nombre" placeholder="Nombre del producto">
                     <input type="number" id="prod-precio-base" placeholder="Precio base" step="0.01">
-                    <select id="prod-origen">
-                        <option value="Amazon">Amazon</option>
-                        <option value="Temu">Temu</option>
-                    </select>
+                    <select id="prod-origen"><option value="Amazon">Amazon</option><option value="Temu">Temu</option></select>
                     <input type="text" id="prod-imagen" placeholder="URL imagen principal">
-                    <input type="text" id="prod-enlace" placeholder="URL producto original (Amazon/Temu)">
+                    <input type="text" id="prod-enlace" placeholder="URL producto original">
                     <select id="prod-genero">
-                        <option value="unisex">Unisex</option>
-                        <option value="hombre">Hombre</option>
-                        <option value="mujer">Mujer</option>
-                        <option value="niño">Niño</option>
-                        <option value="niña">Niña</option>
+                        <option value="unisex">Unisex</option><option value="hombre">Hombre</option>
+                        <option value="mujer">Mujer</option><option value="niño">Niño</option><option value="niña">Niña</option>
                     </select>
                     <textarea id="prod-descripcion" rows="3" placeholder="Descripción del producto"></textarea>
                 </div>
             </div>
             
             <div class="card-modern">
-                <div class="card-title">
-                    <span>🎨</span> Colores y Tallas
-                </div>
+                <div class="card-title">🎨 Colores y Tallas</div>
                 <div id="colores-container"></div>
-                <button id="agregar-color" class="btn-modern btn-modern-secondary" style="margin-top: 10px;">+ Agregar Color</button>
+                <button id="agregar-color" class="btn-modern btn-modern-secondary" style="margin-top:10px;">+ Agregar Color</button>
             </div>
             
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                <button id="guardar-producto" class="btn-modern">💾 Guardar Producto (Auto)</button>
-                <button id="generar-json" class="btn-modern btn-modern-secondary">📝 Generar JSON (Manual)</button>
-                <button id="limpiar-form" class="btn-modern btn-modern-secondary">🗑️ Limpiar Formulario</button>
+                <button id="guardar-producto" class="btn-modern">💾 Guardar Producto</button>
+                <button id="generar-json" class="btn-modern btn-modern-secondary">📝 Generar JSON</button>
+                <button id="limpiar-form" class="btn-modern btn-modern-secondary">🗑️ Limpiar</button>
             </div>
             
             <div id="json-output" style="display:none; margin-top:20px;" class="card-modern">
                 <div class="card-title">📋 JSON generado</div>
-                <textarea id="json-textarea" readonly style="width:100%; height:150px; background:white; border:1px solid #E5E5E5; border-radius:16px; padding:12px; font-family:monospace;"></textarea>
+                <textarea id="json-textarea" readonly style="width:100%; height:150px; background:white; border:1px solid #E5E5E5; border-radius:16px; padding:12px;"></textarea>
                 <button id="copiar-json" class="btn-modern" style="margin-top:12px;">📋 Copiar JSON</button>
-                <p style="margin-top:10px; font-size:0.7rem; color:#9CA3AF;">⚠️ Copia este JSON y pégalo en Google Sheets (hoja "productos")</p>
+            </div>
+        </div>
+        
+        <!-- Tab EDITAR PRODUCTOS (Tabla como Google Sheets) -->
+        <div id="tab-editar" class="tab-content-modern">
+            <div class="card-modern">
+                <div class="card-title">
+                    <span>📝</span> Editor de Productos (como Google Sheets)
+                    <button class="btn-modern btn-modern-secondary" style="margin-left: auto; padding: 6px 16px;" onclick="cargarProductosEditor()">🔄 Recargar</button>
+                </div>
+                <div id="editor-productos-container" class="tabla-editor-container">
+                    <p class="vacio">Cargando productos...</p>
+                </div>
             </div>
         </div>
         
@@ -495,16 +266,8 @@
         <div id="tab-pedidos" class="tab-content-modern">
             <div class="card-modern">
                 <div class="card-title">📦 Pedidos de Clientes</div>
-                <div class="filtros-modern">
-                    <button class="filtro-pedido-modern active" data-filtro="todos">Todos</button>
-                    <button class="filtro-pedido-modern" data-filtro="Pendiente">⏳ Pendientes</button>
-                    <button class="filtro-pedido-modern" data-filtro="Pagado">✅ Pagados</button>
-                    <button class="filtro-pedido-modern" data-filtro="Enviado">📦 Enviados</button>
-                    <button class="filtro-pedido-modern" data-filtro="Entregado">🏠 Entregados</button>
-                    <button class="btn-modern btn-modern-secondary" style="padding: 8px 22px;" onclick="cargarPedidosAdmin()">🔄 Refrescar</button>
-                </div>
-                <div id="pedidos-lista-admin" class="pedidos-grid">
-                    <p style="text-align:center; padding:40px; color:#9CA3AF;">Cargando pedidos...</p>
+                <div id="pedidos-lista-admin">
+                    <p class="vacio">Cargando pedidos...</p>
                 </div>
             </div>
         </div>
@@ -513,8 +276,8 @@
         <div id="tab-listar" class="tab-content-modern">
             <div class="card-modern">
                 <div class="card-title">📋 Productos Existentes</div>
-                <div id="productos-lista" class="productos-grid-admin">
-                    <p style="text-align:center; padding:40px; color:#9CA3AF;">Cargando productos...</p>
+                <div id="productos-lista">
+                    <p class="vacio">Cargando productos...</p>
                 </div>
             </div>
         </div>
@@ -523,18 +286,10 @@
         <div id="tab-ayuda" class="tab-content-modern">
             <div class="card-modern">
                 <div class="card-title">❓ Ayuda</div>
-                <div style="line-height: 1.8; color:#666;">
-                    <p><strong>📝 Para agregar un producto:</strong></p>
-                    <ol style="margin-left: 20px;">
-                        <li>Completa la información básica (nombre, precio, origen, etc.)</li>
-                        <li>Agrega colores usando el botón "+ Agregar Color"</li>
-                        <li>Para cada color, puedes agregar tallas con precios específicos</li>
-                        <li>Haz clic en "Guardar Producto (Auto)"</li>
-                    </ol>
-                    <p style="margin-top:15px;"><strong>📋 Formato de Google Sheets:</strong></p>
-                    <p style="background:#FDFBF7; padding:12px; border-radius:16px; font-family:monospace; font-size:0.7rem;">
-                        A: id | B: nombre | C: precio | D: origen | E: imagen | F: activo (SI) | G: descripcion | H: tiene_variantes (SI) | I: variantes | J: enlace | K: categoria_genero | L: colores_nombres | M: colores_imagenes | N: colores_precios
-                    </p>
+                <div style="line-height: 1.8;">
+                    <p><strong>📝 Editor de Productos:</strong> Modifica cualquier campo directamente en la tabla.</p>
+                    <p><strong>💾 Guardar cambios:</strong> Cada fila tiene su botón "Guardar" para actualizar individualmente.</p>
+                    <p><strong>🔄 Actualización:</strong> Los cambios se reflejan inmediatamente en la tienda.</p>
                 </div>
             </div>
         </div>
@@ -545,11 +300,9 @@
 const ADMIN_PASSWORD = 'admin123';
 const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
 let productosActuales = [];
-let pedidosAdmin = [];
-let filtroPedidoActual = 'todos';
 let colores = [];
 
-// ==================== LOGIN CON ENTER ====================
+// ==================== LOGIN ====================
 function login() {
     const pass = document.getElementById('password').value;
     if (pass === ADMIN_PASSWORD) {
@@ -557,20 +310,17 @@ function login() {
         document.getElementById('adminPanel').style.display = 'block';
         cargarProductosExistentes();
         cargarPedidosAdmin();
-        configurarFiltrosPedidos();
+        cargarProductosEditor();
+        configurarTabs();
     } else {
         mostrarMensaje('❌ Contraseña incorrecta', 'error');
     }
 }
 
-// Capturar tecla Enter en el campo de contraseña
 document.getElementById('password').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        login();
-    }
+    if (e.key === 'Enter') login();
 });
 
-// ==================== MENSAJE FLOTANTE ====================
 function mostrarMensaje(texto, tipo) {
     const msg = document.createElement('div');
     msg.textContent = texto;
@@ -580,6 +330,127 @@ function mostrarMensaje(texto, tipo) {
     setTimeout(() => msg.remove(), 3000);
 }
 
+// ==================== EDITOR DE PRODUCTOS (TABLA COMO GOOGLE SHEETS) ====================
+async function cargarProductosEditor() {
+    try {
+        const response = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
+        productosActuales = await response.json();
+        renderizarEditorProductos();
+    } catch (error) {
+        document.getElementById('editor-productos-container').innerHTML = '<p class="vacio">❌ Error cargando productos</p>';
+    }
+}
+
+function renderizarEditorProductos() {
+    const container = document.getElementById('editor-productos-container');
+    if (!productosActuales || productosActuales.length === 0) {
+        container.innerHTML = '<p class="vacio">📦 No hay productos</p>';
+        return;
+    }
+    
+    const headers = ['ID', 'Nombre', 'Precio', 'Origen', 'Imagen URL', 'Descripción', 'Género', 'Enlace', 'Acciones'];
+    
+    let html = `<table class="tabla-editor"><thead><tr>`;
+    headers.forEach(h => html += `<th>${h}</th>`);
+    html += `</tr></thead><tbody>`;
+    
+    productosActuales.forEach(prod => {
+        html += `
+            <tr id="fila-${prod.id}">
+                <td><strong>#${prod.id}</strong></td>
+                <td><input type="text" id="edit-nombre-${prod.id}" value="${escapeHtml(prod.nombre)}" style="min-width:200px;"></td>
+                <td><input type="number" id="edit-precio-${prod.id}" value="${prod.precio}" step="0.01" style="width:90px;"></td>
+                <td>
+                    <select id="edit-origen-${prod.id}">
+                        <option value="Amazon" ${prod.origen === 'Amazon' ? 'selected' : ''}>Amazon</option>
+                        <option value="Temu" ${prod.origen === 'Temu' ? 'selected' : ''}>Temu</option>
+                    </select>
+                </td>
+                <td><input type="text" id="edit-imagen-${prod.id}" value="${escapeHtml(prod.imagen || '')}" style="min-width:150px;"></td>
+                <td><textarea id="edit-descripcion-${prod.id}" rows="2" style="min-width:200px;">${escapeHtml(prod.descripcion || '')}</textarea></td>
+                <td>
+                    <select id="edit-genero-${prod.id}">
+                        <option value="unisex" ${prod.genero === 'unisex' ? 'selected' : ''}>Unisex</option>
+                        <option value="hombre" ${prod.genero === 'hombre' ? 'selected' : ''}>Hombre</option>
+                        <option value="mujer" ${prod.genero === 'mujer' ? 'selected' : ''}>Mujer</option>
+                        <option value="niño" ${prod.genero === 'niño' ? 'selected' : ''}>Niño</option>
+                        <option value="niña" ${prod.genero === 'niña' ? 'selected' : ''}>Niña</option>
+                    </select>
+                </td>
+                <td><input type="text" id="edit-enlace-${prod.id}" value="${escapeHtml(prod.enlace || '')}" style="min-width:150px;"></td>
+                <td><button class="btn-guardar-fila" onclick="guardarProductoEditor(${prod.id})">💾 Guardar</button></td>
+            </tr>
+        `;
+    });
+    
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    return text.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
+}
+
+async function guardarProductoEditor(id) {
+    const nuevoNombre = document.getElementById(`edit-nombre-${id}`).value;
+    const nuevoPrecio = parseFloat(document.getElementById(`edit-precio-${id}`).value);
+    const nuevoOrigen = document.getElementById(`edit-origen-${id}`).value;
+    const nuevaImagen = document.getElementById(`edit-imagen-${id}`).value;
+    const nuevaDescripcion = document.getElementById(`edit-descripcion-${id}`).value;
+    const nuevoGenero = document.getElementById(`edit-genero-${id}`).value;
+    const nuevoEnlace = document.getElementById(`edit-enlace-${id}`).value;
+    
+    if (!nuevoNombre || isNaN(nuevoPrecio)) {
+        mostrarMensaje('⚠️ Nombre y precio son obligatorios', 'error');
+        return;
+    }
+    
+    // Obtener datos originales del producto
+    const productoOriginal = productosActuales.find(p => p.id == id);
+    
+    const productoData = {
+        action: 'editarProductoCompleto',
+        id: id,
+        nombre: nuevoNombre,
+        precio: nuevoPrecio,
+        origen: nuevoOrigen,
+        imagen: nuevaImagen || productoOriginal.imagen,
+        descripcion: nuevaDescripcion || productoOriginal.descripcion,
+        genero: nuevoGenero,
+        enlace: nuevoEnlace || productoOriginal.enlace
+    };
+    
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(productoData)
+        });
+        
+        mostrarMensaje(`✅ Producto #${id} actualizado`, 'success');
+        
+        // Actualizar array local
+        const index = productosActuales.findIndex(p => p.id == id);
+        if (index !== -1) {
+            productosActuales[index] = { ...productosActuales[index], ...productoData };
+        }
+        
+        // Actualizar ambas vistas
+        renderizarEditorProductos();
+        mostrarListaProductos();
+        
+    } catch (error) {
+        mostrarMensaje('❌ Error al guardar', 'error');
+    }
+}
+
 // ==================== PRODUCTOS ====================
 async function cargarProductosExistentes() {
     try {
@@ -587,50 +458,101 @@ async function cargarProductosExistentes() {
         productosActuales = await response.json();
         mostrarListaProductos();
     } catch (error) {
-        document.getElementById('productos-lista').innerHTML = '<p style="text-align:center; color:#D4A5A5;">❌ Error cargando productos</p>';
+        document.getElementById('productos-lista').innerHTML = '<p class="vacio">❌ Error cargando productos</p>';
     }
 }
 
 function mostrarListaProductos() {
     const container = document.getElementById('productos-lista');
     if (!productosActuales || productosActuales.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#9CA3AF;">📦 No hay productos</p>';
+        container.innerHTML = '<p class="vacio">📦 No hay productos</p>';
         return;
     }
     
     container.innerHTML = '';
     productosActuales.forEach(prod => {
         const div = document.createElement('div');
-        div.className = 'producto-card-admin';
-        
-        let enlaceHtml = '';
-        if (prod.enlace && prod.enlace !== '') {
-            enlaceHtml = `<div style="margin-top:8px; font-size:0.75rem;">🔗 <a href="${prod.enlace}" target="_blank" style="color:#A3B8A4;">Ver original (${prod.origen})</a></div>`;
-        }
-        
+        div.className = 'card-modern';
+        div.style.marginBottom = '15px';
         div.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                 <strong style="color:#A3B8A4;">#${prod.id}</strong>
-                <span><strong>${prod.nombre.substring(0, 50)}${prod.nombre.length > 50 ? '...' : ''}</strong></span>
+                <strong>${prod.nombre.substring(0, 60)}</strong>
                 <div>
-                    <button class="btn-modern btn-modern-secondary" style="padding: 6px 14px; font-size:0.7rem;" onclick="editarPrecioProducto(${prod.id}, '${prod.nombre.replace(/'/g, "\\'")}', ${prod.precio})">✏️ Editar</button>
-                    <button class="btn-modern btn-modern-danger" style="padding: 6px 14px; font-size:0.7rem;" onclick="eliminarProducto(${prod.id})">🗑️ Eliminar</button>
+                    <button class="btn-modern btn-modern-secondary" style="padding: 6px 14px;" onclick="editarPrecioProducto(${prod.id}, '${prod.nombre.replace(/'/g, "\\'")}', ${prod.precio})">✏️ Editar Precio</button>
+                    <button class="btn-modern btn-modern-danger" style="padding: 6px 14px;" onclick="eliminarProducto(${prod.id})">🗑️</button>
                 </div>
             </div>
             <div style="margin-top: 8px; color:#666; font-size:0.8rem;">💰 $${prod.precio.toFixed(2)} | 📦 ${prod.origen} | 👤 ${prod.genero || 'unisex'}</div>
-            ${enlaceHtml}
-            <div style="margin-top: 5px; font-size:0.7rem; color:#9CA3AF;">🎨 ${prod.colores && prod.colores.length > 0 ? prod.colores.map(c => c.nombre).join(', ') : 'Sin colores'}</div>
         `;
         container.appendChild(div);
     });
 }
 
+// ==================== PEDIDOS ====================
+async function cargarPedidosAdmin() {
+    try {
+        const response = await fetch(`${API_URL}?action=getPedidosConEnlaces`);
+        const pedidos = await response.json();
+        const container = document.getElementById('pedidos-lista-admin');
+        
+        if (!pedidos || pedidos.length === 0) {
+            container.innerHTML = '<p class="vacio">📭 No hay pedidos</p>';
+            return;
+        }
+        
+        container.innerHTML = '';
+        pedidos.forEach(pedido => {
+            const card = document.createElement('div');
+            card.className = 'card-modern';
+            card.style.marginBottom = '15px';
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+                    <strong>#${pedido.idPedido || pedido.id}</strong>
+                    <span>📅 ${new Date(pedido.fecha).toLocaleString()}</span>
+                    <span style="background:${pedido.estado === 'Pendiente' ? '#FFF0E6' : '#E8F0E8'}; padding:4px 12px; border-radius:40px;">${pedido.estado || 'Pendiente'}</span>
+                </div>
+                <div><strong>👤 ${pedido.nombre}</strong> | 📱 ${pedido.telefono || 'N/A'}</div>
+                <div>📍 ${pedido.direccion}</div>
+                <div>💳 ${pedido.metodoPago}</div>
+                <div style="margin-top: 10px;"><strong>💰 Total: $${(pedido.total || 0).toFixed(2)}</strong></div>
+                <div style="margin-top: 10px; display: flex; gap: 10px;">
+                    <select onchange="cambiarEstadoPedido(${pedido.id}, this.value)" style="padding:6px 12px; border-radius:40px; border:1px solid #E5E5E5;">
+                        <option value="Pendiente" ${pedido.estado === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
+                        <option value="Pagado" ${pedido.estado === 'Pagado' ? 'selected' : ''}>✅ Pagado</option>
+                        <option value="Enviado" ${pedido.estado === 'Enviado' ? 'selected' : ''}>📦 Enviado</option>
+                        <option value="Entregado" ${pedido.estado === 'Entregado' ? 'selected' : ''}>🏠 Entregado</option>
+                    </select>
+                    <button class="btn-modern btn-modern-secondary" style="padding:6px 14px;" onclick="registrarPagoModal(${pedido.id}, ${pedido.total || 0}, '${pedido.nombre.replace(/'/g, "\\'")}')">💰 Registrar Pago</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    } catch (error) {
+        document.getElementById('pedidos-lista-admin').innerHTML = '<p class="vacio">❌ Error cargando pedidos</p>';
+    }
+}
+
+async function cambiarEstadoPedido(id, estado) {
+    await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'actualizarEstado', fila: id, estado: estado }) });
+    mostrarMensaje(`✅ Estado actualizado a: ${estado}`, 'success');
+    cargarPedidosAdmin();
+}
+
+function registrarPagoModal(id, total, nombre) {
+    const monto = prompt(`💰 Monto pagado para "${nombre}"\nTotal: $${total.toFixed(2)}`, total.toFixed(2));
+    if (monto && !isNaN(parseFloat(monto))) {
+        fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'registrarPago', idPedido: id, montoPagado: parseFloat(monto) }) });
+        mostrarMensaje(`✅ Pago registrado por $${parseFloat(monto).toFixed(2)}`, 'success');
+        cargarPedidosAdmin();
+    }
+}
+
 async function eliminarProducto(id) {
     if (confirm(`¿Eliminar producto #${id}?`)) {
-        mostrarMensaje('🗑️ Eliminando...', 'success');
         await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'eliminarProducto', id: id }) });
         mostrarMensaje('✅ Producto eliminado', 'success');
-        setTimeout(() => cargarProductosExistentes(), 2000);
+        setTimeout(() => { cargarProductosExistentes(); cargarProductosEditor(); }, 1000);
     }
 }
 
@@ -639,152 +561,11 @@ function editarPrecioProducto(id, nombre, precioActual) {
     if (nuevoPrecio && !isNaN(parseFloat(nuevoPrecio))) {
         fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'actualizarPrecio', id: id, precio: parseFloat(nuevoPrecio) }) });
         mostrarMensaje('✅ Precio actualizado', 'success');
-        setTimeout(() => cargarProductosExistentes(), 2000);
+        setTimeout(() => { cargarProductosExistentes(); cargarProductosEditor(); }, 1000);
     }
 }
 
-// ==================== PEDIDOS ====================
-async function cargarPedidosAdmin() {
-    try {
-        const response = await fetch(`${API_URL}?action=getPedidosConEnlaces`);
-        pedidosAdmin = await response.json();
-        mostrarPedidosAdmin();
-    } catch (error) {
-        document.getElementById('pedidos-lista-admin').innerHTML = '<p style="text-align:center; color:#D4A5A5;">❌ Error cargando pedidos</p>';
-    }
-}
-
-function mostrarPedidosAdmin() {
-    const container = document.getElementById('pedidos-lista-admin');
-    let pedidosFiltrados = filtroPedidoActual === 'todos' ? pedidosAdmin : pedidosAdmin.filter(p => p.estado === filtroPedidoActual);
-    
-    if (!pedidosFiltrados || pedidosFiltrados.length === 0) {
-        container.innerHTML = '<p style="text-align:center; padding:40px; color:#9CA3AF;">📭 No hay pedidos en esta categoría</p>';
-        return;
-    }
-    
-    container.innerHTML = '';
-    pedidosFiltrados.forEach(pedido => {
-        const fecha = new Date(pedido.fecha).toLocaleString();
-        const estadoClass = `estado-${(pedido.estado || 'Pendiente').toLowerCase()}`;
-        const estadoIcono = pedido.estado === 'Pendiente' ? '⏳' : (pedido.estado === 'Pagado' ? '✅' : (pedido.estado === 'Enviado' ? '📦' : '🏠'));
-        
-        let totalMostrar = pedido.total || 0;
-        if (totalMostrar === 0 && pedido.productos) {
-            const lineas = pedido.productos.split('\n');
-            for (const linea of lineas) {
-                const match = linea.match(/\$(\d+\.?\d*)/);
-                if (match) totalMostrar += parseFloat(match[1]);
-            }
-        }
-        
-        let productosHtml = '';
-        if (pedido.productos) {
-            const productosLista = pedido.productos.split('\n').filter(p => p.trim());
-            productosHtml = productosLista.map(p => `<div style="padding:6px 0; border-bottom:1px solid #E5E5E5; font-size:0.75rem;">📦 ${p}</div>`).join('');
-        }
-        
-        const card = document.createElement('div');
-        card.className = 'pedido-card-modern';
-        card.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
-                <span style="font-weight: bold; background:#FDFBF7; padding:4px 12px; border-radius:40px;">#${pedido.idPedido || pedido.id}</span>
-                <span style="color:#9CA3AF; font-size:0.75rem;">📅 ${fecha}</span>
-                <span class="${estadoClass}">${estadoIcono} ${pedido.estado || 'Pendiente'}</span>
-            </div>
-            <div style="margin-bottom: 12px;">
-                <div><strong>👤 ${pedido.nombre}</strong> | 📱 ${pedido.telefono || 'N/A'}</div>
-                <div style="font-size:0.8rem;">📍 ${pedido.direccion}</div>
-                <div style="font-size:0.8rem;">💳 ${pedido.metodoPago}</div>
-            </div>
-            <div style="background:#FDFBF7; border-radius:20px; padding:12px; margin:12px 0;">
-                <strong>🛍️ Productos:</strong>
-                ${productosHtml || '<p style="font-size:0.7rem;">No hay detalle</p>'}
-            </div>
-            <div style="text-align: right; margin-bottom: 15px;">
-                <strong style="color:#A3B8A4;">💰 Total: $${totalMostrar.toFixed(2)}</strong>
-            </div>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <select onchange="cambiarEstadoPedido(${pedido.id}, this.value)" style="padding:8px 16px; border-radius:40px; border:1.5px solid #E5E5E5; background:white;">
-                    <option value="Pendiente" ${pedido.estado === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
-                    <option value="Pagado" ${pedido.estado === 'Pagado' ? 'selected' : ''}>✅ Pagado</option>
-                    <option value="Enviado" ${pedido.estado === 'Enviado' ? 'selected' : ''}>📦 Enviado</option>
-                    <option value="Entregado" ${pedido.estado === 'Entregado' ? 'selected' : ''}>🏠 Entregado</option>
-                </select>
-                <button class="btn-modern btn-modern-secondary" style="padding:8px 16px;" onclick="registrarPagoModal(${pedido.id}, ${totalMostrar}, '${pedido.nombre.replace(/'/g, "\\'")}')">💰 Registrar Pago</button>
-            </div>
-        `;
-        container.appendChild(card);
-    });
-}
-
-async function cambiarEstadoPedido(id, nuevoEstado) {
-    await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'actualizarEstado', fila: id, estado: nuevoEstado }) });
-    mostrarMensaje(`✅ Estado actualizado a: ${nuevoEstado}`, 'success');
-    cargarPedidosAdmin();
-}
-
-// ==================== REGISTRAR PAGO ====================
-function registrarPagoModal(id, total, nombre) {
-    const montoPagado = prompt(`💰 Registrar pago para:\n"${nombre}"\n\nTotal: $${total.toFixed(2)}`, total.toFixed(2));
-    if (!montoPagado) return;
-    
-    const monto = parseFloat(montoPagado);
-    if (isNaN(monto) || monto <= 0) {
-        mostrarMensaje('❌ Monto inválido', 'error');
-        return;
-    }
-    
-    const metodoPago = prompt(`💳 Método de pago:\n1 - Efectivo\n2 - Yappy\n3 - Transferencia\n4 - Tarjeta`, "1");
-    let metodoTexto = { '1': 'Efectivo', '2': 'Yappy', '3': 'Transferencia', '4': 'Tarjeta' }[metodoPago] || 'Otro';
-    
-    fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'registrarPago', idPedido: id, fila: id, metodoPagoReal: metodoTexto, montoPagado: monto }) });
-    mostrarMensaje(`✅ Pago registrado por $${monto.toFixed(2)}`, 'success');
-    cargarPedidosAdmin();
-    
-    // Generar factura
-    const ventana = window.open('', '_blank', 'width=450,height=650');
-    if (ventana) {
-        ventana.document.write(`
-            <!DOCTYPE html>
-            <html>
-            <head><meta charset="UTF-8"><title>Factura</title>
-            <style>
-                body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-                .factura { max-width: 380px; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-                .header { background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%); padding: 25px; text-align: center; color: white; }
-                .header h2 { font-size: 1.5rem; margin-bottom: 5px; }
-                .body { padding: 20px; }
-                .info { background: #F8F9FA; border-radius: 16px; padding: 12px; margin-bottom: 15px; }
-                .monto { text-align: center; background: linear-gradient(135deg, #FDFBF7 0%, #fff8f0 100%); border-radius: 20px; padding: 20px; margin-bottom: 15px; }
-                .monto .total { font-size: 2rem; font-weight: 700; color: #A3B8A4; }
-                .footer { text-align: center; padding: 15px; border-top: 1px solid #eee; font-size: 0.7rem; }
-                .btn-group { display: flex; gap: 10px; padding: 15px; }
-                .btn { flex: 1; padding: 10px; border: none; border-radius: 50px; cursor: pointer; font-weight: 600; }
-                .print { background: #A3B8A4; color: white; }
-                .close { background: #e9ecef; }
-                @media print { .btn-group { display: none; } .factura { box-shadow: none; } }
-            </style>
-            </head>
-            <body>
-                <div class="factura">
-                    <div class="header"><h2>🎀 FACTURA</h2><p>Comprobante de pago</p><div>#${Date.now()}</div></div>
-                    <div class="body">
-                        <div class="info"><div>📅 ${new Date().toLocaleDateString()}</div><div>👤 ${nombre}</div></div>
-                        <div class="monto"><div>TOTAL PEDIDO</div><div class="total">$${total.toFixed(2)}</div><div>MONTO PAGADO</div><div style="font-size:1.5rem; font-weight:700; color:#F4A0B5;">$${monto.toFixed(2)}</div></div>
-                        <div style="text-align:center; padding:10px; background:#f8f9fa; border-radius:12px;">💳 ${metodoTexto}</div>
-                    </div>
-                    <div class="footer">¡Gracias por tu compra!<br>https://alex21-c.github.io/tienda-privada/</div>
-                </div>
-                <div class="btn-group"><button class="btn print" onclick="window.print()">🖨️ Imprimir</button><button class="btn close" onclick="window.close()">✖ Cerrar</button></div>
-            </body>
-            </html>
-        `);
-        ventana.document.close();
-    }
-}
-
-// ==================== GESTIÓN DE COLORES Y TALLAS ====================
+// ==================== COLORES Y TALLAS ====================
 function agregarColor() { colores.push({ id: Date.now(), nombre: '', imagen: '', precio: '', tallas: [] }); renderizarColores(); }
 function eliminarColor(id) { colores = colores.filter(c => c.id !== id); renderizarColores(); }
 function actualizarColor(id, campo, valor) { const color = colores.find(c => c.id === id); if (color) color[campo] = valor; }
@@ -799,22 +580,23 @@ function renderizarColores() {
     container.innerHTML = '';
     colores.forEach(color => {
         const div = document.createElement('div');
-        div.className = 'color-item-modern';
+        div.className = 'card-modern';
+        div.style.marginBottom = '15px';
         div.innerHTML = `
             <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
-                <input type="text" placeholder="Color" value="${color.nombre}" style="flex:2; padding:10px; border-radius:20px; border:1px solid #E5E5E5;" onchange="actualizarColor(${color.id}, 'nombre', this.value)">
-                <input type="url" placeholder="Imagen" value="${color.imagen}" style="flex:3; padding:10px; border-radius:20px; border:1px solid #E5E5E5;" onchange="actualizarColor(${color.id}, 'imagen', this.value)">
-                <input type="number" placeholder="Precio" value="${color.precio}" step="0.01" style="flex:1; padding:10px; border-radius:20px; border:1px solid #E5E5E5;" onchange="actualizarColor(${color.id}, 'precio', parseFloat(this.value))">
-                <button style="background:#D4A5A5; color:white; border:none; padding:8px 16px; border-radius:40px; cursor:pointer;" onclick="eliminarColor(${color.id})">🗑️</button>
+                <input type="text" placeholder="Color" value="${color.nombre}" style="flex:2; padding:10px; border-radius:20px;" onchange="actualizarColor(${color.id}, 'nombre', this.value)">
+                <input type="url" placeholder="Imagen" value="${color.imagen}" style="flex:3; padding:10px; border-radius:20px;" onchange="actualizarColor(${color.id}, 'imagen', this.value)">
+                <input type="number" placeholder="Precio" value="${color.precio}" step="0.01" style="flex:1; padding:10px; border-radius:20px;" onchange="actualizarColor(${color.id}, 'precio', parseFloat(this.value))">
+                <button class="btn-modern-danger" style="padding:8px 16px; border-radius:40px;" onclick="eliminarColor(${color.id})">🗑️</button>
             </div>
-            <div class="tallas-list-modern">
+            <div style="margin-left:20px; padding:12px; background:#FDFBF7; border-radius:20px;">
                 <strong>📏 Tallas:</strong>
                 <div id="tallas-${color.id}" style="margin-top:10px;">
                     ${color.tallas.map((t, idx) => `
                         <div style="display:flex; gap:10px; margin-bottom:8px; flex-wrap:wrap;">
-                            <input type="text" placeholder="Talla" value="${t.talla}" style="width:100px; padding:8px; border-radius:20px; border:1px solid #E5E5E5;" onchange="actualizarTalla(${color.id}, ${idx}, 'talla', this.value)">
-                            <input type="number" placeholder="Precio" value="${t.precio}" step="0.01" style="width:120px; padding:8px; border-radius:20px; border:1px solid #E5E5E5;" onchange="actualizarTalla(${color.id}, ${idx}, 'precio', parseFloat(this.value))">
-                            <button style="background:#D4A5A5; color:white; border:none; width:30px; border-radius:20px; cursor:pointer;" onclick="eliminarTalla(${color.id}, ${idx})">✕</button>
+                            <input type="text" placeholder="Talla" value="${t.talla}" style="width:100px; padding:8px; border-radius:20px;" onchange="actualizarTalla(${color.id}, ${idx}, 'talla', this.value)">
+                            <input type="number" placeholder="Precio" value="${t.precio}" step="0.01" style="width:120px; padding:8px; border-radius:20px;" onchange="actualizarTalla(${color.id}, ${idx}, 'precio', parseFloat(this.value))">
+                            <button style="background:#D4A5A5; color:white; border:none; width:30px; border-radius:20px;" onclick="eliminarTalla(${color.id}, ${idx})">✕</button>
                         </div>
                     `).join('')}
                 </div>
@@ -825,7 +607,7 @@ function renderizarColores() {
     });
 }
 
-// ==================== GUARDAR PRODUCTO ====================
+// ==================== GUARDAR PRODUCTO NUEVO ====================
 async function guardarProductoAutomatico() {
     const nombre = document.getElementById('prod-nombre').value;
     const precioBase = parseFloat(document.getElementById('prod-precio-base').value);
@@ -862,7 +644,7 @@ async function guardarProductoAutomatico() {
     await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productoData) });
     mostrarMensaje(`✅ Producto "${nombre}" guardado`, 'success');
     limpiarFormulario();
-    setTimeout(() => cargarProductosExistentes(), 3000);
+    setTimeout(() => { cargarProductosExistentes(); cargarProductosEditor(); }, 2000);
 }
 
 function generarJSON() {
@@ -883,13 +665,7 @@ function generarJSON() {
     }
     
     const nuevoId = productosActuales.length > 0 ? Math.max(...productosActuales.map(p => p.id)) + 1 : 1;
-    const filaSheet = [
-        nuevoId, nombre, precioBase, document.getElementById('prod-origen').value,
-        document.getElementById('prod-imagen').value || 'https://via.placeholder.com/300x200',
-        'SI', document.getElementById('prod-descripcion').value || 'Producto',
-        colores.length > 0 ? 'SI' : 'NO', variantesTexto, document.getElementById('prod-enlace').value || '',
-        document.getElementById('prod-genero').value, coloresNombres, coloresImagenes, coloresPrecios
-    ];
+    const filaSheet = [nuevoId, nombre, precioBase, document.getElementById('prod-origen').value, document.getElementById('prod-imagen').value || 'https://via.placeholder.com/300x200', 'SI', document.getElementById('prod-descripcion').value || 'Producto', colores.length > 0 ? 'SI' : 'NO', variantesTexto, document.getElementById('prod-enlace').value || '', document.getElementById('prod-genero').value, coloresNombres, coloresImagenes, coloresPrecios];
     
     document.getElementById('json-textarea').value = filaSheet.join('\t');
     document.getElementById('json-output').style.display = 'block';
@@ -910,18 +686,7 @@ function limpiarFormulario() {
     mostrarMensaje('🧹 Formulario limpiado', 'success');
 }
 
-// ==================== CONFIGURACIONES ====================
-function configurarFiltrosPedidos() {
-    document.querySelectorAll('.filtro-pedido-modern').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.filtro-pedido-modern').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            filtroPedidoActual = btn.dataset.filtro;
-            mostrarPedidosAdmin();
-        });
-    });
-}
-
+// ==================== TABS ====================
 function configurarTabs() {
     document.querySelectorAll('.tab-modern').forEach(tab => {
         tab.addEventListener('click', () => {
@@ -930,13 +695,14 @@ function configurarTabs() {
             tab.classList.add('active');
             document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
             if (tab.dataset.tab === 'listar') cargarProductosExistentes();
+            if (tab.dataset.tab === 'editar') cargarProductosEditor();
             if (tab.dataset.tab === 'pedidos') cargarPedidosAdmin();
         });
     });
 }
 
+// ==================== INICIALIZAR ====================
 function init() {
-    configurarTabs();
     document.getElementById('agregar-color').onclick = agregarColor;
     document.getElementById('guardar-producto').onclick = guardarProductoAutomatico;
     document.getElementById('generar-json').onclick = generarJSON;
