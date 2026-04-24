@@ -1,696 +1,309 @@
 // ==================== CONFIGURACIÓN ====================
 const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
 
-let productos = [];
-let carrito = [];
-let productoActual = null;
-let esAdmin = false;
-let colorSeleccionado = null;
-let tallaSeleccionada = null;
-let presentacionSeleccionada = null; // Variable para presentaciones (frascos)
-let pedidoPendiente = null;
+let productos = [], carrito = [], productoActual = null, esAdmin = false;
+let colorSeleccionado = null, tallaSeleccionada = null, presentacionSeleccionada = null, pedidoPendiente = null;
+let filtroPlataforma = 'todos', filtroGenero = 'todos';
+let versionActual = localStorage.getItem('productosVersion') || '1.0.0';
 
-// ==================== VARIABLES DE FILTROS ====================
-let filtroPlataforma = 'todos';
-let filtroGenero = 'todos';
+// ==================== PROCESAR COLOR Y TALLAS ====================
+function procesarColorConTallas(producto) {
+    if (producto.colores?.length > 0 && producto.variantes && !producto.variantes.includes(':')) {
+        const primerColor = producto.colores[0];
+        if (primerColor) {
+            producto.variantes = `${primerColor.nombre}:${producto.variantes}`;
+            producto.colores[0].tallas = producto.variantes.split(',').map(t => {
+                const [talla, precio] = t.split(':');
+                return { talla, precio: parseFloat(precio) };
+            });
+        }
+    }
+    return producto;
+}
 
 // ==================== CARGAR PRODUCTOS CON CACHÉ ====================
-async function cargarProductos() {
-    // Intentar cargar desde caché local primero
-    const productosGuardados = localStorage.getItem('productosCache');
-    const tiempoGuardado = localStorage.getItem('productosCacheTime');
+async function cargarProductos(forzarRecarga = false) {
+    const cache = localStorage.getItem('productosCache');
+    const cacheTime = localStorage.getItem('productosCacheTime');
     const ahora = Date.now();
     
-    // Si hay productos en caché y no pasaron más de 5 minutos, usarlos
-    if (productosGuardados && tiempoGuardado && (ahora - parseInt(tiempoGuardado) < 300000)) {
-        console.log("📦 Cargando productos desde caché local");
-        productos = JSON.parse(productosGuardados);
+    if (!forzarRecarga && cache && cacheTime && (ahora - parseInt(cacheTime) < 300000)) {
+        productos = JSON.parse(cache);
         mostrarProductos();
         return;
     }
     
-    // Si no hay caché o expiró, cargar desde Google
-    console.log("🌐 Cargando productos desde Google...");
-    
     try {
-        // Mostrar mensaje de carga
-        const productosDiv = document.getElementById('productos');
-        if (productosDiv) productosDiv.innerHTML = '<div class="loading">🔄 Cargando productos... (esto puede tomar unos segundos)</div>';
-        
-        const response = await fetch(`${API_URL}?action=getProductos`);
-        const datos = await response.json();
-        
-        if (datos.error) {
-            console.error('Error:', datos.error);
-            const productosDiv = document.getElementById('productos');
-            if (productosDiv) productosDiv.innerHTML = '<p class="loading">❌ Error: ' + datos.error + '</p>';
-            return;
-        }
-        
-        productos = datos;
-        
-        // Guardar en caché local
+        const res = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
+        productos = await res.json();
         localStorage.setItem('productosCache', JSON.stringify(productos));
-        localStorage.setItem('productosCacheTime', ahora.toString());
-        
-        if (productos.length === 0) {
-            const productosDiv = document.getElementById('productos');
-            if (productosDiv) productosDiv.innerHTML = '<p class="loading">📦 No hay productos.</p>';
-            return;
-        }
-        
+        localStorage.setItem('productosCacheTime', ahora);
         mostrarProductos();
     } catch (error) {
-        console.error('Error cargando productos:', error);
-        
-        // Si hay error pero hay caché viejo, usarlo de emergencia
-        if (productosGuardados) {
-            console.log("⚠️ Usando caché viejo por error de red");
-            productos = JSON.parse(productosGuardados);
-            mostrarProductos();
-            const productosDiv = document.getElementById('productos');
-            if (productosDiv) productosDiv.innerHTML += '<div style="font-size:0.7rem; color:orange; text-align:center; margin-top:5px;">⚠️ Usando datos guardados localmente (sin conexión)</div>';
-        } else {
-            const productosDiv = document.getElementById('productos');
-            if (productosDiv) productosDiv.innerHTML = '<p class="loading">❌ Error de conexión. Recarga la página.</p>';
-        }
+        if (cache) { productos = JSON.parse(cache); mostrarProductos(); }
+        console.error(error);
     }
 }
-// ==================== FUNCIÓN PARA ICONO DE GÉNERO ====================
-function getIconoGenero(genero) {
-    const iconos = {
-        'hombre': '👨',
-        'mujer': '👩',
-        'niño': '👦',
-        'niña': '👧',
-        'unisex': '👥'
-    };
-    return iconos[genero] || '👤';
-}
 
-// ==================== MOSTRAR PRODUCTOS CON FILTROS ====================
+// ==================== MOSTRAR PRODUCTOS ====================
 function mostrarProductos() {
     const contenedor = document.getElementById('productos');
     if (!contenedor) return;
     
-    let productosFiltrados = productos;
+    let filtrados = productos.filter(p => 
+        (filtroPlataforma === 'todos' || p.origen === filtroPlataforma) &&
+        (filtroGenero === 'todos' || p.genero === filtroGenero)
+    );
     
-    if (filtroPlataforma !== 'todos') {
-        productosFiltrados = productosFiltrados.filter(p => p.origen === filtroPlataforma);
-    }
-    
-    if (filtroGenero !== 'todos') {
-        productosFiltrados = productosFiltrados.filter(p => p.genero === filtroGenero);
-    }
-    
-    if (productosFiltrados.length === 0) {
-        contenedor.innerHTML = '<p class="loading">No hay productos en esta categoría</p>';
+    if (filtrados.length === 0) {
+        contenedor.innerHTML = '<p class="loading">No hay productos</p>';
         return;
     }
     
-    contenedor.innerHTML = '';
-    productosFiltrados.forEach(producto => {
-        const card = document.createElement('div');
-        card.className = 'producto-card';
-        card.style.cursor = 'pointer';
-        
-        card.innerHTML = `
-            <img src="${producto.imagen}" alt="${producto.nombre}" class="producto-imagen" onerror="this.src='https://via.placeholder.com/300x200?text=Sin+imagen'">
-            <div class="producto-origen origen-${producto.origen.toLowerCase()}">${producto.origen}</div>
-            <div class="producto-genero">${getIconoGenero(producto.genero)} ${producto.genero || 'Unisex'}</div>
-            <h3 class="producto-titulo">${producto.nombre}</h3>
-            <div class="producto-precio">$${producto.precio.toFixed(2)}</div>
-            <button class="btn-agregar" data-id="${producto.id}">➕ Agregar</button>
-        `;
-        
-        card.addEventListener('click', (e) => {
-            if (!e.target.classList.contains('btn-agregar')) {
-                mostrarModal(producto.id);
-            }
-        });
-        
-        contenedor.appendChild(card);
-    });
-    
-    document.querySelectorAll('.btn-agregar').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const id = parseInt(btn.dataset.id);
-            agregarAlCarrito(id);
-        });
-    });
+    contenedor.innerHTML = filtrados.map(p => `
+        <div class="producto-card" onclick="mostrarModal(${p.id})">
+            <img src="${p.imagen}" class="producto-imagen" onerror="this.src='https://via.placeholder.com/300x200'">
+            <div class="producto-origen origen-${p.origen.toLowerCase()}">${p.origen}</div>
+            <div class="producto-genero">${getIconoGenero(p.genero)} ${p.genero || 'Unisex'}</div>
+            <h3 class="producto-titulo">${p.nombre}</h3>
+            <div class="producto-precio">$${p.precio.toFixed(2)}</div>
+            <button class="btn-agregar" onclick="event.stopPropagation(); agregarAlCarrito(${p.id})">➕ Agregar</button>
+        </div>
+    `).join('');
 }
 
-// ==================== PROCESAR PRESENTACIONES (FRASCOS) ====================
-function mostrarPresentaciones(variantesTexto) {
-    const presentacionesDiv = document.getElementById('modal-presentaciones');
-    const selectorPresentacion = document.getElementById('selector-presentacion');
+function getIconoGenero(g) { return { hombre:'👨', mujer:'👩', niño:'👦', niña:'👧', unisex:'👥' }[g] || '👤'; }
+
+// ==================== PRESENTACIONES (FRASCOS) ====================
+function mostrarPresentaciones(texto) {
+    const div = document.getElementById('modal-presentaciones');
+    const sel = document.getElementById('selector-presentacion');
+    if (!div) return;
     
-    if (!presentacionesDiv) return;
-    
-    // Limpiar selector
-    if (selectorPresentacion) selectorPresentacion.innerHTML = '<option value="">Selecciona una opción</option>';
-    
-    // Buscar presentaciones en el texto de variantes (formato: 1frasco:4.62,2frascos:9.24)
-    const presentacionesEncontradas = [];
-    
-    if (variantesTexto && typeof variantesTexto === 'string') {
-        // Dividir por comas
-        const partes = variantesTexto.split(',');
-        for (const parte of partes) {
-            // Buscar patrón como "1frasco:4.62" o "2frascos:9.24"
-            const match = parte.match(/(\d+)\s*(frasco|frascos)\s*:\s*([\d.]+)/i);
-            if (match) {
-                presentacionesEncontradas.push({
-                    cantidad: parseInt(match[1]),
-                    texto: match[1] + ' ' + match[2],
-                    precio: parseFloat(match[3])
-                });
-            }
-        }
-    }
-    
-    if (presentacionesEncontradas.length > 0) {
-        presentacionesDiv.style.display = 'block';
-        if (selectorPresentacion) {
-            presentacionesEncontradas.forEach(p => {
-                const option = document.createElement('option');
-                option.value = p.precio;
-                option.setAttribute('data-cantidad', p.cantidad);
-                option.setAttribute('data-texto', p.texto);
-                option.textContent = `${p.texto} - $${p.precio.toFixed(2)}`;
-                selectorPresentacion.appendChild(option);
-            });
-            
-            selectorPresentacion.onchange = function() {
-                if (this.value) {
-                    const precioSeleccionado = parseFloat(this.value);
-                    const cantidadSeleccionada = parseInt(this.options[this.selectedIndex].getAttribute('data-cantidad'));
-                    const textoSeleccionado = this.options[this.selectedIndex].getAttribute('data-texto');
-                    presentacionSeleccionada = {
-                        cantidad: cantidadSeleccionada,
-                        texto: textoSeleccionado,
-                        precio: precioSeleccionado
-                    };
-                    const modalPrecio = document.getElementById('modal-precio');
-                    if (modalPrecio) {
-                        modalPrecio.textContent = `$${precioSeleccionado.toFixed(2)}`;
-                        modalPrecio.style.fontWeight = 'bold';
-                        modalPrecio.style.color = '#F4A0B5';
-                    }
-                } else {
-                    presentacionSeleccionada = null;
-                    const modalPrecio = document.getElementById('modal-precio');
-                    if (modalPrecio && productoActual) {
-                        modalPrecio.textContent = `$${productoActual.precio.toFixed(2)}`;
-                        modalPrecio.style.color = '#2ecc71';
-                    }
-                }
-            };
-        }
-    } else {
-        presentacionesDiv.style.display = 'none';
-    }
+    const matches = [...(texto?.matchAll(/(\d+)\s*(frasco|frascos)\s*:\s*([\d.]+)/gi) || [])];
+    if (matches.length) {
+        div.style.display = 'block';
+        sel.innerHTML = '<option value="">Selecciona una opción</option>' + 
+            matches.map(m => `<option value="${m[3]}" data-cantidad="${m[1]}" data-texto="${m[1]} ${m[2]}">${m[1]} ${m[2]} - $${parseFloat(m[3]).toFixed(2)}</option>`).join('');
+        sel.onchange = () => {
+            presentacionSeleccionada = sel.value ? { 
+                cantidad: parseInt(sel.selectedOptions[0].dataset.cantidad), 
+                texto: sel.selectedOptions[0].dataset.texto, 
+                precio: parseFloat(sel.value) 
+            } : null;
+            const precioEl = document.getElementById('modal-precio');
+            if (precioEl) precioEl.textContent = presentacionSeleccionada ? `$${presentacionSeleccionada.precio.toFixed(2)}` : `$${productoActual?.precio.toFixed(2)}`;
+            precioEl.style.color = presentacionSeleccionada ? '#F4A0B5' : '#2ecc71';
+        };
+    } else div.style.display = 'none';
 }
 
-// ==================== MOSTRAR MODAL ====================
-function mostrarModal(productoId) {
-    console.log("Mostrando modal para producto:", productoId);
-    
-    const producto = productos.find(p => p.id == productoId);
-    if (!producto) {
-        console.error("Producto no encontrado:", productoId);
-        return;
-    }
-    
-    console.log("Producto encontrado:", producto.nombre);
-    
+// ==================== MODAL PRODUCTO ====================
+function mostrarModal(id) {
+    let producto = productos.find(p => p.id == id);
+    if (!producto) return;
+    producto = procesarColorConTallas(producto);
     productoActual = producto;
-    colorSeleccionado = null;
-    tallaSeleccionada = null;
-    presentacionSeleccionada = null;
+    colorSeleccionado = tallaSeleccionada = presentacionSeleccionada = null;
     
     const modal = document.getElementById('producto-modal');
-    const modalImagen = document.getElementById('modal-imagen');
-    const modalNombre = document.getElementById('modal-nombre');
-    const modalOrigen = document.getElementById('modal-origen');
-    const modalGenero = document.getElementById('modal-genero');
-    const modalPrecio = document.getElementById('modal-precio');
-    const modalDescripcion = document.getElementById('modal-descripcion');
-    const modalColores = document.getElementById('modal-colores');
-    const variantesDiv = document.getElementById('modal-variantes');
-    
-    if (!modal) {
-        console.error("Modal no encontrado");
-        return;
-    }
-    
-    if (modalImagen) {
-        const imagenUrl = (producto.colores && producto.colores[0]) ? producto.colores[0].imagen : producto.imagen;
-        modalImagen.src = imagenUrl;
-    }
-    
-    if (modalNombre) modalNombre.textContent = producto.nombre;
-    
-    if (modalOrigen) {
-        modalOrigen.textContent = producto.origen;
-        modalOrigen.className = `origen-${producto.origen.toLowerCase()}`;
-    }
-    
-    if (modalGenero) {
-        modalGenero.textContent = `${getIconoGenero(producto.genero)} ${producto.genero || 'Unisex'}`;
-    }
-    
-    if (modalPrecio) {
-        modalPrecio.textContent = `$${producto.precio.toFixed(2)}`;
-        modalPrecio.style.color = '#2ecc71';
-    }
-    
-    if (modalDescripcion) {
-        const descripcion = producto.descripcion || `Producto de alta calidad de ${producto.origen}.`;
-        modalDescripcion.textContent = descripcion;
-    }
-    
+    document.getElementById('modal-imagen').src = producto.colores?.[0]?.imagen || producto.imagen;
+    document.getElementById('modal-nombre').textContent = producto.nombre;
+    document.getElementById('modal-origen').textContent = producto.origen;
+    document.getElementById('modal-origen').className = `origen-${producto.origen?.toLowerCase()}`;
+    document.getElementById('modal-genero').textContent = `${getIconoGenero(producto.genero)} ${producto.genero || 'Unisex'}`;
+    document.getElementById('modal-precio').textContent = `$${producto.precio.toFixed(2)}`;
+    document.getElementById('modal-descripcion').textContent = producto.descripcion || `Producto de ${producto.origen}`;
     mostrarEnlaceAdmin(producto.enlace);
     
-    // Procesar colores
-    if (producto.colores && producto.colores.length > 0) {
-        if (modalColores) modalColores.style.display = 'block';
+    const coloresDiv = document.getElementById('modal-colores');
+    const variantesDiv = document.getElementById('modal-variantes');
+    
+    if (producto.colores?.length) {
+        coloresDiv.style.display = 'block';
         mostrarSelectoresColor(producto.colores);
-    } 
-    else if (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0) {
-        if (modalColores) modalColores.style.display = 'none';
-        mostrarTallasDirectas(producto.variantes);
-    }
-    else {
-        if (modalColores) modalColores.style.display = 'none';
-        if (variantesDiv) variantesDiv.style.display = 'none';
-    }
-    
-    // Procesar presentaciones (frascos)
-    if (producto.variantes && producto.variantes !== '') {
-        // Verificar si tiene presentaciones (formato: 1frasco:4.62,2frascos:9.24)
-        if (producto.variantes.includes('frasco') || producto.variantes.includes('pack')) {
-            mostrarPresentaciones(producto.variantes);
-        } else {
-            // Si no tiene presentaciones, ocultar el selector
-            const presentacionesDiv = document.getElementById('modal-presentaciones');
-            if (presentacionesDiv) presentacionesDiv.style.display = 'none';
-        }
     } else {
-        const presentacionesDiv = document.getElementById('modal-presentaciones');
-        if (presentacionesDiv) presentacionesDiv.style.display = 'none';
+        coloresDiv.style.display = 'none';
+        if (producto.variantes?.length) mostrarTallasDirectas(producto.variantes);
+        else variantesDiv.style.display = 'none';
     }
     
+    mostrarPresentaciones(producto.variantes);
     modal.style.display = 'flex';
-    console.log("Modal mostrado");
-    
     configurarZoomEnModalProducto();
 }
 
-// ==================== MOSTRAR TALLAS DIRECTAS ====================
-function mostrarTallasDirectas(variantes) {
-    const variantesDiv = document.getElementById('modal-variantes');
-    const selectorVariante = document.getElementById('selector-variante');
-    
-    if (!variantesDiv) return;
-    
-    if (variantes && variantes.length > 0) {
-        variantesDiv.style.display = 'block';
-        selectorVariante.innerHTML = '<option value="">Selecciona una talla</option>';
-        
-        variantes.forEach(t => {
-            const option = document.createElement('option');
-            option.value = t.precio;
-            option.setAttribute('data-talla', t.talla);
-            option.textContent = `${t.talla} - $${t.precio.toFixed(2)}`;
-            selectorVariante.appendChild(option);
-        });
-        
-        selectorVariante.onchange = function() {
-            if (this.value) {
-                const precioSeleccionado = parseFloat(this.value);
-                const tallaSeleccionadaNombre = this.options[this.selectedIndex].getAttribute('data-talla');
-                tallaSeleccionada = {
-                    talla: tallaSeleccionadaNombre,
-                    precio: precioSeleccionado
-                };
-                const modalPrecio = document.getElementById('modal-precio');
-                if (modalPrecio) {
-                    modalPrecio.textContent = `$${precioSeleccionado.toFixed(2)}`;
-                    modalPrecio.style.fontWeight = 'bold';
-                }
-            } else {
-                tallaSeleccionada = null;
-                const modalPrecio = document.getElementById('modal-precio');
-                if (modalPrecio && productoActual) {
-                    modalPrecio.textContent = `$${productoActual.precio.toFixed(2)}`;
-                }
-            }
-        };
-    } else {
-        variantesDiv.style.display = 'none';
-        tallaSeleccionada = null;
-    }
-}
-
-// ==================== SELECTORES DE COLOR ====================
 function mostrarSelectoresColor(colores) {
     const container = document.getElementById('selector-color');
-    if (!container) return;
+    container.innerHTML = colores.map((c, i) => `
+        <button style="padding:8px 20px;border:2px solid ${i===0?'#00D4FF':'#ccc'};background:${i===0?'#00D4FF':'white'};border-radius:40px;cursor:pointer">
+            ${c.nombre}
+        </button>
+    `).join('');
     
-    container.innerHTML = '';
-    
-    colores.forEach((color, index) => {
-        const btn = document.createElement('button');
-        btn.textContent = color.nombre;
-        btn.style.padding = '8px 20px';
-        btn.style.border = index === 0 ? '2px solid #00D4FF' : '2px solid #222222';
-        btn.style.background = index === 0 ? '#00D4FF' : 'transparent';
-        btn.style.borderRadius = '40px';
-        btn.style.color = index === 0 ? '#0A0A0A' : '#888888';
-        btn.style.cursor = 'pointer';
-        btn.style.fontWeight = '500';
-        btn.style.transition = 'all 0.3s ease';
-        
+    document.querySelectorAll('#selector-color button').forEach((btn, i) => {
         btn.onclick = () => {
             document.querySelectorAll('#selector-color button').forEach(b => {
-                b.style.border = '2px solid #222222';
-                b.style.background = 'transparent';
-                b.style.color = '#888888';
+                b.style.border = '2px solid #ccc';
+                b.style.background = 'white';
+                b.style.color = '#333';
             });
             btn.style.border = '2px solid #00D4FF';
             btn.style.background = '#00D4FF';
-            btn.style.color = '#0A0A0A';
+            btn.style.color = 'white';
             
-            colorSeleccionado = color;
+            colorSeleccionado = colores[i];
+            document.getElementById('modal-imagen').src = colores[i].imagen;
+            let precio = colores[i].precio;
+            document.getElementById('modal-precio').textContent = `$${precio.toFixed(2)}`;
             
-            const modalImagen = document.getElementById('modal-imagen');
-            if (modalImagen) modalImagen.src = color.imagen;
-            
-            const modalPrecio = document.getElementById('modal-precio');
-            if (modalPrecio) {
-                modalPrecio.textContent = `$${color.precio.toFixed(2)}`;
-                modalPrecio.style.color = '#00D4FF';
+            let tallas = colores[i].tallas;
+            if (!tallas?.length && productoActual.variantes && !productoActual.variantes.includes(colores[i].nombre)) {
+                tallas = productoActual.variantes.split(',').map(t => {
+                    const [talla, p] = t.split(':');
+                    return { talla, precio: parseFloat(p) };
+                });
             }
-            
-            mostrarTallas(color.tallas);
+            mostrarTallas(tallas);
         };
-        
-        container.appendChild(btn);
     });
     
-    if (colores.length > 0) {
-        colorSeleccionado = colores[0];
-        const modalPrecio = document.getElementById('modal-precio');
-        if (modalPrecio) {
-            modalPrecio.textContent = `$${colores[0].precio.toFixed(2)}`;
-        }
-        mostrarTallas(colores[0].tallas);
-    }
-}
-
-// ==================== MOSTRAR TALLAS ====================
-function mostrarTallas(tallas) {
-    const variantesDiv = document.getElementById('modal-variantes');
-    const selectorVariante = document.getElementById('selector-variante');
-    
-    if (!variantesDiv) return;
-    
-    if (tallas && tallas.length > 0) {
-        variantesDiv.style.display = 'block';
-        selectorVariante.innerHTML = '<option value="">Selecciona una talla</option>';
-        
-        tallas.forEach(t => {
-            const option = document.createElement('option');
-            option.value = t.precio;
-            option.setAttribute('data-talla', t.talla);
-            option.textContent = `${t.talla} - $${t.precio.toFixed(2)}`;
-            selectorVariante.appendChild(option);
+    colorSeleccionado = colores[0];
+    let tallasIniciales = colores[0].tallas;
+    if (!tallasIniciales?.length && productoActual.variantes && !productoActual.variantes.includes(colores[0].nombre)) {
+        tallasIniciales = productoActual.variantes.split(',').map(t => {
+            const [talla, p] = t.split(':');
+            return { talla, precio: parseFloat(p) };
         });
-        
-        selectorVariante.onchange = function() {
-            if (this.value) {
-                const precioSeleccionado = parseFloat(this.value);
-                const tallaSeleccionadaNombre = this.options[this.selectedIndex].getAttribute('data-talla');
-                tallaSeleccionada = {
-                    talla: tallaSeleccionadaNombre,
-                    precio: precioSeleccionado
-                };
-                const modalPrecio = document.getElementById('modal-precio');
-                if (modalPrecio) {
-                    modalPrecio.textContent = `$${precioSeleccionado.toFixed(2)}`;
-                    modalPrecio.style.fontWeight = 'bold';
-                }
-            } else {
-                tallaSeleccionada = null;
-                const modalPrecio = document.getElementById('modal-precio');
-                if (modalPrecio && colorSeleccionado) {
-                    modalPrecio.textContent = `$${colorSeleccionado.precio.toFixed(2)}`;
-                }
-            }
-        };
-    } else {
-        variantesDiv.style.display = 'none';
-        tallaSeleccionada = null;
     }
+    mostrarTallas(tallasIniciales);
 }
 
-// ==================== AGREGAR DESDE MODAL ====================
+function mostrarTallas(tallas) {
+    const div = document.getElementById('modal-variantes');
+    const sel = document.getElementById('selector-variante');
+    if (!tallas?.length) { div.style.display = 'none'; return; }
+    div.style.display = 'block';
+    sel.innerHTML = '<option value="">Selecciona una talla</option>' + 
+        tallas.map(t => `<option value="${t.precio}" data-talla="${t.talla}">${t.talla} - $${t.precio.toFixed(2)}</option>`).join('');
+    sel.onchange = () => {
+        tallaSeleccionada = sel.value ? { talla: sel.selectedOptions[0].dataset.talla, precio: parseFloat(sel.value) } : null;
+        document.getElementById('modal-precio').textContent = tallaSeleccionada ? `$${tallaSeleccionada.precio.toFixed(2)}` : `$${colorSeleccionado?.precio.toFixed(2)}`;
+    };
+}
+
+function mostrarTallasDirectas(variantes) {
+    const tallas = Array.isArray(variantes) ? variantes : variantes?.split(',').map(t => {
+        const [talla, precio] = t.split(':');
+        return { talla, precio: parseFloat(precio) };
+    });
+    mostrarTallas(tallas);
+}
+
+function cerrarModal() {
+    document.getElementById('producto-modal').style.display = 'none';
+    productoActual = colorSeleccionado = tallaSeleccionada = presentacionSeleccionada = null;
+    if (window.cerrarZoomImagen) window.cerrarZoomImagen();
+}
+
+// ==================== AGREGAR AL CARRITO ====================
+function agregarAlCarrito(id) {
+    const producto = productos.find(p => p.id == id);
+    if (!producto) return;
+    if (producto.colores?.length || producto.variantes?.length) return mostrarModal(id);
+    
+    let existente = carrito.find(i => i.id == id);
+    if (existente) existente.cantidad++;
+    else carrito.push({...producto, cantidad: 1});
+    guardarCarrito();
+    actualizarCarrito();
+}
+
 function agregarDesdeModal() {
     if (!productoActual) return;
     
-    let precioFinal = productoActual.precio;
-    let nombreFinal = productoActual.nombre;
+    let precio = productoActual.precio, nombre = productoActual.nombre;
     
-    // Priorizar presentación (frascos) si está seleccionada
     if (presentacionSeleccionada) {
-        precioFinal = presentacionSeleccionada.precio;
-        nombreFinal = `${productoActual.nombre} (${presentacionSeleccionada.texto})`;
-    }
-    // Si no hay presentación, verificar colores y tallas
-    else if (productoActual.colores && productoActual.colores.length > 0) {
-        if (!colorSeleccionado) {
-            alert('⚠️ Por favor selecciona un color');
-            return;
-        }
-        precioFinal = colorSeleccionado.precio;
-        nombreFinal = `${productoActual.nombre} (${colorSeleccionado.nombre})`;
-        
-        if (tallaSeleccionada) {
-            precioFinal = tallaSeleccionada.precio;
-            nombreFinal = `${productoActual.nombre} (${colorSeleccionado.nombre} - Talla: ${tallaSeleccionada.talla})`;
-        }
-    } 
-    else if (productoActual.tiene_variantes && productoActual.variantes && productoActual.variantes.length > 0) {
-        // Verificar si son tallas o presentaciones
-        if (!tallaSeleccionada && !presentacionSeleccionada) {
-            // Si hay variantes pero no es presentación ni talla seleccionada
-            const tienePresentaciones = productoActual.variantes.includes('frasco') || productoActual.variantes.includes('pack');
-            if (tienePresentaciones) {
-                alert('⚠️ Por favor selecciona una opción de frascos');
-            } else {
-                alert('⚠️ Por favor selecciona una talla');
-            }
-            return;
-        }
-        if (tallaSeleccionada) {
-            precioFinal = tallaSeleccionada.precio;
-            nombreFinal = `${productoActual.nombre} (Talla: ${tallaSeleccionada.talla})`;
-        }
+        precio = presentacionSeleccionada.precio;
+        nombre += ` (${presentacionSeleccionada.texto})`;
+    } else if (productoActual.colores?.length) {
+        if (!colorSeleccionado) return alert('Selecciona un color');
+        precio = colorSeleccionado.precio;
+        nombre += ` (${colorSeleccionado.nombre})`;
+        if (tallaSeleccionada) { precio = tallaSeleccionada.precio; nombre += ` - Talla: ${tallaSeleccionada.talla}`; }
+    } else if (productoActual.variantes?.length) {
+        if (!tallaSeleccionada) return alert('Selecciona una talla');
+        precio = tallaSeleccionada.precio;
+        nombre += ` (Talla: ${tallaSeleccionada.talla})`;
     }
     
-    const existente = carrito.find(item => item.id === productoActual.id && item.nombre === nombreFinal);
-    
-    if (existente) {
-        existente.cantidad++;
-    } else {
-        carrito.push({
-            id: productoActual.id,
-            nombre: nombreFinal,
-            precio: precioFinal,
-            origen: productoActual.origen,
-            cantidad: 1
-        });
-    }
+    let existente = carrito.find(i => i.id === productoActual.id && i.nombre === nombre);
+    if (existente) existente.cantidad++;
+    else carrito.push({ id: productoActual.id, nombre, precio, origen: productoActual.origen, cantidad: 1 });
     
     guardarCarrito();
     actualizarCarrito();
     cerrarModal();
 }
 
-function cerrarModal() {
-    const modal = document.getElementById('producto-modal');
-    if (modal) modal.style.display = 'none';
-    productoActual = null;
-    colorSeleccionado = null;
-    tallaSeleccionada = null;
-    presentacionSeleccionada = null;
-    
-    if (window.cerrarZoomImagen) {
-        window.cerrarZoomImagen();
-    }
-}
-
-function configurarModal() {
-    const modal = document.getElementById('producto-modal');
-    const cerrar = document.querySelector('.modal-cerrar');
-    
-    if (cerrar) cerrar.onclick = cerrarModal;
-    if (modal) {
-        window.onclick = function(event) {
-            if (event.target == modal) cerrarModal();
-        }
-    }
-    const btnModal = document.getElementById('modal-agregar');
-    if (btnModal) btnModal.onclick = agregarDesdeModal;
-}
-
 // ==================== CARRITO ====================
-function agregarAlCarrito(id) {
-    const producto = productos.find(p => p.id == id);
-    if (!producto) return;
-    
-    if ((producto.colores && producto.colores.length > 0) || 
-        (producto.tiene_variantes && producto.variantes && producto.variantes.length > 0)) {
-        mostrarModal(id);
-        return;
-    }
-    
-    const existente = carrito.find(item => item.id == id);
-    if (existente) {
-        existente.cantidad++;
-    } else {
-        carrito.push({...producto, cantidad: 1});
-    }
-    
-    guardarCarrito();
-    actualizarCarrito();
-}
-
-function guardarCarrito() {
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-}
-
+function guardarCarrito() { localStorage.setItem('carrito', JSON.stringify(carrito)); }
 function actualizarCarrito() {
     actualizarCarritoTop();
-    
-    const listaCarrito = document.getElementById('carrito-lista');
+    const lista = document.getElementById('carrito-lista');
     const totalSpan = document.getElementById('total');
-    const formularioDiv = document.getElementById('formulario-datos');
+    const formDiv = document.getElementById('formulario-datos');
     
-    if (carrito.length === 0) {
-        if (listaCarrito) listaCarrito.innerHTML = '<p class="vacio">Carrito vacío</p>';
+    if (!carrito.length) {
+        if (lista) lista.innerHTML = '<p class="vacio">Carrito vacío</p>';
         if (totalSpan) totalSpan.textContent = '0.00';
-        if (formularioDiv) formularioDiv.style.display = 'none';
+        if (formDiv) formDiv.style.display = 'none';
         return;
     }
     
-    if (formularioDiv) formularioDiv.style.display = 'block';
-    if (listaCarrito) listaCarrito.innerHTML = '';
+    if (formDiv) formDiv.style.display = 'block';
+    if (lista) lista.innerHTML = '';
     let total = 0;
-    
     carrito.forEach(item => {
-        const subtotal = item.precio * item.cantidad;
+        let subtotal = item.precio * item.cantidad;
         total += subtotal;
-        
-        const itemDiv = document.createElement('div');
-        itemDiv.className = 'item-carrito';
-        itemDiv.innerHTML = `
-            <div>
-                <strong>${item.nombre}</strong> (${item.origen})<br>
-                $${item.precio.toFixed(2)} x ${item.cantidad} = $${subtotal.toFixed(2)}
+        if (lista) lista.innerHTML += `
+            <div class="item-carrito">
+                <div><strong>${item.nombre}</strong> (${item.origen})<br>$${item.precio.toFixed(2)} x ${item.cantidad} = $${subtotal.toFixed(2)}</div>
+                <button class="btn-eliminar" onclick="carrito = carrito.filter(i => !(i.id==${item.id} && i.nombre=='${item.nombre}')); guardarCarrito(); actualizarCarrito();">🗑️</button>
             </div>
-            <button class="btn-eliminar" data-id="${item.id}" data-nombre="${item.nombre}">🗑️</button>
         `;
-        if (listaCarrito) listaCarrito.appendChild(itemDiv);
     });
-    
     if (totalSpan) totalSpan.textContent = total.toFixed(2);
-    
-    document.querySelectorAll('#carrito-lista .btn-eliminar').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const id = parseInt(btn.dataset.id);
-            const nombre = btn.dataset.nombre;
-            carrito = carrito.filter(item => !(item.id == id && item.nombre == nombre));
-            guardarCarrito();
-            actualizarCarrito();
-        });
-    });
 }
 
-// ==================== CARRITO SUPERIOR ====================
 function actualizarCarritoTop() {
-    const contadorSpan = document.getElementById('carrito-contador');
-    const totalPanel = document.getElementById('total-panel');
-    const listaPanel = document.getElementById('carrito-lista-panel');
+    const total = carrito.reduce((s, i) => s + i.precio * i.cantidad, 0);
+    const totalItems = carrito.reduce((s, i) => s + i.cantidad, 0);
+    if (document.getElementById('carrito-contador')) document.getElementById('carrito-contador').textContent = totalItems;
+    if (document.getElementById('total-panel')) document.getElementById('total-panel').textContent = total.toFixed(2);
     
-    if (!contadorSpan) return;
-    
-    const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
-    contadorSpan.textContent = totalItems;
-    
-    if (totalPanel) {
-        const total = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-        totalPanel.textContent = total.toFixed(2);
-    }
-    
-    if (listaPanel) {
-        if (carrito.length === 0) {
-            listaPanel.innerHTML = '<div class="vacio">✨ Tu carrito está vacío</div>';
-        } else {
-            listaPanel.innerHTML = '';
-            carrito.forEach(item => {
-                const subtotal = item.precio * item.cantidad;
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'item-carrito';
-                itemDiv.innerHTML = `
-                    <div>
-                        <strong>${item.nombre}</strong><br>
-                        $${item.precio.toFixed(2)} x ${item.cantidad} = $${subtotal.toFixed(2)}
-                    </div>
-                    <button class="btn-eliminar" data-id="${item.id}" data-nombre="${item.nombre}">🗑️</button>
-                `;
-                listaPanel.appendChild(itemDiv);
-            });
-            
-            document.querySelectorAll('#carrito-lista-panel .btn-eliminar').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const id = parseInt(btn.dataset.id);
-                    const nombre = btn.dataset.nombre;
-                    carrito = carrito.filter(item => !(item.id == id && item.nombre == nombre));
-                    guardarCarrito();
-                    actualizarCarritoTop();
-                    actualizarCarrito();
-                });
-            });
-        }
-    }
+    const panel = document.getElementById('carrito-lista-panel');
+    if (panel) panel.innerHTML = !carrito.length ? '<div class="vacio">✨ Tu carrito está vacío</div>' : 
+        carrito.map(i => `<div class="item-carrito"><div><strong>${i.nombre}</strong><br>$${i.precio.toFixed(2)} x ${i.cantidad} = $${(i.precio*i.cantidad).toFixed(2)}</div><button class="btn-eliminar" onclick="carrito=carrito.filter(x=>!(x.id==${i.id}&&x.nombre=='${i.nombre}'));guardarCarrito();actualizarCarritoTop();actualizarCarrito();">🗑️</button></div>`).join('');
 }
 
 function toggleCarrito() {
-    const panel = document.getElementById('carrito-panel');
-    const overlay = document.getElementById('overlay');
-    if (panel) panel.classList.toggle('open');
-    if (overlay) overlay.classList.toggle('active');
+    document.getElementById('carrito-panel')?.classList.toggle('open');
+    document.getElementById('overlay')?.classList.toggle('active');
 }
-
 function cerrarCarrito() {
-    const panel = document.getElementById('carrito-panel');
-    const overlay = document.getElementById('overlay');
-    if (panel) panel.classList.remove('open');
-    if (overlay) overlay.classList.remove('active');
+    document.getElementById('carrito-panel')?.classList.remove('open');
+    document.getElementById('overlay')?.classList.remove('active');
 }
 
-// ==================== MODAL DE PAGO ====================
-function abrirModalPago() {
-    const modal = document.getElementById('pago-modal');
-    if (modal) modal.style.display = 'flex';
-}
-
-function cerrarModalPago() {
-    const modal = document.getElementById('pago-modal');
-    if (modal) modal.style.display = 'none';
+// ==================== PEDIDOS ====================
+async function guardarPedido(pedido) {
+    await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido) });
+    carrito = [];
+    guardarCarrito();
+    actualizarCarrito();
 }
 
 async function enviarPedidoModal() {
@@ -698,768 +311,227 @@ async function enviarPedidoModal() {
     const telefono = document.getElementById('telefono-modal').value;
     const direccion = document.getElementById('direccion-modal').value;
     const metodoPago = document.getElementById('metodo-pago-modal').value;
+    if (!nombre || !telefono || !direccion || !metodoPago) return alert('Completa todos los campos');
     
-    if (!nombre || !telefono || !direccion || !metodoPago) {
-        alert('Completa todos los campos');
-        return;
-    }
-    
-    let detalleProductos = '';
-    let totalProductos = 0;
-    
-    carrito.forEach(item => {
-        const subtotal = item.precio * item.cantidad;
-        totalProductos += subtotal;
-        detalleProductos += `${item.nombre} (${item.origen}) x${item.cantidad} - $${subtotal.toFixed(2)}\n`;
+    let productosTexto = '', total = 0;
+    carrito.forEach(i => {
+        let subtotal = i.precio * i.cantidad;
+        total += subtotal;
+        productosTexto += `${i.nombre} (${i.origen}) x${i.cantidad} - $${subtotal.toFixed(2)}\n`;
     });
-    
-    const costoEnvioLibra = 3.50;
-    const costoDelivery = 1.00;
-    const totalEnvio = costoEnvioLibra + costoDelivery;
     
     const pedido = {
-        nombre: nombre,
-        telefono: telefono,
-        direccion: direccion,
-        metodoPago: metodoPago,
+        nombre, telefono, direccion, metodoPago,
         estadoPago: metodoPago === 'Yappy' ? 'Pendiente de pago' : 'Pendiente',
-        productos: detalleProductos,
-        totalProductos: totalProductos.toFixed(2),
-        envioLibra: costoEnvioLibra,
-        delivery: costoDelivery,
-        envioTotal: totalEnvio.toFixed(2),
+        productos: productosTexto,
+        totalProductos: total,
+        envioLibra: 3.50, delivery: 1.00, envioTotal: 4.50,
         idPedido: Date.now().toString()
     };
-    
     await guardarPedido(pedido);
-    pedidoPendiente = pedido;
     cerrarModalPago();
     cerrarCarrito();
-    
-    if (metodoPago === 'Yappy') {
-        abrirModalYappy();
-    } else {
-        mostrarFactura(pedido);
-    }
+    if (metodoPago === 'Yappy') abrirModalYappy();
+    else mostrarFactura(pedido);
 }
 
-// ==================== YAPPY MODAL ====================
-function abrirModalYappy() {
-    const modal = document.getElementById('yappy-modal');
-    if (modal) modal.style.display = 'flex';
-}
+function abrirModalPago() { document.getElementById('pago-modal').style.display = 'flex'; }
+function cerrarModalPago() { document.getElementById('pago-modal').style.display = 'none'; }
+function irAPagar() { cerrarCarrito(); abrirModalPago(); }
 
-function cerrarModalYappy() {
-    const modal = document.getElementById('yappy-modal');
-    if (modal) modal.style.display = 'none';
-}
-
+// ==================== YAPPY ====================
+function abrirModalYappy() { document.getElementById('yappy-modal').style.display = 'flex'; }
+function cerrarModalYappy() { document.getElementById('yappy-modal').style.display = 'none'; }
 function copiarNumeroYappy() {
-    const numero = document.getElementById('yappy-telefono').textContent;
-    navigator.clipboard.writeText(numero);
-    const btn = document.getElementById('copiar-yappy');
-    const textoOriginal = btn.textContent;
+    navigator.clipboard.writeText(document.getElementById('yappy-telefono').textContent);
+    let btn = document.getElementById('copiar-yappy');
     btn.textContent = '✅ Copiado!';
-    setTimeout(() => {
-        btn.textContent = textoOriginal;
-    }, 2000);
+    setTimeout(() => btn.textContent = '📋 Copiar', 2000);
 }
-
-function abrirConfirmarPago() {
-    cerrarModalYappy();
-    const modal = document.getElementById('confirmar-pago-modal');
-    if (modal) modal.style.display = 'flex';
-}
-
-function cerrarConfirmarPago() {
-    const modal = document.getElementById('confirmar-pago-modal');
-    if (modal) modal.style.display = 'none';
-}
+function abrirConfirmarPago() { cerrarModalYappy(); document.getElementById('confirmar-pago-modal').style.display = 'flex'; }
+function cerrarConfirmarPago() { document.getElementById('confirmar-pago-modal').style.display = 'none'; }
 
 async function verificarPagoYGenerarFactura() {
-    const nombreVerificar = document.getElementById('nombre-verificar').value;
-    
-    if (!nombreVerificar) {
-        alert('Por favor ingresa tu nombre completo');
-        return;
-    }
-    
+    let nombre = document.getElementById('nombre-verificar').value;
+    if (!nombre) return alert('Ingresa tu nombre');
     try {
-        const response = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombreVerificar)}`);
-        const pedidos = await response.json();
-        
-        if (pedidos && pedidos.length > 0) {
-            const pedidoEncontrado = pedidos.find(p => p.estado === 'Pendiente de pago');
-            
-            if (pedidoEncontrado) {
-                await fetch(API_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'actualizarEstado',
-                        fila: pedidoEncontrado.id,
-                        estado: 'Pagado'
-                    })
-                });
-                
-                const pedidoCompleto = {
-                    nombre: pedidoEncontrado.nombre,
-                    telefono: pedidoEncontrado.telefono,
-                    direccion: pedidoEncontrado.direccion,
-                    metodoPago: pedidoEncontrado.metodoPago,
-                    productos: pedidoEncontrado.productos,
-                    totalProductos: pedidoEncontrado.total,
-                    envioLibra: 3.50,
-                    delivery: 1.00,
-                    envioTotal: 4.50,
-                    idPedido: pedidoEncontrado.idPedido
-                };
-                
-                cerrarConfirmarPago();
-                mostrarFactura(pedidoCompleto);
-            } else {
-                alert('❌ No encontramos un pedido pendiente con ese nombre.');
-            }
-        } else {
-            alert('❌ No encontramos un pedido con ese nombre.');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('❌ Error al verificar el pago.');
-    }
-}
-
-// ==================== GUARDAR PEDIDO ====================
-async function guardarPedido(pedido) {
-    try {
-        await fetch(API_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(pedido)
+        let res = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombre)}`);
+        let pedidos = await res.json();
+        let pedido = pedidos?.find(p => p.estado === 'Pendiente de pago');
+        if (!pedido) return alert('No encontramos un pedido pendiente con ese nombre');
+        await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'actualizarEstado', fila: pedido.id, estado: 'Pagado' }) });
+        cerrarConfirmarPago();
+        mostrarFactura({
+            nombre: pedido.nombre, telefono: pedido.telefono, direccion: pedido.direccion,
+            metodoPago: pedido.metodoPago, productos: pedido.productos, totalProductos: pedido.total,
+            envioLibra: 3.50, delivery: 1.00, idPedido: pedido.idPedido
         });
-        carrito = [];
-        guardarCarrito();
-        actualizarCarrito();
-        return true;
-    } catch (error) {
-        console.error('Error:', error);
-        return false;
-    }
+    } catch(e) { alert('Error al verificar'); }
 }
 
-// ==================== MOSTRAR FACTURA CON LOGO ====================
+// ==================== FACTURA ====================
 function mostrarFactura(pedido) {
-    console.log("Pedido recibido en mostrarFactura:", pedido);
-    
-    const facturaDiv = document.getElementById('factura-contenido');
-    
-    let totalProductos = 0;
-    if (pedido.totalProductos) {
-        totalProductos = parseFloat(pedido.totalProductos);
-    } else if (pedido.total) {
-        totalProductos = parseFloat(pedido.total);
-    }
-    
-    const envioLibra = 3.50;
-    const delivery = 1.00;
-    
-    const productosLista = pedido.productos ? pedido.productos.split('\n').filter(p => p.trim()) : [];
-    const productosHtml = productosLista.map(p => `<div class="producto-linea"><span>${p}</span></div>`).join('');
-    
-    facturaDiv.innerHTML = `
-        <div class="factura-logo">
-            <img src="logo.png" alt="TIENDA PRIVADA" class="factura-logo-imagen" onerror="this.style.display='none'">
-            <div class="factura-logo-texto">
-                <h2>TIENDA PRIVADA</h2>
-                <p>ESTILO · EXCLUSIVIDAD · SEGURIDAD</p>
-            </div>
-        </div>
-        <div class="factura-header">
-            <h3>🎀 FACTURA DE COMPRA</h3>
-            <p>Comprobante de pago</p>
-            <p><strong>N°:</strong> ${pedido.idPedido || 'N/A'}</p>
-        </div>
-        
-        <div class="factura-info">
-            <p><strong>📅 Fecha:</strong> ${new Date().toLocaleString()}</p>
-            <p><strong>👤 Cliente:</strong> ${pedido.nombre || 'N/A'}</p>
-            <p><strong>📱 Teléfono:</strong> ${pedido.telefono || 'N/A'}</p>
-            <p><strong>📍 Dirección:</strong> ${pedido.direccion || 'N/A'}</p>
-            <p><strong>💳 Método de pago:</strong> ${pedido.metodoPago || 'N/A'}</p>
-        </div>
-        
-        <div class="factura-productos">
-            <h4>🛍️ Detalle de productos:</h4>
-            ${productosHtml || '<p>No hay productos</p>'}
-        </div>
-        
-        <div class="factura-totales">
-            <div class="factura-total-linea">
-                <span>📦 TOTAL PRODUCTOS:</span>
-                <span class="valor">$${totalProductos.toFixed(2)}</span>
-            </div>
-            <div class="factura-total-linea envio">
-                <span>🚚 ENVÍO POR LIBRA:</span>
-                <span class="valor">$${envioLibra.toFixed(2)}</span>
-            </div>
-            <div class="factura-total-linea envio">
-                <span>🏠 DELIVERY:</span>
-                <span class="valor">$${delivery.toFixed(2)}</span>
-            </div>
-            <div class="factura-total-linea total">
-                <span>💰 TOTAL A PAGAR AHORA:</span>
-                <span class="valor">$${totalProductos.toFixed(2)}</span>
-            </div>
-        </div>
-        
-        <div class="factura-envio-nota">
-            ⚠️ <strong>NOTA IMPORTANTE:</strong><br>
-            Los costos de envío ($${envioLibra.toFixed(2)} por libra + $${delivery.toFixed(2)} delivery) 
-            se pagarán cuando el paquete llegue a Panamá.
-            ${pedido.metodoPago === 'Yappy' ? '<br><br>✅ Pago de productos realizado por Yappy correctamente.' : ''}
-        </div>
-        
-        <div class="factura-footer">
-            ¡Gracias por tu compra!<br>
-            https://alex21-c.github.io/tienda-privada/
-        </div>
+    let total = parseFloat(pedido.totalProductos || pedido.total || 0);
+    let productos = pedido.productos?.split('\n').filter(p=>p.trim()).map(p=>`<div class="producto-linea">${p}</div>`).join('') || '';
+    document.getElementById('factura-contenido').innerHTML = `
+        <div class="factura-logo"><img src="logo.png" class="factura-logo-imagen" onerror="this.style.display='none'"><div class="factura-logo-texto"><h2>TIENDA PRIVADA</h2><p>ESTILO · EXCLUSIVIDAD · SEGURIDAD</p></div></div>
+        <div class="factura-header"><h3>FACTURA DE COMPRA</h3><p>Comprobante de pago</p><p><strong>N°:</strong> ${pedido.idPedido || 'N/A'}</p></div>
+        <div class="factura-info"><p><strong>📅 Fecha:</strong> ${new Date().toLocaleString()}</p><p><strong>👤 Cliente:</strong> ${pedido.nombre || 'N/A'}</p><p><strong>📱 Teléfono:</strong> ${pedido.telefono || 'N/A'}</p><p><strong>📍 Dirección:</strong> ${pedido.direccion || 'N/A'}</p><p><strong>💳 Método:</strong> ${pedido.metodoPago || 'N/A'}</p></div>
+        <div class="factura-productos"><h4>🛍️ Productos:</h4>${productos || '<p>No hay productos</p>'}</div>
+        <div class="factura-totales"><div class="factura-total-linea"><span>📦 TOTAL:</span><span>$${total.toFixed(2)}</span></div>
+        <div class="factura-total-linea envio"><span>🚚 ENVÍO POR LIBRA:</span><span>$${3.50}</span></div>
+        <div class="factura-total-linea envio"><span>🏠 DELIVERY:</span><span>$${1.00}</span></div>
+        <div class="factura-total-linea total"><span>💰 TOTAL A PAGAR:</span><span>$${total.toFixed(2)}</span></div></div>
+        <div class="factura-envio-nota">⚠️ Los costos de envío se pagan en Panamá</div>
+        <div class="factura-footer">¡Gracias por tu compra!<br>https://alex21-c.github.io/tienda-privada/</div>
     `;
-    
-    const modal = document.getElementById('factura-modal');
-    if (modal) modal.style.display = 'flex';
-    
-    const descargarBtn = document.getElementById('descargar-factura');
-    const cerrarBtn = document.getElementById('cerrar-factura');
-    const cerrarX = document.querySelector('.modal-cerrar-factura');
-    
-    if (descargarBtn) descargarBtn.onclick = descargarFactura;
-    if (cerrarBtn) cerrarBtn.onclick = () => modal.style.display = 'none';
-    if (cerrarX) cerrarX.onclick = () => modal.style.display = 'none';
-    
-    document.getElementById('nombre-modal').value = '';
-    document.getElementById('telefono-modal').value = '';
-    document.getElementById('direccion-modal').value = '';
+    document.getElementById('factura-modal').style.display = 'flex';
+    document.getElementById('descargar-factura').onclick = () => {
+        let w = window.open('', '_blank');
+        w.document.write(`<html><head><title>Factura</title><style>body{font-family:monospace;padding:20px}</style></head><body><div class="factura">${document.getElementById('factura-contenido').innerHTML}</div></body></html>`);
+        w.document.close();
+        w.print();
+    };
+    document.getElementById('cerrar-factura').onclick = () => document.getElementById('factura-modal').style.display = 'none';
+    document.querySelector('.modal-cerrar-factura').onclick = () => document.getElementById('factura-modal').style.display = 'none';
+    document.getElementById('nombre-modal').value = document.getElementById('telefono-modal').value = document.getElementById('direccion-modal').value = '';
     document.getElementById('metodo-pago-modal').value = '';
-    document.getElementById('nombre-verificar').value = '';
-    pedidoPendiente = null;
 }
 
-// ==================== DESCARGAR FACTURA ====================
-function descargarFactura() {
-    const facturaElement = document.getElementById('factura-contenido');
-    const htmlContent = `<!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Factura</title>
-        <style>
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body { font-family: 'Courier New', monospace; padding: 40px; background: #fff; }
-            .factura { max-width: 800px; margin: 0 auto; border: 1px solid #ddd; padding: 30px; border-radius: 20px; }
-            .factura-logo { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 20px; }
-            .factura-logo-imagen { height: 50px; width: auto; object-fit: contain; }
-            .factura-logo-texto h2 { color: #A3B8A4; margin: 0; font-size: 1.2rem; }
-            .factura-logo-texto p { font-size: 0.7rem; color: #9CA3AF; margin: 5px 0 0 0; }
-            .factura-header { text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px dashed #ddd; }
-            .factura-info { background: #f9f9f9; padding: 15px; border-radius: 15px; margin-bottom: 20px; }
-            .producto-linea { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
-            .factura-totales { margin-top: 20px; padding-top: 15px; border-top: 2px solid #ddd; }
-            .factura-total-linea { display: flex; justify-content: space-between; margin: 8px 0; }
-            .factura-total-linea.total { margin-top: 15px; padding-top: 10px; border-top: 1px solid #ddd; font-size: 1.2em; font-weight: bold; }
-            .factura-envio-nota { background: #FFF0F0; padding: 12px; border-radius: 15px; margin-top: 20px; text-align: center; font-size: 0.75em; }
-            .factura-footer { text-align: center; margin-top: 25px; padding-top: 15px; border-top: 1px solid #ddd; font-size: 0.7em; }
-            @media (max-width: 768px) {
-                .factura-logo-imagen { height: 35px; }
-                .factura-logo-texto h2 { font-size: 0.9rem; }
-                .factura-logo-texto p { font-size: 0.55rem; }
-            }
-        </style>
-    </head>
-    <body><div class="factura">${facturaElement.innerHTML}</div></body>
-    </html>`;
-    
-    const blob = new Blob([htmlContent], { type: 'text/html' });
-    const link = document.createElement('a');
-    const url = URL.createObjectURL(blob);
-    link.href = url;
-    link.download = `factura_${new Date().getTime()}.html`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+// ==================== MIS PEDIDOS ====================
+function abrirModalMisPedidos() { document.getElementById('mis-pedidos-modal').style.display = 'flex'; }
+function cerrarModalMisPedidos() { 
+    document.getElementById('mis-pedidos-modal').style.display = 'none';
+    document.getElementById('resultado-pedidos-modal').innerHTML = '<p class="vacio">Ingresa tu nombre</p>';
 }
-
-// ==================== MODAL DE MIS PEDIDOS ====================
-function abrirModalMisPedidos() {
-    const modal = document.getElementById('mis-pedidos-modal');
-    if (modal) modal.style.display = 'flex';
-}
-
-function cerrarModalMisPedidos() {
-    const modal = document.getElementById('mis-pedidos-modal');
-    if (modal) modal.style.display = 'none';
-    document.getElementById('resultado-pedidos-modal').innerHTML = '<p class="vacio">Ingresa tu nombre para ver tus pedidos</p>';
-    document.getElementById('nombre-consulta-modal').value = '';
-}
-
 async function buscarPedidosPorNombreModal() {
-    const nombre = document.getElementById('nombre-consulta-modal').value;
-    const resultadoDiv = document.getElementById('resultado-pedidos-modal');
-    
-    if (!nombre || nombre.trim() === '') {
-        resultadoDiv.innerHTML = '<p class="error">⚠️ Por favor ingresa tu nombre completo</p>';
-        return;
-    }
-    
-    resultadoDiv.innerHTML = '<p>Cargando tus pedidos...</p>';
-    
+    let nombre = document.getElementById('nombre-consulta-modal').value;
+    if (!nombre) return document.getElementById('resultado-pedidos-modal').innerHTML = '<p class="error">⚠️ Ingresa tu nombre</p>';
+    document.getElementById('resultado-pedidos-modal').innerHTML = '<p>Cargando...</p>';
     try {
-        const response = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombre)}`);
-        const pedidos = await response.json();
-        
-        if (pedidos.error) {
-            resultadoDiv.innerHTML = `<p class="error">❌ ${pedidos.error}</p>`;
-            return;
-        }
-        
-        if (pedidos.length === 0) {
-            resultadoDiv.innerHTML = '<p class="vacio">📭 No encontramos pedidos asociados a este nombre</p>';
-            return;
-        }
-        
-        resultadoDiv.innerHTML = '';
-        pedidos.forEach(pedido => {
-            const estadoClass = getEstadoClass(pedido.estado);
-            const estadoIcono = getEstadoIcono(pedido.estado);
-            
-            const card = document.createElement('div');
-            card.className = 'pedido-card';
-            card.innerHTML = `
-                <div class="pedido-header">
-                    <span class="pedido-id">#${pedido.id}</span>
-                    <span class="pedido-fecha">${new Date(pedido.fecha).toLocaleDateString()}</span>
-                    <span class="pedido-estado ${estadoClass}">${estadoIcono} ${pedido.estado}</span>
-                </div>
-                <div class="pedido-productos">
-                    ${pedido.productos.replace(/\n/g, '<br>')}
-                </div>
-                <div class="pedido-total">
-                    Total: $${pedido.total.toFixed(2)}
-                </div>
-            `;
-            resultadoDiv.appendChild(card);
-        });
-        
-    } catch (error) {
-        console.error('Error:', error);
-        resultadoDiv.innerHTML = '<p class="error">❌ Error al consultar tus pedidos.</p>';
-    }
+        let res = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombre)}`);
+        let pedidos = await res.json();
+        if (!pedidos.length) return document.getElementById('resultado-pedidos-modal').innerHTML = '<p class="vacio">📭 No hay pedidos</p>';
+        document.getElementById('resultado-pedidos-modal').innerHTML = pedidos.map(p => `
+            <div class="pedido-card"><div class="pedido-header"><span>#${p.idPedido || p.id}</span><span>${new Date(p.fecha).toLocaleDateString()}</span><span class="estado-${p.estado}">${p.estado}</span></div>
+            <div class="pedido-productos">${p.productos?.replace(/\n/g,'<br>')}</div><div class="pedido-total">Total: $${(p.total||0).toFixed(2)}</div></div>
+        `).join('');
+    } catch(e) { document.getElementById('resultado-pedidos-modal').innerHTML = '<p class="error">❌ Error</p>'; }
 }
 
-// ==================== FILTROS Y FORMULARIO ====================
+// ==================== FILTROS ====================
 function configurarFiltros() {
-    document.querySelectorAll('.filtro-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            filtroPlataforma = btn.dataset.filtro;
-            
-            const filtrosGenero = document.getElementById('filtros-genero');
-            if (filtroPlataforma !== 'todos') {
-                if (filtrosGenero) filtrosGenero.style.display = 'flex';
-                filtroGenero = 'todos';
-                document.querySelectorAll('.filtro-genero-btn').forEach(b => b.classList.remove('active'));
-                const btnTodos = document.querySelector('.filtro-genero-btn[data-genero="todos"]');
-                if (btnTodos) btnTodos.classList.add('active');
-            } else {
-                if (filtrosGenero) filtrosGenero.style.display = 'none';
-                filtroGenero = 'todos';
-            }
-            
-            mostrarProductos();
-        });
-    });
-    
-    document.querySelectorAll('.filtro-genero-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
+    document.querySelectorAll('.filtro-btn').forEach(btn => btn.onclick = () => {
+        document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filtroPlataforma = btn.dataset.filtro;
+        let generosDiv = document.getElementById('filtros-genero');
+        if (filtroPlataforma !== 'todos') {
+            generosDiv.style.display = 'flex';
+            filtroGenero = 'todos';
             document.querySelectorAll('.filtro-genero-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            filtroGenero = btn.dataset.genero;
-            mostrarProductos();
-        });
+            document.querySelector('.filtro-genero-btn[data-genero="todos"]')?.classList.add('active');
+        } else { generosDiv.style.display = 'none'; filtroGenero = 'todos'; }
+        mostrarProductos();
+    });
+    document.querySelectorAll('.filtro-genero-btn').forEach(btn => btn.onclick = () => {
+        document.querySelectorAll('.filtro-genero-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filtroGenero = btn.dataset.genero;
+        mostrarProductos();
     });
 }
 
-function configurarFormularioModal() {
-    const form = document.getElementById('pedido-form-modal');
-    if (form) {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            await enviarPedidoModal();
-        });
-    }
-}
-
-// ==================== ENLACE OCULTO PARA ADMIN ====================
+// ==================== ADMIN ====================
 function verificarAdmin() {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('admin') === 'true') {
-        const password = prompt('🔐 Modo Administrador - Ingresa la contraseña:');
-        if (password === 'admin123') {
-            esAdmin = true;
-            localStorage.setItem('adminSession', 'true');
-            alert('✅ Modo administrador activado');
-        } else {
-            alert('❌ Contraseña incorrecta');
-            window.location.href = window.location.pathname;
-        }
+    let url = new URLSearchParams(location.search);
+    if (url.get('admin') === 'true') {
+        let pass = prompt('Contraseña:');
+        if (pass === 'admin123') { esAdmin = true; localStorage.setItem('adminSession', 'true'); alert('✅ Admin activado'); }
+        else alert('❌ Incorrecta');
     }
-    if (localStorage.getItem('adminSession') === 'true') {
-        esAdmin = true;
-    }
-    return esAdmin;
+    if (localStorage.getItem('adminSession') === 'true') esAdmin = true;
 }
-
 function mostrarEnlaceAdmin(enlace) {
-    const enlaceDiv = document.getElementById('modal-enlace-admin');
-    const enlaceElement = document.getElementById('modal-enlace');
-    const copiarBtn = document.getElementById('copiar-enlace');
-    
-    if (esAdmin && enlace && enlace !== '') {
-        if (enlaceDiv) enlaceDiv.style.display = 'block';
-        if (enlaceElement) {
-            enlaceElement.href = enlace;
-            enlaceElement.textContent = enlace;
-        }
-        if (copiarBtn) {
-            copiarBtn.onclick = () => {
-                navigator.clipboard.writeText(enlace);
-                copiarBtn.textContent = '✅ Copiado!';
-                setTimeout(() => {
-                    copiarBtn.textContent = '📋 Copiar enlace';
-                }, 2000);
-            };
-        }
-    } else {
-        if (enlaceDiv) enlaceDiv.style.display = 'none';
-    }
+    let div = document.getElementById('modal-enlace-admin');
+    if (esAdmin && enlace) {
+        div.style.display = 'block';
+        let a = document.getElementById('modal-enlace');
+        a.href = enlace;
+        a.textContent = enlace;
+        document.getElementById('copiar-enlace').onclick = () => { navigator.clipboard.writeText(enlace); alert('✅ Copiado'); };
+    } else div.style.display = 'none';
 }
 
-function getEstadoClass(estado) {
-    switch(estado) {
-        case 'Pendiente': return 'estado-pendiente';
-        case 'Pagado': return 'estado-pagado';
-        case 'Enviado': return 'estado-enviado';
-        case 'Entregado': return 'estado-entregado';
-        default: return 'estado-pendiente';
-    }
-}
-
-function getEstadoIcono(estado) {
-    switch(estado) {
-        case 'Pendiente': return '⏳';
-        case 'Pagado': return '✅';
-        case 'Enviado': return '📦';
-        case 'Entregado': return '🏠';
-        default: return '⏳';
-    }
-}
-
-// ==================== CONFIGURAR MODALES ====================
-function configurarModalesPago() {
-    const cerrarYappy = document.querySelector('.modal-cerrar-yappy');
-    const copiarBtn = document.getElementById('copiar-yappy');
-    const yaPagueBtn = document.getElementById('ya-pague');
-    
-    if (cerrarYappy) cerrarYappy.onclick = cerrarModalYappy;
-    if (copiarBtn) copiarBtn.onclick = copiarNumeroYappy;
-    if (yaPagueBtn) yaPagueBtn.onclick = abrirConfirmarPago;
-    
-    const cerrarConfirmar = document.querySelector('.modal-cerrar-confirmar');
-    const verificarBtn = document.getElementById('verificar-pago');
-    
-    if (cerrarConfirmar) cerrarConfirmar.onclick = cerrarConfirmarPago;
-    if (verificarBtn) verificarBtn.onclick = verificarPagoYGenerarFactura;
-    
-    const cerrarFactura = document.querySelector('.modal-cerrar-factura');
-    const descargarBtn = document.getElementById('descargar-factura');
-    const cerrarFacturaBtn = document.getElementById('cerrar-factura');
-    
-    if (cerrarFactura) cerrarFactura.onclick = () => {
-        document.getElementById('factura-modal').style.display = 'none';
-    };
-    if (cerrarFacturaBtn) cerrarFacturaBtn.onclick = () => {
-        document.getElementById('factura-modal').style.display = 'none';
-    };
-    if (descargarBtn) descargarBtn.onclick = descargarFactura;
-    
-    const yappyModal = document.getElementById('yappy-modal');
-    const confirmarModal = document.getElementById('confirmar-pago-modal');
-    const facturaModal = document.getElementById('factura-modal');
-    
-    window.onclick = function(event) {
-        if (event.target === yappyModal) cerrarModalYappy();
-        if (event.target === confirmarModal) cerrarConfirmarPago();
-        if (event.target === facturaModal) facturaModal.style.display = 'none';
-    };
-}
-
-// ==================== CONFIGURAR CARRITO TOP ====================
-function configurarCarritoTop() {
-    const toggleBtn = document.getElementById('carrito-toggle');
-    const cerrarBtn = document.getElementById('cerrar-carrito');
-    const pagarBtn = document.getElementById('ir-pagar');
-    const overlay = document.getElementById('overlay');
-    
-    if (toggleBtn) toggleBtn.onclick = toggleCarrito;
-    if (cerrarBtn) cerrarBtn.onclick = cerrarCarrito;
-    if (pagarBtn) pagarBtn.onclick = irAPagar;
-    if (overlay) overlay.onclick = cerrarCarrito;
-}
-
-// ==================== CONFIGURAR MIS PEDIDOS ====================
-function configurarMisPedidos() {
-    const toggleBtn = document.getElementById('toggle-mis-pedidos');
-    const cerrarBtn = document.getElementById('cerrar-mis-pedidos');
-    const buscarBtn = document.getElementById('buscar-pedidos-modal');
-    const nombreInput = document.getElementById('nombre-consulta-modal');
-    const modalCerrar = document.querySelector('.modal-cerrar-mis-pedidos');
-    const modalPagoCerrar = document.querySelector('.modal-cerrar-pago');
-    
-    if (toggleBtn) toggleBtn.onclick = abrirModalMisPedidos;
-    if (cerrarBtn) cerrarBtn.onclick = cerrarModalMisPedidos;
-    if (modalCerrar) modalCerrar.onclick = cerrarModalMisPedidos;
-    if (modalPagoCerrar) modalPagoCerrar.onclick = cerrarModalPago;
-    if (buscarBtn) buscarBtn.onclick = buscarPedidosPorNombreModal;
-    if (nombreInput) {
-        nombreInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') buscarPedidosPorNombreModal();
-        });
-    }
-    
-    const pagoModal = document.getElementById('pago-modal');
-    const misPedidosModal = document.getElementById('mis-pedidos-modal');
-    
-    if (pagoModal) {
-        window.onclick = function(event) {
-            if (event.target === pagoModal) cerrarModalPago();
-            if (event.target === misPedidosModal) cerrarModalMisPedidos();
-        }
-    }
-}
-
-// ==================== ZOOM EN IMAGEN ====================
+// ==================== ZOOM ====================
 function configurarZoomEnModalProducto() {
-    setTimeout(function() {
-        const modalImagen = document.getElementById('modal-imagen');
-        
-        if (modalImagen) {
-            modalImagen.style.cursor = 'zoom-in';
-            modalImagen.style.transition = 'transform 0.2s ease';
-            
-            const nuevaImagen = modalImagen.cloneNode(true);
-            if (modalImagen.parentNode) {
-                modalImagen.parentNode.replaceChild(nuevaImagen, modalImagen);
-            }
-            
-            const imagenFinal = document.getElementById('modal-imagen');
-            if (imagenFinal) {
-                imagenFinal.style.cursor = 'zoom-in';
-                imagenFinal.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const urlImagen = this.src;
-                    if (urlImagen && window.abrirZoomImagen) {
-                        window.abrirZoomImagen(urlImagen);
-                    }
-                });
-            }
+    setTimeout(() => {
+        let img = document.getElementById('modal-imagen');
+        if (img) {
+            img.style.cursor = 'zoom-in';
+            let clone = img.cloneNode(true);
+            img.parentNode.replaceChild(clone, img);
+            clone.style.cursor = 'zoom-in';
+            clone.onclick = (e) => {
+                e.stopPropagation();
+                window.abrirZoomImagen?.(clone.src);
+            };
         }
     }, 150);
 }
-
-window.abrirZoomImagen = function(urlImagen) {
-    const zoomModal = document.getElementById('zoom-imagen-modal');
-    const zoomImagen = document.getElementById('zoom-imagen');
-    
-    if (zoomImagen && urlImagen) {
-        zoomImagen.src = urlImagen;
-        if (zoomModal) {
-            zoomModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-    }
+window.abrirZoomImagen = (url) => {
+    let modal = document.getElementById('zoom-imagen-modal');
+    document.getElementById('zoom-imagen').src = url;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
 };
-
-window.cerrarZoomImagen = function() {
-    const zoomModal = document.getElementById('zoom-imagen-modal');
-    if (zoomModal) {
-        zoomModal.classList.remove('active');
-        document.body.style.overflow = '';
-    }
+window.cerrarZoomImagen = () => {
+    let modal = document.getElementById('zoom-imagen-modal');
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
 };
-
 function configurarZoomModal() {
-    const zoomModal = document.getElementById('zoom-imagen-modal');
-    const zoomCerrar = document.getElementById('zoom-cerrar');
-    
-    if (zoomModal) {
-        zoomModal.addEventListener('click', function(e) {
-            if (e.target === zoomModal) {
-                window.cerrarZoomImagen();
-            }
-        });
-    }
-    
-    if (zoomCerrar) {
-        zoomCerrar.addEventListener('click', window.cerrarZoomImagen);
-    }
-    
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            window.cerrarZoomImagen();
-        }
+    document.getElementById('zoom-imagen-modal').onclick = e => { if(e.target.classList.contains('zoom-modal')) window.cerrarZoomImagen(); };
+    document.getElementById('zoom-cerrar').onclick = window.cerrarZoomImagen;
+    document.onkeydown = e => { if(e.key === 'Escape') window.cerrarZoomImagen(); };
+}
+
+// ==================== MODALES ====================
+function configurarModales() {
+    let modals = ['pago-modal', 'yappy-modal', 'confirmar-pago-modal', 'factura-modal', 'mis-pedidos-modal'];
+    modals.forEach(id => {
+        let modal = document.getElementById(id);
+        if(modal) modal.onclick = e => { if(e.target === modal) modal.style.display = 'none'; };
     });
+    document.querySelector('.modal-cerrar')?.addEventListener('click', cerrarModal);
+    document.getElementById('producto-modal').onclick = e => { if(e.target === document.getElementById('producto-modal')) cerrarModal(); };
+    document.getElementById('modal-agregar').onclick = agregarDesdeModal;
+    document.getElementById('carrito-toggle').onclick = toggleCarrito;
+    document.getElementById('cerrar-carrito').onclick = cerrarCarrito;
+    document.getElementById('ir-pagar').onclick = irAPagar;
+    document.getElementById('overlay').onclick = cerrarCarrito;
+    document.getElementById('toggle-mis-pedidos').onclick = abrirModalMisPedidos;
+    document.getElementById('buscar-pedidos-modal').onclick = buscarPedidosPorNombreModal;
+    document.getElementById('copiar-yappy').onclick = copiarNumeroYappy;
+    document.getElementById('ya-pague').onclick = abrirConfirmarPago;
+    document.getElementById('verificar-pago').onclick = verificarPagoYGenerarFactura;
+    document.querySelector('.modal-cerrar-mis-pedidos').onclick = cerrarModalMisPedidos;
+    document.querySelector('.modal-cerrar-pago').onclick = cerrarModalPago;
+    document.querySelector('.modal-cerrar-yappy').onclick = cerrarModalYappy;
+    document.querySelector('.modal-cerrar-confirmar').onclick = cerrarConfirmarPago;
+    document.getElementById('pedido-form-modal').onsubmit = e => { e.preventDefault(); enviarPedidoModal(); };
+    document.getElementById('nombre-consulta-modal').onkeypress = e => { if(e.key === 'Enter') buscarPedidosPorNombreModal(); };
 }
 
-// ==================== IR A PAGAR ====================
-function irAPagar() {
-    cerrarCarrito();
-    abrirModalPago();
-}
-
-// ==================== INICIAR ====================
+// ==================== INICIO ====================
 async function init() {
     verificarAdmin();
     await cargarProductos();
-    const carritoGuardado = localStorage.getItem('carrito');
-    if (carritoGuardado) carrito = JSON.parse(carritoGuardado);
+    let saved = localStorage.getItem('carrito');
+    if(saved) carrito = JSON.parse(saved);
     actualizarCarrito();
     configurarFiltros();
-    configurarFormularioModal();
-    configurarModal();
-    configurarCarritoTop();
-    configurarMisPedidos();
-    configurarModalesPago();
+    configurarModales();
     configurarZoomModal();
 }
-// ==================== CONTROL DE VERSIÓN Y CACHÉ ====================
-let versionActual = localStorage.getItem('productosVersion') || '1.0.0';
-let productosCache = [];
-
-// Función para obtener la versión actual de los productos
-async function obtenerVersionProductos() {
-    try {
-        const response = await fetch(`${API_URL}?action=getVersion`);
-        const data = await response.json();
-        return data.version;
-    } catch (error) {
-        console.error('Error obteniendo versión:', error);
-        return versionActual;
-    }
-}
-
-// Función para forzar actualización de productos
-async function forzarActualizacionProductos() {
-    const nuevaVersion = await obtenerVersionProductos();
-    
-    if (nuevaVersion !== versionActual) {
-        console.log('🔄 Detectada nueva versión de productos. Actualizando...');
-        versionActual = nuevaVersion;
-        localStorage.setItem('productosVersion', versionActual);
-        await cargarProductos(true); // Forzar recarga desde el servidor
-        return true;
-    }
-    return false;
-}
-
-// Modifica la función cargarProductos existente
-async function cargarProductos(forzarRecarga = false) {
-    const productosDiv = document.getElementById('productos');
-    
-    // Verificar caché
-    const productosGuardados = localStorage.getItem('productosCache');
-    const tiempoGuardado = localStorage.getItem('productosCacheTime');
-    const versionGuardada = localStorage.getItem('productosVersion');
-    const ahora = Date.now();
-    
-    // Usar caché si no se fuerza recarga y no ha pasado mucho tiempo
-    if (!forzarRecarga && productosGuardados && tiempoGuardado && versionGuardada === versionActual && (ahora - parseInt(tiempoGuardado) < 300000)) {
-        console.log("📦 Cargando productos desde caché");
-        productos = JSON.parse(productosGuardados);
-        mostrarProductos();
-        return;
-    }
-    
-    // Cargar desde el servidor
-    console.log("🌐 Cargando productos desde el servidor...");
-    
-    try {
-        if (productosDiv) productosDiv.innerHTML = '<div class="loading">🔄 Cargando productos...</div>';
-        
-        const response = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`); // Cache buster
-        const datos = await response.json();
-        
-        if (datos.error) {
-            console.error('Error:', datos.error);
-            if (productosDiv) productosDiv.innerHTML = '<p class="loading">❌ Error: ' + datos.error + '</p>';
-            return;
-        }
-        
-        productos = datos;
-        
-        // Guardar en caché
-        localStorage.setItem('productosCache', JSON.stringify(productos));
-        localStorage.setItem('productosCacheTime', ahora.toString());
-        
-        if (productos.length === 0) {
-            if (productosDiv) productosDiv.innerHTML = '<p class="loading">📦 No hay productos.</p>';
-            return;
-        }
-        
-        mostrarProductos();
-        
-        // Mostrar notificación de actualización
-        if (forzarRecarga) {
-            mostrarNotificacion('✅ Los productos se han actualizado', 'success');
-        }
-    } catch (error) {
-        console.error('Error cargando productos:', error);
-        if (productosGuardados) {
-            productos = JSON.parse(productosGuardados);
-            mostrarProductos();
-            mostrarNotificacion('⚠️ Usando datos guardados. Los cambios se verán pronto.', 'warning');
-        } else if (productosDiv) {
-            productosDiv.innerHTML = '<p class="loading">❌ Error de conexión.</p>';
-        }
-    }
-}
-
-// Notificación flotante en la tienda
-function mostrarNotificacion(mensaje, tipo) {
-    const notificacion = document.createElement('div');
-    notificacion.textContent = mensaje;
-    notificacion.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: ${tipo === 'success' ? '#A3B8A4' : (tipo === 'warning' ? '#F4A0B5' : '#D4A5A5')};
-        color: white;
-        padding: 12px 24px;
-        border-radius: 50px;
-        font-weight: 600;
-        z-index: 10000;
-        animation: fadeInOut 2.5s ease;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    `;
-    document.body.appendChild(notificacion);
-    setTimeout(() => notificacion.remove(), 2500);
-}
-
-// Verificar actualizaciones periódicamente (cada 30 segundos)
-setInterval(async () => {
-    await forzarActualizacionProductos();
-}, 30000);
 init();
