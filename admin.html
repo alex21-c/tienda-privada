@@ -17,7 +17,7 @@
         
         .container { max-width: 1400px; margin: 0 auto; }
         
-        /* Login Moderno */
+        /* Login */
         .login-box { 
             background: white; 
             max-width: 420px; 
@@ -28,11 +28,10 @@
             border: 1px solid rgba(163, 184, 164, 0.2);
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
         }
-        
         .login-box h2 { color: #A3B8A4; margin-bottom: 25px; font-size: 1.8rem; }
-        .login-box input { width: 100%; padding: 16px; margin: 12px 0; background: #FDFBF7; border: 1.5px solid #E5E5E5; border-radius: 60px; }
+        .login-box input { width: 100%; padding: 16px; margin: 12px 0; background: #FDFBF7; border: 1.5px solid #E5E5E5; border-radius: 60px; font-size: 1rem; }
         .login-box input:focus { outline: none; border-color: #A3B8A4; }
-        .login-box button { background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%); color: white; padding: 16px; border: none; border-radius: 60px; cursor: pointer; font-weight: 600; width: 100%; }
+        .login-box button { background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%); color: white; padding: 16px; border: none; border-radius: 60px; cursor: pointer; font-weight: 600; width: 100%; transition: all 0.3s; }
         .login-box button:hover { background: linear-gradient(135deg, #F4A0B5 0%, #e08ca1 100%); transform: translateY(-2px); }
         
         /* Panel Admin */
@@ -78,7 +77,7 @@
             transition: all 0.3s;
             font-size: 0.85rem;
         }
-        .tab-modern.active { background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%); color: white; }
+        .tab-modern.active { background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%); color: white; box-shadow: 0 4px 12px rgba(163, 184, 164, 0.3); }
         .tab-modern:hover:not(.active) { background: rgba(163, 184, 164, 0.1); color: #A3B8A4; }
         
         /* Contenido tabs */
@@ -87,13 +86,14 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         /* Cards */
-        .card-modern { background: #FDFBF7; border-radius: 28px; padding: 24px; margin-bottom: 25px; border: 1px solid #E5E5E5; }
+        .card-modern { background: #FDFBF7; border-radius: 28px; padding: 24px; margin-bottom: 25px; border: 1px solid #E5E5E5; transition: all 0.2s; }
+        .card-modern:hover { border-color: rgba(163, 184, 164, 0.4); }
         .card-title { font-size: 1.1rem; font-weight: 600; color: #A3B8A4; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; padding-bottom: 12px; border-bottom: 2px solid rgba(163, 184, 164, 0.2); }
         
         /* Formulario grid */
         .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; margin-bottom: 20px; }
-        .form-grid input, .form-grid select, .form-grid textarea { padding: 14px 16px; background: white; border: 1.5px solid #E5E5E5; border-radius: 24px; }
-        .form-grid input:focus { outline: none; border-color: #A3B8A4; }
+        .form-grid input, .form-grid select, .form-grid textarea { padding: 14px 16px; background: white; border: 1.5px solid #E5E5E5; border-radius: 24px; font-family: inherit; }
+        .form-grid input:focus, .form-grid select:focus { outline: none; border-color: #A3B8A4; box-shadow: 0 0 0 3px rgba(163, 184, 164, 0.1); }
         
         /* Botones */
         .btn-modern { background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%); color: white; border: none; padding: 12px 28px; border-radius: 40px; cursor: pointer; font-weight: 600; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; }
@@ -101,58 +101,17 @@
         .btn-modern-secondary { background: transparent; color: #9CA3AF; border: 1.5px solid #E5E5E5; }
         .btn-modern-secondary:hover { background: rgba(163, 184, 164, 0.1); border-color: #A3B8A4; color: #A3B8A4; }
         .btn-modern-danger { background: linear-gradient(135deg, #D4A5A5 0%, #c49494 100%); }
+        .btn-modern-danger:hover { background: linear-gradient(135deg, #c49494 0%, #b48484 100%); }
         
-        /* TABLA EDITABLE (como Google Sheets) */
-        .tabla-editor-container {
-            overflow-x: auto;
-            border-radius: 24px;
-            border: 1px solid #E5E5E5;
-            background: white;
-        }
-        .tabla-editor {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.8rem;
-            min-width: 1200px;
-        }
-        .tabla-editor th {
-            background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
-            color: white;
-            padding: 14px 10px;
-            text-align: left;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        .tabla-editor td {
-            padding: 10px;
-            border-bottom: 1px solid #E5E5E5;
-            vertical-align: middle;
-        }
+        /* Tabla Editor */
+        .tabla-editor-container { overflow-x: auto; border-radius: 24px; border: 1px solid #E5E5E5; background: white; }
+        .tabla-editor { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 1300px; }
+        .tabla-editor th { background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%); color: white; padding: 14px 10px; text-align: left; font-weight: 600; position: sticky; top: 0; }
+        .tabla-editor td { padding: 10px; border-bottom: 1px solid #E5E5E5; vertical-align: middle; }
         .tabla-editor tr:hover { background: rgba(163, 184, 164, 0.05); }
-        .tabla-editor input, .tabla-editor select, .tabla-editor textarea {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #E5E5E5;
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 0.75rem;
-            background: white;
-        }
+        .tabla-editor input, .tabla-editor select, .tabla-editor textarea { width: 100%; padding: 8px; border: 1px solid #E5E5E5; border-radius: 12px; font-family: inherit; font-size: 0.75rem; background: white; }
         .tabla-editor input:focus, .tabla-editor select:focus { outline: none; border-color: #A3B8A4; }
-        .tabla-editor textarea { resize: vertical; min-height: 50px; }
-        
-        .btn-guardar-fila {
-            background: #A3B8A4;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.7rem;
-            transition: all 0.2s;
-        }
+        .btn-guardar-fila { background: #A3B8A4; color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.7rem; transition: all 0.2s; }
         .btn-guardar-fila:hover { background: #F4A0B5; transform: scale(1.05); }
         
         .vacio { text-align: center; padding: 40px; color: #9CA3AF; }
@@ -169,6 +128,7 @@
             font-weight: 600;
             z-index: 1000;
             animation: slideInRight 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
         
@@ -180,6 +140,7 @@
         @media (max-width: 768px) {
             .form-grid { grid-template-columns: 1fr; }
             .tab-modern { padding: 10px 18px; font-size: 0.7rem; }
+            .header-modern { flex-direction: column; text-align: center; }
         }
     </style>
 </head>
@@ -249,11 +210,11 @@
             </div>
         </div>
         
-        <!-- Tab EDITAR PRODUCTOS (Tabla como Google Sheets) -->
+        <!-- Tab Editar Productos -->
         <div id="tab-editar" class="tab-content-modern">
             <div class="card-modern">
                 <div class="card-title">
-                    <span>📝</span> Editor de Productos (como Google Sheets)
+                    <span>📝</span> Editor de Productos
                     <button class="btn-modern btn-modern-secondary" style="margin-left: auto; padding: 6px 16px;" onclick="cargarProductosEditor()">🔄 Recargar</button>
                 </div>
                 <div id="editor-productos-container" class="tabla-editor-container">
@@ -266,9 +227,7 @@
         <div id="tab-pedidos" class="tab-content-modern">
             <div class="card-modern">
                 <div class="card-title">📦 Pedidos de Clientes</div>
-                <div id="pedidos-lista-admin">
-                    <p class="vacio">Cargando pedidos...</p>
-                </div>
+                <div id="pedidos-lista-admin" class="vacio">Cargando pedidos...</div>
             </div>
         </div>
         
@@ -276,9 +235,7 @@
         <div id="tab-listar" class="tab-content-modern">
             <div class="card-modern">
                 <div class="card-title">📋 Productos Existentes</div>
-                <div id="productos-lista">
-                    <p class="vacio">Cargando productos...</p>
-                </div>
+                <div id="productos-lista" class="vacio">Cargando productos...</div>
             </div>
         </div>
         
@@ -287,9 +244,9 @@
             <div class="card-modern">
                 <div class="card-title">❓ Ayuda</div>
                 <div style="line-height: 1.8;">
-                    <p><strong>📝 Editor de Productos:</strong> Modifica cualquier campo directamente en la tabla.</p>
+                    <p><strong>📝 Editor de Productos:</strong> Modifica cualquier campo directamente en la tabla. Para editar colores y tallas, haz clic en "🎨 Editar Variantes".</p>
                     <p><strong>💾 Guardar cambios:</strong> Cada fila tiene su botón "Guardar" para actualizar individualmente.</p>
-                    <p><strong>🔄 Actualización:</strong> Los cambios se reflejan inmediatamente en la tienda.</p>
+                    <p><strong>🔄 Actualización:</strong> Los cambios se reflejan al guardar.</p>
                 </div>
             </div>
         </div>
@@ -300,7 +257,7 @@
 const ADMIN_PASSWORD = 'admin123';
 const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
 let productosActuales = [];
-let colores = [];
+let coloresAgregar = [];
 
 // ==================== LOGIN ====================
 function login() {
@@ -330,7 +287,7 @@ function mostrarMensaje(texto, tipo) {
     setTimeout(() => msg.remove(), 3000);
 }
 
-// ==================== EDITOR DE PRODUCTOS (TABLA COMO GOOGLE SHEETS) ====================
+// ==================== EDITOR DE PRODUCTOS ====================
 async function cargarProductosEditor() {
     try {
         const response = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
@@ -348,7 +305,7 @@ function renderizarEditorProductos() {
         return;
     }
     
-    const headers = ['ID', 'Nombre', 'Precio', 'Origen', 'Imagen URL', 'Descripción', 'Género', 'Enlace', 'Acciones'];
+    const headers = ['ID', 'Nombre', 'Precio', 'Origen', 'Imagen URL', 'Descripción', 'Género', 'Enlace', 'Variantes', 'Acciones'];
     
     let html = `<table class="tabla-editor"><thead><tr>`;
     headers.forEach(h => html += `<th>${h}</th>`);
@@ -378,6 +335,11 @@ function renderizarEditorProductos() {
                     </select>
                 </td>
                 <td><input type="text" id="edit-enlace-${prod.id}" value="${escapeHtml(prod.enlace || '')}" style="min-width:150px;"></td>
+                <td>
+                    <button class="btn-modern btn-modern-secondary" style="padding:6px 12px; font-size:0.7rem;" onclick="abrirModalVariantes(${prod.id})">
+                        🎨 Editar Variantes
+                    </button>
+                </td>
                 <td><button class="btn-guardar-fila" onclick="guardarProductoEditor(${prod.id})">💾 Guardar</button></td>
             </tr>
         `;
@@ -411,82 +373,245 @@ async function guardarProductoEditor(id) {
         return;
     }
     
-    // Obtener datos originales del producto
-    const productoOriginal = productosActuales.find(p => p.id == id);
-    
     const productoData = {
         action: 'editarProductoCompleto',
         id: id,
         nombre: nuevoNombre,
         precio: nuevoPrecio,
         origen: nuevoOrigen,
-        imagen: nuevaImagen || productoOriginal.imagen,
-        descripcion: nuevaDescripcion || productoOriginal.descripcion,
+        imagen: nuevaImagen,
+        descripcion: nuevaDescripcion,
         genero: nuevoGenero,
-        enlace: nuevoEnlace || productoOriginal.enlace
+        enlace: nuevoEnlace
     };
     
     try {
-        await fetch(API_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(productoData)
-        });
-        
+        await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productoData) });
         mostrarMensaje(`✅ Producto #${id} actualizado`, 'success');
-        
-        // Actualizar array local
-        const index = productosActuales.findIndex(p => p.id == id);
-        if (index !== -1) {
-            productosActuales[index] = { ...productosActuales[index], ...productoData };
-        }
-        
-        // Actualizar ambas vistas
-        renderizarEditorProductos();
-        mostrarListaProductos();
-        
+        cargarProductosEditor();
+        cargarProductosExistentes();
     } catch (error) {
         mostrarMensaje('❌ Error al guardar', 'error');
     }
 }
 
-// ==================== PRODUCTOS ====================
-async function cargarProductosExistentes() {
-    try {
-        const response = await fetch(`${API_URL}?action=getProductos`);
-        productosActuales = await response.json();
-        mostrarListaProductos();
-    } catch (error) {
-        document.getElementById('productos-lista').innerHTML = '<p class="vacio">❌ Error cargando productos</p>';
-    }
-}
+// ==================== MODAL PARA VARIANTES (COLORES Y TALLAS) ====================
+let productoEditando = null;
+let coloresVariantesEditando = [];
 
-function mostrarListaProductos() {
-    const container = document.getElementById('productos-lista');
-    if (!productosActuales || productosActuales.length === 0) {
-        container.innerHTML = '<p class="vacio">📦 No hay productos</p>';
-        return;
+function abrirModalVariantes(id) {
+    const producto = productosActuales.find(p => p.id == id);
+    if (!producto) return;
+    
+    productoEditando = producto;
+    coloresVariantesEditando = [];
+    
+    // Parsear colores existentes
+    if (producto.colores && producto.colores.length > 0) {
+        coloresVariantesEditando = JSON.parse(JSON.stringify(producto.colores));
+    } else if (producto.colores_nombres && producto.colores_nombres !== '') {
+        const nombres = producto.colores_nombres.split(',');
+        const imagenes = (producto.colores_imagenes || '').split(',');
+        const precios = (producto.colores_precios || '').split(',');
+        
+        for (let i = 0; i < nombres.length; i++) {
+            coloresVariantesEditando.push({
+                nombre: nombres[i],
+                imagen: imagenes[i] || '',
+                precio: parseFloat(precios[i]) || producto.precio,
+                tallas: []
+            });
+        }
     }
     
-    container.innerHTML = '';
-    productosActuales.forEach(prod => {
-        const div = document.createElement('div');
-        div.className = 'card-modern';
-        div.style.marginBottom = '15px';
-        div.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <strong style="color:#A3B8A4;">#${prod.id}</strong>
-                <strong>${prod.nombre.substring(0, 60)}</strong>
-                <div>
-                    <button class="btn-modern btn-modern-secondary" style="padding: 6px 14px;" onclick="editarPrecioProducto(${prod.id}, '${prod.nombre.replace(/'/g, "\\'")}', ${prod.precio})">✏️ Editar Precio</button>
-                    <button class="btn-modern btn-modern-danger" style="padding: 6px 14px;" onclick="eliminarProducto(${prod.id})">🗑️</button>
+    // Parsear tallas
+    if (producto.variantes && producto.variantes !== '') {
+        const variantesParts = producto.variantes.split('|');
+        variantesParts.forEach(part => {
+            const [colorNombre, tallasStr] = part.split(':');
+            if (colorNombre && tallasStr) {
+                const colorExistente = coloresVariantesEditando.find(c => c.nombre === colorNombre);
+                if (colorExistente) {
+                    const tallas = tallasStr.split(',');
+                    tallas.forEach(t => {
+                        const [talla, precio] = t.split(':');
+                        if (talla && precio) {
+                            colorExistente.tallas.push({ talla: talla, precio: parseFloat(precio) });
+                        }
+                    });
+                }
+            }
+        });
+    }
+    
+    if (coloresVariantesEditando.length === 0) {
+        coloresVariantesEditando.push({ nombre: '', imagen: '', precio: producto.precio, tallas: [] });
+    }
+    
+    renderizarModalVariantes();
+}
+
+function renderizarModalVariantes() {
+    const modalHTML = `
+        <div id="modal-variantes" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:20000; display:flex; justify-content:center; align-items:center;">
+            <div style="background:white; max-width:650px; width:90%; max-height:85vh; overflow-y:auto; border-radius:32px; padding:24px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h3 style="color:#A3B8A4;">🎨 Editar Colores y Tallas</h3>
+                    <button onclick="cerrarModalVariantes()" style="background:#E5E5E5; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer;">✕</button>
                 </div>
+                <div id="modal-variantes-contenido"></div>
+                <div style="display:flex; gap:12px; margin:20px 0;">
+                    <button onclick="agregarColorVariante()" class="btn-modern btn-modern-secondary" style="flex:1;">+ Agregar Color</button>
+                    <button onclick="guardarVariantesProducto()" class="btn-modern" style="flex:1;">💾 Guardar Cambios</button>
+                </div>
+                <button onclick="cerrarModalVariantes()" class="btn-modern btn-modern-secondary" style="width:100%;">Cancelar</button>
             </div>
-            <div style="margin-top: 8px; color:#666; font-size:0.8rem;">💰 $${prod.precio.toFixed(2)} | 📦 ${prod.origen} | 👤 ${prod.genero || 'unisex'}</div>
-        `;
-        container.appendChild(div);
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    actualizarContenidoModalVariantes();
+}
+
+function actualizarContenidoModalVariantes() {
+    const container = document.getElementById('modal-variantes-contenido');
+    if (!container) return;
+    
+    container.innerHTML = coloresVariantesEditando.map((color, idx) => `
+        <div class="color-card" style="background:#FDFBF7; border-radius:20px; padding:16px; margin-bottom:16px; border:1px solid #E5E5E5;">
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+                <input type="text" placeholder="Nombre del color" value="${color.nombre}" id="color-nombre-${idx}" style="flex:2; padding:10px; border-radius:20px; border:1px solid #E5E5E5;">
+                <input type="url" placeholder="URL de imagen" value="${color.imagen}" id="color-imagen-${idx}" style="flex:3; padding:10px; border-radius:20px; border:1px solid #E5E5E5;">
+                <input type="number" placeholder="Precio" value="${color.precio}" step="0.01" id="color-precio-${idx}" style="flex:1; padding:10px; border-radius:20px; border:1px solid #E5E5E5;">
+                <button onclick="eliminarColorVariante(${idx})" style="background:#D4A5A5; color:white; border:none; padding:10px 16px; border-radius:20px; cursor:pointer;">🗑️</button>
+            </div>
+            <div style="margin-left:20px;">
+                <strong>📏 Tallas:</strong>
+                <div id="tallas-container-${idx}" style="margin-top:10px;">
+                    ${(color.tallas || []).map((talla, tIdx) => `
+                        <div style="display:flex; gap:10px; margin-bottom:8px; flex-wrap:wrap;">
+                            <input type="text" placeholder="Talla" value="${talla.talla}" id="talla-nombre-${idx}-${tIdx}" style="width:100px; padding:8px; border-radius:20px; border:1px solid #E5E5E5;">
+                            <input type="number" placeholder="Precio" value="${talla.precio}" step="0.01" id="talla-precio-${idx}-${tIdx}" style="width:120px; padding:8px; border-radius:20px; border:1px solid #E5E5E5;">
+                            <button onclick="eliminarTallaVariante(${idx}, ${tIdx})" style="background:#D4A5A5; color:white; border:none; width:30px; border-radius:20px; cursor:pointer;">✕</button>
+                        </div>
+                    `).join('')}
+                </div>
+                <button onclick="agregarTallaVariante(${idx})" class="btn-modern btn-modern-secondary" style="margin-top:10px; padding:6px 14px;">+ Agregar Talla</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function cerrarModalVariantes() {
+    const modal = document.getElementById('modal-variantes');
+    if (modal) modal.remove();
+    productoEditando = null;
+    coloresVariantesEditando = [];
+}
+
+function agregarColorVariante() {
+    const ultimoColor = coloresVariantesEditando[coloresVariantesEditando.length - 1];
+    coloresVariantesEditando.push({ 
+        nombre: '', 
+        imagen: '', 
+        precio: ultimoColor?.precio || 0, 
+        tallas: [] 
     });
+    actualizarContenidoModalVariantes();
+}
+
+function eliminarColorVariante(index) {
+    coloresVariantesEditando.splice(index, 1);
+    if (coloresVariantesEditando.length === 0) {
+        coloresVariantesEditando.push({ nombre: '', imagen: '', precio: 0, tallas: [] });
+    }
+    actualizarContenidoModalVariantes();
+}
+
+function agregarTallaVariante(colorIndex) {
+    coloresVariantesEditando[colorIndex].tallas.push({ talla: '', precio: 0 });
+    actualizarContenidoModalVariantes();
+}
+
+function eliminarTallaVariante(colorIndex, tallaIndex) {
+    coloresVariantesEditando[colorIndex].tallas.splice(tallaIndex, 1);
+    actualizarContenidoModalVariantes();
+}
+
+async function guardarVariantesProducto() {
+    if (!productoEditando) return;
+    
+    // Recopilar datos actualizados
+    for (let i = 0; i < coloresVariantesEditando.length; i++) {
+        const nombreInput = document.getElementById(`color-nombre-${i}`);
+        if (nombreInput) coloresVariantesEditando[i].nombre = nombreInput.value;
+        
+        const imagenInput = document.getElementById(`color-imagen-${i}`);
+        if (imagenInput) coloresVariantesEditando[i].imagen = imagenInput.value;
+        
+        const precioInput = document.getElementById(`color-precio-${i}`);
+        if (precioInput) coloresVariantesEditando[i].precio = parseFloat(precioInput.value) || 0;
+        
+        // Recopilar tallas
+        let tallaIdx = 0;
+        const nuevasTallas = [];
+        while (document.getElementById(`talla-nombre-${i}-${tallaIdx}`)) {
+            const tallaNombre = document.getElementById(`talla-nombre-${i}-${tallaIdx}`).value;
+            const tallaPrecio = parseFloat(document.getElementById(`talla-precio-${i}-${tallaIdx}`).value) || 0;
+            if (tallaNombre) {
+                nuevasTallas.push({ talla: tallaNombre, precio: tallaPrecio });
+            }
+            tallaIdx++;
+        }
+        coloresVariantesEditando[i].tallas = nuevasTallas;
+    }
+    
+    // Construir variantes
+    let variantesTexto = '';
+    let coloresNombres = [];
+    let coloresImagenes = [];
+    let coloresPrecios = [];
+    
+    for (const color of coloresVariantesEditando) {
+        if (color.nombre) {
+            coloresNombres.push(color.nombre);
+            coloresImagenes.push(color.imagen || '');
+            coloresPrecios.push(color.precio);
+            
+            if (color.tallas && color.tallas.length > 0) {
+                const tallasTexto = color.tallas.map(t => `${t.talla}:${t.precio}`).join(',');
+                variantesTexto += (variantesTexto ? '|' : '') + `${color.nombre}:${tallasTexto}`;
+            }
+        }
+    }
+    
+    const tieneVariantes = variantesTexto !== '' ? 'SI' : 'NO';
+    
+    const productoData = {
+        action: 'editarProductoCompleto',
+        id: productoEditando.id,
+        nombre: productoEditando.nombre,
+        precio: productoEditando.precio,
+        origen: productoEditando.origen,
+        imagen: productoEditando.imagen,
+        descripcion: productoEditando.descripcion,
+        genero: productoEditando.genero,
+        enlace: productoEditando.enlace,
+        tiene_variantes: tieneVariantes,
+        variantes: variantesTexto,
+        colores_nombres: coloresNombres.join(','),
+        colores_imagenes: coloresImagenes.join(','),
+        colores_precios: coloresPrecios.join(',')
+    };
+    
+    try {
+        await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productoData) });
+        mostrarMensaje(`✅ Variantes guardadas para "${productoEditando.nombre}"`, 'success');
+        cerrarModalVariantes();
+        setTimeout(() => { cargarProductosEditor(); cargarProductosExistentes(); }, 1000);
+    } catch (error) {
+        mostrarMensaje('❌ Error al guardar variantes', 'error');
+    }
 }
 
 // ==================== PEDIDOS ====================
@@ -543,9 +668,47 @@ function registrarPagoModal(id, total, nombre) {
     const monto = prompt(`💰 Monto pagado para "${nombre}"\nTotal: $${total.toFixed(2)}`, total.toFixed(2));
     if (monto && !isNaN(parseFloat(monto))) {
         fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'registrarPago', idPedido: id, montoPagado: parseFloat(monto) }) });
-        mostrarMensaje(`✅ Pago registrado por $${parseFloat(monto).toFixed(2)}`, 'success');
+        mostrarMensage(`✅ Pago registrado por $${parseFloat(monto).toFixed(2)}`, 'success');
         cargarPedidosAdmin();
     }
+}
+
+// ==================== PRODUCTOS ====================
+async function cargarProductosExistentes() {
+    try {
+        const response = await fetch(`${API_URL}?action=getProductos`);
+        productosActuales = await response.json();
+        mostrarListaProductos();
+    } catch (error) {
+        document.getElementById('productos-lista').innerHTML = '<p class="vacio">❌ Error cargando productos</p>';
+    }
+}
+
+function mostrarListaProductos() {
+    const container = document.getElementById('productos-lista');
+    if (!productosActuales || productosActuales.length === 0) {
+        container.innerHTML = '<p class="vacio">📦 No hay productos</p>';
+        return;
+    }
+    
+    container.innerHTML = '';
+    productosActuales.forEach(prod => {
+        const div = document.createElement('div');
+        div.className = 'card-modern';
+        div.style.marginBottom = '15px';
+        div.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <strong style="color:#A3B8A4;">#${prod.id}</strong>
+                <strong>${prod.nombre.substring(0, 60)}</strong>
+                <div>
+                    <button class="btn-modern btn-modern-secondary" style="padding: 6px 14px;" onclick="editarPrecioProducto(${prod.id}, '${prod.nombre.replace(/'/g, "\\'")}', ${prod.precio})">✏️ Editar Precio</button>
+                    <button class="btn-modern btn-modern-danger" style="padding: 6px 14px;" onclick="eliminarProducto(${prod.id})">🗑️</button>
+                </div>
+            </div>
+            <div style="margin-top: 8px; color:#666; font-size:0.8rem;">💰 $${prod.precio.toFixed(2)} | 📦 ${prod.origen} | 👤 ${prod.genero || 'unisex'}</div>
+        `;
+        container.appendChild(div);
+    });
 }
 
 async function eliminarProducto(id) {
@@ -565,42 +728,45 @@ function editarPrecioProducto(id, nombre, precioActual) {
     }
 }
 
-// ==================== COLORES Y TALLAS ====================
-function agregarColor() { colores.push({ id: Date.now(), nombre: '', imagen: '', precio: '', tallas: [] }); renderizarColores(); }
-function eliminarColor(id) { colores = colores.filter(c => c.id !== id); renderizarColores(); }
-function actualizarColor(id, campo, valor) { const color = colores.find(c => c.id === id); if (color) color[campo] = valor; }
-function agregarTalla(id) { const color = colores.find(c => c.id === id); if (color) color.tallas.push({ talla: '', precio: '' }); renderizarColores(); }
-function eliminarTalla(id, idx) { const color = colores.find(c => c.id === id); if (color) color.tallas.splice(idx, 1); renderizarColores(); }
-function actualizarTalla(id, idx, campo, valor) { const color = colores.find(c => c.id === id); if (color && color.tallas[idx]) color.tallas[idx][campo] = valor; }
+// ==================== COLORES Y TALLAS PARA AGREGAR ====================
+function agregarColorAgregar() {
+    coloresAgregar.push({ id: Date.now(), nombre: '', imagen: '', precio: '', tallas: [] });
+    renderizarColoresAgregar();
+}
+function eliminarColorAgregar(id) { coloresAgregar = coloresAgregar.filter(c => c.id !== id); renderizarColoresAgregar(); }
+function actualizarColorAgregar(id, campo, valor) { const color = coloresAgregar.find(c => c.id === id); if (color) color[campo] = valor; }
+function agregarTallaAgregar(id) { const color = coloresAgregar.find(c => c.id === id); if (color) color.tallas.push({ talla: '', precio: '' }); renderizarColoresAgregar(); }
+function eliminarTallaAgregar(id, idx) { const color = coloresAgregar.find(c => c.id === id); if (color) color.tallas.splice(idx, 1); renderizarColoresAgregar(); }
+function actualizarTallaAgregar(id, idx, campo, valor) { const color = coloresAgregar.find(c => c.id === id); if (color && color.tallas[idx]) color.tallas[idx][campo] = valor; }
 
-function renderizarColores() {
+function renderizarColoresAgregar() {
     const container = document.getElementById('colores-container');
     if (!container) return;
-    if (colores.length === 0) { container.innerHTML = '<p style="color:#9CA3AF;">No hay colores. Haz clic en "+ Agregar Color"</p>'; return; }
+    if (coloresAgregar.length === 0) { container.innerHTML = '<p style="color:#9CA3AF;">No hay colores. Haz clic en "+ Agregar Color"</p>'; return; }
     container.innerHTML = '';
-    colores.forEach(color => {
+    coloresAgregar.forEach(color => {
         const div = document.createElement('div');
         div.className = 'card-modern';
         div.style.marginBottom = '15px';
         div.innerHTML = `
             <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
-                <input type="text" placeholder="Color" value="${color.nombre}" style="flex:2; padding:10px; border-radius:20px;" onchange="actualizarColor(${color.id}, 'nombre', this.value)">
-                <input type="url" placeholder="Imagen" value="${color.imagen}" style="flex:3; padding:10px; border-radius:20px;" onchange="actualizarColor(${color.id}, 'imagen', this.value)">
-                <input type="number" placeholder="Precio" value="${color.precio}" step="0.01" style="flex:1; padding:10px; border-radius:20px;" onchange="actualizarColor(${color.id}, 'precio', parseFloat(this.value))">
-                <button class="btn-modern-danger" style="padding:8px 16px; border-radius:40px;" onclick="eliminarColor(${color.id})">🗑️</button>
+                <input type="text" placeholder="Color" value="${color.nombre}" style="flex:2; padding:10px; border-radius:20px;" onchange="actualizarColorAgregar(${color.id}, 'nombre', this.value)">
+                <input type="url" placeholder="Imagen" value="${color.imagen}" style="flex:3; padding:10px; border-radius:20px;" onchange="actualizarColorAgregar(${color.id}, 'imagen', this.value)">
+                <input type="number" placeholder="Precio" value="${color.precio}" step="0.01" style="flex:1; padding:10px; border-radius:20px;" onchange="actualizarColorAgregar(${color.id}, 'precio', parseFloat(this.value))">
+                <button class="btn-modern-danger" style="padding:8px 16px; border-radius:40px;" onclick="eliminarColorAgregar(${color.id})">🗑️</button>
             </div>
             <div style="margin-left:20px; padding:12px; background:#FDFBF7; border-radius:20px;">
                 <strong>📏 Tallas:</strong>
                 <div id="tallas-${color.id}" style="margin-top:10px;">
                     ${color.tallas.map((t, idx) => `
                         <div style="display:flex; gap:10px; margin-bottom:8px; flex-wrap:wrap;">
-                            <input type="text" placeholder="Talla" value="${t.talla}" style="width:100px; padding:8px; border-radius:20px;" onchange="actualizarTalla(${color.id}, ${idx}, 'talla', this.value)">
-                            <input type="number" placeholder="Precio" value="${t.precio}" step="0.01" style="width:120px; padding:8px; border-radius:20px;" onchange="actualizarTalla(${color.id}, ${idx}, 'precio', parseFloat(this.value))">
-                            <button style="background:#D4A5A5; color:white; border:none; width:30px; border-radius:20px;" onclick="eliminarTalla(${color.id}, ${idx})">✕</button>
+                            <input type="text" placeholder="Talla" value="${t.talla}" style="width:100px; padding:8px; border-radius:20px;" onchange="actualizarTallaAgregar(${color.id}, ${idx}, 'talla', this.value)">
+                            <input type="number" placeholder="Precio" value="${t.precio}" step="0.01" style="width:120px; padding:8px; border-radius:20px;" onchange="actualizarTallaAgregar(${color.id}, ${idx}, 'precio', parseFloat(this.value))">
+                            <button style="background:#D4A5A5; color:white; border:none; width:30px; border-radius:20px;" onclick="eliminarTallaAgregar(${color.id}, ${idx})">✕</button>
                         </div>
                     `).join('')}
                 </div>
-                <button class="btn-modern btn-modern-secondary" style="margin-top:10px; padding:6px 14px;" onclick="agregarTalla(${color.id})">+ Agregar Talla</button>
+                <button class="btn-modern btn-modern-secondary" style="margin-top:10px; padding:6px 14px;" onclick="agregarTallaAgregar(${color.id})">+ Agregar Talla</button>
             </div>
         `;
         container.appendChild(div);
@@ -613,13 +779,13 @@ async function guardarProductoAutomatico() {
     const precioBase = parseFloat(document.getElementById('prod-precio-base').value);
     if (!nombre || !precioBase) { mostrarMensaje('⚠️ Completa nombre y precio', 'error'); return; }
     
-    const coloresNombres = colores.map(c => c.nombre).filter(n => n).join(',');
-    const coloresImagenes = colores.map(c => c.imagen).filter(i => i).join(',');
-    const coloresPrecios = colores.map(c => c.precio).filter(p => p).join(',');
+    const coloresNombres = coloresAgregar.map(c => c.nombre).filter(n => n).join(',');
+    const coloresImagenes = coloresAgregar.map(c => c.imagen).filter(i => i).join(',');
+    const coloresPrecios = coloresAgregar.map(c => c.precio).filter(p => p).join(',');
     
     let variantesTexto = '';
-    if (colores.length > 0) {
-        variantesTexto = colores.filter(c => c.tallas && c.tallas.length > 0).map(c => {
+    if (coloresAgregar.length > 0) {
+        variantesTexto = coloresAgregar.filter(c => c.tallas && c.tallas.length > 0).map(c => {
             const tallasTexto = c.tallas.filter(t => t.talla && t.precio).map(t => `${t.talla}:${t.precio}`).join(',');
             return tallasTexto ? `${c.nombre}:${tallasTexto}` : null;
         }).filter(v => v).join('|');
@@ -632,7 +798,7 @@ async function guardarProductoAutomatico() {
         origen: document.getElementById('prod-origen').value,
         imagen: document.getElementById('prod-imagen').value || 'https://via.placeholder.com/300x200',
         descripcion: document.getElementById('prod-descripcion').value || 'Producto de alta calidad',
-        tiene_variantes: colores.length > 0 ? 'SI' : 'NO',
+        tiene_variantes: coloresAgregar.length > 0 ? 'SI' : 'NO',
         variantes: variantesTexto,
         enlace: document.getElementById('prod-enlace').value || '',
         categoria_genero: document.getElementById('prod-genero').value,
@@ -652,20 +818,20 @@ function generarJSON() {
     const precioBase = parseFloat(document.getElementById('prod-precio-base').value);
     if (!nombre || !precioBase) { mostrarMensaje('⚠️ Completa nombre y precio', 'error'); return; }
     
-    const coloresNombres = colores.map(c => c.nombre).filter(n => n).join(',');
-    const coloresImagenes = colores.map(c => c.imagen).filter(i => i).join(',');
-    const coloresPrecios = colores.map(c => c.precio).filter(p => p).join(',');
+    const coloresNombres = coloresAgregar.map(c => c.nombre).filter(n => n).join(',');
+    const coloresImagenes = coloresAgregar.map(c => c.imagen).filter(i => i).join(',');
+    const coloresPrecios = coloresAgregar.map(c => c.precio).filter(p => p).join(',');
     
     let variantesTexto = '';
-    if (colores.length > 0) {
-        variantesTexto = colores.filter(c => c.tallas && c.tallas.length > 0).map(c => {
+    if (coloresAgregar.length > 0) {
+        variantesTexto = coloresAgregar.filter(c => c.tallas && c.tallas.length > 0).map(c => {
             const tallasTexto = c.tallas.filter(t => t.talla && t.precio).map(t => `${t.talla}:${t.precio}`).join(',');
             return tallasTexto ? `${c.nombre}:${tallasTexto}` : null;
         }).filter(v => v).join('|');
     }
     
     const nuevoId = productosActuales.length > 0 ? Math.max(...productosActuales.map(p => p.id)) + 1 : 1;
-    const filaSheet = [nuevoId, nombre, precioBase, document.getElementById('prod-origen').value, document.getElementById('prod-imagen').value || 'https://via.placeholder.com/300x200', 'SI', document.getElementById('prod-descripcion').value || 'Producto', colores.length > 0 ? 'SI' : 'NO', variantesTexto, document.getElementById('prod-enlace').value || '', document.getElementById('prod-genero').value, coloresNombres, coloresImagenes, coloresPrecios];
+    const filaSheet = [nuevoId, nombre, precioBase, document.getElementById('prod-origen').value, document.getElementById('prod-imagen').value || 'https://via.placeholder.com/300x200', 'SI', document.getElementById('prod-descripcion').value || 'Producto', coloresAgregar.length > 0 ? 'SI' : 'NO', variantesTexto, document.getElementById('prod-enlace').value || '', document.getElementById('prod-genero').value, coloresNombres, coloresImagenes, coloresPrecios];
     
     document.getElementById('json-textarea').value = filaSheet.join('\t');
     document.getElementById('json-output').style.display = 'block';
@@ -673,6 +839,7 @@ function generarJSON() {
 }
 
 function copiarJSON() { document.getElementById('json-textarea').select(); document.execCommand('copy'); mostrarMensaje('📋 JSON copiado', 'success'); }
+
 function limpiarFormulario() {
     document.getElementById('prod-nombre').value = '';
     document.getElementById('prod-precio-base').value = '';
@@ -680,8 +847,8 @@ function limpiarFormulario() {
     document.getElementById('prod-enlace').value = '';
     document.getElementById('prod-descripcion').value = '';
     document.getElementById('prod-genero').value = 'unisex';
-    colores = [];
-    renderizarColores();
+    coloresAgregar = [];
+    renderizarColoresAgregar();
     document.getElementById('json-output').style.display = 'none';
     mostrarMensaje('🧹 Formulario limpiado', 'success');
 }
@@ -703,12 +870,12 @@ function configurarTabs() {
 
 // ==================== INICIALIZAR ====================
 function init() {
-    document.getElementById('agregar-color').onclick = agregarColor;
+    document.getElementById('agregar-color').onclick = agregarColorAgregar;
     document.getElementById('guardar-producto').onclick = guardarProductoAutomatico;
     document.getElementById('generar-json').onclick = generarJSON;
     document.getElementById('limpiar-form').onclick = limpiarFormulario;
     document.getElementById('copiar-json').onclick = copiarJSON;
-    renderizarColores();
+    renderizarColoresAgregar();
 }
 
 init();
