@@ -1344,5 +1344,122 @@ async function init() {
     configurarModalesPago();
     configurarZoomModal();
 }
+// ==================== CONTROL DE VERSIÓN Y CACHÉ ====================
+let versionActual = localStorage.getItem('productosVersion') || '1.0.0';
+let productosCache = [];
 
+// Función para obtener la versión actual de los productos
+async function obtenerVersionProductos() {
+    try {
+        const response = await fetch(`${API_URL}?action=getVersion`);
+        const data = await response.json();
+        return data.version;
+    } catch (error) {
+        console.error('Error obteniendo versión:', error);
+        return versionActual;
+    }
+}
+
+// Función para forzar actualización de productos
+async function forzarActualizacionProductos() {
+    const nuevaVersion = await obtenerVersionProductos();
+    
+    if (nuevaVersion !== versionActual) {
+        console.log('🔄 Detectada nueva versión de productos. Actualizando...');
+        versionActual = nuevaVersion;
+        localStorage.setItem('productosVersion', versionActual);
+        await cargarProductos(true); // Forzar recarga desde el servidor
+        return true;
+    }
+    return false;
+}
+
+// Modifica la función cargarProductos existente
+async function cargarProductos(forzarRecarga = false) {
+    const productosDiv = document.getElementById('productos');
+    
+    // Verificar caché
+    const productosGuardados = localStorage.getItem('productosCache');
+    const tiempoGuardado = localStorage.getItem('productosCacheTime');
+    const versionGuardada = localStorage.getItem('productosVersion');
+    const ahora = Date.now();
+    
+    // Usar caché si no se fuerza recarga y no ha pasado mucho tiempo
+    if (!forzarRecarga && productosGuardados && tiempoGuardado && versionGuardada === versionActual && (ahora - parseInt(tiempoGuardado) < 300000)) {
+        console.log("📦 Cargando productos desde caché");
+        productos = JSON.parse(productosGuardados);
+        mostrarProductos();
+        return;
+    }
+    
+    // Cargar desde el servidor
+    console.log("🌐 Cargando productos desde el servidor...");
+    
+    try {
+        if (productosDiv) productosDiv.innerHTML = '<div class="loading">🔄 Cargando productos...</div>';
+        
+        const response = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`); // Cache buster
+        const datos = await response.json();
+        
+        if (datos.error) {
+            console.error('Error:', datos.error);
+            if (productosDiv) productosDiv.innerHTML = '<p class="loading">❌ Error: ' + datos.error + '</p>';
+            return;
+        }
+        
+        productos = datos;
+        
+        // Guardar en caché
+        localStorage.setItem('productosCache', JSON.stringify(productos));
+        localStorage.setItem('productosCacheTime', ahora.toString());
+        
+        if (productos.length === 0) {
+            if (productosDiv) productosDiv.innerHTML = '<p class="loading">📦 No hay productos.</p>';
+            return;
+        }
+        
+        mostrarProductos();
+        
+        // Mostrar notificación de actualización
+        if (forzarRecarga) {
+            mostrarNotificacion('✅ Los productos se han actualizado', 'success');
+        }
+    } catch (error) {
+        console.error('Error cargando productos:', error);
+        if (productosGuardados) {
+            productos = JSON.parse(productosGuardados);
+            mostrarProductos();
+            mostrarNotificacion('⚠️ Usando datos guardados. Los cambios se verán pronto.', 'warning');
+        } else if (productosDiv) {
+            productosDiv.innerHTML = '<p class="loading">❌ Error de conexión.</p>';
+        }
+    }
+}
+
+// Notificación flotante en la tienda
+function mostrarNotificacion(mensaje, tipo) {
+    const notificacion = document.createElement('div');
+    notificacion.textContent = mensaje;
+    notificacion.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${tipo === 'success' ? '#A3B8A4' : (tipo === 'warning' ? '#F4A0B5' : '#D4A5A5')};
+        color: white;
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-weight: 600;
+        z-index: 10000;
+        animation: fadeInOut 2.5s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    `;
+    document.body.appendChild(notificacion);
+    setTimeout(() => notificacion.remove(), 2500);
+}
+
+// Verificar actualizaciones periódicamente (cada 30 segundos)
+setInterval(async () => {
+    await forzarActualizacionProductos();
+}, 30000);
 init();
