@@ -4,7 +4,6 @@ const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQ
 let productos = [], carrito = [], productoActual = null, esAdmin = false;
 let colorSeleccionado = null, tallaSeleccionada = null, presentacionSeleccionada = null, pedidoPendiente = null;
 let filtroPlataforma = 'todos', filtroGenero = 'todos';
-let versionActual = localStorage.getItem('productosVersion') || '1.0.0';
 
 // ==================== PROCESAR COLOR Y TALLAS ====================
 function procesarColorConTallas(producto) {
@@ -21,27 +20,32 @@ function procesarColorConTallas(producto) {
     return producto;
 }
 
-// ==================== CARGAR PRODUCTOS CON CACHÉ ====================
-async function cargarProductos(forzarRecarga = false) {
-    const cache = localStorage.getItem('productosCache');
-    const cacheTime = localStorage.getItem('productosCacheTime');
-    const ahora = Date.now();
-    
-    if (!forzarRecarga && cache && cacheTime && (ahora - parseInt(cacheTime) < 300000)) {
-        productos = JSON.parse(cache);
-        mostrarProductos();
-        return;
-    }
+// ==================== CARGAR PRODUCTOS (SIN CACHÉ) ====================
+async function cargarProductos() {
+    const productosDiv = document.getElementById('productos');
+    if (productosDiv) productosDiv.innerHTML = '<div class="loading">🔄 Cargando productos...</div>';
     
     try {
-        const res = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
-        productos = await res.json();
-        localStorage.setItem('productosCache', JSON.stringify(productos));
-        localStorage.setItem('productosCacheTime', ahora);
+        const response = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
+        const datos = await response.json();
+        
+        if (datos.error) {
+            console.error('Error:', datos.error);
+            if (productosDiv) productosDiv.innerHTML = '<p class="loading">❌ Error cargando productos</p>';
+            return;
+        }
+        
+        productos = datos;
+        
+        if (productos.length === 0) {
+            if (productosDiv) productosDiv.innerHTML = '<p class="loading">📦 No hay productos</p>';
+            return;
+        }
+        
         mostrarProductos();
     } catch (error) {
-        if (cache) { productos = JSON.parse(cache); mostrarProductos(); }
-        console.error(error);
+        console.error('Error:', error);
+        if (productosDiv) productosDiv.innerHTML = '<p class="loading">❌ Error de conexión. Recarga la página.</p>';
     }
 }
 
