@@ -101,7 +101,6 @@
         .btn-modern-secondary { background: transparent; color: #9CA3AF; border: 1.5px solid #E5E5E5; }
         .btn-modern-secondary:hover { background: rgba(163, 184, 164, 0.1); border-color: #A3B8A4; color: #A3B8A4; }
         .btn-modern-danger { background: linear-gradient(135deg, #D4A5A5 0%, #c49494 100%); }
-        .btn-modern-danger:hover { background: linear-gradient(135deg, #c49494 0%, #b48484 100%); }
         
         /* Tabla Editor */
         .tabla-editor-container { overflow-x: auto; border-radius: 24px; border: 1px solid #E5E5E5; background: white; }
@@ -111,10 +110,40 @@
         .tabla-editor tr:hover { background: rgba(163, 184, 164, 0.05); }
         .tabla-editor input, .tabla-editor select, .tabla-editor textarea { width: 100%; padding: 8px; border: 1px solid #E5E5E5; border-radius: 12px; font-family: inherit; font-size: 0.75rem; background: white; }
         .tabla-editor input:focus, .tabla-editor select:focus { outline: none; border-color: #A3B8A4; }
-        .btn-guardar-fila { background: #A3B8A4; color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 0.7rem; transition: all 0.2s; }
-        .btn-guardar-fila:hover { background: #F4A0B5; transform: scale(1.05); }
+        .id-enlace { color: #A3B8A4; cursor: pointer; text-decoration: underline; font-weight: bold; }
+        .id-enlace:hover { color: #F4A0B5; }
         
         .vacio { text-align: center; padding: 40px; color: #9CA3AF; }
+        
+        /* Modal Edición Completa */
+        .modal-edicion {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 20000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-edicion-contenido {
+            background: white;
+            max-width: 700px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 32px;
+            padding: 28px;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .campo-edicion { margin-bottom: 18px; }
+        .campo-edicion label { display: block; font-weight: 600; color: #A3B8A4; margin-bottom: 6px; font-size: 0.8rem; }
+        .campo-edicion input, .campo-edicion select, .campo-edicion textarea { width: 100%; padding: 12px; border: 1.5px solid #E5E5E5; border-radius: 20px; font-family: inherit; }
+        .campo-edicion input:focus, .campo-edicion select:focus, .campo-edicion textarea:focus { outline: none; border-color: #A3B8A4; }
         
         /* Mensaje flotante */
         .mensaje-flotante {
@@ -214,7 +243,7 @@
         <div id="tab-editar" class="tab-content-modern">
             <div class="card-modern">
                 <div class="card-title">
-                    <span>📝</span> Editor de Productos
+                    <span>📝</span> Editor de Productos (Click en ID para edición completa)
                     <button class="btn-modern btn-modern-secondary" style="margin-left: auto; padding: 6px 16px;" onclick="cargarProductosEditor()">🔄 Recargar</button>
                 </div>
                 <div id="editor-productos-container" class="tabla-editor-container">
@@ -244,8 +273,8 @@
             <div class="card-modern">
                 <div class="card-title">❓ Ayuda</div>
                 <div style="line-height: 1.8;">
-                    <p><strong>📝 Editor de Productos:</strong> Modifica cualquier campo directamente en la tabla. Para editar colores y tallas, haz clic en "🎨 Editar Variantes".</p>
-                    <p><strong>💾 Guardar cambios:</strong> Cada fila tiene su botón "Guardar" para actualizar individualmente.</p>
+                    <p><strong>📝 Editor de Productos:</strong> Haz clic en el <strong>ID</strong> del producto para abrir la edición completa de todos los campos.</p>
+                    <p><strong>💾 Guardar cambios:</strong> Modifica los campos y haz clic en "Guardar Cambios".</p>
                     <p><strong>🔄 Actualización:</strong> Los cambios se reflejan al guardar.</p>
                 </div>
             </div>
@@ -287,7 +316,7 @@ function mostrarMensaje(texto, tipo) {
     setTimeout(() => msg.remove(), 3000);
 }
 
-// ==================== EDITOR DE PRODUCTOS ====================
+// ==================== EDITOR DE PRODUCTOS (TABLA CON ID CLICKEABLE) ====================
 async function cargarProductosEditor() {
     try {
         const response = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
@@ -305,313 +334,180 @@ function renderizarEditorProductos() {
         return;
     }
     
-    const headers = ['ID', 'Nombre', 'Precio', 'Origen', 'Imagen URL', 'Descripción', 'Género', 'Enlace', 'Variantes', 'Acciones'];
+    const headers = ['ID', 'Nombre', 'Precio', 'Origen', 'Imagen URL', 'Descripción', 'Género', 'Enlace'];
     
     let html = `<table class="tabla-editor"><thead><tr>`;
     headers.forEach(h => html += `<th>${h}</th>`);
-    html += `</tr></thead><tbody>`;
+    html += `</thead><tbody>`;
     
     productosActuales.forEach(prod => {
         html += `
-            <tr id="fila-${prod.id}">
-                <td><strong>#${prod.id}</strong></td>
-                <td><input type="text" id="edit-nombre-${prod.id}" value="${escapeHtml(prod.nombre)}" style="min-width:200px;"></td>
-                <td><input type="number" id="edit-precio-${prod.id}" value="${prod.precio}" step="0.01" style="width:90px;"></td>
-                <td>
-                    <select id="edit-origen-${prod.id}">
-                        <option value="Amazon" ${prod.origen === 'Amazon' ? 'selected' : ''}>Amazon</option>
-                        <option value="Temu" ${prod.origen === 'Temu' ? 'selected' : ''}>Temu</option>
-                    </select>
-                </td>
-                <td><input type="text" id="edit-imagen-${prod.id}" value="${escapeHtml(prod.imagen || '')}" style="min-width:150px;"></td>
-                <td><textarea id="edit-descripcion-${prod.id}" rows="2" style="min-width:200px;">${escapeHtml(prod.descripcion || '')}</textarea></td>
-                <td>
-                    <select id="edit-genero-${prod.id}">
-                        <option value="unisex" ${prod.genero === 'unisex' ? 'selected' : ''}>Unisex</option>
-                        <option value="hombre" ${prod.genero === 'hombre' ? 'selected' : ''}>Hombre</option>
-                        <option value="mujer" ${prod.genero === 'mujer' ? 'selected' : ''}>Mujer</option>
-                        <option value="niño" ${prod.genero === 'niño' ? 'selected' : ''}>Niño</option>
-                        <option value="niña" ${prod.genero === 'niña' ? 'selected' : ''}>Niña</option>
-                    </select>
-                </td>
-                <td><input type="text" id="edit-enlace-${prod.id}" value="${escapeHtml(prod.enlace || '')}" style="min-width:150px;"></td>
-                <td>
-                    <button class="btn-modern btn-modern-secondary" style="padding:6px 12px; font-size:0.7rem;" onclick="abrirModalVariantes(${prod.id})">
-                        🎨 Editar Variantes
-                    </button>
-                </td>
-                <td><button class="btn-guardar-fila" onclick="guardarProductoEditor(${prod.id})">💾 Guardar</button></td>
-            </tr>
+            <tr>
+                <td><span class="id-enlace" onclick="abrirModalEdicionCompleta(${prod.id})">#${prod.id}</span></td>
+                <td><strong>${escapeHtml(prod.nombre.substring(0, 50))}${prod.nombre.length > 50 ? '...' : ''}</strong></td>
+                <td>$${prod.precio.toFixed(2)}</td>
+                <td>${prod.origen}</td>
+                <td>${prod.imagen ? '✅' : '❌'}</td>
+                <td>${prod.descripcion ? prod.descripcion.substring(0, 40) + '...' : '-'}</td>
+                <td>${prod.genero || 'unisex'}</td>
+                <td>${prod.enlace ? '🔗 Sí' : '❌'}</td>
+            </td>
         `;
     });
     
-    html += `</tbody></table>`;
+    html += `</tbody>}</table>`;
     container.innerHTML = html;
 }
 
-function escapeHtml(text) {
-    if (!text) return '';
-    return text.replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
-}
-
-async function guardarProductoEditor(id) {
-    const nuevoNombre = document.getElementById(`edit-nombre-${id}`).value;
-    const nuevoPrecio = parseFloat(document.getElementById(`edit-precio-${id}`).value);
-    const nuevoOrigen = document.getElementById(`edit-origen-${id}`).value;
-    const nuevaImagen = document.getElementById(`edit-imagen-${id}`).value;
-    const nuevaDescripcion = document.getElementById(`edit-descripcion-${id}`).value;
-    const nuevoGenero = document.getElementById(`edit-genero-${id}`).value;
-    const nuevoEnlace = document.getElementById(`edit-enlace-${id}`).value;
-    
-    if (!nuevoNombre || isNaN(nuevoPrecio)) {
-        mostrarMensaje('⚠️ Nombre y precio son obligatorios', 'error');
-        return;
-    }
-    
-    const productoData = {
-        action: 'editarProductoCompleto',
-        id: id,
-        nombre: nuevoNombre,
-        precio: nuevoPrecio,
-        origen: nuevoOrigen,
-        imagen: nuevaImagen,
-        descripcion: nuevaDescripcion,
-        genero: nuevoGenero,
-        enlace: nuevoEnlace
-    };
-    
-    try {
-        await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productoData) });
-        mostrarMensaje(`✅ Producto #${id} actualizado`, 'success');
-        cargarProductosEditor();
-        cargarProductosExistentes();
-    } catch (error) {
-        mostrarMensaje('❌ Error al guardar', 'error');
-    }
-}
-
-// ==================== MODAL PARA VARIANTES (COLORES Y TALLAS) ====================
-let productoEditando = null;
-let coloresVariantesEditando = [];
-
-function abrirModalVariantes(id) {
+// ==================== MODAL DE EDICIÓN COMPLETA ====================
+function abrirModalEdicionCompleta(id) {
     const producto = productosActuales.find(p => p.id == id);
     if (!producto) return;
     
-    productoEditando = producto;
-    coloresVariantesEditando = [];
-    
-    // Parsear colores existentes
-    if (producto.colores && producto.colores.length > 0) {
-        coloresVariantesEditando = JSON.parse(JSON.stringify(producto.colores));
-    } else if (producto.colores_nombres && producto.colores_nombres !== '') {
-        const nombres = producto.colores_nombres.split(',');
-        const imagenes = (producto.colores_imagenes || '').split(',');
-        const precios = (producto.colores_precios || '').split(',');
-        
-        for (let i = 0; i < nombres.length; i++) {
-            coloresVariantesEditando.push({
-                nombre: nombres[i],
-                imagen: imagenes[i] || '',
-                precio: parseFloat(precios[i]) || producto.precio,
-                tallas: []
-            });
-        }
-    }
-    
-    // Parsear tallas
-    if (producto.variantes && producto.variantes !== '') {
-        const variantesParts = producto.variantes.split('|');
-        variantesParts.forEach(part => {
-            const [colorNombre, tallasStr] = part.split(':');
-            if (colorNombre && tallasStr) {
-                const colorExistente = coloresVariantesEditando.find(c => c.nombre === colorNombre);
-                if (colorExistente) {
-                    const tallas = tallasStr.split(',');
-                    tallas.forEach(t => {
-                        const [talla, precio] = t.split(':');
-                        if (talla && precio) {
-                            colorExistente.tallas.push({ talla: talla, precio: parseFloat(precio) });
-                        }
-                    });
-                }
-            }
-        });
-    }
-    
-    if (coloresVariantesEditando.length === 0) {
-        coloresVariantesEditando.push({ nombre: '', imagen: '', precio: producto.precio, tallas: [] });
-    }
-    
-    renderizarModalVariantes();
-}
-
-function renderizarModalVariantes() {
     const modalHTML = `
-        <div id="modal-variantes" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); z-index:20000; display:flex; justify-content:center; align-items:center;">
-            <div style="background:white; max-width:650px; width:90%; max-height:85vh; overflow-y:auto; border-radius:32px; padding:24px;">
+        <div id="modal-edicion" class="modal-edicion">
+            <div class="modal-edicion-contenido">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <h3 style="color:#A3B8A4;">🎨 Editar Colores y Tallas</h3>
-                    <button onclick="cerrarModalVariantes()" style="background:#E5E5E5; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer;">✕</button>
+                    <h3 style="color:#A3B8A4;">✏️ Editar Producto #${producto.id}</h3>
+                    <button onclick="cerrarModalEdicion()" style="background:#E5E5E5; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer;">✕</button>
                 </div>
-                <div id="modal-variantes-contenido"></div>
-                <div style="display:flex; gap:12px; margin:20px 0;">
-                    <button onclick="agregarColorVariante()" class="btn-modern btn-modern-secondary" style="flex:1;">+ Agregar Color</button>
-                    <button onclick="guardarVariantesProducto()" class="btn-modern" style="flex:1;">💾 Guardar Cambios</button>
+                
+                <div class="campo-edicion">
+                    <label>🆔 ID</label>
+                    <input type="text" id="edit-id" value="${producto.id}" readonly style="background:#F5F5F5;">
                 </div>
-                <button onclick="cerrarModalVariantes()" class="btn-modern btn-modern-secondary" style="width:100%;">Cancelar</button>
+                
+                <div class="campo-edicion">
+                    <label>📦 Nombre del producto *</label>
+                    <input type="text" id="edit-nombre" value="${escapeHtml(producto.nombre)}">
+                </div>
+                
+                <div class="campo-edicion">
+                    <label>💰 Precio *</label>
+                    <input type="number" id="edit-precio" value="${producto.precio}" step="0.01">
+                </div>
+                
+                <div class="campo-edicion">
+                    <label>🌍 Origen</label>
+                    <select id="edit-origen">
+                        <option value="Amazon" ${producto.origen === 'Amazon' ? 'selected' : ''}>Amazon</option>
+                        <option value="Temu" ${producto.origen === 'Temu' ? 'selected' : ''}>Temu</option>
+                    </select>
+                </div>
+                
+                <div class="campo-edicion">
+                    <label>🖼️ Imagen URL</label>
+                    <input type="text" id="edit-imagen" value="${escapeHtml(producto.imagen || '')}" placeholder="https://...">
+                </div>
+                
+                <div class="campo-edicion">
+                    <label>📝 Descripción</label>
+                    <textarea id="edit-descripcion" rows="4">${escapeHtml(producto.descripcion || '')}</textarea>
+                </div>
+                
+                <div class="campo-edicion">
+                    <label>🎯 Género</label>
+                    <select id="edit-genero">
+                        <option value="unisex" ${producto.genero === 'unisex' ? 'selected' : ''}>Unisex</option>
+                        <option value="hombre" ${producto.genero === 'hombre' ? 'selected' : ''}>Hombre</option>
+                        <option value="mujer" ${producto.genero === 'mujer' ? 'selected' : ''}>Mujer</option>
+                        <option value="niño" ${producto.genero === 'niño' ? 'selected' : ''}>Niño</option>
+                        <option value="niña" ${producto.genero === 'niña' ? 'selected' : ''}>Niña</option>
+                    </select>
+                </div>
+                
+                <div class="campo-edicion">
+                    <label>🔗 Enlace original</label>
+                    <input type="text" id="edit-enlace" value="${escapeHtml(producto.enlace || '')}" placeholder="https://...">
+                </div>
+                
+                <div class="campo-edicion">
+                    <label>🎨 Colores (separados por coma)</label>
+                    <input type="text" id="edit-colores-nombres" value="${escapeHtml(producto.colores_nombres || '')}" placeholder="Rojo,Azul,Verde">
+                </div>
+                
+                <div class="campo-edicion">
+                    <label>🖼️ Imágenes de colores (separadas por coma)</label>
+                    <input type="text" id="edit-colores-imagenes" value="${escapeHtml(producto.colores_imagenes || '')}" placeholder="url1,url2,url3">
+                </div>
+                
+                <div class="campo-edicion">
+                    <label>💰 Precios de colores (separados por coma)</label>
+                    <input type="text" id="edit-colores-precios" value="${escapeHtml(producto.colores_precios || '')}" placeholder="10.99,12.99,14.99">
+                </div>
+                
+                <div class="campo-edicion">
+                    <label>📏 Variantes (formato: color:talla:precio,talla:precio|color:talla:precio)</label>
+                    <textarea id="edit-variantes" rows="3">${escapeHtml(producto.variantes || '')}</textarea>
+                    <small style="color:#9CA3AF;">Ejemplo: Rojo:S:10.99,M:12.99|Azul:S:11.99,M:13.99</small>
+                </div>
+                
+                <div class="campo-edicion">
+                    <label>✅ Activo (SI/NO)</label>
+                    <select id="edit-activo">
+                        <option value="SI" ${producto.activo === 'SI' ? 'selected' : ''}>SI</option>
+                        <option value="NO" ${producto.activo !== 'SI' ? 'selected' : ''}>NO</option>
+                    </select>
+                </div>
+                
+                <div style="display:flex; gap:12px; margin-top:20px;">
+                    <button onclick="guardarEdicionCompleta(${producto.id})" class="btn-modern" style="flex:1;">💾 Guardar Cambios</button>
+                    <button onclick="cerrarModalEdicion()" class="btn-modern btn-modern-secondary" style="flex:1;">Cancelar</button>
+                </div>
             </div>
         </div>
     `;
     
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    actualizarContenidoModalVariantes();
 }
 
-function actualizarContenidoModalVariantes() {
-    const container = document.getElementById('modal-variantes-contenido');
-    if (!container) return;
-    
-    container.innerHTML = coloresVariantesEditando.map((color, idx) => `
-        <div class="color-card" style="background:#FDFBF7; border-radius:20px; padding:16px; margin-bottom:16px; border:1px solid #E5E5E5;">
-            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
-                <input type="text" placeholder="Nombre del color" value="${color.nombre}" id="color-nombre-${idx}" style="flex:2; padding:10px; border-radius:20px; border:1px solid #E5E5E5;">
-                <input type="url" placeholder="URL de imagen" value="${color.imagen}" id="color-imagen-${idx}" style="flex:3; padding:10px; border-radius:20px; border:1px solid #E5E5E5;">
-                <input type="number" placeholder="Precio" value="${color.precio}" step="0.01" id="color-precio-${idx}" style="flex:1; padding:10px; border-radius:20px; border:1px solid #E5E5E5;">
-                <button onclick="eliminarColorVariante(${idx})" style="background:#D4A5A5; color:white; border:none; padding:10px 16px; border-radius:20px; cursor:pointer;">🗑️</button>
-            </div>
-            <div style="margin-left:20px;">
-                <strong>📏 Tallas:</strong>
-                <div id="tallas-container-${idx}" style="margin-top:10px;">
-                    ${(color.tallas || []).map((talla, tIdx) => `
-                        <div style="display:flex; gap:10px; margin-bottom:8px; flex-wrap:wrap;">
-                            <input type="text" placeholder="Talla" value="${talla.talla}" id="talla-nombre-${idx}-${tIdx}" style="width:100px; padding:8px; border-radius:20px; border:1px solid #E5E5E5;">
-                            <input type="number" placeholder="Precio" value="${talla.precio}" step="0.01" id="talla-precio-${idx}-${tIdx}" style="width:120px; padding:8px; border-radius:20px; border:1px solid #E5E5E5;">
-                            <button onclick="eliminarTallaVariante(${idx}, ${tIdx})" style="background:#D4A5A5; color:white; border:none; width:30px; border-radius:20px; cursor:pointer;">✕</button>
-                        </div>
-                    `).join('')}
-                </div>
-                <button onclick="agregarTallaVariante(${idx})" class="btn-modern btn-modern-secondary" style="margin-top:10px; padding:6px 14px;">+ Agregar Talla</button>
-            </div>
-        </div>
-    `).join('');
-}
-
-function cerrarModalVariantes() {
-    const modal = document.getElementById('modal-variantes');
+function cerrarModalEdicion() {
+    const modal = document.getElementById('modal-edicion');
     if (modal) modal.remove();
-    productoEditando = null;
-    coloresVariantesEditando = [];
 }
 
-function agregarColorVariante() {
-    const ultimoColor = coloresVariantesEditando[coloresVariantesEditando.length - 1];
-    coloresVariantesEditando.push({ 
-        nombre: '', 
-        imagen: '', 
-        precio: ultimoColor?.precio || 0, 
-        tallas: [] 
-    });
-    actualizarContenidoModalVariantes();
-}
-
-function eliminarColorVariante(index) {
-    coloresVariantesEditando.splice(index, 1);
-    if (coloresVariantesEditando.length === 0) {
-        coloresVariantesEditando.push({ nombre: '', imagen: '', precio: 0, tallas: [] });
-    }
-    actualizarContenidoModalVariantes();
-}
-
-function agregarTallaVariante(colorIndex) {
-    coloresVariantesEditando[colorIndex].tallas.push({ talla: '', precio: 0 });
-    actualizarContenidoModalVariantes();
-}
-
-function eliminarTallaVariante(colorIndex, tallaIndex) {
-    coloresVariantesEditando[colorIndex].tallas.splice(tallaIndex, 1);
-    actualizarContenidoModalVariantes();
-}
-
-async function guardarVariantesProducto() {
-    if (!productoEditando) return;
-    
-    // Recopilar datos actualizados
-    for (let i = 0; i < coloresVariantesEditando.length; i++) {
-        const nombreInput = document.getElementById(`color-nombre-${i}`);
-        if (nombreInput) coloresVariantesEditando[i].nombre = nombreInput.value;
-        
-        const imagenInput = document.getElementById(`color-imagen-${i}`);
-        if (imagenInput) coloresVariantesEditando[i].imagen = imagenInput.value;
-        
-        const precioInput = document.getElementById(`color-precio-${i}`);
-        if (precioInput) coloresVariantesEditando[i].precio = parseFloat(precioInput.value) || 0;
-        
-        // Recopilar tallas
-        let tallaIdx = 0;
-        const nuevasTallas = [];
-        while (document.getElementById(`talla-nombre-${i}-${tallaIdx}`)) {
-            const tallaNombre = document.getElementById(`talla-nombre-${i}-${tallaIdx}`).value;
-            const tallaPrecio = parseFloat(document.getElementById(`talla-precio-${i}-${tallaIdx}`).value) || 0;
-            if (tallaNombre) {
-                nuevasTallas.push({ talla: tallaNombre, precio: tallaPrecio });
-            }
-            tallaIdx++;
-        }
-        coloresVariantesEditando[i].tallas = nuevasTallas;
-    }
-    
-    // Construir variantes
-    let variantesTexto = '';
-    let coloresNombres = [];
-    let coloresImagenes = [];
-    let coloresPrecios = [];
-    
-    for (const color of coloresVariantesEditando) {
-        if (color.nombre) {
-            coloresNombres.push(color.nombre);
-            coloresImagenes.push(color.imagen || '');
-            coloresPrecios.push(color.precio);
-            
-            if (color.tallas && color.tallas.length > 0) {
-                const tallasTexto = color.tallas.map(t => `${t.talla}:${t.precio}`).join(',');
-                variantesTexto += (variantesTexto ? '|' : '') + `${color.nombre}:${tallasTexto}`;
-            }
-        }
-    }
-    
-    const tieneVariantes = variantesTexto !== '' ? 'SI' : 'NO';
-    
-    const productoData = {
+async function guardarEdicionCompleta(id) {
+    const data = {
         action: 'editarProductoCompleto',
-        id: productoEditando.id,
-        nombre: productoEditando.nombre,
-        precio: productoEditando.precio,
-        origen: productoEditando.origen,
-        imagen: productoEditando.imagen,
-        descripcion: productoEditando.descripcion,
-        genero: productoEditando.genero,
-        enlace: productoEditando.enlace,
-        tiene_variantes: tieneVariantes,
-        variantes: variantesTexto,
-        colores_nombres: coloresNombres.join(','),
-        colores_imagenes: coloresImagenes.join(','),
-        colores_precios: coloresPrecios.join(',')
+        id: id,
+        nombre: document.getElementById('edit-nombre').value,
+        precio: parseFloat(document.getElementById('edit-precio').value),
+        origen: document.getElementById('edit-origen').value,
+        imagen: document.getElementById('edit-imagen').value,
+        descripcion: document.getElementById('edit-descripcion').value,
+        genero: document.getElementById('edit-genero').value,
+        enlace: document.getElementById('edit-enlace').value,
+        tiene_variantes: document.getElementById('edit-variantes').value ? 'SI' : 'NO',
+        variantes: document.getElementById('edit-variantes').value,
+        colores_nombres: document.getElementById('edit-colores-nombres').value,
+        colores_imagenes: document.getElementById('edit-colores-imagenes').value,
+        colores_precios: document.getElementById('edit-colores-precios').value,
+        activo: document.getElementById('edit-activo').value
     };
     
+    if (!data.nombre || isNaN(data.precio)) {
+        mostrarMensaje('⚠️ Nombre y precio son obligatorios', 'error');
+        return;
+    }
+    
     try {
-        await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productoData) });
-        mostrarMensaje(`✅ Variantes guardadas para "${productoEditando.nombre}"`, 'success');
-        cerrarModalVariantes();
+        await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+        mostrarMensaje(`✅ Producto #${id} actualizado correctamente`, 'success');
+        cerrarModalEdicion();
         setTimeout(() => { cargarProductosEditor(); cargarProductosExistentes(); }, 1000);
     } catch (error) {
-        mostrarMensaje('❌ Error al guardar variantes', 'error');
+        mostrarMensaje('❌ Error al guardar', 'error');
     }
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    return String(text).replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
 }
 
 // ==================== PEDIDOS ====================
@@ -668,7 +564,7 @@ function registrarPagoModal(id, total, nombre) {
     const monto = prompt(`💰 Monto pagado para "${nombre}"\nTotal: $${total.toFixed(2)}`, total.toFixed(2));
     if (monto && !isNaN(parseFloat(monto))) {
         fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'registrarPago', idPedido: id, montoPagado: parseFloat(monto) }) });
-        mostrarMensage(`✅ Pago registrado por $${parseFloat(monto).toFixed(2)}`, 'success');
+        mostrarMensaje(`✅ Pago registrado por $${parseFloat(monto).toFixed(2)}`, 'success');
         cargarPedidosAdmin();
     }
 }
