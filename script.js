@@ -14,9 +14,29 @@ let pedidoPendiente = null;
 let filtroPlataforma = 'todos';
 let filtroGenero = 'todos';
 
-// ==================== CARGAR PRODUCTOS ====================
+// ==================== CARGAR PRODUCTOS CON CACHÉ ====================
 async function cargarProductos() {
+    // Intentar cargar desde caché local primero
+    const productosGuardados = localStorage.getItem('productosCache');
+    const tiempoGuardado = localStorage.getItem('productosCacheTime');
+    const ahora = Date.now();
+    
+    // Si hay productos en caché y no pasaron más de 5 minutos, usarlos
+    if (productosGuardados && tiempoGuardado && (ahora - parseInt(tiempoGuardado) < 300000)) {
+        console.log("📦 Cargando productos desde caché local");
+        productos = JSON.parse(productosGuardados);
+        mostrarProductos();
+        return;
+    }
+    
+    // Si no hay caché o expiró, cargar desde Google
+    console.log("🌐 Cargando productos desde Google...");
+    
     try {
+        // Mostrar mensaje de carga
+        const productosDiv = document.getElementById('productos');
+        if (productosDiv) productosDiv.innerHTML = '<div class="loading">🔄 Cargando productos... (esto puede tomar unos segundos)</div>';
+        
         const response = await fetch(`${API_URL}?action=getProductos`);
         const datos = await response.json();
         
@@ -29,20 +49,33 @@ async function cargarProductos() {
         
         productos = datos;
         
+        // Guardar en caché local
+        localStorage.setItem('productosCache', JSON.stringify(productos));
+        localStorage.setItem('productosCacheTime', ahora.toString());
+        
         if (productos.length === 0) {
             const productosDiv = document.getElementById('productos');
-            if (productosDiv) productosDiv.innerHTML = '<p class="loading">📦 No hay productos. Agrega productos en Google Sheets.</p>';
+            if (productosDiv) productosDiv.innerHTML = '<p class="loading">📦 No hay productos.</p>';
             return;
         }
         
         mostrarProductos();
     } catch (error) {
         console.error('Error cargando productos:', error);
-        const productosDiv = document.getElementById('productos');
-        if (productosDiv) productosDiv.innerHTML = '<p class="loading">❌ Error de conexión. Asegúrate que la API_URL es correcta.</p>';
+        
+        // Si hay error pero hay caché viejo, usarlo de emergencia
+        if (productosGuardados) {
+            console.log("⚠️ Usando caché viejo por error de red");
+            productos = JSON.parse(productosGuardados);
+            mostrarProductos();
+            const productosDiv = document.getElementById('productos');
+            if (productosDiv) productosDiv.innerHTML += '<div style="font-size:0.7rem; color:orange; text-align:center; margin-top:5px;">⚠️ Usando datos guardados localmente (sin conexión)</div>';
+        } else {
+            const productosDiv = document.getElementById('productos');
+            if (productosDiv) productosDiv.innerHTML = '<p class="loading">❌ Error de conexión. Recarga la página.</p>';
+        }
     }
 }
-
 // ==================== FUNCIÓN PARA ICONO DE GÉNERO ====================
 function getIconoGenero(genero) {
     const iconos = {
