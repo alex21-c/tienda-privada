@@ -104,7 +104,7 @@
         
         /* Tabla Editor */
         .tabla-editor-container { overflow-x: auto; border-radius: 24px; border: 1px solid #E5E5E5; background: white; }
-        .tabla-editor { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 1300px; }
+        .tabla-editor { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 1400px; }
         .tabla-editor th { background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%); color: white; padding: 14px 10px; text-align: left; font-weight: 600; position: sticky; top: 0; }
         .tabla-editor td { padding: 10px; border-bottom: 1px solid #E5E5E5; vertical-align: middle; }
         .tabla-editor tr:hover { background: rgba(163, 184, 164, 0.05); }
@@ -209,12 +209,30 @@
                 <div class="form-grid">
                     <input type="text" id="prod-nombre" placeholder="Nombre del producto">
                     <input type="number" id="prod-precio-base" placeholder="Precio base" step="0.01">
-                    <select id="prod-origen"><option value="Amazon">Amazon</option><option value="Temu">Temu</option></select>
+                    <select id="prod-origen">
+                        <option value="Amazon">Amazon</option>
+                        <option value="Temu">Temu</option>
+                        <option value="Shein">Shein</option>
+                        <option value="Tecnología">💻 Tecnología</option>
+                        <option value="Accesorios">💍 Accesorios</option>
+                    </select>
                     <input type="text" id="prod-imagen" placeholder="URL imagen principal">
                     <input type="text" id="prod-enlace" placeholder="URL producto original">
                     <select id="prod-genero">
-                        <option value="unisex">Unisex</option><option value="hombre">Hombre</option>
-                        <option value="mujer">Mujer</option><option value="niño">Niño</option><option value="niña">Niña</option>
+                        <option value="unisex">Unisex</option>
+                        <option value="hombre">Hombre</option>
+                        <option value="mujer">Mujer</option>
+                        <option value="niño">Niño</option>
+                        <option value="niña">Niña</option>
+                    </select>
+                    <select id="prod-categoria">
+                        <option value="">Sin categoría</option>
+                        <option value="Tecnología">💻 Tecnología</option>
+                        <option value="Accesorios">💍 Accesorios</option>
+                        <option value="Ropa">👕 Ropa</option>
+                        <option value="Belleza">💄 Belleza</option>
+                        <option value="Hogar">🏠 Hogar</option>
+                        <option value="Deportes">⚽ Deportes</option>
                     </select>
                     <textarea id="prod-descripcion" rows="3" placeholder="Descripción del producto"></textarea>
                 </div>
@@ -276,6 +294,7 @@
                     <p><strong>📝 Editor de Productos:</strong> Haz clic en el <strong>ID</strong> del producto para abrir la edición completa de todos los campos.</p>
                     <p><strong>💾 Guardar cambios:</strong> Modifica los campos y haz clic en "Guardar Cambios".</p>
                     <p><strong>🔄 Actualización:</strong> Los cambios se reflejan al guardar.</p>
+                    <p><strong>📂 Categoría:</strong> Usa la columna "Categoría" para que los productos aparezcan en los filtros de Tecnología, Accesorios, etc.</p>
                 </div>
             </div>
         </div>
@@ -316,7 +335,7 @@ function mostrarMensaje(texto, tipo) {
     setTimeout(() => msg.remove(), 3000);
 }
 
-// ==================== EDITOR DE PRODUCTOS (TABLA CON ID CLICKEABLE) ====================
+// ==================== EDITOR DE PRODUCTOS ====================
 async function cargarProductosEditor() {
     try {
         const response = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
@@ -334,7 +353,7 @@ function renderizarEditorProductos() {
         return;
     }
     
-    const headers = ['ID', 'Nombre', 'Precio', 'Origen', 'Imagen URL', 'Descripción', 'Género', 'Enlace'];
+    const headers = ['ID', 'Nombre', 'Precio', 'Origen', 'Imagen URL', 'Descripción', 'Género', 'Categoría', 'Enlace', 'Acciones'];
     
     let html = `<table class="tabla-editor"><thead><tr>`;
     headers.forEach(h => html += `<th>${h}</th>`);
@@ -342,21 +361,97 @@ function renderizarEditorProductos() {
     
     productosActuales.forEach(prod => {
         html += `
-            <tr>
+            <tr id="fila-${prod.id}">
                 <td><span class="id-enlace" onclick="abrirModalEdicionCompleta(${prod.id})">#${prod.id}</span></td>
-                <td><strong>${escapeHtml(prod.nombre.substring(0, 50))}${prod.nombre.length > 50 ? '...' : ''}</strong></td>
-                <td>$${prod.precio.toFixed(2)}</td>
-                <td>${prod.origen}</td>
-                <td>${prod.imagen ? '✅' : '❌'}</td>
-                <td>${prod.descripcion ? prod.descripcion.substring(0, 40) + '...' : '-'}</td>
-                <td>${prod.genero || 'unisex'}</td>
-                <td>${prod.enlace ? '🔗 Sí' : '❌'}</td>
-            </td>
+                <td><input type="text" id="edit-nombre-${prod.id}" value="${escapeHtml(prod.nombre)}" style="min-width:200px;"></td>
+                <td><input type="number" id="edit-precio-${prod.id}" value="${prod.precio}" step="0.01" style="width:90px;"></td>
+                <td>
+                    <select id="edit-origen-${prod.id}">
+                        <option value="Amazon" ${prod.origen === 'Amazon' ? 'selected' : ''}>Amazon</option>
+                        <option value="Temu" ${prod.origen === 'Temu' ? 'selected' : ''}>Temu</option>
+                        <option value="Shein" ${prod.origen === 'Shein' ? 'selected' : ''}>Shein</option>
+                        <option value="Tecnología" ${prod.origen === 'Tecnología' ? 'selected' : ''}>Tecnología</option>
+                        <option value="Accesorios" ${prod.origen === 'Accesorios' ? 'selected' : ''}>Accesorios</option>
+                    </select>
+                </td>
+                <td><input type="text" id="edit-imagen-${prod.id}" value="${escapeHtml(prod.imagen || '')}" style="min-width:150px;"></td>
+                <td><textarea id="edit-descripcion-${prod.id}" rows="2" style="min-width:200px;">${escapeHtml(prod.descripcion || '')}</textarea></td>
+                <td>
+                    <select id="edit-genero-${prod.id}">
+                        <option value="unisex" ${prod.genero === 'unisex' ? 'selected' : ''}>Unisex</option>
+                        <option value="hombre" ${prod.genero === 'hombre' ? 'selected' : ''}>Hombre</option>
+                        <option value="mujer" ${prod.genero === 'mujer' ? 'selected' : ''}>Mujer</option>
+                        <option value="niño" ${prod.genero === 'niño' ? 'selected' : ''}>Niño</option>
+                        <option value="niña" ${prod.genero === 'niña' ? 'selected' : ''}>Niña</option>
+                    </select>
+                </td>
+                <td>
+                    <select id="edit-categoria-${prod.id}">
+                        <option value="">Sin categoría</option>
+                        <option value="Tecnología" ${prod.categoria === 'Tecnología' ? 'selected' : ''}>💻 Tecnología</option>
+                        <option value="Accesorios" ${prod.categoria === 'Accesorios' ? 'selected' : ''}>💍 Accesorios</option>
+                        <option value="Ropa" ${prod.categoria === 'Ropa' ? 'selected' : ''}>👕 Ropa</option>
+                        <option value="Belleza" ${prod.categoria === 'Belleza' ? 'selected' : ''}>💄 Belleza</option>
+                        <option value="Hogar" ${prod.categoria === 'Hogar' ? 'selected' : ''}>🏠 Hogar</option>
+                        <option value="Deportes" ${prod.categoria === 'Deportes' ? 'selected' : ''}>⚽ Deportes</option>
+                    </select>
+                </td>
+                <td><input type="text" id="edit-enlace-${prod.id}" value="${escapeHtml(prod.enlace || '')}" style="min-width:150px;"></td>
+                <td><button class="btn-guardar-fila" onclick="guardarProductoEditor(${prod.id})">💾 Guardar</button></td>
+            </table>
         `;
     });
     
-    html += `</tbody>}</table>`;
+    html += `</tbody></td>`;
     container.innerHTML = html;
+}
+
+async function guardarProductoEditor(id) {
+    const nuevoNombre = document.getElementById(`edit-nombre-${id}`).value;
+    const nuevoPrecio = parseFloat(document.getElementById(`edit-precio-${id}`).value);
+    const nuevoOrigen = document.getElementById(`edit-origen-${id}`).value;
+    const nuevaImagen = document.getElementById(`edit-imagen-${id}`).value;
+    const nuevaDescripcion = document.getElementById(`edit-descripcion-${id}`).value;
+    const nuevoGenero = document.getElementById(`edit-genero-${id}`).value;
+    const nuevaCategoria = document.getElementById(`edit-categoria-${id}`).value;
+    const nuevoEnlace = document.getElementById(`edit-enlace-${id}`).value;
+    
+    if (!nuevoNombre || isNaN(nuevoPrecio)) {
+        mostrarMensaje('⚠️ Nombre y precio son obligatorios', 'error');
+        return;
+    }
+    
+    const productoData = {
+        action: 'editarProductoCompleto',
+        id: id,
+        nombre: nuevoNombre,
+        precio: nuevoPrecio,
+        origen: nuevoOrigen,
+        imagen: nuevaImagen,
+        descripcion: nuevaDescripcion,
+        genero: nuevoGenero,
+        enlace: nuevoEnlace,
+        categoria: nuevaCategoria
+    };
+    
+    try {
+        await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productoData) });
+        mostrarMensaje(`✅ Producto #${id} actualizado`, 'success');
+        cargarProductosEditor();
+        cargarProductosExistentes();
+    } catch (error) {
+        mostrarMensaje('❌ Error al guardar', 'error');
+    }
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    return String(text).replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    });
 }
 
 // ==================== MODAL DE EDICIÓN COMPLETA ====================
@@ -392,6 +487,9 @@ function abrirModalEdicionCompleta(id) {
                     <select id="edit-origen">
                         <option value="Amazon" ${producto.origen === 'Amazon' ? 'selected' : ''}>Amazon</option>
                         <option value="Temu" ${producto.origen === 'Temu' ? 'selected' : ''}>Temu</option>
+                        <option value="Shein" ${producto.origen === 'Shein' ? 'selected' : ''}>Shein</option>
+                        <option value="Tecnología" ${producto.origen === 'Tecnología' ? 'selected' : ''}>Tecnología</option>
+                        <option value="Accesorios" ${producto.origen === 'Accesorios' ? 'selected' : ''}>Accesorios</option>
                     </select>
                 </div>
                 
@@ -413,6 +511,19 @@ function abrirModalEdicionCompleta(id) {
                         <option value="mujer" ${producto.genero === 'mujer' ? 'selected' : ''}>Mujer</option>
                         <option value="niño" ${producto.genero === 'niño' ? 'selected' : ''}>Niño</option>
                         <option value="niña" ${producto.genero === 'niña' ? 'selected' : ''}>Niña</option>
+                    </select>
+                </div>
+                
+                <div class="campo-edicion">
+                    <label>📂 Categoría</label>
+                    <select id="edit-categoria-completa">
+                        <option value="">Sin categoría</option>
+                        <option value="Tecnología" ${producto.categoria === 'Tecnología' ? 'selected' : ''}>💻 Tecnología</option>
+                        <option value="Accesorios" ${producto.categoria === 'Accesorios' ? 'selected' : ''}>💍 Accesorios</option>
+                        <option value="Ropa" ${producto.categoria === 'Ropa' ? 'selected' : ''}>👕 Ropa</option>
+                        <option value="Belleza" ${producto.categoria === 'Belleza' ? 'selected' : ''}>💄 Belleza</option>
+                        <option value="Hogar" ${producto.categoria === 'Hogar' ? 'selected' : ''}>🏠 Hogar</option>
+                        <option value="Deportes" ${producto.categoria === 'Deportes' ? 'selected' : ''}>⚽ Deportes</option>
                     </select>
                 </div>
                 
@@ -477,6 +588,7 @@ async function guardarEdicionCompleta(id) {
         descripcion: document.getElementById('edit-descripcion').value,
         genero: document.getElementById('edit-genero').value,
         enlace: document.getElementById('edit-enlace').value,
+        categoria: document.getElementById('edit-categoria-completa').value,
         tiene_variantes: document.getElementById('edit-variantes').value ? 'SI' : 'NO',
         variantes: document.getElementById('edit-variantes').value,
         colores_nombres: document.getElementById('edit-colores-nombres').value,
@@ -498,16 +610,6 @@ async function guardarEdicionCompleta(id) {
     } catch (error) {
         mostrarMensaje('❌ Error al guardar', 'error');
     }
-}
-
-function escapeHtml(text) {
-    if (!text) return '';
-    return String(text).replace(/[&<>]/g, function(m) {
-        if (m === '&') return '&amp;';
-        if (m === '<') return '&lt;';
-        if (m === '>') return '&gt;';
-        return m;
-    });
 }
 
 // ==================== PEDIDOS ====================
@@ -601,7 +703,7 @@ function mostrarListaProductos() {
                     <button class="btn-modern btn-modern-danger" style="padding: 6px 14px;" onclick="eliminarProducto(${prod.id})">🗑️</button>
                 </div>
             </div>
-            <div style="margin-top: 8px; color:#666; font-size:0.8rem;">💰 $${prod.precio.toFixed(2)} | 📦 ${prod.origen} | 👤 ${prod.genero || 'unisex'}</div>
+            <div style="margin-top: 8px; color:#666; font-size:0.8rem;">💰 $${prod.precio.toFixed(2)} | 📦 ${prod.origen} | 👤 ${prod.genero || 'unisex'} | 📂 ${prod.categoria || 'Sin categoría'}</div>
         `;
         container.appendChild(div);
     });
@@ -673,6 +775,13 @@ function renderizarColoresAgregar() {
 async function guardarProductoAutomatico() {
     const nombre = document.getElementById('prod-nombre').value;
     const precioBase = parseFloat(document.getElementById('prod-precio-base').value);
+    const origen = document.getElementById('prod-origen').value;
+    const imagen = document.getElementById('prod-imagen').value;
+    const enlace = document.getElementById('prod-enlace').value;
+    const genero = document.getElementById('prod-genero').value;
+    const descripcion = document.getElementById('prod-descripcion').value;
+    const categoria = document.getElementById('prod-categoria').value;
+    
     if (!nombre || !precioBase) { mostrarMensaje('⚠️ Completa nombre y precio', 'error'); return; }
     
     const coloresNombres = coloresAgregar.map(c => c.nombre).filter(n => n).join(',');
@@ -691,16 +800,17 @@ async function guardarProductoAutomatico() {
         action: 'agregarProducto',
         nombre: nombre,
         precio: precioBase,
-        origen: document.getElementById('prod-origen').value,
-        imagen: document.getElementById('prod-imagen').value || 'https://via.placeholder.com/300x200',
-        descripcion: document.getElementById('prod-descripcion').value || 'Producto de alta calidad',
+        origen: origen,
+        imagen: imagen || 'https://via.placeholder.com/300x200',
+        descripcion: descripcion || 'Producto de alta calidad',
         tiene_variantes: coloresAgregar.length > 0 ? 'SI' : 'NO',
         variantes: variantesTexto,
-        enlace: document.getElementById('prod-enlace').value || '',
-        categoria_genero: document.getElementById('prod-genero').value,
+        enlace: enlace || '',
+        categoria_genero: genero,
         colores_nombres: coloresNombres,
         colores_imagenes: coloresImagenes,
-        colores_precios: coloresPrecios
+        colores_precios: coloresPrecios,
+        categoria: categoria
     };
     
     await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productoData) });
@@ -712,6 +822,13 @@ async function guardarProductoAutomatico() {
 function generarJSON() {
     const nombre = document.getElementById('prod-nombre').value;
     const precioBase = parseFloat(document.getElementById('prod-precio-base').value);
+    const origen = document.getElementById('prod-origen').value;
+    const imagen = document.getElementById('prod-imagen').value;
+    const enlace = document.getElementById('prod-enlace').value;
+    const genero = document.getElementById('prod-genero').value;
+    const descripcion = document.getElementById('prod-descripcion').value;
+    const categoria = document.getElementById('prod-categoria').value;
+    
     if (!nombre || !precioBase) { mostrarMensaje('⚠️ Completa nombre y precio', 'error'); return; }
     
     const coloresNombres = coloresAgregar.map(c => c.nombre).filter(n => n).join(',');
@@ -727,7 +844,7 @@ function generarJSON() {
     }
     
     const nuevoId = productosActuales.length > 0 ? Math.max(...productosActuales.map(p => p.id)) + 1 : 1;
-    const filaSheet = [nuevoId, nombre, precioBase, document.getElementById('prod-origen').value, document.getElementById('prod-imagen').value || 'https://via.placeholder.com/300x200', 'SI', document.getElementById('prod-descripcion').value || 'Producto', coloresAgregar.length > 0 ? 'SI' : 'NO', variantesTexto, document.getElementById('prod-enlace').value || '', document.getElementById('prod-genero').value, coloresNombres, coloresImagenes, coloresPrecios];
+    const filaSheet = [nuevoId, nombre, precioBase, origen, imagen || 'https://via.placeholder.com/300x200', 'SI', descripcion || 'Producto', coloresAgregar.length > 0 ? 'SI' : 'NO', variantesTexto, enlace || '', genero, coloresNombres, coloresImagenes, coloresPrecios, categoria];
     
     document.getElementById('json-textarea').value = filaSheet.join('\t');
     document.getElementById('json-output').style.display = 'block';
@@ -743,6 +860,7 @@ function limpiarFormulario() {
     document.getElementById('prod-enlace').value = '';
     document.getElementById('prod-descripcion').value = '';
     document.getElementById('prod-genero').value = 'unisex';
+    document.getElementById('prod-categoria').value = '';
     coloresAgregar = [];
     renderizarColoresAgregar();
     document.getElementById('json-output').style.display = 'none';
