@@ -145,7 +145,7 @@
         
         /* Tabla */
         .table-wrapper { overflow-x: auto; border-radius: 28px; background: white; border: 1px solid #E5E5E5; }
-        .data-table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        .data-table { width: 100%; border-collapse: collapse; min-width: 1000px; }
         .data-table th { padding: 16px 12px; text-align: left; background: #FAFCFA; color: #A3B8A4; font-weight: 600; border-bottom: 1px solid #E5E5E5; }
         .data-table td { padding: 12px; border-bottom: 1px solid #F0F0F0; vertical-align: middle; }
         .data-table tr:hover { background: #FDFBF7; }
@@ -175,6 +175,8 @@
         /* Toast */
         .toast { position: fixed; bottom: 25px; right: 25px; background: #A3B8A4; color: white; padding: 12px 24px; border-radius: 60px; z-index: 1100; animation: fadeSlide 0.3s; }
         @keyframes fadeSlide { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+        
+        .vacio { text-align: center; padding: 40px; color: #9CA3AF; }
         
         @media (max-width: 700px) { .neo-header { flex-direction: column; text-align: center; } .tabs { justify-content: center; } .tab { padding: 8px 18px; } }
     </style>
@@ -252,7 +254,7 @@
         <div class="card">
             <div class="card-title">
                 <span>✏️ Edición rápida (click en ID para edición completa)</span>
-                <button class="btn btn-outline" onclick="loadProductsToTable()" style="padding: 6px 16px;">⟳ Recargar</button>
+                <button class="btn btn-outline" onclick="cargarProductosEditor()" style="padding: 6px 16px;">⟳ Recargar</button>
             </div>
             <div id="editableTable" class="table-wrapper"></div>
         </div>
@@ -278,7 +280,6 @@
 <script>
 // ==================== SISTEMA DE SONIDOS ====================
 const sonidos = {
-    // Sonido de éxito (login correcto, guardar producto)
     exito: () => {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const now = audioContext.currentTime;
@@ -293,7 +294,6 @@ const sonidos = {
         gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.5);
         osc.stop(now + 0.5);
     },
-    // Sonido de error (contraseña incorrecta, error al guardar)
     error: () => {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const now = audioContext.currentTime;
@@ -308,7 +308,6 @@ const sonidos = {
         gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.3);
         osc.stop(now + 0.3);
     },
-    // Sonido de bienvenida (login exitoso con modal)
     bienvenida: () => {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const now = audioContext.currentTime;
@@ -320,8 +319,8 @@ const sonidos = {
         gain.connect(audioContext.destination);
         osc1.type = 'sine';
         osc2.type = 'sine';
-        osc1.frequency.value = 523.25; // Do5
-        osc2.frequency.value = 659.25; // Mi5
+        osc1.frequency.value = 523.25;
+        osc2.frequency.value = 659.25;
         gain.gain.value = 0.2;
         osc1.start();
         osc2.start();
@@ -329,7 +328,6 @@ const sonidos = {
         osc1.stop(now + 0.8);
         osc2.stop(now + 0.8);
     },
-    // Sonido de guardado (producto guardado)
     guardado: () => {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const now = audioContext.currentTime;
@@ -338,7 +336,7 @@ const sonidos = {
         osc.connect(gain);
         gain.connect(audioContext.destination);
         osc.type = 'sine';
-        osc.frequency.value = 1046.50; // Do6
+        osc.frequency.value = 1046.50;
         gain.gain.value = 0.2;
         osc.start();
         gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.2);
@@ -346,7 +344,6 @@ const sonidos = {
     }
 };
 
-// Función para reproducir sonido (con permisos de AudioContext)
 let audioContextInicializado = false;
 function initAudio() {
     if (!audioContextInicializado) {
@@ -422,18 +419,18 @@ async function cargarProductosEditor() {
         productosActuales = await response.json();
         renderizarEditorProductos();
     } catch (error) {
-        document.getElementById('editor-productos-container').innerHTML = '<p class="vacio">❌ Error cargando productos</p>';
+        document.getElementById('editableTable').innerHTML = '<p class="vacio">❌ Error cargando productos</p>';
     }
 }
 
 function renderizarEditorProductos() {
-    const container = document.getElementById('editor-productos-container');
+    const container = document.getElementById('editableTable');
     if (!productosActuales || productosActuales.length === 0) {
         container.innerHTML = '<p class="vacio">📦 No hay productos</p>';
         return;
     }
     
-    const headers = ['ID', 'Nombre', 'Precio', 'Origen', 'Imagen URL', 'Descripción', 'Género', 'Categoría', 'Enlace', 'Acciones'];
+    const headers = ['ID', 'Nombre', 'Precio', 'Origen', 'Imagen', 'Descripción', 'Género', 'Categoría', 'Enlace', 'Acciones'];
     
     let html = `<table class="data-table"><thead><tr>`;
     headers.forEach(h => html += `<th>${h}</th>`);
@@ -443,40 +440,19 @@ function renderizarEditorProductos() {
         html += `
             <tr>
                 <td><span class="id-link" onclick="openFullEditModal(${prod.id})">#${prod.id}</span></td>
-                <td><input type="text" id="edit-nombre-${prod.id}" value="${escapeHtml(prod.nombre)}" style="min-width:200px;"></td>
-                <td><input type="number" id="edit-precio-${prod.id}" value="${prod.precio}" step="0.01" style="width:90px;"></td>
+                <td><strong>${escapeHtml(prod.nombre.substring(0, 40))}${prod.nombre.length > 40 ? '...' : ''}</strong></td>
+                <td>$${prod.precio.toFixed(2)}</td>
+                <td>${prod.origen || '-'}</td>
+                <td>${prod.imagen ? '✅' : '❌'}</td>
+                <td>${prod.descripcion ? prod.descripcion.substring(0, 30) + '...' : '-'}</td>
+                <td>${prod.genero || 'unisex'}</td>
+                <td>${prod.categoria || '-'}</td>
+                <td>${prod.enlace ? '🔗' : '-'}</td>
                 <td>
-                    <select id="edit-origen-${prod.id}">
-                        <option value="Amazon" ${prod.origen === 'Amazon' ? 'selected' : ''}>Amazon</option>
-                        <option value="Temu" ${prod.origen === 'Temu' ? 'selected' : ''}>Temu</option>
-                        <option value="Shein" ${prod.origen === 'Shein' ? 'selected' : ''}>Shein</option>
-                        <option value="Tecnología" ${prod.origen === 'Tecnología' ? 'selected' : ''}>Tecnología</option>
-                        <option value="Accesorios" ${prod.origen === 'Accesorios' ? 'selected' : ''}>Accesorios</option>
-                    </select>
-                </td>
-                <td><input type="text" id="edit-imagen-${prod.id}" value="${escapeHtml(prod.imagen || '')}" style="min-width:150px;"></td>
-                <td><textarea id="edit-descripcion-${prod.id}" rows="2" style="min-width:200px;">${escapeHtml(prod.descripcion || '')}</textarea></td>
-                <td>
-                    <select id="edit-genero-${prod.id}">
-                        <option value="unisex" ${prod.genero === 'unisex' ? 'selected' : ''}>Unisex</option>
-                        <option value="hombre" ${prod.genero === 'hombre' ? 'selected' : ''}>Hombre</option>
-                        <option value="mujer" ${prod.genero === 'mujer' ? 'selected' : ''}>Mujer</option>
-                        <option value="niño" ${prod.genero === 'niño' ? 'selected' : ''}>Niño</option>
-                        <option value="niña" ${prod.genero === 'niña' ? 'selected' : ''}>Niña</option>
-                    </select>
-                </td>
-                <td>
-                    <select id="edit-categoria-${prod.id}">
-                        <option value="">Sin categoría</option>
-                        <option value="Tecnología" ${prod.categoria === 'Tecnología' ? 'selected' : ''}>Tecnología</option>
-                        <option value="Accesorios" ${prod.categoria === 'Accesorios' ? 'selected' : ''}>Accesorios</option>
-                        <option value="Ropa" ${prod.categoria === 'Ropa' ? 'selected' : ''}>Ropa</option>
-                        <option value="Belleza" ${prod.categoria === 'Belleza' ? 'selected' : ''}>Belleza</option>
-                    </select>
-                </td>
-                <td><input type="text" id="edit-enlace-${prod.id}" value="${escapeHtml(prod.enlace || '')}" style="min-width:150px;"></td>
-                <td><button class="btn btn-primary" style="padding:6px 14px;" onclick="guardarProductoEditor(${prod.id})">💾 Guardar</button></td>
-            </tr>
+                    <button class="btn btn-primary" style="padding:4px 12px; font-size:0.7rem;" onclick="guardarProductoRapido(${prod.id})">💾 Guardar</button>
+                    <button class="btn btn-danger" style="padding:4px 12px; font-size:0.7rem;" onclick="eliminarProducto(${prod.id})">🗑️</button>
+                 </td>
+             </tr>
         `;
     });
     
@@ -484,45 +460,14 @@ function renderizarEditorProductos() {
     container.innerHTML = html;
 }
 
-async function guardarProductoEditor(id) {
-    initAudio();
-    const nuevoNombre = document.getElementById(`edit-nombre-${id}`).value;
-    const nuevoPrecio = parseFloat(document.getElementById(`edit-precio-${id}`).value);
-    const nuevoOrigen = document.getElementById(`edit-origen-${id}`).value;
-    const nuevaImagen = document.getElementById(`edit-imagen-${id}`).value;
-    const nuevaDescripcion = document.getElementById(`edit-descripcion-${id}`).value;
-    const nuevoGenero = document.getElementById(`edit-genero-${id}`).value;
-    const nuevaCategoria = document.getElementById(`edit-categoria-${id}`).value;
-    const nuevoEnlace = document.getElementById(`edit-enlace-${id}`).value;
-    
-    if (!nuevoNombre || isNaN(nuevoPrecio)) {
-        sonidos.error();
-        toast('⚠️ Nombre y precio son obligatorios', true);
-        return;
-    }
-    
-    const productoData = {
-        action: 'editarProductoCompleto',
-        id: id,
-        nombre: nuevoNombre,
-        precio: nuevoPrecio,
-        origen: nuevoOrigen,
-        imagen: nuevaImagen,
-        descripcion: nuevaDescripcion,
-        genero: nuevoGenero,
-        enlace: nuevoEnlace,
-        categoria: nuevaCategoria
-    };
-    
-    try {
-        await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productoData) });
-        sonidos.guardado();
-        toast(`✅ Producto #${id} actualizado`);
+async function guardarProductoRapido(id) {
+    // Esta función es para edición rápida desde la tabla
+    const nuevoPrecio = prompt('Ingrese el nuevo precio:', productosActuales.find(p => p.id == id)?.precio);
+    if (nuevoPrecio && !isNaN(parseFloat(nuevoPrecio))) {
+        await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'actualizarPrecio', id, precio: parseFloat(nuevoPrecio) }) });
+        toast('✅ Precio actualizado');
         cargarProductosEditor();
         cargarProductosExistentes();
-    } catch (error) {
-        sonidos.error();
-        toast('❌ Error al guardar', true);
     }
 }
 
@@ -537,14 +482,14 @@ function openFullEditModal(id) {
                     <h3 style="color:#A3B8A4;">✏️ Editar Producto #${producto.id}</h3>
                     <button onclick="cerrarModalEdicion()" style="background:#E5E5E5; border:none; width:36px; height:36px; border-radius:50%; cursor:pointer;">✕</button>
                 </div>
-                <div class="campo-edicion" style="margin-bottom:15px;"><label>📦 Nombre</label><input type="text" id="edit-nombre-modal" value="${escapeHtml(producto.nombre)}"></div>
-                <div class="campo-edicion" style="margin-bottom:15px;"><label>💰 Precio</label><input type="number" id="edit-precio-modal" value="${producto.precio}" step="0.01"></div>
-                <div class="campo-edicion" style="margin-bottom:15px;"><label>🌍 Origen</label><select id="edit-origen-modal"><option value="Amazon">Amazon</option><option value="Temu">Temu</option><option value="Shein">Shein</option><option value="Tecnología">Tecnología</option><option value="Accesorios">Accesorios</option></select></div>
-                <div class="campo-edicion" style="margin-bottom:15px;"><label>🖼️ Imagen URL</label><input type="text" id="edit-imagen-modal" value="${escapeHtml(producto.imagen || '')}"></div>
-                <div class="campo-edicion" style="margin-bottom:15px;"><label>🔗 Enlace</label><input type="text" id="edit-enlace-modal" value="${escapeHtml(producto.enlace || '')}"></div>
-                <div class="campo-edicion" style="margin-bottom:15px;"><label>🎯 Género</label><select id="edit-genero-modal"><option value="unisex">Unisex</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option><option value="niño">Niño</option><option value="niña">Niña</option></select></div>
-                <div class="campo-edicion" style="margin-bottom:15px;"><label>📂 Categoría</label><select id="edit-categoria-modal"><option value="">Sin categoría</option><option value="Tecnología">Tecnología</option><option value="Accesorios">Accesorios</option><option value="Ropa">Ropa</option><option value="Belleza">Belleza</option></select></div>
-                <div class="campo-edicion" style="margin-bottom:15px;"><label>📝 Descripción</label><textarea id="edit-descripcion-modal" rows="3">${escapeHtml(producto.descripcion || '')}</textarea></div>
+                <div style="margin-bottom:15px;"><label>📦 Nombre</label><input type="text" id="edit-nombre-modal" value="${escapeHtml(producto.nombre)}" style="width:100%; padding:12px; border-radius:24px; border:1px solid #E5E5E5;"></div>
+                <div style="margin-bottom:15px;"><label>💰 Precio</label><input type="number" id="edit-precio-modal" value="${producto.precio}" step="0.01" style="width:100%; padding:12px; border-radius:24px; border:1px solid #E5E5E5;"></div>
+                <div style="margin-bottom:15px;"><label>🌍 Origen</label><select id="edit-origen-modal" style="width:100%; padding:12px; border-radius:24px; border:1px solid #E5E5E5;"><option value="Amazon">Amazon</option><option value="Temu">Temu</option><option value="Shein">Shein</option><option value="Tecnología">Tecnología</option><option value="Accesorios">Accesorios</option></select></div>
+                <div style="margin-bottom:15px;"><label>🖼️ Imagen URL</label><input type="text" id="edit-imagen-modal" value="${escapeHtml(producto.imagen || '')}" style="width:100%; padding:12px; border-radius:24px; border:1px solid #E5E5E5;"></div>
+                <div style="margin-bottom:15px;"><label>🔗 Enlace</label><input type="text" id="edit-enlace-modal" value="${escapeHtml(producto.enlace || '')}" style="width:100%; padding:12px; border-radius:24px; border:1px solid #E5E5E5;"></div>
+                <div style="margin-bottom:15px;"><label>🎯 Género</label><select id="edit-genero-modal" style="width:100%; padding:12px; border-radius:24px; border:1px solid #E5E5E5;"><option value="unisex">Unisex</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option><option value="niño">Niño</option><option value="niña">Niña</option></select></div>
+                <div style="margin-bottom:15px;"><label>📂 Categoría</label><select id="edit-categoria-modal" style="width:100%; padding:12px; border-radius:24px; border:1px solid #E5E5E5;"><option value="">Sin categoría</option><option value="Tecnología">Tecnología</option><option value="Accesorios">Accesorios</option><option value="Ropa">Ropa</option><option value="Belleza">Belleza</option></select></div>
+                <div style="margin-bottom:15px;"><label>📝 Descripción</label><textarea id="edit-descripcion-modal" rows="3" style="width:100%; padding:12px; border-radius:24px; border:1px solid #E5E5E5;">${escapeHtml(producto.descripcion || '')}</textarea></div>
                 <div style="display:flex; gap:12px; margin-top:20px;">
                     <button onclick="guardarEdicionCompleta(${producto.id})" class="btn btn-primary" style="flex:1;">💾 Guardar Cambios</button>
                     <button onclick="cerrarModalEdicion()" class="btn btn-outline" style="flex:1;">Cancelar</button>
@@ -589,9 +534,9 @@ function escapeHtml(str) { if(!str) return ''; return String(str).replace(/[&<>]
 // ==================== PEDIDOS ====================
 async function cargarPedidosAdmin() {
     try {
-        const response = await fetch(`${API_URL}?action=getPedidosConEnlaces`);
+        const response = await fetch(`${API_URL}?action=getPedidosConEnlaces&t=${Date.now()}`);
         const pedidos = await response.json();
-        const container = document.getElementById('pedidos-lista-admin');
+        const container = document.getElementById('ordersList');
         if (!pedidos || !pedidos.length) { container.innerHTML = '<p class="vacio">📭 No hay pedidos</p>'; return; }
         container.innerHTML = '';
         pedidos.forEach(pedido => {
@@ -620,7 +565,7 @@ async function cargarPedidosAdmin() {
             `;
             container.appendChild(card);
         });
-    } catch (error) { document.getElementById('pedidos-lista-admin').innerHTML = '<p class="vacio">❌ Error</p>'; }
+    } catch (error) { document.getElementById('ordersList').innerHTML = '<p class="vacio">❌ Error cargando pedidos</p>'; }
 }
 
 async function cambiarEstadoPedido(id, estado) {
@@ -641,14 +586,14 @@ function registrarPagoModal(id, total, nombre) {
 // ==================== PRODUCTOS ====================
 async function cargarProductosExistentes() {
     try {
-        const response = await fetch(`${API_URL}?action=getProductos`);
+        const response = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
         productosActuales = await response.json();
         mostrarListaProductos();
-    } catch (error) { document.getElementById('productos-lista').innerHTML = '<p class="vacio">❌ Error</p>'; }
+    } catch (error) { document.getElementById('simpleProductList').innerHTML = '<p class="vacio">❌ Error cargando productos</p>'; }
 }
 
 function mostrarListaProductos() {
-    const container = document.getElementById('productos-lista');
+    const container = document.getElementById('simpleProductList');
     if (!productosActuales || !productosActuales.length) { container.innerHTML = '<p class="vacio">📦 No hay productos</p>'; return; }
     container.innerHTML = '';
     productosActuales.forEach(prod => {
@@ -791,11 +736,7 @@ function generateProductJSON() {
 
 function copyJSON() { document.getElementById('jsonArea').select(); document.execCommand('copy'); toast('📋 JSON copiado'); }
 
-function refreshProductList() { cargarProductosExistentes(); }
-
 // ==================== TABS ====================
-async function loadProductsToTable() { await cargarProductosEditor(); }
-
 function configurarTabs() {
     document.querySelectorAll('.tab').forEach(tab => {
         tab.addEventListener('click', () => {
