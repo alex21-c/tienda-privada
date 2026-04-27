@@ -15,14 +15,6 @@
             min-height: 100vh;
         }
         
-        .glass-card {
-            background: rgba(255,255,255,0.85);
-            backdrop-filter: blur(12px);
-            border-radius: 40px;
-            border: 1px solid rgba(163,184,164,0.25);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.04);
-        }
-        
         /* Login */
         .login-box {
             max-width: 400px;
@@ -59,10 +51,10 @@
         }
         .login-box button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(163,184,164,0.3); }
         
-        /* Admin Panel */
+        /* Panel Admin */
         .admin-panel { max-width: 1400px; margin: 0 auto; display: none; }
         
-        /* Header Futurista */
+        /* Header */
         .neo-header {
             display: flex;
             justify-content: space-between;
@@ -80,7 +72,7 @@
         .badge { background: #EFF5EF; padding: 4px 14px; border-radius: 60px; font-size: 0.7rem; color: #A3B8A4; margin-left: 12px; }
         .store-link a { color: #A3B8A4; text-decoration: none; font-size: 0.8rem; border-bottom: 1px dashed #C2D4C3; }
         
-        /* Tabs flotantes */
+        /* Tabs */
         .tabs {
             display: flex;
             gap: 8px;
@@ -125,9 +117,11 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            justify-content: space-between;
+            flex-wrap: wrap;
         }
         
-        /* Grid inputs */
+        /* Formulario */
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 20px; }
         input, select, textarea {
             width: 100%;
@@ -140,7 +134,7 @@
         }
         input:focus, select:focus, textarea:focus { outline: none; border-color: #A3B8A4; box-shadow: 0 0 0 3px rgba(163,184,164,0.1); }
         
-        /* Botones modernos */
+        /* Botones */
         .btn { padding: 12px 24px; border-radius: 40px; font-weight: 500; cursor: pointer; transition: all 0.2s; border: none; }
         .btn-primary { background: linear-gradient(105deg, #A3B8A4, #C2D4C3); color: white; }
         .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(163,184,164,0.3); }
@@ -149,20 +143,20 @@
         .btn-danger { background: #F4E2E2; color: #C99; border: none; }
         .btn-danger:hover { background: #E8D0D0; }
         
-        /* Tabla editable futurista */
+        /* Tabla */
         .table-wrapper { overflow-x: auto; border-radius: 28px; background: white; border: 1px solid #E5E5E5; }
-        .data-table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        .data-table { width: 100%; border-collapse: collapse; min-width: 800px; }
         .data-table th { padding: 16px 12px; text-align: left; background: #FAFCFA; color: #A3B8A4; font-weight: 600; border-bottom: 1px solid #E5E5E5; }
         .data-table td { padding: 12px; border-bottom: 1px solid #F0F0F0; vertical-align: middle; }
         .data-table tr:hover { background: #FDFBF7; }
         .id-link { color: #A3B8A4; font-weight: 600; cursor: pointer; text-decoration: underline; }
         
-        /* Colores tallas */
+        /* Variantes */
         .color-chip { background: #F8F8F8; border-radius: 24px; padding: 16px; margin-bottom: 16px; border: 1px solid #E5E5E5; }
         .flex-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
         .tallas-group { margin-left: 28px; padding: 12px; background: #FCFDFC; border-radius: 20px; }
         
-        /* Modal edición */
+        /* Modal Edición Completa */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.4); backdrop-filter: blur(6px);
@@ -171,11 +165,14 @@
         }
         .modal-overlay.active { visibility: visible; opacity: 1; }
         .modal-container {
-            background: white; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto;
+            background: white; max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto;
             border-radius: 48px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
         
-        /* Mensaje flotante */
+        /* Modal Bienvenida */
+        .welcome-modal .modal-container { max-width: 450px; text-align: center; }
+        
+        /* Toast */
         .toast { position: fixed; bottom: 25px; right: 25px; background: #A3B8A4; color: white; padding: 12px 24px; border-radius: 60px; z-index: 1100; animation: fadeSlide 0.3s; }
         @keyframes fadeSlide { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
         
@@ -191,12 +188,10 @@
     <button onclick="handleLogin()">Ingresar al futuro</button>
 </div>
 
-<!-- Panel Admin (oculto al inicio) -->
+<!-- Panel Admin -->
 <div id="adminPanel" class="admin-panel">
     <div class="neo-header">
-        <div class="logo-area">
-            <h1>TIENDA PRIVADA <span class="badge">ADMIN v2.0</span></h1>
-        </div>
+        <div class="logo-area"><h1>TIENDA PRIVADA <span class="badge">ADMIN v3.0</span></h1></div>
         <div class="store-link"><a href="https://alex21-c.github.io/tienda-privada/" target="_blank">🔗 ir a la tienda →</a></div>
     </div>
     
@@ -227,10 +222,8 @@
                 </select>
                 <select id="prodCategory">
                     <option value="">Sin categoría</option>
-                    <option value="Tecnología">💻 Tecnología</option>
-                    <option value="Accesorios">💍 Accesorios</option>
-                    <option value="Ropa">👕 Ropa</option>
-                    <option value="Belleza">💄 Belleza</option>
+                    <option value="Tecnología">💻 Tecnología</option><option value="Accesorios">💍 Accesorios</option>
+                    <option value="Ropa">👕 Ropa</option><option value="Belleza">💄 Belleza</option>
                 </select>
                 <textarea id="prodDesc" rows="2" placeholder="Descripción corta..."></textarea>
             </div>
@@ -254,11 +247,11 @@
         </div>
     </div>
     
-    <!-- Tab EDITAR (tabla rápida) -->
+    <!-- Tab EDITAR (tabla con ID clickeable) -->
     <div id="tabEditar" class="tab-content" style="display: none;">
         <div class="card">
-            <div class="card-title" style="justify-content: space-between;">
-                <span>✏️ Edición rápida</span>
+            <div class="card-title">
+                <span>✏️ Edición rápida (click en ID para edición completa)</span>
                 <button class="btn btn-outline" onclick="loadProductsToTable()" style="padding: 6px 16px;">⟳ Recargar</button>
             </div>
             <div id="editableTable" class="table-wrapper"></div>
@@ -273,7 +266,7 @@
         </div>
     </div>
     
-    <!-- Tab LISTAR productos (simplificado) -->
+    <!-- Tab LISTAR -->
     <div id="tabListar" class="tab-content" style="display: none;">
         <div class="card">
             <div class="card-title">📋 Productos registrados</div>
@@ -285,7 +278,7 @@
 <script>
 const API = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
 let allProducts = [];
-let colorVariants = [];  // { nombre, imagen, precio, tallas:[] }
+let colorVariants = [];
 
 // Helper
 function toast(msg, isError = false) {
@@ -305,7 +298,7 @@ async function fetchAPI(action, body = null) {
     }
 }
 
-// Login + bienvenida futurista
+// ========== LOGIN + ENTER + MODAL BIENVENIDA ==========
 function handleLogin() {
     const pass = document.getElementById('adminPass').value;
     if (pass === 'admin123') {
@@ -316,40 +309,40 @@ function handleLogin() {
     } else toast('🔐 Contraseña incorrecta', true);
 }
 
+// Enter key en login
+document.getElementById('adminPass').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleLogin();
+});
+
 async function loadDashboardData() {
     await loadProductsToTable();
     await refreshOrders();
     await refreshProductList();
 }
 
-// ========== MODAL BIENVENIDA AESTHETIC ==========
-function showWelcomeModal() {
-    let modalDiv = document.createElement('div');
-    modalDiv.className = 'modal-overlay';
-    modalDiv.innerHTML = `
-        <div class="modal-container" style="text-align:center; max-width:450px;">
+// Modal de bienvenida futurista
+async function showWelcomeModal() {
+    let products = await fetchAPI('getProductos');
+    let orders = await fetchAPI('getPedidosConEnlaces');
+    let modal = document.createElement('div');
+    modal.className = 'modal-overlay welcome-modal';
+    modal.innerHTML = `
+        <div class="modal-container">
             <div style="font-size: 4rem;">✨</div>
             <h2 style="color:#A3B8A4; margin: 10px 0;">¡Bienvenido!</h2>
             <p style="color:#6B7B6D;">Sesión iniciada correctamente<br>Panel de control futurista</p>
             <div style="background:#F4F7F4; border-radius: 40px; padding: 15px; margin: 20px 0;">
-                <div style="display:flex; justify-content:space-between;">
-                    <span>📦 Productos</span><strong id="welcomeProducts">0</strong>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-top:8px;">
-                    <span>📦 Pedidos</span><strong id="welcomeOrders">0</strong>
-                </div>
+                <div style="display:flex; justify-content:space-between;"><span>📦 Productos</span><strong>${products.length}</strong></div>
+                <div style="display:flex; justify-content:space-between; margin-top:8px;"><span>📦 Pedidos</span><strong>${orders.length}</strong></div>
             </div>
             <button class="btn btn-primary" style="width:100%" onclick="this.closest('.modal-overlay').remove()">✦ Entrar al panel ✦</button>
         </div>
     `;
-    document.body.appendChild(modalDiv);
-    setTimeout(() => modalDiv.classList.add('active'), 10);
-    // stats rápidas
-    fetch(`${API}?action=getProductos`).then(r=>r.json()).then(p=> document.getElementById('welcomeProducts').innerText = p.length);
-    fetch(`${API}?action=getPedidosConEnlaces`).then(r=>r.json()).then(p=> document.getElementById('welcomeOrders').innerText = p.length);
+    document.body.appendChild(modal);
+    setTimeout(() => modal.classList.add('active'), 10);
 }
 
-// ========== VARIANTES (colores + tallas) ==========
+// ========== VARIANTES ==========
 function addColorVariant() {
     colorVariants.push({ id: Date.now(), nombre: '', imagen: '', precio: '', tallas: [] });
     renderVariantsUI();
@@ -369,7 +362,7 @@ function renderVariantsUI() {
             <div class="flex-row">
                 <input type="text" placeholder="Color (ej: Rojo)" value="${c.nombre}" style="flex:2" onchange="updateColorField(${c.id},'nombre',this.value)">
                 <input type="text" placeholder="URL imagen" value="${c.imagen}" style="flex:3" onchange="updateColorField(${c.id},'imagen',this.value)">
-                <input type="number" placeholder="Precio extra" value="${c.precio}" step="0.01" style="flex:1" onchange="updateColorField(${c.id},'precio',parseFloat(this.value) || 0)">
+                <input type="number" placeholder="Precio" value="${c.precio}" step="0.01" style="flex:1" onchange="updateColorField(${c.id},'precio',parseFloat(this.value) || 0)">
                 <button class="btn btn-danger" style="padding: 8px 16px;" onclick="removeColorVariant(${c.id})">🗑️</button>
             </div>
             <div class="tallas-group">
@@ -377,7 +370,7 @@ function renderVariantsUI() {
                 <div style="margin-top: 10px;">
                     ${c.tallas.map((t, idx) => `
                         <div class="flex-row" style="margin-bottom: 8px;">
-                            <input type="text" placeholder="Talla (S,M,L, etc)" value="${t.talla}" style="width:100px" onchange="updateSize(${c.id},${idx},'talla',this.value)">
+                            <input type="text" placeholder="Talla" value="${t.talla}" style="width:100px" onchange="updateSize(${c.id},${idx},'talla',this.value)">
                             <input type="number" placeholder="Precio" value="${t.precio}" step="0.01" style="width:130px" onchange="updateSize(${c.id},${idx},'precio',parseFloat(this.value) || 0)">
                             <button class="btn btn-danger" style="padding: 4px 12px;" onclick="removeSize(${c.id},${idx})">✕</button>
                         </div>
@@ -389,6 +382,7 @@ function renderVariantsUI() {
     `).join('');
 }
 
+// ========== GUARDAR PRODUCTO ==========
 async function saveProduct() {
     let nombre = document.getElementById('prodName').value;
     let precioBase = parseFloat(document.getElementById('prodPrice').value);
@@ -446,20 +440,22 @@ function generateProductJSON() {
 
 function copyJSON() { document.getElementById('jsonArea').select(); document.execCommand('copy'); toast('📋 JSON copiado'); }
 
-// TABLA EDITABLE MODERNA
+// ========== TABLA PRODUCTOS (ID clickeable con modal de edición completa) ==========
 async function loadProductsToTable() {
     let data = await fetchAPI('getProductos');
     allProducts = data;
     let html = `<table class="data-table"><thead><tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Origen</th><th>Género</th><th>Acciones</th></tr></thead><tbody>`;
     data.forEach(p => {
         html += `<tr>
-            <td><span class="id-link" onclick="openFullEdit(${p.id})">#${p.id}</span></td>
+            <td><span class="id-link" onclick="openFullEditModal(${p.id})">#${p.id}</span></td>
             <td>${p.nombre.substring(0,45)}</td>
             <td>$${p.precio.toFixed(2)}</td>
             <td>${p.origen}</td>
             <td>${p.genero || 'unisex'}</td>
-            <td><button class="btn btn-outline" style="padding:4px 12px;" onclick="quickEditPrice(${p.id}, ${p.precio})">✏️ Precio</button>
-            <button class="btn btn-danger" style="padding:4px 12px;" onclick="deleteProduct(${p.id})">🗑️</button></td>
+            <td>
+                <button class="btn btn-outline" style="padding:4px 12px;" onclick="quickEditPrice(${p.id}, ${p.precio})">✏️ Precio</button>
+                <button class="btn btn-danger" style="padding:4px 12px;" onclick="deleteProduct(${p.id})">🗑️</button>
+            </td>
         </tr>`;
     });
     html += `</tbody></table>`;
@@ -475,6 +471,7 @@ async function quickEditPrice(id, currentPrice) {
         refreshProductList();
     }
 }
+
 async function deleteProduct(id) {
     if(confirm('¿Eliminar producto?')) {
         await fetchAPI(null, { action: 'eliminarProducto', id });
@@ -483,14 +480,110 @@ async function deleteProduct(id) {
         refreshProductList();
     }
 }
-function openFullEdit(id) { window.open(`admin.html?edit=${id}`, '_blank'); } // simple external modal
 
-// PEDIDOS
+// ========== MODAL DE EDICIÓN COMPLETA (al hacer clic en ID) ==========
+async function openFullEditModal(id) {
+    let producto = allProducts.find(p => p.id == id);
+    if(!producto) return;
+    
+    // Obtener datos completos del producto
+    let coloresNombres = producto.colores_nombres || '';
+    let coloresImagenes = producto.colores_imagenes || '';
+    let coloresPrecios = producto.colores_precios || '';
+    let variantes = producto.variantes || '';
+    
+    let modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-container">
+            <h3 style="color:#A3B8A4; margin-bottom:20px;">✏️ Editar Producto #${producto.id}</h3>
+            <div class="form-grid">
+                <input type="text" id="editNombre" value="${escapeHtml(producto.nombre)}" placeholder="Nombre">
+                <input type="number" id="editPrecio" value="${producto.precio}" step="0.01" placeholder="Precio">
+                <select id="editOrigen">
+                    <option value="Amazon" ${producto.origen === 'Amazon' ? 'selected' : ''}>Amazon</option>
+                    <option value="Temu" ${producto.origen === 'Temu' ? 'selected' : ''}>Temu</option>
+                    <option value="Shein" ${producto.origen === 'Shein' ? 'selected' : ''}>Shein</option>
+                    <option value="Tecnología" ${producto.origen === 'Tecnología' ? 'selected' : ''}>Tecnología</option>
+                    <option value="Accesorios" ${producto.origen === 'Accesorios' ? 'selected' : ''}>Accesorios</option>
+                </select>
+                <input type="text" id="editImagen" value="${escapeHtml(producto.imagen || '')}" placeholder="URL imagen">
+                <input type="text" id="editEnlace" value="${escapeHtml(producto.enlace || '')}" placeholder="URL producto original">
+                <select id="editGenero">
+                    <option value="unisex" ${producto.genero === 'unisex' ? 'selected' : ''}>Unisex</option>
+                    <option value="hombre" ${producto.genero === 'hombre' ? 'selected' : ''}>Hombre</option>
+                    <option value="mujer" ${producto.genero === 'mujer' ? 'selected' : ''}>Mujer</option>
+                    <option value="niño" ${producto.genero === 'niño' ? 'selected' : ''}>Niño</option>
+                    <option value="niña" ${producto.genero === 'niña' ? 'selected' : ''}>Niña</option>
+                </select>
+                <select id="editCategoria">
+                    <option value="">Sin categoría</option>
+                    <option value="Tecnología" ${producto.categoria === 'Tecnología' ? 'selected' : ''}>Tecnología</option>
+                    <option value="Accesorios" ${producto.categoria === 'Accesorios' ? 'selected' : ''}>Accesorios</option>
+                    <option value="Ropa" ${producto.categoria === 'Ropa' ? 'selected' : ''}>Ropa</option>
+                    <option value="Belleza" ${producto.categoria === 'Belleza' ? 'selected' : ''}>Belleza</option>
+                </select>
+                <textarea id="editDescripcion" rows="2" placeholder="Descripción">${escapeHtml(producto.descripcion || '')}</textarea>
+            </div>
+            <div style="margin: 15px 0;">
+                <label style="font-weight:500;">🎨 Colores (separados por coma)</label>
+                <input type="text" id="editColoresNombres" value="${escapeHtml(coloresNombres)}" style="margin-top:5px;" placeholder="Rojo,Azul,Verde">
+                <label style="font-weight:500; margin-top:10px;">🖼️ Imágenes colores (separadas por coma)</label>
+                <input type="text" id="editColoresImagenes" value="${escapeHtml(coloresImagenes)}" placeholder="url1,url2,url3">
+                <label style="font-weight:500; margin-top:10px;">💰 Precios colores (separados por coma)</label>
+                <input type="text" id="editColoresPrecios" value="${escapeHtml(coloresPrecios)}" placeholder="10.99,12.99,14.99">
+                <label style="font-weight:500; margin-top:10px;">📏 Variantes (color:talla:precio,talla:precio|color:talla:precio)</label>
+                <textarea id="editVariantes" rows="2" placeholder="Ej: Rojo:S:10.99,M:12.99|Azul:S:11.99">${escapeHtml(variantes)}</textarea>
+                <label style="font-weight:500; margin-top:10px;">✅ Activo</label>
+                <select id="editActivo">
+                    <option value="SI" ${producto.activo === 'SI' ? 'selected' : ''}>SI</option>
+                    <option value="NO" ${producto.activo !== 'SI' ? 'selected' : ''}>NO</option>
+                </select>
+            </div>
+            <div style="display:flex; gap:12px; margin-top:20px;">
+                <button class="btn btn-primary" onclick="saveFullEdit(${producto.id})">💾 Guardar cambios</button>
+                <button class="btn btn-outline" onclick="this.closest('.modal-overlay').remove()">Cancelar</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    setTimeout(() => modal.classList.add('active'), 10);
+}
+
+async function saveFullEdit(id) {
+    let data = {
+        action: 'editarProductoCompleto', id,
+        nombre: document.getElementById('editNombre').value,
+        precio: parseFloat(document.getElementById('editPrecio').value),
+        origen: document.getElementById('editOrigen').value,
+        imagen: document.getElementById('editImagen').value,
+        enlace: document.getElementById('editEnlace').value,
+        genero: document.getElementById('editGenero').value,
+        categoria: document.getElementById('editCategoria').value,
+        descripcion: document.getElementById('editDescripcion').value,
+        colores_nombres: document.getElementById('editColoresNombres').value,
+        colores_imagenes: document.getElementById('editColoresImagenes').value,
+        colores_precios: document.getElementById('editColoresPrecios').value,
+        variantes: document.getElementById('editVariantes').value,
+        tiene_variantes: document.getElementById('editVariantes').value ? 'SI' : 'NO',
+        activo: document.getElementById('editActivo').value
+    };
+    if(!data.nombre || isNaN(data.precio)) return toast('⚠️ Nombre y precio son obligatorios', true);
+    await fetchAPI(null, data);
+    toast('✅ Producto actualizado');
+    document.querySelector('.modal-overlay').remove();
+    loadProductsToTable();
+    refreshProductList();
+}
+
+function escapeHtml(str) { if(!str) return ''; return String(str).replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
+
+// ========== PEDIDOS ==========
 async function refreshOrders() {
     let orders = await fetchAPI('getPedidosConEnlaces');
-    if(!orders.length) { document.getElementById('ordersList').innerHTML = '<p class="vacio">✨ Sin pedidos recientes</p>'; return; }
+    if(!orders.length) { document.getElementById('ordersList').innerHTML = '<p style="text-align:center; padding:40px;">✨ Sin pedidos recientes</p>'; return; }
     let html = `<div style="display:flex; flex-direction:column; gap:16px;">`;
-    orders.slice(0,15).forEach(o => {
+    orders.slice(0,20).forEach(o => {
         html += `<div style="background:#FAFCFA; border-radius:28px; padding:16px;">
             <div style="display:flex; justify-content:space-between;"><b>#${o.idPedido || o.id}</b> <span style="background:#EFF5EF; padding:2px 12px; border-radius:60px;">${o.estado}</span></div>
             <div><strong>${o.nombre}</strong> | 📞 ${o.telefono || '—'}</div>
@@ -510,11 +603,13 @@ async function refreshOrders() {
     html += `</div>`;
     document.getElementById('ordersList').innerHTML = html;
 }
+
 async function updateOrderStatus(id, status) {
     await fetchAPI(null, { action: 'actualizarEstado', fila: id, estado: status });
     toast('Estado actualizado');
     refreshOrders();
 }
+
 function registerPayment(id, total) {
     let amount = prompt('💰 Monto recibido:', total);
     if(amount && !isNaN(parseFloat(amount))) {
@@ -537,7 +632,7 @@ async function refreshProductList() {
     document.getElementById('simpleProductList').innerHTML = html;
 }
 
-// Tabs
+// ========== TABS ==========
 document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
