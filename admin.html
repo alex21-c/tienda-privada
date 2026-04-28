@@ -213,8 +213,7 @@
                 <input type="number" id="prodPrice" placeholder="Precio base" step="0.01">
                 <select id="prodPlatform">
                     <option value="Amazon">Amazon</option><option value="Temu">Temu</option>
-                    <option value="Shein">Shein</option>
-                    <option value="Tecnología">💻 Tecnología</option>
+                    <option value="Shein">Shein</option><option value="Tecnología">💻 Tecnología</option>
                     <option value="Accesorios">💍 Accesorios</option>
                 </select>
                 <input type="text" id="prodImage" placeholder="URL imagen principal">
@@ -283,9 +282,9 @@
 </div>
 
 <script>
-// ==================== SISTEMA DE SONIDOS AESTHETIC ====================
+// ==================== SISTEMA DE SONIDOS CLICK AESTHETIC ====================
 const sonidos = {
-    // Sonido de éxito (login correcto) - campanita suave
+    // Sonido de éxito (login correcto) - click suave positivo (50% volumen)
     exito: () => {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const now = audioContext.currentTime;
@@ -294,13 +293,26 @@ const sonidos = {
         osc.connect(gain);
         gain.connect(audioContext.destination);
         osc.type = 'sine';
-        osc.frequency.value = 1046.50; // Do6
-        gain.gain.value = 0.15;
+        osc.frequency.value = 880;
+        gain.gain.value = 0.5;
         osc.start();
-        gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.3);
-        osc.stop(now + 0.3);
+        gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.15);
+        osc.stop(now + 0.15);
+        
+        setTimeout(() => {
+            const osc2 = audioContext.createOscillator();
+            const gain2 = audioContext.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioContext.destination);
+            osc2.type = 'sine';
+            osc2.frequency.value = 1046.50;
+            gain2.gain.value = 0.4;
+            osc2.start();
+            gain2.gain.exponentialRampToValueAtTime(0.00001, now + 0.25);
+            osc2.stop(now + 0.25);
+        }, 80);
     },
-    // Sonido de error - tono suave descendente
+    // Sonido de error - click grave (50% volumen)
     error: () => {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const now = audioContext.currentTime;
@@ -309,33 +321,98 @@ const sonidos = {
         osc.connect(gain);
         gain.connect(audioContext.destination);
         osc.type = 'sine';
-        osc.frequency.value = 587.33; // D5
-        gain.gain.value = 0.15;
+        osc.frequency.value = 440;
+        gain.gain.value = 0.5;
         osc.start();
-        osc.frequency.exponentialRampToValueAtTime(440, now + 0.25);
-        gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.35);
-        osc.stop(now + 0.35);
+        gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.12);
+        osc.stop(now + 0.12);
     },
-    // Melodía de bienvenida (login exitoso) - arpegio suave
+    // Click de bienvenida (tres clicks progresivos)
     bienvenida: () => {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const notas = [523.25, 659.25, 783.99, 1046.50]; // Do5, Mi5, Sol5, Do6
         const now = audioContext.currentTime;
-        notas.forEach((freq, i) => {
-            const osc = audioContext.createOscillator();
-            const gain = audioContext.createGain();
-            osc.connect(gain);
-            gain.connect(audioContext.destination);
-            osc.type = 'sine';
-            osc.frequency.value = freq;
-            gain.gain.value = 0.12;
-            osc.start(now + i * 0.12);
-            gain.gain.exponentialRampToValueAtTime(0.00001, now + i * 0.12 + 0.3);
-            osc.stop(now + i * 0.12 + 0.3);
-        });
+        
+        const osc1 = audioContext.createOscillator();
+        const gain1 = audioContext.createGain();
+        osc1.connect(gain1);
+        gain1.connect(audioContext.destination);
+        osc1.type = 'sine';
+        osc1.frequency.value = 523.25;
+        gain1.gain.value = 0.5;
+        osc1.start();
+        gain1.gain.exponentialRampToValueAtTime(0.00001, now + 0.1);
+        osc1.stop(now + 0.1);
+        
+        setTimeout(() => {
+            const osc2 = audioContext.createOscillator();
+            const gain2 = audioContext.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioContext.destination);
+            osc2.type = 'sine';
+            osc2.frequency.value = 783.99;
+            gain2.gain.value = 0.5;
+            osc2.start();
+            gain2.gain.exponentialRampToValueAtTime(0.00001, now + 0.2);
+            osc2.stop(now + 0.2);
+        }, 120);
+        
+        setTimeout(() => {
+            const osc3 = audioContext.createOscillator();
+            const gain3 = audioContext.createGain();
+            osc3.connect(gain3);
+            gain3.connect(audioContext.destination);
+            osc3.type = 'sine';
+            osc3.frequency.value = 1046.50;
+            gain3.gain.value = 0.4;
+            osc3.start();
+            gain3.gain.exponentialRampToValueAtTime(0.00001, now + 0.32);
+            osc3.stop(now + 0.32);
+        }, 240);
     },
-    // Sonido de guardado - ding suave
+    // Sonido de guardado - click triple progresivo
     guardado: () => {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const now = audioContext.currentTime;
+        
+        const osc1 = audioContext.createOscillator();
+        const gain1 = audioContext.createGain();
+        osc1.connect(gain1);
+        gain1.connect(audioContext.destination);
+        osc1.type = 'sine';
+        osc1.frequency.value = 659.25;
+        gain1.gain.value = 0.5;
+        osc1.start();
+        gain1.gain.exponentialRampToValueAtTime(0.00001, now + 0.08);
+        osc1.stop(now + 0.08);
+        
+        setTimeout(() => {
+            const osc2 = audioContext.createOscillator();
+            const gain2 = audioContext.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioContext.destination);
+            osc2.type = 'sine';
+            osc2.frequency.value = 880;
+            gain2.gain.value = 0.5;
+            osc2.start();
+            gain2.gain.exponentialRampToValueAtTime(0.00001, now + 0.18);
+            osc2.stop(now + 0.18);
+        }, 100);
+        
+        setTimeout(() => {
+            const osc3 = audioContext.createOscillator();
+            const gain3 = audioContext.createGain();
+            osc3.connect(gain3);
+            gain3.connect(audioContext.destination);
+            osc3.type = 'sine';
+            osc3.frequency.value = 1046.50;
+            gain3.gain.value = 0.5;
+            osc3.start();
+            gain3.gain.exponentialRampToValueAtTime(0.00001, now + 0.28);
+            osc3.stop(now + 0.28);
+        }, 200);
+    },
+    // Sonido 100% volumen para acciones importantes
+    exitoAlto: () => {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const now = audioContext.currentTime;
         const osc = audioContext.createOscillator();
@@ -343,23 +420,11 @@ const sonidos = {
         osc.connect(gain);
         gain.connect(audioContext.destination);
         osc.type = 'sine';
-        osc.frequency.value = 880; // La5
-        gain.gain.value = 0.12;
+        osc.frequency.value = 1046.50;
+        gain.gain.value = 1.0;
         osc.start();
         gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.2);
         osc.stop(now + 0.2);
-        setTimeout(() => {
-            const osc2 = audioContext.createOscillator();
-            const gain2 = audioContext.createGain();
-            osc2.connect(gain2);
-            gain2.connect(audioContext.destination);
-            osc2.type = 'sine';
-            osc2.frequency.value = 1046.50;
-            gain2.gain.value = 0.12;
-            osc2.start();
-            gain2.gain.exponentialRampToValueAtTime(0.00001, now + 0.4);
-            osc2.stop(now + 0.4);
-        }, 150);
     }
 };
 
