@@ -145,7 +145,7 @@
         
         /* Tabla */
         .table-wrapper { overflow-x: auto; border-radius: 28px; background: white; border: 1px solid #E5E5E5; }
-        .data-table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+        .data-table { width: 100%; border-collapse: collapse; min-width: 1200px; }
         .data-table th { padding: 16px 12px; text-align: left; background: #FAFCFA; color: #A3B8A4; font-weight: 600; border-bottom: 1px solid #E5E5E5; }
         .data-table td { padding: 12px; border-bottom: 1px solid #F0F0F0; vertical-align: middle; }
         .data-table tr:hover { background: #FDFBF7; }
@@ -253,7 +253,7 @@
     <div id="tabEditar" class="tab-content" style="display: none;">
         <div class="card">
             <div class="card-title">
-                <span>✏️ Edición rápida (click en ID para edición completa)</span>
+                <span>✏️ Edición rápida (click en ID para edición completa | click en 🔗 para abrir enlace)</span>
                 <button class="btn btn-outline" onclick="cargarProductosEditor()" style="padding: 6px 16px;">⟳ Recargar</button>
             </div>
             <div id="editableTable" class="table-wrapper"></div>
@@ -437,32 +437,38 @@ function renderizarEditorProductos() {
     html += `</thead><tbody>`;
     
     productosActuales.forEach(prod => {
+        // Determinar si hay enlace para mostrar
+        const tieneEnlace = prod.enlace && prod.enlace !== '';
+        const enlaceHtml = tieneEnlace ? 
+            `<a href="${prod.enlace}" target="_blank" style="color:#A3B8A4; text-decoration:none; font-size:1.2rem; cursor:pointer; display:inline-block;" title="Abrir enlace original del producto">🔗</a>` : 
+            '<span style="color:#ccc;">❌</span>';
+        
         html += `
             <tr>
                 <td><span class="id-link" onclick="openFullEditModal(${prod.id})">#${prod.id}</span></td>
                 <td><strong>${escapeHtml(prod.nombre.substring(0, 40))}${prod.nombre.length > 40 ? '...' : ''}</strong></td>
                 <td>$${prod.precio.toFixed(2)}</td>
                 <td>${prod.origen || '-'}</td>
-                <td>${prod.imagen ? '✅' : '❌'}</td>
+                <td style="text-align:center;">${prod.imagen ? '✅' : '❌'}</td>
                 <td>${prod.descripcion ? prod.descripcion.substring(0, 30) + '...' : '-'}</td>
                 <td>${prod.genero || 'unisex'}</td>
                 <td>${prod.categoria || '-'}</td>
-                <td>${prod.enlace ? '🔗' : '-'}</td>
+                <td style="text-align:center;">${enlaceHtml}</td>
                 <td>
                     <button class="btn btn-primary" style="padding:4px 12px; font-size:0.7rem;" onclick="guardarProductoRapido(${prod.id})">💾 Guardar</button>
-                    <button class="btn btn-danger" style="padding:4px 12px; font-size:0.7rem;" onclick="eliminarProducto(${prod.id})">🗑️</button>
-                 </td>
-             </tr>
+                    <button class="btn btn-danger" style="padding:4px 12px; font-size:0.7rem;" onclick="eliminarProducto(${prod.id})">🗑️ Eliminar</button>
+                  </td>
+            </tr>
         `;
     });
     
-    html += `</tbody></table>`;
+    html += `</tbody>}catch`;
     container.innerHTML = html;
 }
 
 async function guardarProductoRapido(id) {
-    // Esta función es para edición rápida desde la tabla
-    const nuevoPrecio = prompt('Ingrese el nuevo precio:', productosActuales.find(p => p.id == id)?.precio);
+    const producto = productosActuales.find(p => p.id == id);
+    const nuevoPrecio = prompt('Ingrese el nuevo precio:', producto?.precio);
     if (nuevoPrecio && !isNaN(parseFloat(nuevoPrecio))) {
         await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'actualizarPrecio', id, precio: parseFloat(nuevoPrecio) }) });
         toast('✅ Precio actualizado');
@@ -606,10 +612,11 @@ function mostrarListaProductos() {
                 <strong>${prod.nombre.substring(0, 60)}</strong>
                 <div>
                     <button class="btn btn-outline" style="padding: 6px 14px;" onclick="editarPrecioProducto(${prod.id}, '${prod.nombre.replace(/'/g, "\\'")}', ${prod.precio})">✏️ Editar Precio</button>
-                    <button class="btn btn-danger" style="padding: 6px 14px;" onclick="eliminarProducto(${prod.id})">🗑️</button>
+                    <button class="btn btn-danger" style="padding: 6px 14px;" onclick="eliminarProducto(${prod.id})">🗑️ Eliminar</button>
                 </div>
             </div>
             <div style="margin-top: 8px; color:#666; font-size:0.8rem;">💰 $${prod.precio.toFixed(2)} | 📦 ${prod.origen} | 👤 ${prod.genero || 'unisex'}</div>
+            ${prod.enlace ? `<div style="margin-top:5px; font-size:0.7rem;"><a href="${prod.enlace}" target="_blank" style="color:#A3B8A4;">🔗 Ver producto original</a></div>` : ''}
         `;
         container.appendChild(div);
     });
