@@ -213,7 +213,8 @@
                 <input type="number" id="prodPrice" placeholder="Precio base" step="0.01">
                 <select id="prodPlatform">
                     <option value="Amazon">Amazon</option><option value="Temu">Temu</option>
-                    <option value="Shein">Shein</option><option value="Tecnología">💻 Tecnología</option>
+                    <option value="Shein">Shein</option>
+                    <option value="Tecnología">💻 Tecnología</option>
                     <option value="Accesorios">💍 Accesorios</option>
                 </select>
                 <input type="text" id="prodImage" placeholder="URL imagen principal">
@@ -224,8 +225,12 @@
                 </select>
                 <select id="prodCategory">
                     <option value="">Sin categoría</option>
-                    <option value="Tecnología">💻 Tecnología</option><option value="Accesorios">💍 Accesorios</option>
-                    <option value="Ropa">👕 Ropa</option><option value="Belleza">💄 Belleza</option>
+                    <option value="Ropa">👕 Ropa</option>
+                    <option value="Zapatos">👟 Zapatos</option>
+                    <option value="Accesorios">💍 Accesorios</option>
+                    <option value="Cuidado de la piel">🧴 Cuidado de la piel</option>
+                    <option value="Cuidado del cabello">💇 Cuidado del cabello</option>
+                    <option value="Electrónica">📱 Electrónica</option>
                 </select>
                 <textarea id="prodDesc" rows="2" placeholder="Descripción corta..."></textarea>
             </div>
@@ -278,8 +283,9 @@
 </div>
 
 <script>
-// ==================== SISTEMA DE SONIDOS ====================
+// ==================== SISTEMA DE SONIDOS AESTHETIC ====================
 const sonidos = {
+    // Sonido de éxito (login correcto) - campanita suave
     exito: () => {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const now = audioContext.currentTime;
@@ -288,12 +294,13 @@ const sonidos = {
         osc.connect(gain);
         gain.connect(audioContext.destination);
         osc.type = 'sine';
-        osc.frequency.value = 880;
-        gain.gain.value = 0.3;
+        osc.frequency.value = 1046.50; // Do6
+        gain.gain.value = 0.15;
         osc.start();
-        gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.5);
-        osc.stop(now + 0.5);
+        gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.3);
+        osc.stop(now + 0.3);
     },
+    // Sonido de error - tono suave descendente
     error: () => {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const now = audioContext.currentTime;
@@ -301,33 +308,33 @@ const sonidos = {
         const gain = audioContext.createGain();
         osc.connect(gain);
         gain.connect(audioContext.destination);
-        osc.type = 'sawtooth';
-        osc.frequency.value = 440;
-        gain.gain.value = 0.3;
+        osc.type = 'sine';
+        osc.frequency.value = 587.33; // D5
+        gain.gain.value = 0.15;
         osc.start();
-        gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.3);
-        osc.stop(now + 0.3);
+        osc.frequency.exponentialRampToValueAtTime(440, now + 0.25);
+        gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.35);
+        osc.stop(now + 0.35);
     },
+    // Melodía de bienvenida (login exitoso) - arpegio suave
     bienvenida: () => {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const notas = [523.25, 659.25, 783.99, 1046.50]; // Do5, Mi5, Sol5, Do6
         const now = audioContext.currentTime;
-        const osc1 = audioContext.createOscillator();
-        const osc2 = audioContext.createOscillator();
-        const gain = audioContext.createGain();
-        osc1.connect(gain);
-        osc2.connect(gain);
-        gain.connect(audioContext.destination);
-        osc1.type = 'sine';
-        osc2.type = 'sine';
-        osc1.frequency.value = 523.25;
-        osc2.frequency.value = 659.25;
-        gain.gain.value = 0.2;
-        osc1.start();
-        osc2.start();
-        gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.8);
-        osc1.stop(now + 0.8);
-        osc2.stop(now + 0.8);
+        notas.forEach((freq, i) => {
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            gain.gain.value = 0.12;
+            osc.start(now + i * 0.12);
+            gain.gain.exponentialRampToValueAtTime(0.00001, now + i * 0.12 + 0.3);
+            osc.stop(now + i * 0.12 + 0.3);
+        });
     },
+    // Sonido de guardado - ding suave
     guardado: () => {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const now = audioContext.currentTime;
@@ -336,11 +343,23 @@ const sonidos = {
         osc.connect(gain);
         gain.connect(audioContext.destination);
         osc.type = 'sine';
-        osc.frequency.value = 1046.50;
-        gain.gain.value = 0.2;
+        osc.frequency.value = 880; // La5
+        gain.gain.value = 0.12;
         osc.start();
         gain.gain.exponentialRampToValueAtTime(0.00001, now + 0.2);
         osc.stop(now + 0.2);
+        setTimeout(() => {
+            const osc2 = audioContext.createOscillator();
+            const gain2 = audioContext.createGain();
+            osc2.connect(gain2);
+            gain2.connect(audioContext.destination);
+            osc2.type = 'sine';
+            osc2.frequency.value = 1046.50;
+            gain2.gain.value = 0.12;
+            osc2.start();
+            gain2.gain.exponentialRampToValueAtTime(0.00001, now + 0.4);
+            osc2.stop(now + 0.4);
+        }, 150);
     }
 };
 
@@ -437,10 +456,9 @@ function renderizarEditorProductos() {
     html += `</thead><tbody>`;
     
     productosActuales.forEach(prod => {
-        // Determinar si hay enlace para mostrar
         const tieneEnlace = prod.enlace && prod.enlace !== '';
         const enlaceHtml = tieneEnlace ? 
-            `<a href="${prod.enlace}" target="_blank" style="color:#A3B8A4; text-decoration:none; font-size:1.2rem; cursor:pointer; display:inline-block;" title="Abrir enlace original del producto">🔗</a>` : 
+            `<a href="${prod.enlace}" target="_blank" style="color:#A3B8A4; text-decoration:none; font-size:1.2rem; cursor:pointer;" title="Abrir enlace original del producto">🔗</a>` : 
             '<span style="color:#ccc;">❌</span>';
         
         html += `
@@ -467,10 +485,12 @@ function renderizarEditorProductos() {
 }
 
 async function guardarProductoRapido(id) {
+    initAudio();
     const producto = productosActuales.find(p => p.id == id);
     const nuevoPrecio = prompt('Ingrese el nuevo precio:', producto?.precio);
     if (nuevoPrecio && !isNaN(parseFloat(nuevoPrecio))) {
         await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'actualizarPrecio', id, precio: parseFloat(nuevoPrecio) }) });
+        sonidos.guardado();
         toast('✅ Precio actualizado');
         cargarProductosEditor();
         cargarProductosExistentes();
@@ -494,7 +514,15 @@ function openFullEditModal(id) {
                 <div style="margin-bottom:15px;"><label>🖼️ Imagen URL</label><input type="text" id="edit-imagen-modal" value="${escapeHtml(producto.imagen || '')}" style="width:100%; padding:12px; border-radius:24px; border:1px solid #E5E5E5;"></div>
                 <div style="margin-bottom:15px;"><label>🔗 Enlace</label><input type="text" id="edit-enlace-modal" value="${escapeHtml(producto.enlace || '')}" style="width:100%; padding:12px; border-radius:24px; border:1px solid #E5E5E5;"></div>
                 <div style="margin-bottom:15px;"><label>🎯 Género</label><select id="edit-genero-modal" style="width:100%; padding:12px; border-radius:24px; border:1px solid #E5E5E5;"><option value="unisex">Unisex</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option><option value="niño">Niño</option><option value="niña">Niña</option></select></div>
-                <div style="margin-bottom:15px;"><label>📂 Categoría</label><select id="edit-categoria-modal" style="width:100%; padding:12px; border-radius:24px; border:1px solid #E5E5E5;"><option value="">Sin categoría</option><option value="Tecnología">Tecnología</option><option value="Accesorios">Accesorios</option><option value="Ropa">Ropa</option><option value="Belleza">Belleza</option></select></div>
+                <div style="margin-bottom:15px;"><label>📂 Categoría</label><select id="edit-categoria-modal" style="width:100%; padding:12px; border-radius:24px; border:1px solid #E5E5E5;">
+                    <option value="">Sin categoría</option>
+                    <option value="Ropa">👕 Ropa</option>
+                    <option value="Zapatos">👟 Zapatos</option>
+                    <option value="Accesorios">💍 Accesorios</option>
+                    <option value="Cuidado de la piel">🧴 Cuidado de la piel</option>
+                    <option value="Cuidado del cabello">💇 Cuidado del cabello</option>
+                    <option value="Electrónica">📱 Electrónica</option>
+                </select></div>
                 <div style="margin-bottom:15px;"><label>📝 Descripción</label><textarea id="edit-descripcion-modal" rows="3" style="width:100%; padding:12px; border-radius:24px; border:1px solid #E5E5E5;">${escapeHtml(producto.descripcion || '')}</textarea></div>
                 <div style="display:flex; gap:12px; margin-top:20px;">
                     <button onclick="guardarEdicionCompleta(${producto.id})" class="btn btn-primary" style="flex:1;">💾 Guardar Cambios</button>
@@ -615,7 +643,7 @@ function mostrarListaProductos() {
                     <button class="btn btn-danger" style="padding: 6px 14px;" onclick="eliminarProducto(${prod.id})">🗑️ Eliminar</button>
                 </div>
             </div>
-            <div style="margin-top: 8px; color:#666; font-size:0.8rem;">💰 $${prod.precio.toFixed(2)} | 📦 ${prod.origen} | 👤 ${prod.genero || 'unisex'}</div>
+            <div style="margin-top: 8px; color:#666; font-size:0.8rem;">💰 $${prod.precio.toFixed(2)} | 📦 ${prod.origen} | 👤 ${prod.genero || 'unisex'} | 📂 ${prod.categoria || '-'}</div>
             ${prod.enlace ? `<div style="margin-top:5px; font-size:0.7rem;"><a href="${prod.enlace}" target="_blank" style="color:#A3B8A4;">🔗 Ver producto original</a></div>` : ''}
         `;
         container.appendChild(div);
@@ -624,6 +652,7 @@ function mostrarListaProductos() {
 
 async function eliminarProducto(id) {
     if (confirm(`¿Eliminar producto #${id}?`)) {
+        initAudio();
         await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'eliminarProducto', id }) });
         toast('✅ Producto eliminado');
         setTimeout(() => { cargarProductosExistentes(); cargarProductosEditor(); }, 1000);
@@ -633,7 +662,9 @@ async function eliminarProducto(id) {
 function editarPrecioProducto(id, nombre, precioActual) {
     const nuevoPrecio = prompt(`Editar precio de:\n"${nombre}"\n\nPrecio actual: $${precioActual.toFixed(2)}`, precioActual.toFixed(2));
     if (nuevoPrecio && !isNaN(parseFloat(nuevoPrecio))) {
+        initAudio();
         fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'actualizarPrecio', id, precio: parseFloat(nuevoPrecio) }) });
+        sonidos.guardado();
         toast('✅ Precio actualizado');
         setTimeout(() => { cargarProductosExistentes(); cargarProductosEditor(); }, 1000);
     }
