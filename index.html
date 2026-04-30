@@ -16,22 +16,7 @@
             min-height: 100vh;
         }
         
-        /* Efecto de partículas futuristas en el fondo */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 50%, rgba(163, 184, 164, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(244, 160, 181, 0.03) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
-        }
-        
-        /* Contenedor principal con efecto glassmorphism futurista */
+        /* Contenedor principal futurista */
         .container { 
             max-width: 1400px; 
             margin: 0 auto; 
@@ -41,14 +26,13 @@
             padding: 30px; 
             box-shadow: 0 20px 40px rgba(0,0,0,0.05), 0 0 0 1px rgba(163, 184, 164, 0.2);
             border: 1px solid rgba(163, 184, 164, 0.2);
-            transition: all 0.3s;
         }
         
-        /* Logo futurista */
+        /* Logo */
         .logo-container { text-align: center; margin-bottom: 30px; padding: 20px; background: transparent; }
         .logo { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
         .logo-imagen { height: 80px; width: auto; object-fit: contain; border-radius: 20px; filter: drop-shadow(0 0 15px rgba(163, 184, 164, 0.3)); transition: all 0.3s; }
-        .logo-imagen:hover { transform: scale(1.02) rotate(2deg); }
+        .logo-imagen:hover { transform: scale(1.02); }
         .logo-title { 
             font-size: 2rem; 
             font-weight: 800; 
@@ -57,24 +41,14 @@
             background-clip: text;
             color: transparent;
             letter-spacing: 3px;
-            position: relative;
         }
-        .logo-title::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 10%;
-            width: 80%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #A3B8A4, #F4A0B5, transparent);
-        }
-        .logo-subtitle { font-size: 0.7rem; color: #A3B8A4; letter-spacing: 3px; margin-top: 10px; }
+        .logo-subtitle { font-size: 0.7rem; color: #A3B8A4; letter-spacing: 3px; margin-top: 5px; }
         @media (max-width:768px){ .logo-imagen { height: 55px; } .logo-title { font-size: 1.3rem; } }
         
         /* Top bar */
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
         
-        /* Filtros cyber futuristas */
+        /* Filtros */
         .filtros-principales { display: flex; gap: 12px; flex-wrap: wrap; }
         .filtro-btn { 
             padding: 10px 24px; 
@@ -83,24 +57,10 @@
             border: 1.5px solid rgba(163, 184, 164, 0.3);
             border-radius: 60px; 
             cursor: pointer; 
-            transition: all 0.3s cubic-bezier(0.2,0.9,0.4,1.1); 
+            transition: all 0.3s; 
             color: #9CA3AF; 
             font-weight: 500;
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
         }
-        .filtro-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-        .filtro-btn:hover::before { left: 100%; }
         .filtro-btn.active { 
             background: linear-gradient(135deg, #F4A0B5 0%, #e08ca1 100%);
             border-color: #F4A0B5;
@@ -165,7 +125,7 @@
         }
         .genero-btn:hover:not(.active) { border-color: #F4A0B5; color: #F4A0B5; transform: translateY(-2px); }
         
-        /* Botones acción cyber */
+        /* Botones acción */
         .acciones-top { display: flex; gap: 15px; }
         .mis-pedidos-btn, .carrito-btn { 
             background: rgba(255, 255, 255, 0.5);
@@ -180,20 +140,7 @@
             display: flex; 
             align-items: center; 
             gap: 8px; 
-            position: relative;
-            overflow: hidden;
         }
-        .mis-pedidos-btn::before, .carrito-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-        .mis-pedidos-btn:hover::before, .carrito-btn:hover::before { left: 100%; }
         .mis-pedidos-btn:hover, .carrito-btn:hover { 
             background: #A3B8A4;
             color: white; 
@@ -211,17 +158,16 @@
             margin-left: 8px; 
         }
         
-        /* Productos grid futurista */
+        /* Productos grid */
         .productos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 28px; margin-bottom: 40px; }
         .producto-card { 
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
             border-radius: 32px; 
             overflow: hidden; 
-            transition: all 0.4s cubic-bezier(0.2,0.9,0.4,1.1); 
+            transition: all 0.4s; 
             border: 1px solid rgba(163, 184, 164, 0.2);
             cursor: pointer; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.02);
         }
         .producto-card:hover { 
             transform: translateY(-10px); 
@@ -249,32 +195,19 @@
             cursor: pointer; 
             font-weight: 600; 
             transition: all 0.3s; 
-            position: relative;
-            overflow: hidden;
         }
-        .btn-agregar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-        .btn-agregar:hover::before { left: 100%; }
         .btn-agregar:hover { 
             transform: translateY(-3px); 
             box-shadow: 0 8px 20px rgba(163, 184, 164, 0.3);
             background: linear-gradient(135deg, #F4A0B5 0%, #e08ca1 100%);
         }
         
-        /* ========== CARRITO FUTURISTA ========== */
+        /* ========== CARRITO ========== */
         .carrito-panel { 
             position: fixed; top: 0; right: -480px; width: 460px; height: 100%; 
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(25px);
-            z-index: 1001; transition: right 0.4s cubic-bezier(0.2,0.9,0.4,1.1); 
+            z-index: 1001; transition: right 0.4s; 
             box-shadow: -10px 0 30px rgba(0,0,0,0.1); 
             padding: 0; 
             overflow-y: auto; 
@@ -299,15 +232,15 @@
         .carrito-items::-webkit-scrollbar-thumb { background: #A3B8A4; border-radius: 10px; }
         .carrito-items::-webkit-scrollbar-thumb:hover { background: #F4A0B5; }
         .carrito-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #FDFBF7; border-radius: 24px; margin-bottom: 12px; border: 1px solid #E5E5E5; transition: all 0.2s; }
-        .carrito-item:hover { border-color: #F4A0B5; transform: translateX(-4px); box-shadow: 0 4px 12px rgba(244,160,181,0.1); }
+        .carrito-item:hover { border-color: #F4A0B5; transform: translateX(-4px); }
         .item-info { flex: 1; }
         .item-nombre { font-weight: 600; color: #2d3436; margin-bottom: 5px; }
         .item-precio { color: #A3B8A4; font-weight: 600; font-size: 0.9rem; }
         .item-cantidad { display: flex; align-items: center; gap: 8px; }
         .item-cantidad button { background: #F0F0F0; border: none; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-weight: bold; transition: all 0.2s; }
-        .item-cantidad button:hover { background: #F4A0B5; color: white; transform: scale(1.05); }
+        .item-cantidad button:hover { background: #F4A0B5; color: white; }
         .btn-eliminar-item { background: #FFF0E6; color: #D4A5A5; border: 1px solid #D4A5A5; padding: 6px 14px; border-radius: 40px; cursor: pointer; transition: all 0.2s; }
-        .btn-eliminar-item:hover { background: #D4A5A5; color: white; transform: scale(1.02); }
+        .btn-eliminar-item:hover { background: #D4A5A5; color: white; }
         .carrito-resumen { background: #F8FAF8; padding: 20px; border-radius: 28px; margin: 20px; border: 1px solid #E5E5E5; }
         .resumen-linea { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #E5E5E5; }
         .resumen-total { font-size: 1.3rem; font-weight: 700; color: #A3B8A4; margin-top: 10px; padding-top: 10px; border-top: 2px solid #A3B8A4; }
@@ -322,23 +255,10 @@
             font-weight: 700; 
             cursor: pointer; 
             transition: all 0.3s; 
-            position: relative;
-            overflow: hidden;
         }
-        .btn-pagar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-        .btn-pagar:hover::before { left: 100%; }
         .btn-pagar:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(163, 184, 164, 0.4); background: linear-gradient(135deg, #F4A0B5 0%, #e08ca1 100%); }
         
-        /* ========== MODAL PRODUCTO FUTURISTA CON SCROLL PERFECTO ========== */
+        /* ========== MODAL PRODUCTO ========== */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(12px); z-index: 10000; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
         .modal-content { 
@@ -348,7 +268,7 @@
             max-height: 85vh; 
             border-radius: 48px; 
             overflow: hidden; 
-            animation: modalSlide 0.3s cubic-bezier(0.2,0.9,0.4,1.1); 
+            animation: modalSlide 0.3s; 
             border: 1px solid rgba(163, 184, 164, 0.3);
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
             display: flex;
@@ -371,7 +291,7 @@
         .modal-cerrar { background: rgba(0,0,0,0.15); border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; color: white; font-size: 1.2rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
         .modal-cerrar:hover { background: #F4A0B5; transform: rotate(90deg); }
         
-        /* Scrollbar futurista DENTRO del modal */
+        /* Scrollbar del modal */
         .modal-body-scroll { 
             flex: 1;
             overflow-y: auto; 
@@ -379,13 +299,13 @@
             scrollbar-width: thin;
             scrollbar-color: #A3B8A4 #E5E5E5;
         }
-        .modal-body-scroll::-webkit-scrollbar { width: 6px; }
-        .modal-body-scroll::-webkit-scrollbar-track { background: #E5E5E5; border-radius: 10px; margin: 10px 0; }
-        .modal-body-scroll::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #A3B8A4, #8ba08c); border-radius: 10px; }
+        .modal-body-scroll::-webkit-scrollbar { width: 5px; }
+        .modal-body-scroll::-webkit-scrollbar-track { background: #E5E5E5; border-radius: 10px; }
+        .modal-body-scroll::-webkit-scrollbar-thumb { background: #A3B8A4; border-radius: 10px; }
         .modal-body-scroll::-webkit-scrollbar-thumb:hover { background: #F4A0B5; }
         
-        .modal-producto-imagen-container { cursor: zoom-in; border-radius: 28px; margin: 20px 0; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-        .modal-producto-imagen-container img { width: 100%; display: block; border-radius: 28px; transition: transform 0.3s; }
+        .modal-producto-imagen-container { cursor: zoom-in; border-radius: 28px; margin: 20px 0; overflow: hidden; }
+        .modal-producto-imagen-container img { width: 100%; display: block; border-radius: 28px; }
         #modal-nombre { font-size: 1.4rem; font-weight: 700; color: #2d3436; margin: 0 0 10px 0; }
         .modal-meta { display: flex; gap: 10px; margin: 10px 0; flex-wrap: wrap; }
         .modal-meta p { background: #F8F9FA; padding: 6px 16px; border-radius: 60px; font-size: 0.75rem; color: #666; }
@@ -394,12 +314,97 @@
         .modal-precio-section span:first-child { color: white; opacity: 0.9; font-size: 0.85rem; letter-spacing: 1px; }
         #modal-precio { color: white; font-size: 1.8rem; font-weight: 800; }
         .seccion-label { font-weight: 600; color: #A3B8A4; margin-bottom: 10px; font-size: 0.85rem; letter-spacing: 0.5px; }
-        #selector-color { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0 20px 0; }
-        #selector-color button { padding: 10px 20px; border-radius: 60px; border: 1.5px solid #E5E5E5; background: white; cursor: pointer; transition: all 0.2s; font-weight: 500; }
-        #selector-color button:hover { border-color: #A3B8A4; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(163,184,164,0.2); }
+        
+        /* Selector de color - Moderno */
+        #selector-color { display: flex; gap: 12px; flex-wrap: wrap; margin: 10px 0 20px 0; }
+        #selector-color button { 
+            padding: 10px 20px; 
+            border-radius: 60px; 
+            border: 1.5px solid #E5E5E5; 
+            background: white; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #selector-color button:hover { 
+            border-color: #A3B8A4; 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 12px rgba(163,184,164,0.2);
+            background: #f8faf8;
+        }
+        #selector-color button.active-color { 
+            background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
+            border-color: #A3B8A4;
+            color: white;
+            box-shadow: 0 4px 12px rgba(163,184,164,0.3);
+        }
+        
+        /* ========== SELECTOR DE TALLAS MEJORADO Y BONITO ========== */
         #modal-variantes { margin: 15px 0; }
-        #selector-variante { width: 100%; padding: 14px 16px; border-radius: 60px; border: 1.5px solid #E5E5E5; background: white; font-family: inherit; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; }
+        .tallas-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .talla-btn {
+            min-width: 65px;
+            padding: 12px 18px;
+            background: white;
+            border: 1.5px solid #E5E5E5;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #4A4A4A;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .talla-btn:hover {
+            border-color: #A3B8A4;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 14px rgba(163,184,164,0.2);
+            background: #f8faf8;
+        }
+        .talla-btn.selected {
+            background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
+            border-color: #A3B8A4;
+            color: white;
+            box-shadow: 0 4px 12px rgba(163,184,164,0.3);
+        }
+        .talla-btn .talla-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        .talla-btn .talla-precio {
+            font-size: 0.7rem;
+            opacity: 0.9;
+        }
+        .selected .talla-precio {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        /* Selector de variantes (fallback) */
+        #selector-variante { 
+            width: 100%; 
+            padding: 14px 16px; 
+            border-radius: 60px; 
+            border: 1.5px solid #E5E5E5; 
+            background: white; 
+            font-family: inherit; 
+            font-size: 0.9rem; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+        }
         #selector-variante:focus { outline: none; border-color: #A3B8A4; box-shadow: 0 0 0 3px rgba(163,184,164,0.1); }
+        
         #modal-agregar { 
             width: 100%; 
             background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
@@ -412,36 +417,12 @@
             margin-top: 5px; 
             margin-bottom: 10px; 
             transition: all 0.3s; 
-            position: relative;
-            overflow: hidden;
         }
-        #modal-agregar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-        #modal-agregar:hover::before { left: 100%; }
         #modal-agregar:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(163,184,164,0.3); background: linear-gradient(135deg, #F4A0B5 0%, #e08ca1 100%); }
         
-        /* Otros modales con scroll */
-        .modal-otros .modal-body-scroll {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 20px 20px 20px;
-            scrollbar-width: thin;
-            scrollbar-color: #A3B8A4 #E5E5E5;
-        }
-        .modal-otros .modal-body-scroll::-webkit-scrollbar { width: 6px; }
-        .modal-otros .modal-body-scroll::-webkit-scrollbar-track { background: #E5E5E5; border-radius: 10px; }
-        .modal-otros .modal-body-scroll::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #A3B8A4, #8ba08c); border-radius: 10px; }
-        
+        /* Otros modales */
         .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-weight: 600; color: #A3B8A4; margin-bottom: 8px; font-size: 0.85rem; letter-spacing: 0.5px; }
+        .form-group label { display: block; font-weight: 600; color: #A3B8A4; margin-bottom: 8px; font-size: 0.85rem; }
         .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 14px 16px; background: #F8FAF8; border: 1.5px solid #E5E5E5; border-radius: 60px; font-family: inherit; transition: all 0.2s; }
         .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #A3B8A4; box-shadow: 0 0 0 3px rgba(163,184,164,0.1); }
         .btn-confirmar { 
@@ -454,26 +435,12 @@
             font-weight: 700; 
             cursor: pointer; 
             transition: all 0.3s; 
-            position: relative;
-            overflow: hidden;
         }
-        .btn-confirmar::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            transition: left 0.5s;
-        }
-        .btn-confirmar:hover::before { left: 100%; }
         .btn-confirmar:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(163,184,164,0.3); background: linear-gradient(135deg, #F4A0B5 0%, #e08ca1 100%); }
         
-        /* Zoom modal */
         .zoom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 99999; justify-content: center; align-items: center; }
         .zoom-modal.active { display: flex; }
-        .zoom-modal-img { max-width: 90%; max-height: 85vh; object-fit: contain; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 2px solid #A3B8A4; }
+        .zoom-modal-img { max-width: 90%; max-height: 85vh; object-fit: contain; border-radius: 24px; border: 2px solid #A3B8A4; }
         .zoom-modal-close { position: fixed; top: 20px; right: 20px; background: rgba(0,0,0,0.7); border: 2px solid #A3B8A4; width: 48px; height: 48px; border-radius: 50%; font-size: 28px; cursor: pointer; color: #A3B8A4; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .zoom-modal-close:hover { background: #F4A0B5; color: white; transform: scale(1.1); }
         
@@ -488,6 +455,7 @@
             .top-bar { flex-direction: column; }
             .carrito-panel { width: 100%; right: -100%; }
             .modal-content { max-height: 80vh; }
+            .talla-btn { min-width: 55px; padding: 10px 14px; }
         }
     </style>
 </head>
@@ -552,7 +520,7 @@
     </div>
     <div id="overlay" class="overlay"></div>
     
-    <!-- MODAL PRODUCTO (CON TODA LA INFORMACIÓN Y SCROLL PERFECTO) -->
+    <!-- MODAL PRODUCTO -->
     <div id="producto-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -566,22 +534,22 @@
                 <p id="modal-descripcion"></p>
                 <div class="modal-precio-section"><span>PRECIO</span><span id="modal-precio"></span></div>
                 <div id="modal-colores"><div class="seccion-label">🎨 Color</div><div id="selector-color"></div></div>
-                <div id="modal-variantes"><div class="seccion-label">📏 Talla / Variante</div><select id="selector-variante"><option>Selecciona una opción</option></select></div>
+                <div id="modal-variantes"><div class="seccion-label">📏 Talla / Variante</div><div id="tallas-container" class="tallas-container"></div><select id="selector-variante" style="display:none;"></select></div>
                 <button id="modal-agregar">➕ Agregar al carrito</button>
             </div>
         </div>
     </div>
     
-    <!-- MODALES ADICIONALES (FORMULARIO, YAPPY, FACTURA, PEDIDOS) CON SCROLL -->
-    <div id="pago-modal" class="modal modal-otros"><div class="modal-content" style="max-width:500px;"><div class="modal-header"><h2>📋 Datos de envío</h2><button class="modal-cerrar" id="cerrar-pago-modal">✕</button></div><div class="modal-body-scroll"><form id="pedido-form-modal"><div class="form-group"><label>👤 Nombre completo</label><input type="text" id="nombre-modal" required></div><div class="form-group"><label>📱 Teléfono</label><input type="tel" id="telefono-modal" required></div><div class="form-group"><label>📍 Dirección</label><textarea id="direccion-modal" rows="3" required></textarea></div><div class="form-group"><label>💳 Método de pago</label><select id="metodo-pago-modal"><option value="Efectivo contra entrega">💵 Efectivo</option><option value="Yappy">📱 Yappy</option><option value="Transferencia">🏦 Transferencia</option></select></div><button type="submit" class="btn-confirmar">✅ Confirmar pedido</button></form></div></div></div>
+    <!-- MODALES ADICIONALES -->
+    <div id="pago-modal" class="modal"><div class="modal-content" style="max-width:500px;"><div class="modal-header"><h2>📋 Datos de envío</h2><button class="modal-cerrar" id="cerrar-pago-modal">✕</button></div><div class="modal-body-scroll"><form id="pedido-form-modal"><div class="form-group"><label>👤 Nombre completo</label><input type="text" id="nombre-modal" required></div><div class="form-group"><label>📱 Teléfono</label><input type="tel" id="telefono-modal" required></div><div class="form-group"><label>📍 Dirección</label><textarea id="direccion-modal" rows="3" required></textarea></div><div class="form-group"><label>💳 Método de pago</label><select id="metodo-pago-modal"><option value="Efectivo contra entrega">💵 Efectivo</option><option value="Yappy">📱 Yappy</option><option value="Transferencia">🏦 Transferencia</option></select></div><button type="submit" class="btn-confirmar">✅ Confirmar pedido</button></form></div></div></div>
     
-    <div id="yappy-modal" class="modal modal-otros"><div class="modal-content" style="max-width:450px; text-align:center;"><div class="modal-header"><h2>📱 Pagar con Yappy</h2><button class="modal-cerrar" id="cerrar-yappy-modal">✕</button></div><div class="modal-body-scroll"><p style="font-size:2rem;">📱</p><p style="font-size:1.5rem; font-weight:700; color:#A3B8A4;">6474-5914</p><button id="copiar-yappy" class="btn-confirmar" style="margin-top:10px;">📋 Copiar número</button><p style="margin:15px 0; font-size:0.8rem;">⚠️ Escribe tu nombre en COMENTARIOS</p><button id="ya-pague" class="btn-confirmar" style="background: #F4A0B5;">✅ Ya hice el pago</button></div></div></div>
+    <div id="yappy-modal" class="modal"><div class="modal-content" style="max-width:450px; text-align:center;"><div class="modal-header"><h2>📱 Pagar con Yappy</h2><button class="modal-cerrar" id="cerrar-yappy-modal">✕</button></div><div class="modal-body-scroll"><p style="font-size:2rem;">📱</p><p style="font-size:1.5rem; font-weight:700; color:#A3B8A4;">6474-5914</p><button id="copiar-yappy" class="btn-confirmar" style="margin-top:10px;">📋 Copiar número</button><p style="margin:15px 0; font-size:0.8rem;">⚠️ Escribe tu nombre en COMENTARIOS</p><button id="ya-pague" class="btn-confirmar" style="background: #F4A0B5;">✅ Ya hice el pago</button></div></div></div>
     
-    <div id="confirmar-pago-modal" class="modal modal-otros"><div class="modal-content" style="max-width:500px;"><div class="modal-header"><h2>🔍 Confirmar Pago</h2><button class="modal-cerrar" id="cerrar-confirmar-modal">✕</button></div><div class="modal-body-scroll"><input type="text" id="nombre-verificar" placeholder="Tu nombre completo" style="width:100%; padding:14px; border-radius:60px; border:1px solid #E5E5E5; margin:15px 0;"><button id="verificar-pago" class="btn-confirmar">✅ Verificar y generar factura</button></div></div></div>
+    <div id="confirmar-pago-modal" class="modal"><div class="modal-content" style="max-width:500px;"><div class="modal-header"><h2>🔍 Confirmar Pago</h2><button class="modal-cerrar" id="cerrar-confirmar-modal">✕</button></div><div class="modal-body-scroll"><input type="text" id="nombre-verificar" placeholder="Tu nombre completo" style="width:100%; padding:14px; border-radius:60px; border:1px solid #E5E5E5; margin:15px 0;"><button id="verificar-pago" class="btn-confirmar">✅ Verificar y generar factura</button></div></div></div>
     
-    <div id="factura-modal" class="modal modal-otros"><div class="modal-content" style="max-width:550px;"><div class="modal-header"><h2>🎀 Factura</h2><button class="modal-cerrar" id="cerrar-factura-modal">✕</button></div><div class="modal-body-scroll"><div id="factura-contenido"></div><button id="descargar-factura" class="btn-confirmar" style="margin-top:15px;">📄 Descargar</button></div></div></div>
+    <div id="factura-modal" class="modal"><div class="modal-content" style="max-width:550px;"><div class="modal-header"><h2>🎀 Factura</h2><button class="modal-cerrar" id="cerrar-factura-modal">✕</button></div><div class="modal-body-scroll"><div id="factura-contenido"></div><button id="descargar-factura" class="btn-confirmar" style="margin-top:15px;">📄 Descargar</button></div></div></div>
     
-    <div id="mis-pedidos-modal" class="modal modal-otros"><div class="modal-content" style="max-width:600px;"><div class="modal-header"><h2>📋 Mis Pedidos</h2><button class="modal-cerrar" id="cerrar-mis-pedidos-modal">✕</button></div><div class="modal-body-scroll"><input type="text" id="nombre-consulta-modal" placeholder="Tu nombre completo" style="width:100%; padding:14px; border-radius:60px; border:1px solid #E5E5E5;"><button id="buscar-pedidos-modal" class="btn-confirmar" style="margin-top:15px;">🔍 Buscar</button><div id="resultado-pedidos-modal" style="margin-top:20px;"></div></div></div></div>
+    <div id="mis-pedidos-modal" class="modal"><div class="modal-content" style="max-width:600px;"><div class="modal-header"><h2>📋 Mis Pedidos</h2><button class="modal-cerrar" id="cerrar-mis-pedidos-modal">✕</button></div><div class="modal-body-scroll"><input type="text" id="nombre-consulta-modal" placeholder="Tu nombre completo" style="width:100%; padding:14px; border-radius:60px; border:1px solid #E5E5E5;"><button id="buscar-pedidos-modal" class="btn-confirmar" style="margin-top:15px;">🔍 Buscar</button><div id="resultado-pedidos-modal" style="margin-top:20px;"></div></div></div></div>
     
     <div id="zoom-imagen-modal" class="zoom-modal"><div class="zoom-modal-content"><img id="zoom-imagen" class="zoom-modal-img"><button class="zoom-modal-close" id="zoom-cerrar">✕</button></div></div>
 
@@ -632,7 +600,7 @@ function mostrarProductos() {
     `).join('');
 }
 
-// Filtros principales con botón perfumes exclusivo para Amazon
+// Filtros principales
 document.querySelectorAll('.filtro-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
@@ -684,6 +652,7 @@ document.querySelectorAll('.genero-btn').forEach(btn => {
     });
 });
 
+// ========== MOSTRAR MODAL CON SELECTOR DE TALLAS BONITO ==========
 function mostrarModal(id) {
     productoActual = productos.find(p => p.id == id);
     if(!productoActual) return;
@@ -694,28 +663,35 @@ function mostrarModal(id) {
     document.getElementById('modal-descripcion').textContent = productoActual.descripcion || `Producto de ${productoActual.origen}`;
     document.getElementById('modal-precio').textContent = `$${productoActual.precio.toFixed(2)}`;
     
+    // Colores
     const coloresDiv = document.getElementById('selector-color');
     const coloresCont = document.getElementById('modal-colores');
     if(productoActual.colores && productoActual.colores.length) {
         coloresCont.style.display = 'block';
-        coloresDiv.innerHTML = productoActual.colores.map((c,i) => `<button style="border:2px solid ${i===0?'#A3B8A4':'#E5E5E5'};background:${i===0?'#A3B8A4':'white'};color:${i===0?'white':'#333'}">${c.nombre}</button>`).join('');
-        document.querySelectorAll('#selector-color button').forEach((btn,i) => {
+        coloresDiv.innerHTML = '';
+        productoActual.colores.forEach((c, i) => {
+            const btn = document.createElement('button');
+            btn.innerHTML = c.nombre;
+            if(i === 0) btn.classList.add('active-color');
             btn.onclick = () => {
-                colorSeleccionado = productoActual.colores[i];
-                document.getElementById('modal-imagen').src = colorSeleccionado.imagen;
-                document.getElementById('modal-precio').textContent = `$${colorSeleccionado.precio.toFixed(2)}`;
-                if(colorSeleccionado.tallas?.length) mostrarTallas(colorSeleccionado.tallas);
+                document.querySelectorAll('#selector-color button').forEach(b => b.classList.remove('active-color'));
+                btn.classList.add('active-color');
+                colorSeleccionado = c;
+                document.getElementById('modal-imagen').src = c.imagen;
+                document.getElementById('modal-precio').textContent = `$${c.precio.toFixed(2)}`;
+                if(c.tallas?.length) mostrarTallasBonitas(c.tallas);
                 else document.getElementById('modal-variantes').style.display = 'none';
             };
+            coloresDiv.appendChild(btn);
         });
         colorSeleccionado = productoActual.colores[0];
-        if(colorSeleccionado.tallas?.length) mostrarTallas(colorSeleccionado.tallas);
+        if(colorSeleccionado.tallas?.length) mostrarTallasBonitas(colorSeleccionado.tallas);
         else document.getElementById('modal-variantes').style.display = 'none';
     } else {
         coloresCont.style.display = 'none';
         if(productoActual.variantes && typeof productoActual.variantes === 'string' && productoActual.variantes) {
             const tallas = productoActual.variantes.split(',').map(t => { const [talla,precio] = t.split(':'); return { talla, precio: parseFloat(precio) }; });
-            mostrarTallas(tallas);
+            mostrarTallasBonitas(tallas);
         } else {
             document.getElementById('modal-variantes').style.display = 'none';
         }
@@ -724,21 +700,50 @@ function mostrarModal(id) {
     configurarZoom();
 }
 
-function mostrarTallas(tallas) {
+// ========== SELECTOR DE TALLAS BONITO ==========
+function mostrarTallasBonitas(tallas) {
     if(!tallas?.length) return;
-    const sel = document.getElementById('selector-variante');
-    document.getElementById('modal-variantes').style.display = 'block';
-    sel.innerHTML = '<option value="">Selecciona una talla</option>' + tallas.map(t => `<option value="${t.precio}" data-talla="${t.talla}">${t.talla} - $${t.precio.toFixed(2)}</option>`).join('');
-    sel.onchange = () => {
-        tallaSeleccionada = sel.value ? { talla: sel.selectedOptions[0].dataset.talla, precio: parseFloat(sel.value) } : null;
-        document.getElementById('modal-precio').textContent = tallaSeleccionada ? `$${tallaSeleccionada.precio.toFixed(2)}` : `$${colorSeleccionado?.precio.toFixed(2) || productoActual.precio.toFixed(2)}`;
-    };
+    const container = document.getElementById('tallas-container');
+    const variantesDiv = document.getElementById('modal-variantes');
+    const selectorSelect = document.getElementById('selector-variante');
+    
+    variantesDiv.style.display = 'block';
+    container.style.display = 'flex';
+    selectorSelect.style.display = 'none';
+    container.innerHTML = '';
+    
+    tallas.forEach(t => {
+        const btn = document.createElement('button');
+        btn.className = 'talla-btn';
+        btn.innerHTML = `
+            <span class="talla-label">${t.talla}</span>
+            <span class="talla-precio">$${t.precio.toFixed(2)}</span>
+        `;
+        btn.onclick = () => {
+            document.querySelectorAll('.talla-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            tallaSeleccionada = { talla: t.talla, precio: t.precio };
+            document.getElementById('modal-precio').textContent = `$${t.precio.toFixed(2)}`;
+        };
+        container.appendChild(btn);
+    });
+    
+    // Preseleccionar primera talla
+    if(tallas.length > 0) {
+        const firstBtn = container.querySelector('.talla-btn');
+        if(firstBtn) {
+            firstBtn.classList.add('selected');
+            tallaSeleccionada = { talla: tallas[0].talla, precio: tallas[0].precio };
+        }
+    }
 }
 
 function agregarDesdeModal() {
+    if(!productoActual) return;
     let precio = productoActual.precio, nombre = productoActual.nombre;
     if(colorSeleccionado) { precio = colorSeleccionado.precio; nombre += ` (${colorSeleccionado.nombre})`; }
     if(tallaSeleccionada) { precio = tallaSeleccionada.precio; nombre += ` - Talla: ${tallaSeleccionada.talla}`; }
+    
     let existente = carrito.find(i => i.id === productoActual.id && i.nombre === nombre);
     if(existente) existente.cantidad++;
     else carrito.push({ id: productoActual.id, nombre, precio, origen: productoActual.origen, cantidad: 1 });
