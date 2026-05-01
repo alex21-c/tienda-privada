@@ -315,7 +315,7 @@
         #modal-precio { color: white; font-size: 1.8rem; font-weight: 800; }
         .seccion-label { font-weight: 600; color: #A3B8A4; margin-bottom: 10px; font-size: 0.85rem; letter-spacing: 0.5px; }
         
-        /* Selector de color - Moderno */
+        /* Selector de color */
         #selector-color { display: flex; gap: 12px; flex-wrap: wrap; margin: 10px 0 20px 0; }
         #selector-color button { 
             padding: 10px 20px; 
@@ -325,34 +325,29 @@
             cursor: pointer; 
             transition: all 0.3s; 
             font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         #selector-color button:hover { 
             border-color: #A3B8A4; 
             transform: translateY(-2px); 
             box-shadow: 0 4px 12px rgba(163,184,164,0.2);
-            background: #f8faf8;
         }
         #selector-color button.active-color { 
             background: linear-gradient(135deg, #A3B8A4 0%, #8ba08c 100%);
             border-color: #A3B8A4;
             color: white;
-            box-shadow: 0 4px 12px rgba(163,184,164,0.3);
         }
         
-        /* ========== SELECTOR DE TALLAS MEJORADO Y BONITO ========== */
-        #modal-variantes { margin: 15px 0; }
+        /* ========== SELECTOR DE TALLAS (BOTONES BONITOS) ========== */
         .tallas-container {
             display: flex;
             flex-wrap: wrap;
             gap: 12px;
             margin-top: 10px;
+            margin-bottom: 15px;
         }
         .talla-btn {
-            min-width: 65px;
-            padding: 12px 18px;
+            min-width: 70px;
+            padding: 12px 16px;
             background: white;
             border: 1.5px solid #E5E5E5;
             border-radius: 60px;
@@ -391,7 +386,7 @@
             color: rgba(255,255,255,0.9);
         }
         
-        /* Selector de variantes (fallback) */
+        /* Fallback select */
         #selector-variante { 
             width: 100%; 
             padding: 14px 16px; 
@@ -455,7 +450,9 @@
             .top-bar { flex-direction: column; }
             .carrito-panel { width: 100%; right: -100%; }
             .modal-content { max-height: 80vh; }
-            .talla-btn { min-width: 55px; padding: 10px 14px; }
+            .talla-btn { min-width: 60px; padding: 10px 12px; }
+            .talla-btn .talla-label { font-size: 0.8rem; }
+            .talla-btn .talla-precio { font-size: 0.65rem; }
         }
     </style>
 </head>
@@ -652,7 +649,7 @@ document.querySelectorAll('.genero-btn').forEach(btn => {
     });
 });
 
-// ========== MOSTRAR MODAL CON SELECTOR DE TALLAS BONITO ==========
+// ========== MOSTRAR MODAL CON SELECTOR DE TALLAS EN BOTONES ==========
 function mostrarModal(id) {
     productoActual = productos.find(p => p.id == id);
     if(!productoActual) return;
@@ -679,19 +676,19 @@ function mostrarModal(id) {
                 colorSeleccionado = c;
                 document.getElementById('modal-imagen').src = c.imagen;
                 document.getElementById('modal-precio').textContent = `$${c.precio.toFixed(2)}`;
-                if(c.tallas?.length) mostrarTallasBonitas(c.tallas);
+                if(c.tallas && c.tallas.length) mostrarTallasBotones(c.tallas);
                 else document.getElementById('modal-variantes').style.display = 'none';
             };
             coloresDiv.appendChild(btn);
         });
         colorSeleccionado = productoActual.colores[0];
-        if(colorSeleccionado.tallas?.length) mostrarTallasBonitas(colorSeleccionado.tallas);
+        if(colorSeleccionado.tallas && colorSeleccionado.tallas.length) mostrarTallasBotones(colorSeleccionado.tallas);
         else document.getElementById('modal-variantes').style.display = 'none';
     } else {
         coloresCont.style.display = 'none';
         if(productoActual.variantes && typeof productoActual.variantes === 'string' && productoActual.variantes) {
             const tallas = productoActual.variantes.split(',').map(t => { const [talla,precio] = t.split(':'); return { talla, precio: parseFloat(precio) }; });
-            mostrarTallasBonitas(tallas);
+            mostrarTallasBotones(tallas);
         } else {
             document.getElementById('modal-variantes').style.display = 'none';
         }
@@ -700,9 +697,9 @@ function mostrarModal(id) {
     configurarZoom();
 }
 
-// ========== SELECTOR DE TALLAS BONITO ==========
-function mostrarTallasBonitas(tallas) {
-    if(!tallas?.length) return;
+// ========== FUNCIÓN PARA MOSTRAR TALLAS COMO BOTONES ==========
+function mostrarTallasBotones(tallas) {
+    if(!tallas || !tallas.length) return;
     const container = document.getElementById('tallas-container');
     const variantesDiv = document.getElementById('modal-variantes');
     const selectorSelect = document.getElementById('selector-variante');
@@ -728,7 +725,7 @@ function mostrarTallasBonitas(tallas) {
         container.appendChild(btn);
     });
     
-    // Preseleccionar primera talla
+    // Seleccionar primera talla por defecto
     if(tallas.length > 0) {
         const firstBtn = container.querySelector('.talla-btn');
         if(firstBtn) {
