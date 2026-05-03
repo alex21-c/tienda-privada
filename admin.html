@@ -8,103 +8,80 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            font-family: 'Courier New', 'Space Mono', monospace;
-            background: linear-gradient(135deg, #0a0e27 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #F5F9F7 0%, #EFF5F0 50%, #E8F1ED 100%);
             padding: 24px;
-            color: #00ff88;
+            color: #4a5d54;
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                repeating-linear-gradient(
-                    0deg,
-                    rgba(0, 255, 136, 0.03),
-                    rgba(0, 255, 136, 0.03) 1px,
-                    transparent 1px,
-                    transparent 2px
-                );
-            pointer-events: none;
-            z-index: 1;
-            animation: scanlines 8s linear infinite;
-        }
-
-        @keyframes scanlines { 0% { transform: translateY(0); } 100% { transform: translateY(10px); } }
-        @keyframes glow { 0%, 100% { text-shadow: 0 0 10px #00ff88; } 50% { text-shadow: 0 0 30px #00ff88, 0 0 50px #00ff44; } }
-        @keyframes pulse-neon { 0%, 100% { box-shadow: 0 0 5px #00ff88; } 50% { box-shadow: 0 0 25px #00ff88, inset 0 0 15px rgba(0, 255, 136, 0.3); } }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
-        @keyframes glitch { 0%, 100% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-8px); } }
+        @keyframes glow { 0%, 100% { text-shadow: 0 0 8px rgba(139, 195, 159, 0.3); } 50% { text-shadow: 0 0 16px rgba(139, 195, 159, 0.6); } }
+        @keyframes pulse { 0%, 100% { box-shadow: 0 0 8px rgba(139, 195, 159, 0.2); } 50% { box-shadow: 0 0 16px rgba(139, 195, 159, 0.4); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         
         /* Login */
         .login-box {
             max-width: 400px;
             margin: 15vh auto;
-            padding: 40px;
+            padding: 45px;
             text-align: center;
-            background: linear-gradient(135deg, rgba(10, 14, 39, 0.9), rgba(22, 33, 62, 0.9));
-            border: 2px solid #00ff88;
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.5), inset 0 0 20px rgba(0, 255, 136, 0.1);
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8FDF9 100%);
+            border: 2px solid #C7E5D8;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(139, 195, 159, 0.12), 0 2px 8px rgba(139, 195, 159, 0.08);
             position: relative;
             z-index: 10;
             animation: float 3s ease-in-out infinite;
         }
         
         .login-box h2 { 
-            color: #00ff88; 
-            margin-bottom: 24px; 
-            font-size: 1.8rem; 
-            text-shadow: 0 0 15px #00ff88;
+            color: #6BA873; 
+            margin-bottom: 28px; 
+            font-size: 2rem; 
+            font-weight: 700;
             animation: glow 2s ease-in-out infinite;
-            letter-spacing: 3px;
+            letter-spacing: 1px;
         }
 
         .login-box input {
             width: 100%;
             padding: 14px 18px;
-            margin: 12px 0;
-            background: rgba(15, 52, 96, 0.7);
-            border: 1px solid #00ff88;
-            border-radius: 5px;
+            margin: 14px 0;
+            background: #F5FBF8;
+            border: 2px solid #D8ECDF;
+            border-radius: 12px;
             font-size: 1rem;
-            color: #00ff88;
+            color: #4a5d54;
             transition: all 0.3s;
-            font-family: 'Courier New', monospace;
+            font-family: 'Poppins', sans-serif;
         }
 
         .login-box input:focus { 
             outline: none; 
-            border-color: #00ffff; 
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), inset 0 0 10px rgba(0, 255, 255, 0.2);
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            border-color: #A8D5B8; 
+            box-shadow: 0 0 16px rgba(168, 213, 184, 0.3), inset 0 0 8px rgba(168, 213, 184, 0.1);
+            background: #FAFFFE;
         }
 
         .login-box button {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(105deg, #00ff88 0%, #00ffbb 100%);
-            color: #0a0e27;
-            border: 2px solid #00ff88;
-            border-radius: 5px;
+            background: linear-gradient(105deg, #A8D5B8 0%, #B8DFC7 100%);
+            color: #FFF;
+            border: 2px solid #A8D5B8;
+            border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
-            text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
-            letter-spacing: 2px;
+            letter-spacing: 0.5px;
             font-size: 1rem;
         }
 
         .login-box button:hover { 
             transform: translateY(-3px);
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.8), 0 10px 30px rgba(0, 255, 136, 0.4);
-            text-shadow: 0 0 15px rgba(0, 255, 136, 0.8);
+            box-shadow: 0 8px 24px rgba(139, 195, 159, 0.2);
         }
 
         .login-box button:active {
@@ -120,118 +97,118 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 30px;
-            background: linear-gradient(135deg, rgba(10, 14, 39, 0.85), rgba(22, 33, 62, 0.85));
-            border: 2px solid #00ff88;
-            border-radius: 8px;
+            background: linear-gradient(135deg, #FFFFFF 0%, #F5FBF8 100%);
+            border: 2px solid #D8ECDF;
+            border-radius: 16px;
             margin-bottom: 28px;
             flex-wrap: wrap;
             gap: 15px;
-            box-shadow: 0 0 25px rgba(0, 255, 136, 0.4), inset 0 0 15px rgba(0, 255, 136, 0.05);
+            box-shadow: 0 8px 24px rgba(139, 195, 159, 0.1);
+            animation: slideDown 0.5s ease-out;
         }
 
         .logo-area h1 { 
             font-size: 1.5rem; 
             font-weight: 800;
-            color: #00ffff;
-            text-shadow: 0 0 20px #00ffff, 0 0 40px #00ff88;
-            letter-spacing: 4px;
-        }
-
-        .badge { 
-            background: linear-gradient(135deg, #00ff88, #00ffbb);
-            color: #0a0e27;
-            padding: 6px 18px; 
-            border-radius: 4px; 
-            font-size: 0.75rem; 
-            font-weight: 700;
-            margin-left: 12px;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.6);
+            background: linear-gradient(135deg, #6BA873, #8BC39F);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             letter-spacing: 1px;
         }
 
+        .badge { 
+            background: linear-gradient(135deg, #D4F1D8, #E0F6E4);
+            color: #4a7654;
+            padding: 6px 18px; 
+            border-radius: 20px; 
+            font-size: 0.7rem; 
+            font-weight: 700;
+            margin-left: 12px;
+            border: 1px solid #C7E5D8;
+            letter-spacing: 0.5px;
+        }
+
         .store-link a { 
-            color: #00ffff; 
+            color: #6BA873; 
             text-decoration: none; 
             font-size: 0.9rem; 
-            border-bottom: 2px dashed #00ff88;
+            border-bottom: 2px solid #D8ECDF;
             transition: all 0.3s;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            font-weight: 600;
         }
 
         .store-link a:hover {
-            color: #00ff88;
-            text-shadow: 0 0 20px #00ff88;
-            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            color: #8BC39F;
+            border-bottom-color: #A8D5B8;
         }
         
         /* Tabs */
         .tabs {
             display: flex;
             gap: 12px;
-            background: linear-gradient(135deg, rgba(10, 14, 39, 0.8), rgba(15, 52, 96, 0.8));
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8FDF9 100%);
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 14px;
             margin-bottom: 28px;
-            border: 2px solid #00ff88;
+            border: 2px solid #D8ECDF;
             flex-wrap: wrap;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3), inset 0 0 15px rgba(0, 255, 136, 0.05);
+            box-shadow: 0 4px 16px rgba(139, 195, 159, 0.08);
         }
 
         .tab {
-            padding: 12px 28px;
-            border-radius: 5px;
+            padding: 12px 26px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            color: #00ff88;
-            border: 1px solid transparent;
-            text-shadow: 0 0 5px rgba(0, 255, 136, 0.3);
-            letter-spacing: 1px;
+            color: #6BA873;
+            border: 2px solid transparent;
+            letter-spacing: 0.3px;
         }
 
         .tab:hover {
-            border: 1px solid #00ffff;
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+            border: 2px solid #D4F1D8;
+            background: #F8FDF9;
         }
 
         .tab.active {
-            background: linear-gradient(135deg, #00ff88, #00ffbb);
-            color: #0a0e27;
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.7), inset 0 0 10px rgba(255, 255, 255, 0.2);
-            border: 1px solid #00ff88;
+            background: linear-gradient(135deg, #A8D5B8, #B8DFC7);
+            color: #FFF;
+            box-shadow: 0 4px 12px rgba(139, 195, 159, 0.2);
+            border: 2px solid #A8D5B8;
             font-weight: 700;
-            text-shadow: none;
         }
         
         /* Cards */
         .card {
-            background: linear-gradient(135deg, rgba(15, 52, 96, 0.7), rgba(22, 33, 62, 0.7));
-            border: 2px solid #00ff88;
-            border-radius: 8px;
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8FDF9 100%);
+            border: 2px solid #D8ECDF;
+            border-radius: 14px;
             padding: 28px;
             margin-bottom: 24px;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3), inset 0 0 15px rgba(0, 255, 136, 0.05);
+            box-shadow: 0 4px 16px rgba(139, 195, 159, 0.08);
             transition: all 0.3s;
         }
 
         .card:hover {
-            box-shadow: 0 0 35px rgba(0, 255, 136, 0.5), inset 0 0 20px rgba(0, 255, 136, 0.1);
+            box-shadow: 0 8px 24px rgba(139, 195, 159, 0.12);
+            border-color: #C7E5D8;
         }
 
         .card-title {
             font-weight: 700;
-            color: #00ffff;
+            color: #6BA873;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid #00ff88;
+            border-bottom: 2px solid #E0F6E4;
             display: flex;
             align-items: center;
             gap: 12px;
             justify-content: space-between;
             flex-wrap: wrap;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
             font-size: 1.1rem;
-            letter-spacing: 2px;
+            letter-spacing: 0.5px;
         }
         
         /* Formulario grid */
@@ -240,49 +217,48 @@
         input, select, textarea {
             width: 100%;
             padding: 14px 16px;
-            background: rgba(10, 14, 39, 0.6);
-            border: 2px solid #00ff88;
-            border-radius: 5px;
-            font-family: 'Courier New', monospace;
-            color: #00ff88;
+            background: #F5FBF8;
+            border: 2px solid #D8ECDF;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            color: #4a5d54;
             transition: all 0.3s;
             font-size: 0.95rem;
         }
 
         input::placeholder, select option, textarea::placeholder {
-            color: rgba(0, 255, 136, 0.5);
+            color: #A8D5B8;
         }
 
         input:focus, select:focus, textarea:focus { 
             outline: none; 
-            border-color: #00ffff; 
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6), inset 0 0 12px rgba(0, 255, 255, 0.15);
+            border-color: #A8D5B8; 
+            box-shadow: 0 0 16px rgba(168, 213, 184, 0.2), inset 0 0 8px rgba(168, 213, 184, 0.08);
+            background: #FAFFFE;
         }
         
         /* Botones */
         .btn { 
             padding: 12px 24px; 
-            border-radius: 5px; 
+            border-radius: 10px; 
             font-weight: 700; 
             cursor: pointer; 
             transition: all 0.3s; 
             border: 2px solid;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 1px;
-            text-shadow: 0 0 5px rgba(0, 255, 136, 0.3);
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.3px;
         }
 
         .btn-primary { 
-            background: linear-gradient(135deg, #00ff88, #00ffbb);
-            border-color: #00ff88;
-            color: #0a0e27;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+            background: linear-gradient(105deg, #A8D5B8, #B8DFC7);
+            border-color: #A8D5B8;
+            color: #FFF;
+            box-shadow: 0 4px 12px rgba(139, 195, 159, 0.15);
         }
 
         .btn-primary:hover { 
             transform: translateY(-3px);
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.8), 0 8px 20px rgba(0, 255, 136, 0.4);
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.6);
+            box-shadow: 0 8px 20px rgba(139, 195, 159, 0.25);
         }
 
         .btn-primary:active {
@@ -290,39 +266,35 @@
         }
 
         .btn-outline { 
-            background: transparent;
-            border: 2px solid #00ff88; 
-            color: #00ff88;
-            box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.1);
-            text-shadow: 0 0 5px rgba(0, 255, 136, 0.4);
+            background: #F5FBF8;
+            border: 2px solid #D8ECDF; 
+            color: #6BA873;
         }
 
         .btn-outline:hover { 
-            background: rgba(0, 255, 136, 0.1);
-            border-color: #00ffff;
-            color: #00ffff;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 10px rgba(0, 255, 255, 0.15);
+            background: #E8F1ED;
+            border-color: #A8D5B8;
+            color: #5A916A;
         }
 
         .btn-danger { 
-            background: linear-gradient(135deg, #ff0055, #ff2288);
-            border-color: #ff0055;
-            color: #fff;
-            box-shadow: 0 0 15px rgba(255, 0, 85, 0.5);
+            background: linear-gradient(135deg, #F5C5C5, #F0B8B8);
+            border-color: #E8A5A5;
+            color: #8B5252;
         }
 
         .btn-danger:hover { 
-            box-shadow: 0 0 25px rgba(255, 0, 85, 0.8), 0 8px 20px rgba(255, 0, 85, 0.4);
+            box-shadow: 0 4px 12px rgba(232, 165, 165, 0.2);
             transform: translateY(-3px);
         }
         
         /* Tabla */
         .table-wrapper { 
             overflow-x: auto; 
-            border-radius: 8px; 
-            background: rgba(10, 14, 39, 0.6);
-            border: 2px solid #00ff88;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3), inset 0 0 15px rgba(0, 255, 136, 0.05);
+            border-radius: 12px; 
+            background: #F5FBF8;
+            border: 2px solid #D8ECDF;
+            box-shadow: 0 4px 12px rgba(139, 195, 159, 0.08);
         }
 
         .data-table { width: 100%; border-collapse: collapse; min-width: 1200px; }
@@ -330,54 +302,50 @@
         .data-table th { 
             padding: 18px 14px; 
             text-align: left; 
-            background: rgba(15, 52, 96, 0.8);
-            color: #00ffff;
+            background: linear-gradient(135deg, #E8F1ED, #D4F1D8);
+            color: #4a7654;
             font-weight: 700; 
-            border-bottom: 2px solid #00ff88;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-            letter-spacing: 1px;
+            border-bottom: 2px solid #D8ECDF;
+            letter-spacing: 0.3px;
         }
 
         .data-table td { 
             padding: 14px; 
-            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            border-bottom: 1px solid #E8F1ED;
             vertical-align: middle;
-            color: #00ff88;
+            color: #4a5d54;
         }
 
         .data-table tr:hover { 
-            background: rgba(0, 255, 136, 0.1);
-            box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.15);
+            background: #F8FDF9;
         }
 
         .id-link { 
-            color: #00ffff; 
+            color: #6BA873; 
             font-weight: 700; 
             cursor: pointer; 
             text-decoration: underline;
-            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
             transition: all 0.3s;
         }
 
         .id-link:hover {
-            text-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
-            animation: glitch 0.3s;
+            color: #8BC39F;
         }
         
         /* Variantes */
         .color-chip { 
-            background: rgba(15, 52, 96, 0.7);
-            border-radius: 8px; 
+            background: #F5FBF8;
+            border-radius: 12px; 
             padding: 20px; 
             margin-bottom: 16px; 
-            border: 2px solid #00ff88;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+            border: 2px solid #D8ECDF;
+            box-shadow: 0 2px 8px rgba(139, 195, 159, 0.06);
             transition: all 0.3s;
         }
 
         .color-chip:hover {
-            box-shadow: 0 0 25px rgba(0, 255, 136, 0.5);
-            border-color: #00ffff;
+            box-shadow: 0 4px 12px rgba(139, 195, 159, 0.12);
+            border-color: #C7E5D8;
         }
 
         .flex-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
@@ -385,15 +353,15 @@
         .tallas-group { 
             margin-left: 28px; 
             padding: 14px; 
-            background: rgba(10, 14, 39, 0.8);
-            border-radius: 5px;
-            border-left: 3px solid #00ff88;
+            background: #EFF5F0;
+            border-radius: 10px;
+            border-left: 4px solid #A8D5B8;
         }
         
         /* Modal */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
+            background: rgba(74, 93, 84, 0.1); backdrop-filter: blur(4px);
             display: flex; align-items: center; justify-content: center;
             z-index: 1000; visibility: hidden; opacity: 0; transition: 0.3s;
         }
@@ -401,15 +369,16 @@
         .modal-overlay.active { visibility: visible; opacity: 1; }
 
         .modal-container {
-            background: linear-gradient(135deg, rgba(10, 14, 39, 0.95), rgba(22, 33, 62, 0.95));
+            background: linear-gradient(135deg, #FFFFFF 0%, #F8FDF9 100%);
             max-width: 700px; 
             width: 90%; 
             max-height: 85vh; 
             overflow-y: auto;
-            border-radius: 8px; 
+            border-radius: 16px; 
             padding: 35px; 
-            border: 2px solid #00ff88;
-            box-shadow: 0 0 50px rgba(0, 255, 136, 0.6), inset 0 0 30px rgba(0, 255, 136, 0.1);
+            border: 2px solid #D8ECDF;
+            box-shadow: 0 12px 40px rgba(139, 195, 159, 0.15);
+            animation: slideDown 0.3s ease-out;
         }
         
         /* Toast */
@@ -417,42 +386,36 @@
             position: fixed; 
             bottom: 25px; 
             right: 25px; 
-            background: linear-gradient(135deg, #00ff88, #00ffbb);
-            color: #0a0e27;
+            background: linear-gradient(135deg, #A8D5B8, #B8DFC7);
+            color: #FFF;
             padding: 14px 28px; 
-            border-radius: 5px; 
+            border-radius: 10px; 
             z-index: 1100; 
-            animation: slideInRight 0.4s ease-out;
+            animation: slideDown 0.3s ease-out;
             font-weight: 700;
-            letter-spacing: 1px;
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.7);
-            border: 2px solid #00ff88;
+            letter-spacing: 0.3px;
+            box-shadow: 0 8px 20px rgba(139, 195, 159, 0.2);
+            border: 2px solid #A8D5B8;
         }
 
         .toast.error {
-            background: linear-gradient(135deg, #ff0055, #ff2288);
-            color: #fff;
-            border-color: #ff0055;
-            box-shadow: 0 0 30px rgba(255, 0, 85, 0.7);
-        }
-
-        @keyframes slideInRight { 
-            from { opacity: 0; transform: translateX(100px); } 
-            to { opacity: 1; transform: translateX(0); } 
+            background: linear-gradient(135deg, #F5C5C5, #F0B8B8);
+            color: #8B5252;
+            border-color: #E8A5A5;
+            box-shadow: 0 8px 20px rgba(232, 165, 165, 0.15);
         }
         
         .vacio { 
             text-align: center; 
             padding: 40px; 
-            color: #00ff88;
-            font-size: 1.1rem;
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+            color: #8AB894;
+            font-size: 1rem;
         }
         
         @media (max-width: 700px) { 
             .neo-header { flex-direction: column; text-align: center; } 
             .tabs { justify-content: center; } 
-            .tab { padding: 10px 20px; font-size: 0.9rem; }
+            .tab { padding: 10px 18px; font-size: 0.9rem; }
             .btn { padding: 10px 16px; font-size: 0.85rem; }
         }
     </style>
@@ -461,38 +424,38 @@
 
 <!-- Login -->
 <div id="loginBox" class="login-box">
-    <h2>⚡ NEXUS ADMIN ⚡</h2>
-    <input type="password" id="adminPass" placeholder="INGRESA TU CLAVE..." autofocus>
-    <button onclick="handleLogin()">» ACCESO AL SISTEMA</button>
+    <h2>🌿 TIENDA PRIVADA</h2>
+    <input type="password" id="adminPass" placeholder="Contraseña" autofocus>
+    <button onclick="handleLogin()">Acceder al panel</button>
 </div>
 
 <!-- Panel Admin -->
 <div id="adminPanel" class="admin-panel">
     <div class="neo-header">
-        <div class="logo-area"><h1>⚙️ TIENDA PRIVADA <span class="badge">v4.0 NEXUS</span></h1></div>
-        <div class="store-link"><a href="https://alex21-c.github.io/tienda-privada/" target="_blank">» VER TIENDA</a></div>
+        <div class="logo-area"><h1>🌿 TIENDA PRIVADA <span class="badge">ADMIN v4.0</span></h1></div>
+        <div class="store-link"><a href="https://alex21-c.github.io/tienda-privada/" target="_blank">→ Ver tienda</a></div>
     </div>
     
     <div class="tabs">
-        <button class="tab active" data-tab="agregar">⚡ CREAR PRODUCTO</button>
-        <button class="tab" data-tab="editar">🔧 EDITAR</button>
-        <button class="tab" data-tab="pedidos">📡 PEDIDOS</button>
-        <button class="tab" data-tab="listar">📊 INVENTARIO</button>
+        <button class="tab active" data-tab="agregar">➕ Nuevo producto</button>
+        <button class="tab" data-tab="editar">✏️ Editar</button>
+        <button class="tab" data-tab="pedidos">📦 Pedidos</button>
+        <button class="tab" data-tab="listar">📋 Inventario</button>
     </div>
     
     <!-- Tab AGREGAR -->
     <div id="tabAgregar" class="tab-content">
         <div class="card">
-            <div class="card-title">📦 INFORMACIÓN BASE</div>
+            <div class="card-title">📦 Información básica</div>
             <div class="form-grid">
-                <input type="text" id="prodName" placeholder="NOMBRE DEL PRODUCTO">
-                <input type="number" id="prodPrice" placeholder="PRECIO BASE" step="0.01">
+                <input type="text" id="prodName" placeholder="Nombre del producto">
+                <input type="number" id="prodPrice" placeholder="Precio base" step="0.01">
                 <select id="prodPlatform">
                     <option value="Amazon">Amazon</option><option value="Temu">Temu</option>
                     <option value="Shein">Shein</option>
                 </select>
-                <input type="text" id="prodImage" placeholder="URL IMAGEN PRINCIPAL">
-                <input type="text" id="prodLink" placeholder="URL PRODUCTO ORIGINAL">
+                <input type="text" id="prodImage" placeholder="URL imagen principal">
+                <input type="text" id="prodLink" placeholder="URL producto original">
                 <select id="prodGender">
                     <option value="unisex">Unisex</option><option value="hombre">Hombre</option>
                     <option value="mujer">Mujer</option><option value="niño">Niño</option><option value="niña">Niña</option>
@@ -507,25 +470,25 @@
                     <option value="Electrónica">📱 Electrónica</option>
                     <option value="Perfumes">🌸 Perfumes</option> 
                 </select>
-                <textarea id="prodDesc" rows="2" placeholder="DESCRIPCIÓN..."></textarea>
+                <textarea id="prodDesc" rows="2" placeholder="Descripción corta..."></textarea>
             </div>
         </div>
         
         <div class="card">
-            <div class="card-title">🎨 VARIANTES (COLORES + TALLAS)</div>
+            <div class="card-title">🎨 Variantes (colores + tallas)</div>
             <div id="variantsContainer"></div>
-            <button class="btn btn-outline" style="margin-top: 12px;" onclick="addColorVariant()">+ AGREGAR COLOR</button>
+            <button class="btn btn-outline" style="margin-top: 12px;" onclick="addColorVariant()">+ Agregar color</button>
         </div>
         
         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-            <button class="btn btn-primary" onclick="saveProduct()">💾 GUARDAR</button>
-            <button class="btn btn-outline" onclick="generateProductJSON()">📄 GENERAR JSON</button>
-            <button class="btn btn-outline" onclick="resetForm()">🔄 LIMPIAR</button>
+            <button class="btn btn-primary" onclick="saveProduct()">💾 Guardar producto</button>
+            <button class="btn btn-outline" onclick="generateProductJSON()">📄 Generar JSON</button>
+            <button class="btn btn-outline" onclick="resetForm()">🔄 Limpiar</button>
         </div>
         <div id="jsonPreview" class="card" style="display: none; margin-top: 20px;">
-            <div class="card-title">📋 JSON PARA SHEETS</div>
+            <div class="card-title">📋 JSON para Sheets</div>
             <textarea id="jsonArea" rows="4" readonly></textarea>
-            <button class="btn btn-outline" style="margin-top: 10px;" onclick="copyJSON()">COPIAR</button>
+            <button class="btn btn-outline" style="margin-top: 10px;" onclick="copyJSON()">Copiar</button>
         </div>
     </div>
     
@@ -533,8 +496,8 @@
     <div id="tabEditar" class="tab-content" style="display: none;">
         <div class="card">
             <div class="card-title">
-                <span>🔧 EDICIÓN RÁPIDA</span>
-                <button class="btn btn-outline" onclick="cargarProductosEditor()" style="padding: 8px 16px; font-size: 0.8rem;">⟳ RECARGAR</button>
+                <span>✏️ Edición rápida</span>
+                <button class="btn btn-outline" onclick="cargarProductosEditor()" style="padding: 8px 16px; font-size: 0.85rem;">⟳ Recargar</button>
             </div>
             <div id="editableTable" class="table-wrapper"></div>
         </div>
@@ -543,7 +506,7 @@
     <!-- Tab PEDIDOS -->
     <div id="tabPedidos" class="tab-content" style="display: none;">
         <div class="card">
-            <div class="card-title">📡 ÚLTIMOS PEDIDOS</div>
+            <div class="card-title">📦 Últimos pedidos</div>
             <div id="ordersList"></div>
         </div>
     </div>
@@ -551,45 +514,34 @@
     <!-- Tab LISTAR -->
     <div id="tabListar" class="tab-content" style="display: none;">
         <div class="card">
-            <div class="card-title">📊 INVENTARIO TOTAL</div>
+            <div class="card-title">📋 Productos registrados</div>
             <div id="simpleProductList"></div>
         </div>
     </div>
 </div>
 
 <script>
-// ==================== SISTEMA DE SONIDOS FUTURISTAS ====================
+// ==================== SISTEMA DE SONIDOS ====================
 const sonidos = {
     click: () => {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         const now = ctx.currentTime;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        const filter = ctx.createBiquadFilter();
-        
-        osc.connect(filter);
-        filter.connect(gain);
+        osc.connect(gain);
         gain.connect(ctx.destination);
-        
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(800, now);
-        osc.frequency.exponentialRampToValueAtTime(200, now + 0.05);
-        
-        filter.type = 'highpass';
-        filter.frequency.setValueAtTime(3000, now);
-        
-        gain.gain.setValueAtTime(0.3, now);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.exponentialRampToValueAtTime(300, now + 0.05);
+        gain.gain.setValueAtTime(0.25, now);
         gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
-        
         osc.start(now);
         osc.stop(now + 0.05);
     },
 
     exito: () => {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const now = ctx.currentTime;
-        
-        const notas = [1200, 1600, 2000];
+        const notas = [800, 1000, 1200];
         notas.forEach((freq, i) => {
             setTimeout(() => {
                 const osc = ctx.createOscillator();
@@ -598,11 +550,11 @@ const sonidos = {
                 gain.connect(ctx.destination);
                 osc.type = 'sine';
                 osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.4, ctx.currentTime);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
                 osc.start(ctx.currentTime);
                 osc.stop(ctx.currentTime + 0.1);
-            }, i * 50);
+            }, i * 60);
         });
     },
 
@@ -611,57 +563,33 @@ const sonidos = {
         const now = ctx.currentTime;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        
         osc.connect(gain);
         gain.connect(ctx.destination);
-        osc.type = 'sawtooth';
+        osc.type = 'sine';
         osc.frequency.setValueAtTime(300, now);
-        osc.frequency.exponentialRampToValueAtTime(100, now + 0.15);
-        
-        gain.gain.setValueAtTime(0.5, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-        
+        osc.frequency.exponentialRampToValueAtTime(150, now + 0.12);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
         osc.start(now);
-        osc.stop(now + 0.15);
+        osc.stop(now + 0.12);
     },
 
     guardado: () => {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const now = ctx.currentTime;
-        
         for (let i = 0; i < 3; i++) {
             setTimeout(() => {
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
                 osc.connect(gain);
                 gain.connect(ctx.destination);
-                osc.type = 'square';
-                osc.frequency.value = 1000 + (i * 300);
-                gain.gain.setValueAtTime(0.4, ctx.currentTime);
+                osc.type = 'sine';
+                osc.frequency.value = 700 + (i * 200);
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
                 osc.start(ctx.currentTime);
                 osc.stop(ctx.currentTime + 0.08);
-            }, i * 80);
+            }, i * 70);
         }
-    },
-
-    bienvenida: () => {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const notas = [523, 659, 784, 1047];
-        notas.forEach((freq, i) => {
-            setTimeout(() => {
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.type = 'sine';
-                osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.5, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.12);
-                osc.start(ctx.currentTime);
-                osc.stop(ctx.currentTime + 0.12);
-            }, i * 80);
-        });
     }
 };
 
@@ -685,7 +613,6 @@ function handleLogin() {
     const pass = document.getElementById('adminPass').value;
     if (pass === 'admin123') {
         sonidos.exito();
-        sonidos.bienvenida();
         document.getElementById('loginBox').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'block';
         cargarProductosExistentes();
@@ -695,7 +622,7 @@ function handleLogin() {
         showWelcomeModal();
     } else {
         sonidos.error();
-        toast('ACCESO DENEGADO', true);
+        toast('Contraseña incorrecta', true);
     }
 }
 
@@ -719,14 +646,14 @@ function showWelcomeModal() {
     modalDiv.className = 'modal-overlay';
     modalDiv.innerHTML = `
         <div class="modal-container" style="text-align:center; max-width:500px;">
-            <div style="font-size: 3.5rem; margin-bottom: 15px;">⚡</div>
-            <h2 style="color:#00ffff; margin: 10px 0; font-size: 1.8rem; text-shadow: 0 0 20px #00ffff; letter-spacing: 2px;">SISTEMA OPERATIVO</h2>
-            <p style="color:#00ff88; margin: 10px 0; font-size: 1rem; text-shadow: 0 0 10px rgba(0,255,136,0.5);">NEXUS v4.0 - SESIÓN INICIADA</p>
-            <div style="background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(0,255,255,0.1)); border: 2px solid #00ff88; border-radius: 5px; padding: 20px; margin: 20px 0;">
-                <div style="display:flex; justify-content:space-between; color: #00ff88; margin: 8px 0;"><span>» PRODUCTOS</span><strong id="welcomeProducts" style="color: #00ffff;">0</strong></div>
-                <div style="display:flex; justify-content:space-between; color: #00ff88; margin: 8px 0;"><span>» PEDIDOS</span><strong id="welcomeOrders" style="color: #00ffff;">0</strong></div>
+            <div style="font-size: 3.5rem; margin-bottom: 15px;">✨</div>
+            <h2 style="color:#6BA873; margin: 10px 0; font-size: 1.8rem; font-weight: 700;">¡Bienvenido!</h2>
+            <p style="color:#8AB894; margin: 10px 0; font-size: 1rem;">Sesión iniciada correctamente</p>
+            <div style="background: linear-gradient(135deg, rgba(168,213,184,0.1), rgba(184,223,199,0.1)); border: 2px solid #D8ECDF; border-radius: 12px; padding: 20px; margin: 20px 0;">
+                <div style="display:flex; justify-content:space-between; color: #6BA873; margin: 8px 0; font-weight: 600;"><span>📦 Productos</span><strong id="welcomeProducts" style="color: #8BC39F;">0</strong></div>
+                <div style="display:flex; justify-content:space-between; color: #6BA873; margin: 8px 0; font-weight: 600;"><span>📦 Pedidos</span><strong id="welcomeOrders" style="color: #8BC39F;">0</strong></div>
             </div>
-            <button class="btn btn-primary" style="width:100%; margin-top: 10px;" onclick="this.closest('.modal-overlay').remove()">» INICIALIZAR PANEL</button>
+            <button class="btn btn-primary" style="width:100%; margin-top: 10px;" onclick="this.closest('.modal-overlay').remove()">Entrar al panel</button>
         </div>
     `;
     document.body.appendChild(modalDiv);
@@ -742,18 +669,18 @@ async function cargarProductosEditor() {
         productosActuales = await response.json();
         renderizarEditorProductos();
     } catch (error) {
-        document.getElementById('editableTable').innerHTML = '<p class="vacio">ERROR CARGANDO PRODUCTOS</p>';
+        document.getElementById('editableTable').innerHTML = '<p class="vacio">Error cargando productos</p>';
     }
 }
 
 function renderizarEditorProductos() {
     const container = document.getElementById('editableTable');
     if (!productosActuales || productosActuales.length === 0) {
-        container.innerHTML = '<p class="vacio">» LISTA VACÍA</p>';
+        container.innerHTML = '<p class="vacio">No hay productos</p>';
         return;
     }
     
-    const headers = ['ID', 'NOMBRE', 'PRECIO', 'ORIGEN', 'IMG', 'DESC', 'GÉNERO', 'CATEGORÍA', 'ENLACE', 'ACCIONES'];
+    const headers = ['ID', 'Nombre', 'Precio', 'Origen', 'Imagen', 'Descripción', 'Género', 'Categoría', 'Enlace', 'Acciones'];
     
     let html = `<table class="data-table"><thead><tr>`;
     headers.forEach(h => html += `<th>${h}</th>`);
@@ -762,8 +689,8 @@ function renderizarEditorProductos() {
     productosActuales.forEach(prod => {
         const tieneEnlace = prod.enlace && prod.enlace !== '';
         const enlaceHtml = tieneEnlace ? 
-            `<a href="${prod.enlace}" target="_blank" style="color:#00ffff; text-decoration:none; font-size:1.2rem; cursor:pointer; text-shadow: 0 0 5px rgba(0,255,255,0.5);" title="Abrir enlace original">🔗</a>` : 
-            '<span style="color:#00ff88; opacity: 0.3;">❌</span>';
+            `<a href="${prod.enlace}" target="_blank" style="color:#6BA873; text-decoration:none; font-size:1.2rem; cursor:pointer;" title="Abrir enlace original">🔗</a>` : 
+            '<span style="color:#D8ECDF;">❌</span>';
         
         html += `
             <tr>
@@ -791,11 +718,11 @@ function renderizarEditorProductos() {
 async function guardarProductoRapido(id) {
     initAudio();
     const producto = productosActuales.find(p => p.id == id);
-    const nuevoPrecio = prompt('NUEVO PRECIO:', producto?.precio);
+    const nuevoPrecio = prompt('Nuevo precio:', producto?.precio);
     if (nuevoPrecio && !isNaN(parseFloat(nuevoPrecio))) {
         await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'actualizarPrecio', id, precio: parseFloat(nuevoPrecio) }) });
         sonidos.guardado();
-        toast('✅ ACTUALIZADO');
+        toast('✅ Actualizado');
         cargarProductosEditor();
         cargarProductosExistentes();
     }
@@ -809,16 +736,16 @@ function openFullEditModal(id) {
         <div id="modal-edicion" class="modal-overlay active">
             <div class="modal-container">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                    <h3 style="color:#00ffff; text-shadow: 0 0 10px rgba(0,255,255,0.6); letter-spacing: 2px;">⚙️ EDITAR #${producto.id}</h3>
-                    <button onclick="cerrarModalEdicion()" style="background:#ff0055; border:2px solid #ff0055; width:36px; height:36px; border-radius:5px; cursor:pointer; color: #fff; font-weight: 700;">✕</button>
+                    <h3 style="color:#6BA873; font-weight: 700;">✏️ Editar Producto #${producto.id}</h3>
+                    <button onclick="cerrarModalEdicion()" style="background:#F5C5C5; border:2px solid #E8A5A5; width:36px; height:36px; border-radius:8px; cursor:pointer; color: #8B5252; font-weight: 700;">✕</button>
                 </div>
-                <div style="margin-bottom:15px;"><label style="color: #00ffff; font-weight: 700;">📦 NOMBRE</label><input type="text" id="edit-nombre-modal" value="${escapeHtml(producto.nombre)}" style="width:100%; margin-top: 8px;"></div>
-                <div style="margin-bottom:15px;"><label style="color: #00ffff; font-weight: 700;">💰 PRECIO</label><input type="number" id="edit-precio-modal" value="${producto.precio}" step="0.01" style="width:100%; margin-top: 8px;"></div>
-                <div style="margin-bottom:15px;"><label style="color: #00ffff; font-weight: 700;">🌍 ORIGEN</label><select id="edit-origen-modal" style="width:100%; margin-top: 8px;"><option value="Amazon">Amazon</option><option value="Temu">Temu</option><option value="Shein">Shein</option></select></div>
-                <div style="margin-bottom:15px;"><label style="color: #00ffff; font-weight: 700;">🖼️ IMAGEN URL</label><input type="text" id="edit-imagen-modal" value="${escapeHtml(producto.imagen || '')}" style="width:100%; margin-top: 8px;"></div>
-                <div style="margin-bottom:15px;"><label style="color: #00ffff; font-weight: 700;">🔗 ENLACE</label><input type="text" id="edit-enlace-modal" value="${escapeHtml(producto.enlace || '')}" style="width:100%; margin-top: 8px;"></div>
-                <div style="margin-bottom:15px;"><label style="color: #00ffff; font-weight: 700;">🎯 GÉNERO</label><select id="edit-genero-modal" style="width:100%; margin-top: 8px;"><option value="unisex">Unisex</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option><option value="niño">Niño</option><option value="niña">Niña</option></select></div>
-                <div style="margin-bottom:15px;"><label style="color: #00ffff; font-weight: 700;">📂 CATEGORÍA</label><select id="edit-categoria-modal" style="width:100%; margin-top: 8px;">
+                <div style="margin-bottom:15px;"><label style="color: #6BA873; font-weight: 700;">📦 Nombre</label><input type="text" id="edit-nombre-modal" value="${escapeHtml(producto.nombre)}" style="width:100%; margin-top: 8px;"></div>
+                <div style="margin-bottom:15px;"><label style="color: #6BA873; font-weight: 700;">💰 Precio</label><input type="number" id="edit-precio-modal" value="${producto.precio}" step="0.01" style="width:100%; margin-top: 8px;"></div>
+                <div style="margin-bottom:15px;"><label style="color: #6BA873; font-weight: 700;">🌍 Origen</label><select id="edit-origen-modal" style="width:100%; margin-top: 8px;"><option value="Amazon">Amazon</option><option value="Temu">Temu</option><option value="Shein">Shein</option></select></div>
+                <div style="margin-bottom:15px;"><label style="color: #6BA873; font-weight: 700;">🖼️ Imagen URL</label><input type="text" id="edit-imagen-modal" value="${escapeHtml(producto.imagen || '')}" style="width:100%; margin-top: 8px;"></div>
+                <div style="margin-bottom:15px;"><label style="color: #6BA873; font-weight: 700;">🔗 Enlace</label><input type="text" id="edit-enlace-modal" value="${escapeHtml(producto.enlace || '')}" style="width:100%; margin-top: 8px;"></div>
+                <div style="margin-bottom:15px;"><label style="color: #6BA873; font-weight: 700;">🎯 Género</label><select id="edit-genero-modal" style="width:100%; margin-top: 8px;"><option value="unisex">Unisex</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option><option value="niño">Niño</option><option value="niña">Niña</option></select></div>
+                <div style="margin-bottom:15px;"><label style="color: #6BA873; font-weight: 700;">📂 Categoría</label><select id="edit-categoria-modal" style="width:100%; margin-top: 8px;">
                     <option value="">Sin categoría</option>
                     <option value="Ropa">👕 Ropa</option>
                     <option value="Zapatos">👟 Zapatos</option>
@@ -828,10 +755,10 @@ function openFullEditModal(id) {
                     <option value="Electrónica">📱 Electrónica</option>
                     <option value="Perfumes">🌸 Perfumes</option>
                 </select></div>
-                <div style="margin-bottom:15px;"><label style="color: #00ffff; font-weight: 700;">📝 DESCRIPCIÓN</label><textarea id="edit-descripcion-modal" rows="3" style="width:100%; margin-top: 8px;">${escapeHtml(producto.descripcion || '')}</textarea></div>
+                <div style="margin-bottom:15px;"><label style="color: #6BA873; font-weight: 700;">📝 Descripción</label><textarea id="edit-descripcion-modal" rows="3" style="width:100%; margin-top: 8px;">${escapeHtml(producto.descripcion || '')}</textarea></div>
                 <div style="display:flex; gap:12px; margin-top:20px;">
-                    <button onclick="guardarEdicionCompleta(${producto.id})" class="btn btn-primary" style="flex:1;">💾 GUARDAR</button>
-                    <button onclick="cerrarModalEdicion()" class="btn btn-outline" style="flex:1;">CANCELAR</button>
+                    <button onclick="guardarEdicionCompleta(${producto.id})" class="btn btn-primary" style="flex:1;">💾 Guardar</button>
+                    <button onclick="cerrarModalEdicion()" class="btn btn-outline" style="flex:1;">Cancelar</button>
                 </div>
             </div>
         </div>
@@ -857,15 +784,15 @@ async function guardarEdicionCompleta(id) {
         enlace: document.getElementById('edit-enlace-modal').value,
         categoria: document.getElementById('edit-categoria-modal').value
     };
-    if (!data.nombre || isNaN(data.precio)) { sonidos.error(); toast('ERROR: CAMPOS OBLIGATORIOS', true); return; }
+    if (!data.nombre || isNaN(data.precio)) { sonidos.error(); toast('Campos requeridos', true); return; }
     try {
         await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
         sonidos.guardado();
-        toast('✅ PRODUCTO ACTUALIZADO');
+        toast('✅ Producto actualizado');
         cerrarModalEdicion();
         cargarProductosEditor();
         cargarProductosExistentes();
-    } catch(e) { sonidos.error(); toast('ERROR EN SISTEMA', true); }
+    } catch(e) { sonidos.error(); toast('Error en el sistema', true); }
 }
 
 function escapeHtml(str) { if(!str) return ''; return String(str).replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
@@ -876,7 +803,7 @@ async function cargarPedidosAdmin() {
         const response = await fetch(`${API_URL}?action=getPedidosConEnlaces&t=${Date.now()}`);
         const pedidos = await response.json();
         const container = document.getElementById('ordersList');
-        if (!pedidos || !pedidos.length) { container.innerHTML = '<p class="vacio">» SIN PEDIDOS</p>'; return; }
+        if (!pedidos || !pedidos.length) { container.innerHTML = '<p class="vacio">Sin pedidos</p>'; return; }
         container.innerHTML = '';
         pedidos.forEach(pedido => {
             const card = document.createElement('div');
@@ -884,44 +811,44 @@ async function cargarPedidosAdmin() {
             card.style.marginBottom = '15px';
             card.innerHTML = `
                 <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
-                    <strong style="color: #00ffff;">PEDIDO #${pedido.idPedido || pedido.id}</strong>
-                    <span style="color: #00ff88;">📅 ${new Date(pedido.fecha).toLocaleString()}</span>
-                    <span style="background:${pedido.estado === 'Pendiente' ? 'rgba(255,0,85,0.3)' : 'rgba(0,255,136,0.3)'}; padding:6px 14px; border-radius:4px; border: 1px solid ${pedido.estado === 'Pendiente' ? '#ff0055' : '#00ff88'}; color: ${pedido.estado === 'Pendiente' ? '#ff88bb' : '#00ff88'}; font-weight: 700;">${pedido.estado || 'Pendiente'}</span>
+                    <strong style="color: #6BA873;">#${pedido.idPedido || pedido.id}</strong>
+                    <span style="color: #8AB894;">📅 ${new Date(pedido.fecha).toLocaleString()}</span>
+                    <span style="background:${pedido.estado === 'Pendiente' ? 'rgba(245,197,197,0.3)' : 'rgba(168,213,184,0.3)'}; padding:6px 14px; border-radius:8px; border: 1px solid ${pedido.estado === 'Pendiente' ? '#E8A5A5' : '#D8ECDF'}; color: ${pedido.estado === 'Pendiente' ? '#8B5252' : '#4a7654'}; font-weight: 700;">${pedido.estado || 'Pendiente'}</span>
                 </div>
-                <div style="color: #00ff88;"><strong style="color: #00ffff;">👤 ${pedido.nombre}</strong> | 📱 ${pedido.telefono || 'N/A'}</div>
-                <div style="color: #00ff88;">📍 ${pedido.direccion}</div>
-                <div style="color: #00ff88;">💳 ${pedido.metodoPago}</div>
-                <div style="color: #00ffff; font-weight: 700;">💰 TOTAL: $${(pedido.total || 0).toFixed(2)}</div>
+                <div style="color: #4a5d54;"><strong style="color: #6BA873;">👤 ${pedido.nombre}</strong> | 📱 ${pedido.telefono || 'N/A'}</div>
+                <div style="color: #4a5d54;">📍 ${pedido.direccion}</div>
+                <div style="color: #4a5d54;">💳 ${pedido.metodoPago}</div>
+                <div style="color: #6BA873; font-weight: 700;">💰 Total: $${(pedido.total || 0).toFixed(2)}</div>
                 <div style="margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap;">
-                    <select onchange="cambiarEstadoPedido(${pedido.id}, this.value)" style="padding:8px 12px; border-radius:5px; border:2px solid #00ff88; background: rgba(10,14,39,0.8); color: #00ff88; font-weight: 700; cursor: pointer;">
+                    <select onchange="cambiarEstadoPedido(${pedido.id}, this.value)" style="padding:8px 12px; border-radius:8px; border:2px solid #D8ECDF; background: #F5FBF8; color: #4a5d54; font-weight: 700; cursor: pointer;">
                         <option value="Pendiente" ${pedido.estado === 'Pendiente' ? 'selected' : ''}>⏳ Pendiente</option>
                         <option value="Pagado" ${pedido.estado === 'Pagado' ? 'selected' : ''}>✅ Pagado</option>
                         <option value="Enviado" ${pedido.estado === 'Enviado' ? 'selected' : ''}>📦 Enviado</option>
                         <option value="Entregado" ${pedido.estado === 'Entregado' ? 'selected' : ''}>🏠 Entregado</option>
                     </select>
-                    <button class="btn btn-outline" style="padding:8px 14px;" onclick="registrarPagoModal(${pedido.id}, ${pedido.total || 0}, '${pedido.nombre.replace(/'/g, "\\'")}')">💰 PAGO</button>
+                    <button class="btn btn-outline" style="padding:8px 14px;" onclick="registrarPagoModal(${pedido.id}, ${pedido.total || 0}, '${pedido.nombre.replace(/'/g, "\\'")}')">💰 Pago</button>
                 </div>
             `;
             container.appendChild(card);
         });
-    } catch (error) { document.getElementById('ordersList').innerHTML = '<p class="vacio">ERROR CARGANDO PEDIDOS</p>'; }
+    } catch (error) { document.getElementById('ordersList').innerHTML = '<p class="vacio">Error cargando pedidos</p>'; }
 }
 
 async function cambiarEstadoPedido(id, estado) {
     initAudio();
     sonidos.click();
     await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'actualizarEstado', fila: id, estado }) });
-    toast('✅ ESTADO ACTUALIZADO');
+    toast('✅ Estado actualizado');
     cargarPedidosAdmin();
 }
 
 function registrarPagoModal(id, total, nombre) {
-    const monto = prompt(`💰 MONTO PAGADO\n"${nombre}"\nTOTAL: $${total.toFixed(2)}`, total.toFixed(2));
+    const monto = prompt(`💰 Monto pagado\n"${nombre}"\nTotal: $${total.toFixed(2)}`, total.toFixed(2));
     if (monto && !isNaN(parseFloat(monto))) {
         initAudio();
         sonidos.exito();
         fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'registrarPago', idPedido: id, montoPagado: parseFloat(monto) }) });
-        toast(`✅ PAGO: $${parseFloat(monto).toFixed(2)}`);
+        toast(`✅ Pago registrado: $${parseFloat(monto).toFixed(2)}`);
         cargarPedidosAdmin();
     }
 }
@@ -932,12 +859,12 @@ async function cargarProductosExistentes() {
         const response = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
         productosActuales = await response.json();
         mostrarListaProductos();
-    } catch (error) { document.getElementById('simpleProductList').innerHTML = '<p class="vacio">ERROR CARGANDO</p>'; }
+    } catch (error) { document.getElementById('simpleProductList').innerHTML = '<p class="vacio">Error cargando</p>'; }
 }
 
 function mostrarListaProductos() {
     const container = document.getElementById('simpleProductList');
-    if (!productosActuales || !productosActuales.length) { container.innerHTML = '<p class="vacio">» LISTA VACÍA</p>'; return; }
+    if (!productosActuales || !productosActuales.length) { container.innerHTML = '<p class="vacio">No hay productos</p>'; return; }
     container.innerHTML = '';
     productosActuales.forEach(prod => {
         const div = document.createElement('div');
@@ -945,37 +872,37 @@ function mostrarListaProductos() {
         div.style.marginBottom = '15px';
         div.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <strong style="color:#00ffff; font-size: 1.1rem;">#${prod.id}</strong>
-                <strong style="color: #00ff88;">${prod.nombre.substring(0, 55)}</strong>
+                <strong style="color:#6BA873; font-size: 1.1rem;">#${prod.id}</strong>
+                <strong style="color: #4a5d54;">${prod.nombre.substring(0, 55)}</strong>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <button class="btn btn-outline" style="padding: 6px 14px; font-size: 0.8rem;" onclick="editarPrecioProducto(${prod.id}, '${prod.nombre.replace(/'/g, "\\'")}', ${prod.precio})">✏️</button>
                     <button class="btn btn-danger" style="padding: 6px 14px; font-size: 0.8rem;" onclick="eliminarProducto(${prod.id})">🗑️</button>
                 </div>
             </div>
-            <div style="margin-top: 8px; color:#00ff88; font-size:0.85rem;">💰 $${prod.precio.toFixed(2)} | 📦 ${prod.origen} | 👤 ${prod.genero || 'unisex'} | 📂 ${prod.categoria || '-'}</div>
-            ${prod.enlace ? `<div style="margin-top:8px; font-size:0.8rem;"><a href="${prod.enlace}" target="_blank" style="color:#00ffff; text-shadow: 0 0 5px rgba(0,255,255,0.5);">🔗 VER ORIGINAL</a></div>` : ''}
+            <div style="margin-top: 8px; color:#4a5d54; font-size:0.85rem;">💰 $${prod.precio.toFixed(2)} | 📦 ${prod.origen} | 👤 ${prod.genero || 'unisex'} | 📂 ${prod.categoria || '-'}</div>
+            ${prod.enlace ? `<div style="margin-top:8px; font-size:0.8rem;"><a href="${prod.enlace}" target="_blank" style="color:#6BA873;">🔗 Ver original</a></div>` : ''}
         `;
         container.appendChild(div);
     });
 }
 
 async function eliminarProducto(id) {
-    if (confirm(`¿ELIMINAR PRODUCTO #${id}?`)) {
+    if (confirm(`¿Eliminar producto #${id}?`)) {
         initAudio();
         sonidos.error();
         await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'eliminarProducto', id }) });
-        toast('✅ ELIMINADO');
+        toast('✅ Eliminado');
         setTimeout(() => { cargarProductosExistentes(); cargarProductosEditor(); }, 1000);
     }
 }
 
 function editarPrecioProducto(id, nombre, precioActual) {
-    const nuevoPrecio = prompt(`EDITAR PRECIO\n"${nombre}"\n\nPRECIO ACTUAL: $${precioActual.toFixed(2)}`, precioActual.toFixed(2));
+    const nuevoPrecio = prompt(`Editar precio\n"${nombre}"\n\nPrecio actual: $${precioActual.toFixed(2)}`, precioActual.toFixed(2));
     if (nuevoPrecio && !isNaN(parseFloat(nuevoPrecio))) {
         initAudio();
         sonidos.guardado();
         fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'actualizarPrecio', id, precio: parseFloat(nuevoPrecio) }) });
-        toast('✅ PRECIO ACTUALIZADO');
+        toast('✅ Precio actualizado');
         setTimeout(() => { cargarProductosExistentes(); cargarProductosEditor(); }, 1000);
     }
 }
@@ -991,27 +918,27 @@ function updateSize(colorId, idx, field, val) { const c = coloresAgregar.find(c 
 function renderizarColoresAgregar() {
     const container = document.getElementById('variantsContainer');
     if (!container) return;
-    if (!coloresAgregar.length) { container.innerHTML = '<p style="color:#00ff88; text-shadow: 0 0 5px rgba(0,255,136,0.5);">» AGREGA COLORES CON TALLAS</p>'; return; }
+    if (!coloresAgregar.length) { container.innerHTML = '<p style="color:#8AB894;">Agrega colores con tallas</p>'; return; }
     container.innerHTML = coloresAgregar.map(c => `
         <div class="color-chip">
             <div class="flex-row">
-                <input type="text" placeholder="COLOR" value="${c.nombre}" style="flex:2" onchange="updateColorField(${c.id},'nombre',this.value)">
-                <input type="text" placeholder="IMAGEN URL" value="${c.imagen}" style="flex:3" onchange="updateColorField(${c.id},'imagen',this.value)">
-                <input type="number" placeholder="PRECIO" value="${c.precio}" step="0.01" style="flex:1" onchange="updateColorField(${c.id},'precio',parseFloat(this.value) || 0)">
+                <input type="text" placeholder="Color" value="${c.nombre}" style="flex:2" onchange="updateColorField(${c.id},'nombre',this.value)">
+                <input type="text" placeholder="Imagen URL" value="${c.imagen}" style="flex:3" onchange="updateColorField(${c.id},'imagen',this.value)">
+                <input type="number" placeholder="Precio" value="${c.precio}" step="0.01" style="flex:1" onchange="updateColorField(${c.id},'precio',parseFloat(this.value) || 0)">
                 <button class="btn btn-danger" style="padding: 8px 12px;" onclick="removeColorVariant(${c.id})">🗑️</button>
             </div>
             <div class="tallas-group">
-                <strong style="color: #00ffff; text-shadow: 0 0 5px rgba(0,255,255,0.5);">📏 TALLAS</strong>
+                <strong style="color: #6BA873;">📏 Tallas</strong>
                 <div style="margin-top: 10px;">
                     ${c.tallas.map((t, idx) => `
                         <div class="flex-row" style="margin-bottom: 10px;">
-                            <input type="text" placeholder="TALLA" value="${t.talla}" style="width:100px; margin-right: 8px;" onchange="updateSize(${c.id},${idx},'talla',this.value)">
-                            <input type="number" placeholder="PRECIO" value="${t.precio}" step="0.01" style="width:140px; margin-right: 8px;" onchange="updateSize(${c.id},${idx},'precio',parseFloat(this.value) || 0)">
+                            <input type="text" placeholder="Talla" value="${t.talla}" style="width:100px; margin-right: 8px;" onchange="updateSize(${c.id},${idx},'talla',this.value)">
+                            <input type="number" placeholder="Precio" value="${t.precio}" step="0.01" style="width:140px; margin-right: 8px;" onchange="updateSize(${c.id},${idx},'precio',parseFloat(this.value) || 0)">
                             <button class="btn btn-danger" style="padding: 6px 12px;" onclick="removeSize(${c.id},${idx})">✕</button>
                         </div>
                     `).join('')}
                 </div>
-                <button class="btn btn-outline" onclick="addSizeToColor(${c.id})" style="margin-top: 10px;">+ TALLA</button>
+                <button class="btn btn-outline" onclick="addSizeToColor(${c.id})" style="margin-top: 10px;">+ Talla</button>
             </div>
         </div>
     `).join('');
@@ -1022,7 +949,7 @@ async function saveProduct() {
     initAudio();
     const nombre = document.getElementById('prodName').value;
     const precioBase = parseFloat(document.getElementById('prodPrice').value);
-    if (!nombre || !precioBase) { sonidos.error(); toast('CAMPOS REQUERIDOS', true); return; }
+    if (!nombre || !precioBase) { sonidos.error(); toast('Campos requeridos', true); return; }
     
     const coloresNombres = coloresAgregar.map(c => c.nombre).filter(n => n).join(',');
     const coloresImagenes = coloresAgregar.map(c => c.imagen).filter(i => i).join(',');
@@ -1039,7 +966,7 @@ async function saveProduct() {
         imagen: document.getElementById('prodImage').value || 'https://via.placeholder.com/300x200',
         enlace: document.getElementById('prodLink').value || '',
         categoria_genero: document.getElementById('prodGender').value,
-        descripcion: document.getElementById('prodDesc').value || 'Producto de calidad',
+        descripcion: document.getElementById('prodDesc').value || 'Producto',
         colores_nombres: coloresNombres, colores_imagenes: coloresImagenes, colores_precios: coloresPrecios,
         tiene_variantes: coloresAgregar.length ? 'SI' : 'NO', variantes: variantesTexto,
         categoria: document.getElementById('prodCategory').value
@@ -1047,7 +974,7 @@ async function saveProduct() {
     
     await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
     sonidos.guardado();
-    toast('✅ PRODUCTO GUARDADO');
+    toast('✅ Producto guardado');
     resetForm();
     cargarProductosExistentes();
     cargarProductosEditor();
@@ -1066,7 +993,7 @@ function resetForm() {
 
 function generateProductJSON() {
     const nombre = document.getElementById('prodName').value;
-    if (!nombre) return toast('ESCRIBE NOMBRE PRIMERO', true);
+    if (!nombre) return toast('Escribe nombre primero', true);
     const coloresNombres = coloresAgregar.map(c => c.nombre).filter(n=>n).join(',');
     const coloresImagenes = coloresAgregar.map(c => c.imagen).filter(i=>i).join(',');
     const coloresPrecios = coloresAgregar.map(c => c.precio).filter(p=>p).join(',');
@@ -1080,7 +1007,7 @@ function generateProductJSON() {
     document.getElementById('jsonArea').value = row.join('\t');
     document.getElementById('jsonPreview').style.display = 'block';
     sonidos.guardado();
-    toast('📋 JSON GENERADO');
+    toast('📋 JSON generado');
 }
 
 function copyJSON() { 
@@ -1088,7 +1015,7 @@ function copyJSON() {
     document.getElementById('jsonArea').select(); 
     document.execCommand('copy'); 
     sonidos.exito();
-    toast('📋 COPIADO'); 
+    toast('📋 Copiado'); 
 }
 
 // ==================== TABS ====================
