@@ -662,6 +662,23 @@ function showWelcomeModal() {
     fetch(`${API_URL}?action=getPedidosConEnlaces`).then(r=>r.json()).then(p=> document.getElementById('welcomeOrders').innerText = p.length);
 }
 
+// ==================== OBTENER ÚLTIMO ID CORRECTO ====================
+async function obtenerUltimoIdCorrecto() {
+    try {
+        const response = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
+        const productos = await response.json();
+        if (productos && productos.length > 0) {
+            const maxId = Math.max(...productos.map(p => parseInt(p.id) || 0));
+            console.log(`📊 Último ID encontrado: ${maxId}, Total productos: ${productos.length}`);
+            return maxId;
+        }
+        return 0;
+    } catch (error) {
+        console.error('Error obteniendo último ID:', error);
+        return 0;
+    }
+}
+
 // ==================== EDITOR DE PRODUCTOS ====================
 async function cargarProductosEditor() {
     try {
@@ -944,12 +961,18 @@ function renderizarColoresAgregar() {
     `).join('');
 }
 
-// ==================== GUARDAR PRODUCTO ====================
+// ==================== GUARDAR PRODUCTO CORREGIDO ====================
 async function saveProduct() {
     initAudio();
     const nombre = document.getElementById('prodName').value;
     const precioBase = parseFloat(document.getElementById('prodPrice').value);
     if (!nombre || !precioBase) { sonidos.error(); toast('Campos requeridos', true); return; }
+    
+    // 🔥 OBTENER EL ÚLTIMO ID CORRECTO ANTES DE GUARDAR
+    const ultimoId = await obtenerUltimoIdCorrecto();
+    const nuevoId = ultimoId + 1;
+    
+    console.log(`📝 Guardando producto con ID: ${nuevoId} (último ID era: ${ultimoId})`);
     
     const coloresNombres = coloresAgregar.map(c => c.nombre).filter(n => n).join(',');
     const coloresImagenes = coloresAgregar.map(c => c.imagen).filter(i => i).join(',');
@@ -961,23 +984,62 @@ async function saveProduct() {
     
     const payload = {
         action: 'agregarProducto',
-        nombre, precio: precioBase,
+        id: nuevoId,  // Enviar el ID calculado
+        nombre: nombre,
+        precio: precioBase,
         origen: document.getElementById('prodPlatform').value,
         imagen: document.getElementById('prodImage').value || 'https://via.placeholder.com/300x200',
         enlace: document.getElementById('prodLink').value || '',
         categoria_genero: document.getElementById('prodGender').value,
         descripcion: document.getElementById('prodDesc').value || 'Producto',
-        colores_nombres: coloresNombres, colores_imagenes: coloresImagenes, colores_precios: coloresPrecios,
-        tiene_variantes: coloresAgregar.length ? 'SI' : 'NO', variantes: variantesTexto,
-        categoria: document.getElementById('prodCategory').value
+        colores_nombres: coloresNombres,
+        colores_imagenes: coloresImagenes,
+        colores_precios: coloresPrecios,
+        tiene_variantes: coloresAgregar.length ? 'SI' : 'NO',
+        variantes: variantesTexto,
+        categoria: document.getElementById('prodCategory').value,
+        activo: 'SI'
     };
     
-    await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-    sonidos.guardado();
-    toast('✅ Producto guardado');
-    resetForm();
-    cargarProductosExistentes();
-    cargarProductosEditor();
+    // Usar un iframe oculto para evitar problemas de CORS
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = API_URL;
+    form.target = 'hiddenFrame';
+    form.style.display = 'none';
+    
+    const input = document.createElement('input');
+    input.name = 'payload';
+    input.value = JSON.stringify(payload);
+    form.appendChild(input);
+    
+    document.body.appendChild(form);
+    
+    // Crear iframe oculto si no existe
+    let iframe = document.getElementById('hiddenFrame');
+    if (!iframe) {
+        iframe = document.createElement('iframe');
+        iframe.name = 'hiddenFrame';
+        iframe.id = 'hiddenFrame';
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+    }
+    
+    // Escuchar respuesta
+    iframe.onload = function() {
+        sonidos.guardado();
+        toast(`✅ Producto "${nombre}" guardado con ID: ${nuevoId}`);
+        resetForm();
+        setTimeout(() => {
+            cargarProductosExistentes();
+            cargarProductosEditor();
+        }, 1500);
+    };
+    
+    form.submit();
+    setTimeout(() => {
+        if (document.body.contains(form)) document.body.removeChild(form);
+    }, 1000);
 }
 
 function resetForm() {
@@ -986,6 +1048,9 @@ function resetForm() {
     document.getElementById('prodImage').value = '';
     document.getElementById('prodLink').value = '';
     document.getElementById('prodDesc').value = '';
+    document.getElementById('prodCategory').value = '';
+    document.getElementById('prodGender').value = 'unisex';
+    document.getElementById('prodPlatform').value = 'Amazon';
     coloresAgregar = [];
     renderizarColoresAgregar();
     document.getElementById('jsonPreview').style.display = 'none';
