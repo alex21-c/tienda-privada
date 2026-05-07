@@ -451,8 +451,10 @@
                 <input type="text" id="prodName" placeholder="Nombre del producto">
                 <input type="number" id="prodPrice" placeholder="Precio base" step="0.01">
                 <select id="prodPlatform">
-                    <option value="Amazon">Amazon</option><option value="Temu">Temu</option>
-                    <option value="Shein">Shein</option><option value="Sephora">Sephora</option>
+                    <option value="Amazon">Amazon</option>
+                    <option value="Temu">Temu</option>
+                    <option value="Shein">Shein</option>
+                    <option value="Sephora">Sephora</option>
                 </select>
                 <input type="text" id="prodImage" placeholder="URL imagen principal">
                 <input type="text" id="prodLink" placeholder="URL producto original">
@@ -460,17 +462,24 @@
                     <option value="unisex">Unisex</option><option value="hombre">Hombre</option>
                     <option value="mujer">Mujer</option><option value="niño">Niño</option><option value="niña">Niña</option>
                 </select>
-                <select id="prodCategory">
-                    <option value="">Sin categoría</option>
-                    <option value="Ropa">👕 Ropa</option>
-                    <option value="Zapatos">👟 Zapatos</option>
-                    <option value="Accesorios">💍 Accesorios</option>
-                    <option value="Cuidado de la piel">🧴 Cuidado de la piel</option>
-                    <option value="Cuidado del cabello">💇 Cuidado del cabello</option>
-                    <option value="Electrónica">📱 Electrónica</option>
-                    <option value="Perfumes">🌸 Perfumes</option>
-                    <option value="Maquillaje">💄 Maquillaje</option>
-                </select>
+                
+                <!-- Categoría dinámica: normal + subcategorías para Sephora -->
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <select id="prodCategory" style="width:100%;">
+                        <option value="">Sin categoría</option>
+                        <option value="Ropa">👕 Ropa</option>
+                        <option value="Zapatos">👟 Zapatos</option>
+                        <option value="Accesorios">💍 Accesorios</option>
+                        <option value="Electrónica">📱 Electrónica</option>
+                    </select>
+                    <select id="subcategoriaSephora" style="width:100%; display: none;">
+                        <option value="">-- Subcategoría Sephora --</option>
+                        <option value="Cuidado de la piel">🧴 Cuidado de la piel</option>
+                        <option value="Cuidado del cabello">💇 Cuidado del cabello</option>
+                        <option value="Maquillaje">💄 Maquillaje</option>
+                        <option value="Perfume">🌸 Perfume</option>
+                    </select>
+                </div>
                 <textarea id="prodDesc" rows="2" placeholder="Descripción corta..."></textarea>
             </div>
         </div>
@@ -621,6 +630,19 @@ function handleLogin() {
         cargarProductosEditor();
         configurarTabs();
         showWelcomeModal();
+        
+        // Configurar lógica de subcategorías Sephora
+        const plataformaSelect = document.getElementById('prodPlatform');
+        const subcatDiv = document.getElementById('subcategoriaSephora');
+        const updateSubcategory = () => {
+            if (plataformaSelect.value === 'Sephora') {
+                subcatDiv.style.display = 'block';
+            } else {
+                subcatDiv.style.display = 'none';
+            }
+        };
+        plataformaSelect.addEventListener('change', updateSubcategory);
+        updateSubcategory();
     } else {
         sonidos.error();
         toast('Contraseña incorrecta', true);
@@ -746,17 +768,7 @@ function openFullEditModal(id) {
                 <div style="margin-bottom:15px;"><label style="color: #6BA873; font-weight: 700;">🖼️ Imagen URL</label><input type="text" id="edit-imagen-modal" value="${escapeHtml(producto.imagen || '')}" style="margin-top:8px;"></div>
                 <div style="margin-bottom:15px;"><label style="color: #6BA873; font-weight: 700;">🔗 Enlace</label><input type="text" id="edit-enlace-modal" value="${escapeHtml(producto.enlace || '')}" style="margin-top:8px;"></div>
                 <div style="margin-bottom:15px;"><label style="color: #6BA873; font-weight: 700;">🎯 Género</label><select id="edit-genero-modal" style="width:100%; margin-top: 8px;"><option value="unisex">Unisex</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option><option value="niño">Niño</option><option value="niña">Niña</option></select></div>
-                <div style="margin-bottom:15px;"><label style="color: #6BA873; font-weight: 700;">📂 Categoría</label><select id="edit-categoria-modal" style="width:100%; margin-top: 8px;">
-                    <option value="">Sin categoría</option>
-                    <option value="Ropa">👕 Ropa</option>
-                    <option value="Zapatos">👟 Zapatos</option>
-                    <option value="Accesorios">💍 Accesorios</option>
-                    <option value="Cuidado de la piel">🧴 Cuidado de la piel</option>
-                    <option value="Cuidado del cabello">💇 Cuidado del cabello</option>
-                    <option value="Electrónica">📱 Electrónica</option>
-                    <option value="Perfumes">🌸 Perfumes</option>
-                    <option value="Maquillaje">💄 Maquillaje</option>
-                </select></div>
+                <div style="margin-bottom:15px;"><label style="color: #6BA873; font-weight: 700;">📂 Categoría</label><input type="text" id="edit-categoria-modal" value="${escapeHtml(producto.categoria || '')}" style="margin-top:8px;"></div>
                 <div style="margin-bottom:15px;"><label style="color: #6BA873; font-weight: 700;">📝 Descripción</label><textarea id="edit-descripcion-modal" rows="3" style="width:100%; margin-top: 8px;">${escapeHtml(producto.descripcion || '')}</textarea></div>
                 <div style="display:flex; gap:12px; margin-top:20px;">
                     <button onclick="guardarEdicionCompleta(${producto.id})" class="btn btn-primary" style="flex:1;">💾 Guardar</button>
@@ -953,6 +965,15 @@ async function saveProduct() {
     const precioBase = parseFloat(document.getElementById('prodPrice').value);
     if (!nombre || !precioBase) { sonidos.error(); toast('Campos requeridos', true); return; }
     
+    // Lógica de categoría principal + subcategoría para Sephora
+    let categoriaFinal = document.getElementById('prodCategory').value;
+    const plataforma = document.getElementById('prodPlatform').value;
+    const subcategoriaSelect = document.getElementById('subcategoriaSephora');
+    
+    if (plataforma === 'Sephora' && subcategoriaSelect.style.display !== 'none' && subcategoriaSelect.value) {
+        categoriaFinal = subcategoriaSelect.value;
+    }
+    
     const coloresNombres = coloresAgregar.map(c => c.nombre).filter(n => n).join(',');
     const coloresImagenes = coloresAgregar.map(c => c.imagen).filter(i => i).join(',');
     const coloresPrecios = coloresAgregar.map(c => c.precio).filter(p => p).join(',');
@@ -964,14 +985,14 @@ async function saveProduct() {
     const payload = {
         action: 'agregarProducto',
         nombre, precio: precioBase,
-        origen: document.getElementById('prodPlatform').value,
+        origen: plataforma,
         imagen: document.getElementById('prodImage').value || 'https://via.placeholder.com/300x200',
         enlace: document.getElementById('prodLink').value || '',
         categoria_genero: document.getElementById('prodGender').value,
         descripcion: document.getElementById('prodDesc').value || 'Producto',
         colores_nombres: coloresNombres, colores_imagenes: coloresImagenes, colores_precios: coloresPrecios,
         tiene_variantes: coloresAgregar.length ? 'SI' : 'NO', variantes: variantesTexto,
-        categoria: document.getElementById('prodCategory').value
+        categoria: categoriaFinal
     };
     
     await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
@@ -988,6 +1009,8 @@ function resetForm() {
     document.getElementById('prodImage').value = '';
     document.getElementById('prodLink').value = '';
     document.getElementById('prodDesc').value = '';
+    document.getElementById('prodCategory').value = '';
+    document.getElementById('subcategoriaSephora').value = '';
     coloresAgregar = [];
     renderizarColoresAgregar();
     document.getElementById('jsonPreview').style.display = 'none';
@@ -1000,7 +1023,12 @@ function generateProductJSON() {
     const coloresImagenes = coloresAgregar.map(c => c.imagen).filter(i=>i).join(',');
     const coloresPrecios = coloresAgregar.map(c => c.precio).filter(p=>p).join(',');
     const variantes = coloresAgregar.filter(c=>c.tallas.length).map(c=>`${c.nombre}:${c.tallas.map(t=>`${t.talla}:${t.precio}`).join(',')}`).join('|');
-    const json = { nombre, precio_base: parseFloat(document.getElementById('prodPrice').value), plataforma: document.getElementById('prodPlatform').value, genero: document.getElementById('prodGender').value, categoria: document.getElementById('prodCategory').value, descripcion: document.getElementById('prodDesc').value, colores_nombres: coloresNombres, colores_imagenes: coloresImagenes, colores_precios: coloresPrecios, variantes: variantes };
+    const plataforma = document.getElementById('prodPlatform').value;
+    let categoriaFinal = document.getElementById('prodCategory').value;
+    const subcat = document.getElementById('subcategoriaSephora');
+    if (plataforma === 'Sephora' && subcat.style.display !== 'none' && subcat.value) categoriaFinal = subcat.value;
+    
+    const json = { nombre, precio_base: parseFloat(document.getElementById('prodPrice').value), plataforma: plataforma, genero: document.getElementById('prodGender').value, categoria: categoriaFinal, descripcion: document.getElementById('prodDesc').value, colores_nombres: coloresNombres, colores_imagenes: coloresImagenes, colores_precios: coloresPrecios, variantes: variantes };
     document.getElementById('jsonArea').value = JSON.stringify(json, null, 2);
     document.getElementById('jsonPreview').style.display = 'block';
     sonidos.click();
