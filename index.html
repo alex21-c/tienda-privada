@@ -91,7 +91,6 @@
             transform: translateY(-2px);
         }
         .subcat-btn:hover:not(.active) { border-color: #66bb6a; color: #4caf50; }
-        .amazon-only { display: none; }
         
         .genero-container { margin: 15px 0; padding: 12px 0; background: rgba(76, 175, 80, 0.05); border-radius: 30px; display: none; }
         .genero-container.visible { display: block; }
@@ -168,6 +167,7 @@
         .origen-amazon { background: #ffd54f20; color: #f57f17; border: 1px solid #ffd54f40; }
         .origen-temu { background: #ff7043; color: white; border: 1px solid #ff5722; }
         .origen-shein { background: #e91e6320; color: #c2185b; border: 1px solid #e91e6340; }
+        .origen-sephora { background: #e91e63; color: white; border: 1px solid #c2185b; }
         .producto-genero { display: inline-block; padding: 4px 12px; border-radius: 60px; font-size: 0.7rem; background: #e8f5e9; color: #66bb6a; border: 1px solid #81c784; }
         .producto-categoria { display: inline-block; padding: 4px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 600; background: rgba(102, 187, 106, 0.1); color: #66bb6a; }
         .producto-titulo { font-size: 1rem; font-weight: 600; color: #1b5e20; margin: 10px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -518,22 +518,6 @@
             color: white;
         }
 
-        #selector-variante {
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 60px;
-            border: 2px solid #81c784;
-            background: white;
-            font-family: inherit;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 600;
-            color: #1b5e20;
-        }
-
-        #selector-variante:focus { outline: none; border-color: #66bb6a; }
-
         #modal-agregar {
             width: 100%;
             background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
@@ -631,6 +615,7 @@
                 <button class="filtro-btn" data-filtro="Amazon">Amazon</button>
                 <button class="filtro-btn" data-filtro="Temu">Temu</button>
                 <button class="filtro-btn" data-filtro="Shein">Shein</button>
+                <button class="filtro-btn" data-filtro="Sephora">Sephora</button>
             </div>
             <div class="acciones-top">
                 <button id="toggle-mis-pedidos" class="mis-pedidos-btn">📦 Mis Pedidos</button>
@@ -639,14 +624,8 @@
         </div>
         
         <div id="subcategorias-container" class="subcategorias-container">
-            <div class="subcategorias">
-                <button class="subcat-btn" data-subcat="ropa">👕 Ropa</button>
-                <button class="subcat-btn" data-subcat="zapatos">👟 Zapatos</button>
-                <button class="subcat-btn" data-subcat="accesorios">💍 Accesorios</button>
-                <button class="subcat-btn" data-subcat="cuidado_piel">🧴 Cuidado de la piel</button>
-                <button class="subcat-btn" data-subcat="cuidado_cabello">💇 Cuidado del cabello</button>
-                <button class="subcat-btn" data-subcat="electronica">📱 Electrónica</button>
-                <button class="subcat-btn amazon-only" data-subcat="perfumes" style="display:none;">🌸 Perfumes</button>
+            <div class="subcategorias" id="subcategorias-list">
+                <!-- Las subcategorías se generarán dinámicamente según la plataforma seleccionada -->
             </div>
         </div>
         
@@ -704,11 +683,48 @@ const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQ
 let productos = [], carrito = [], productoActual = null, colorSeleccionado = null, tallaSeleccionada = null;
 let filtroPlataforma = 'todos', filtroSubcat = null, filtroGenero = 'todos';
 
-const mapaSubcategorias = { 
-    'ropa':'ropa', 'zapatos':'zapatos', 'accesorios':'accesorios',
-    'cuidado_piel':'cuidado de la piel', 'cuidado_cabello':'cuidado del cabello',
-    'electronica':'electrónica', 'perfumes':'perfumes'
+// Mapeo de subcategorías según plataforma
+const subcategoriasPorPlataforma = {
+    'Sephora': ['Cuidado de la piel', 'Cuidado del cabello', 'Maquillaje', 'Perfume']
 };
+
+// Mapeo de nombres para mostrar
+const nombresSubcategorias = {
+    'Cuidado de la piel': '🧴 Cuidado de la piel',
+    'Cuidado del cabello': '💇 Cuidado del cabello',
+    'Maquillaje': '💄 Maquillaje',
+    'Perfume': '🌸 Perfume'
+};
+
+function actualizarSubcategorias() {
+    const container = document.getElementById('subcategorias-list');
+    const subcatContainer = document.getElementById('subcategorias-container');
+    
+    if (filtroPlataforma !== 'todos' && subcategoriasPorPlataforma[filtroPlataforma]) {
+        const subs = subcategoriasPorPlataforma[filtroPlataforma];
+        container.innerHTML = subs.map(sub => `
+            <button class="subcat-btn" data-subcat="${sub.toLowerCase().replace(/ /g, '_')}">${nombresSubcategorias[sub] || sub}</button>
+        `).join('');
+        subcatContainer.classList.add('visible');
+        
+        // Agregar event listeners a los nuevos botones
+        document.querySelectorAll('.subcat-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.subcat-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                filtroSubcat = btn.dataset.subcat;
+                document.getElementById('genero-container').classList.add('visible');
+                filtroGenero = 'todos';
+                document.querySelectorAll('.genero-btn').forEach(b => b.classList.remove('active'));
+                document.querySelector('.genero-btn[data-genero="todos"]')?.classList.add('active');
+                mostrarProductos();
+            });
+        });
+    } else {
+        subcatContainer.classList.remove('visible');
+        filtroSubcat = null;
+    }
+}
 
 async function cargarProductos() {
     try {
@@ -725,8 +741,8 @@ function mostrarProductos() {
         if (filtroPlataforma !== 'todos' && p.origen !== filtroPlataforma) return false;
         if (filtroSubcat) {
             const catProd = (p.categoria || '').toLowerCase().trim();
-            const valEsp = mapaSubcategorias[filtroSubcat] || filtroSubcat;
-            if (catProd !== valEsp) return false;
+            const subcatValue = filtroSubcat.replace(/_/g, ' ');
+            if (catProd !== subcatValue) return false;
         }
         if (filtroGenero !== 'todos' && (p.genero || 'unisex') !== filtroGenero) return false;
         return true;
@@ -759,33 +775,18 @@ document.querySelectorAll('.filtro-btn').forEach(btn => {
         document.querySelectorAll('.genero-btn').forEach(b => b.classList.remove('active'));
         document.querySelector('.genero-btn[data-genero="todos"]')?.classList.add('active');
         
-        const subcatCont = document.getElementById('subcategorias-container');
-        const generoCont = document.getElementById('genero-container');
-        const amazonOnly = document.querySelectorAll('.amazon-only');
+        // Actualizar subcategorías según la plataforma seleccionada
+        actualizarSubcategorias();
         
-        if (filtroPlataforma !== 'todos') {
-            subcatCont.classList.add('visible');
-            generoCont.classList.remove('visible');
-            if (filtroPlataforma === 'Amazon') amazonOnly.forEach(b => b.style.display = 'inline-block');
-            else amazonOnly.forEach(b => b.style.display = 'none');
+        // Mostrar u ocultar género según si hay subcategoría activa
+        if (filtroSubcat) {
+            document.getElementById('genero-container').classList.add('visible');
+        } else if (filtroPlataforma !== 'todos') {
+            document.getElementById('genero-container').classList.remove('visible');
         } else {
-            subcatCont.classList.remove('visible');
-            generoCont.classList.remove('visible');
-            amazonOnly.forEach(b => b.style.display = 'none');
+            document.getElementById('genero-container').classList.remove('visible');
         }
-        mostrarProductos();
-    });
-});
-
-document.querySelectorAll('.subcat-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.subcat-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        filtroSubcat = btn.dataset.subcat;
-        document.getElementById('genero-container').classList.add('visible');
-        filtroGenero = 'todos';
-        document.querySelectorAll('.genero-btn').forEach(b => b.classList.remove('active'));
-        document.querySelector('.genero-btn[data-genero="todos"]')?.classList.add('active');
+        
         mostrarProductos();
     });
 });
@@ -850,11 +851,9 @@ function mostrarTallasBotones(tallas) {
     if(!tallas || !tallas.length) return;
     const container = document.getElementById('tallas-container');
     const variantesDiv = document.getElementById('modal-variantes');
-    const selectorSelect = document.getElementById('selector-variante');
     
     variantesDiv.style.display = 'block';
     container.style.display = 'flex';
-    selectorSelect.style.display = 'none';
     container.innerHTML = '';
     
     tallas.forEach(t => {
@@ -999,6 +998,7 @@ document.getElementById('buscar-pedidos-modal').onclick = async () => {
     document.getElementById('resultado-pedidos-modal').innerHTML = pedidos.map(p => `<div style="background:#f1f8f6; border-radius:12px; padding:12px; margin-bottom:10px; border:1px solid #c8e6c9;"><b style="color:#66bb6a;">#${p.id}</b> - <span style="color:#1b5e20; font-weight:600;">${p.estado}</span> - $${p.total}</div>`).join('');
 };
 
+// Inicializar
 cargarProductos();
 let saved = localStorage.getItem('carrito');
 if(saved) carrito = JSON.parse(saved);
