@@ -701,13 +701,35 @@ const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQ
 let productos = [], carrito = [], productoActual = null, colorSeleccionado = null, tallaSeleccionada = null;
 let filtroPlataforma = 'todos', filtroSubcat = null, filtroGenero = 'todos';
 
-// Definición de subcategorías SOLO para Sephora
-const subcategoriasSephora = [
-    { id: 'cuidado_piel', nombre: '🧴 Cuidado de la piel', valor: 'cuidado de la piel' },
-    { id: 'cuidado_cabello', nombre: '💇 Cuidado del cabello', valor: 'cuidado del cabello' },
-    { id: 'maquillaje', nombre: '💄 Maquillaje', valor: 'maquillaje' },
-    { id: 'perfume', nombre: '🌸 Perfume', valor: 'perfume' }
-];
+// Definición de subcategorías para cada plataforma
+const subcategorias = {
+    'Amazon': [
+        { id: 'ropa', nombre: '👕 Ropa', valor: 'ropa' },
+        { id: 'zapatos', nombre: '👟 Zapatos', valor: 'zapatos' },
+        { id: 'accesorios', nombre: '💍 Accesorios', valor: 'accesorios' },
+        { id: 'electronica', nombre: '📱 Electrónica', valor: 'electrónica' },
+        { id: 'perfume', nombre: '🌸 Perfume', valor: 'perfume' },
+        { id: 'maquillaje', nombre: '💄 Maquillaje', valor: 'maquillaje' }
+    ],
+    'Temu': [
+        { id: 'ropa', nombre: '👕 Ropa', valor: 'ropa' },
+        { id: 'zapatos', nombre: '👟 Zapatos', valor: 'zapatos' },
+        { id: 'accesorios', nombre: '💍 Accesorios', valor: 'accesorios' },
+        { id: 'electronica', nombre: '📱 Electrónica', valor: 'electrónica' }
+    ],
+    'Shein': [
+        { id: 'ropa', nombre: '👕 Ropa', valor: 'ropa' },
+        { id: 'zapatos', nombre: '👟 Zapatos', valor: 'zapatos' },
+        { id: 'accesorios', nombre: '💍 Accesorios', valor: 'accesorios' },
+        { id: 'electronica', nombre: '📱 Electrónica', valor: 'electrónica' }
+    ],
+    'Sephora': [
+        { id: 'cuidado_piel', nombre: '🧴 Cuidado de la piel', valor: 'cuidado de la piel' },
+        { id: 'cuidado_cabello', nombre: '💇 Cuidado del cabello', valor: 'cuidado del cabello' },
+        { id: 'maquillaje', nombre: '💄 Maquillaje', valor: 'maquillaje' },
+        { id: 'perfume', nombre: '🌸 Perfume', valor: 'perfume' }
+    ]
+};
 
 function actualizarSubcategorias() {
     const container = document.getElementById('subcategorias-list');
@@ -716,9 +738,17 @@ function actualizarSubcategorias() {
     // Limpiar container
     container.innerHTML = '';
     
-    // Solo mostrar subcategorías si se seleccionó Sephora
-    if (filtroPlataforma === 'Sephora') {
-        subcategoriasSephora.forEach(sub => {
+    // Si está en "todos", ocultar subcategorías
+    if (filtroPlataforma === 'todos') {
+        subcatContainer.classList.remove('visible');
+        filtroSubcat = null;
+        return;
+    }
+    
+    // Verificar si la plataforma tiene subcategorías definidas
+    const subs = subcategorias[filtroPlataforma];
+    if (subs && subs.length > 0) {
+        subs.forEach(sub => {
             const btn = document.createElement('button');
             btn.className = 'subcat-btn';
             btn.setAttribute('data-subcat', sub.id);
@@ -812,14 +842,9 @@ document.querySelectorAll('.filtro-btn').forEach(btn => {
         document.querySelector('.genero-btn[data-genero="todos"]')?.classList.add('active');
         
         // Ocultar género hasta que se seleccione una subcategoría
-        if (filtroPlataforma === 'Sephora') {
-            // Para Sephora, mostramos las subcategorías, pero género se muestra después
-            document.getElementById('genero-container').classList.remove('visible');
-        } else {
-            document.getElementById('genero-container').classList.remove('visible');
-        }
+        document.getElementById('genero-container').classList.remove('visible');
         
-        // Actualizar subcategorías
+        // Actualizar subcategorías según la plataforma seleccionada
         actualizarSubcategorias();
         mostrarProductos();
     });
