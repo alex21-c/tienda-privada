@@ -435,7 +435,15 @@ textarea.input { min-height: 100px; resize: vertical; }
                 <div style="overflow-x: auto;">
                     <table class="data-table" id="inventarioTable" style="display:none;">
                         <thead>
-                            <tr><th>ID</th><th>Producto</th><th>Precio</th><th>Origen</th><th>Variantes</th><th>Estado</th><th>Acciones</th></tr>
+                            <tr>
+                                <th>ID</th>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Origen</th>
+                                <th>Tallas</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
                         </thead>
                         <tbody id="inventarioBody"></tbody>
                     </table>
@@ -453,7 +461,7 @@ textarea.input { min-height: 100px; resize: vertical; }
     </div>
 </div>
 
-<!-- MODAL EDITAR PRODUCTO CON VARIANTES COMPLETAS -->
+<!-- MODAL EDITAR PRODUCTO -->
 <div id="editarModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -474,7 +482,6 @@ textarea.input { min-height: 100px; resize: vertical; }
             </div>
             <div class="form-group"><label>Descripción</label><textarea class="input" id="editDescripcion" rows="3"></textarea></div>
             
-            <!-- VARIANTES EN EDITAR -->
             <div style="margin:20px 0">
                 <label style="display:flex; align-items:center; gap:12px; background:#e8f5e9; padding:15px; border-radius:16px; cursor:pointer;">
                     <input type="checkbox" id="editTieneVariantes" style="width:20px; height:20px;">
@@ -547,6 +554,7 @@ function agregarColor() {
 
 function agregarTalla(colorId) {
     const container = document.getElementById(`tallas_${colorId}`);
+    if (!container) return;
     const div = document.createElement('div');
     div.className = 'talla-item';
     div.innerHTML = `
@@ -557,10 +565,10 @@ function agregarTalla(colorId) {
     container.appendChild(div);
 }
 
-function obtenerVariantesEstructuradas(containerId) {
+function obtenerVariantesParaGuardar(containerId) {
     const colores = [];
     const container = document.getElementById(containerId);
-    if (!container) return colores;
+    if (!container) return [];
     
     container.querySelectorAll('.color-card').forEach(colorCard => {
         const colorNombre = colorCard.querySelector('.color-nombre')?.value || '';
@@ -570,24 +578,24 @@ function obtenerVariantesEstructuradas(containerId) {
             const tallaNombre = tallaItem.querySelector('.talla-nombre')?.value || '';
             const tallaPrecio = tallaItem.querySelector('.talla-precio')?.value || '';
             if (tallaNombre) {
-                tallas.push({ talla: tallaNombre, precio: parseFloat(tallaPrecio) || 0 });
+                tallas.push(`${tallaNombre}:${tallaPrecio}`);
             }
         });
         if (colorNombre && tallas.length > 0) {
-            colores.push({ nombre: colorNombre, imagen: colorImagen, tallas: tallas });
+            colores.push(`${colorNombre}:${tallas.join(',')}`);
         }
     });
     return colores;
 }
 
-function cargarVariantesEnEdicion(colores) {
+function cargarVariantesEnEdicion(coloresArray) {
     const container = document.getElementById('editColoresContainer');
     container.innerHTML = '';
     
-    if (!colores || !colores.length) return;
+    if (!coloresArray || !coloresArray.length) return;
     
-    colores.forEach((color, idx) => {
-        const colorId = Date.now() + idx;
+    coloresArray.forEach(color => {
+        const colorId = Date.now() + Math.random();
         const div = document.createElement('div');
         div.className = 'color-card';
         div.id = `edit_color_${colorId}`;
@@ -605,7 +613,6 @@ function cargarVariantesEnEdicion(colores) {
         `;
         container.appendChild(div);
         
-        // Cargar tallas
         const tallasContainer = document.getElementById(`edit_tallas_${colorId}`);
         if (color.tallas && color.tallas.length) {
             color.tallas.forEach(talla => {
@@ -639,7 +646,7 @@ function agregarTallaEdicion(colorId) {
 
 function agregarColorEdicion() {
     const container = document.getElementById('editColoresContainer');
-    const colorId = Date.now();
+    const colorId = Date.now() + Math.random();
     const div = document.createElement('div');
     div.className = 'color-card';
     div.id = `edit_color_${colorId}`;
@@ -691,28 +698,68 @@ function renderizarInventario() {
         return;
     }
     
-    tbody.innerHTML = productos.map(p => `
-        <tr>
-            <td>${p.id || '-'}</td>
-            <td style="max-width:200px;"><strong>${p.nombre || '-'}</strong><br><small>${(p.descripcion || '').substring(0, 40)}</small></td>
-            <td>$${parseFloat(p.precio || 0).toFixed(2)}</td>
-            <td>${p.origen || '-'}</td>
-            <td>${p.colores ? p.colores.length + ' colores' : (p.tiene_variantes === 'SI' ? 'Con tallas' : 'Sin variantes')}</td>
-            <td><span class="badge ${p.activo === 'SI' ? 'badge-success' : 'badge-danger'}">${p.activo === 'SI' ? 'Disponible' : 'No disponible'}</span></td>
-            <td>
-                <button onclick="abrirEditarProducto(${p.id})" style="background:#81c784; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; margin-right:5px;">✏️ Editar</button>
-                <button onclick="eliminarProducto(${p.id})" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;">🗑️</button>
-              </td>
-        </tr>
-    `).join('');
+    tbody.innerHTML = productos.map(p => {
+        // Mostrar tallas disponibles
+        let tallasInfo = 'Sin tallas';
+        if (p.variantes && p.variantes.length) {
+            const todasTallas = [];
+            p.variantes.forEach(v => {
+                if (v.talla) todasTallas.push(v.talla);
+            });
+            if (todasTallas.length) tallasInfo = todasTallas.join(', ');
+        } else if (p.colores && p.colores.length) {
+            const todasTallas = [];
+            p.colores.forEach(color => {
+                if (color.tallas && color.tallas.length) {
+                    color.tallas.forEach(t => {
+                        if (t.talla) todasTallas.push(t.talla);
+                    });
+                }
+            });
+            if (todasTallas.length) tallasInfo = [...new Set(todasTallas)].join(', ');
+        }
+        
+        return `
+            <tr>
+                <td>${p.id || '-'}</td>
+                <td style="max-width:200px;"><strong>${p.nombre || '-'}</strong><br><small>${(p.descripcion || '').substring(0, 40)}</small></td>
+                <td>$${parseFloat(p.precio || 0).toFixed(2)}</td>
+                <td>${p.origen || '-'}</td>
+                <td>${tallasInfo}</td>
+                <td><span class="badge ${p.activo === 'SI' ? 'badge-success' : 'badge-danger'}">${p.activo === 'SI' ? 'Disponible' : 'No disponible'}</span></td>
+                <td>
+                    <button onclick="abrirEditarProducto(${p.id})" style="background:#81c784; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; margin-right:5px;">✏️ Editar</button>
+                    <button onclick="eliminarProducto(${p.id})" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;">🗑️</button>
+                   </td>
+            </table>
+        `;
+    }).join('');
 }
 
 async function agregarProducto() {
     const tieneVariantes = document.getElementById('tieneVariantes').checked;
-    let colores = null;
+    let variantesString = '';
+    let coloresNombres = '';
+    let coloresImagenes = '';
+    let coloresPrecios = '';
     
     if (tieneVariantes) {
-        colores = obtenerVariantesEstructuradas('coloresContainer');
+        const coloresData = obtenerVariantesParaGuardar('coloresContainer');
+        variantesString = coloresData.join('|');
+        
+        // Extraer nombres, imagenes y precios para las columnas
+        const colores = [];
+        document.querySelectorAll('#coloresContainer .color-card').forEach(colorCard => {
+            const nombre = colorCard.querySelector('.color-nombre')?.value || '';
+            const imagen = colorCard.querySelector('.color-imagen')?.value || '';
+            const primeraTalla = colorCard.querySelector('.talla-item .talla-precio')?.value || '0';
+            if (nombre) {
+                colores.push({ nombre, imagen, precio: primeraTalla });
+            }
+        });
+        coloresNombres = colores.map(c => c.nombre).join(',');
+        coloresImagenes = colores.map(c => c.imagen).join(',');
+        coloresPrecios = colores.map(c => c.precio).join(',');
     }
     
     const nuevoProducto = {
@@ -726,10 +773,10 @@ async function agregarProducto() {
         categoria_genero: document.getElementById('prodGenero').value,
         categoria: document.getElementById('prodCategoria').value,
         tiene_variantes: tieneVariantes ? "SI" : "NO",
-        variantes: tieneVariantes ? JSON.stringify(colores) : null,
-        colores_nombres: tieneVariantes ? colores.map(c => c.nombre).join(',') : '',
-        colores_imagenes: tieneVariantes ? colores.map(c => c.imagen).join(',') : '',
-        colores_precios: tieneVariantes ? colores.map(c => c.tallas[0]?.precio || 0).join(',') : ''
+        variantes: variantesString,
+        colores_nombres: coloresNombres,
+        colores_imagenes: coloresImagenes,
+        colores_precios: coloresPrecios
     };
     
     if (!nuevoProducto.nombre || !nuevoProducto.precio) {
@@ -783,14 +830,17 @@ function abrirEditarProducto(id) {
     document.getElementById('editDescripcion').value = producto.descripcion || '';
     
     // Cargar variantes si existen
-    const tieneVariantes = producto.colores && producto.colores.length > 0;
+    const tieneVariantes = (producto.colores && producto.colores.length > 0) || 
+                           (producto.variantes && producto.variantes.length > 0);
+    
     document.getElementById('editTieneVariantes').checked = tieneVariantes;
     document.getElementById('editVariantesPanel').style.display = tieneVariantes ? 'block' : 'none';
     
-    if (tieneVariantes) {
+    if (tieneVariantes && producto.colores && producto.colores.length) {
         cargarVariantesEnEdicion(producto.colores);
     } else {
         document.getElementById('editColoresContainer').innerHTML = '';
+        if (tieneVariantes) agregarColorEdicion();
     }
     
     document.getElementById('editarModal').style.display = 'flex';
@@ -799,10 +849,27 @@ function abrirEditarProducto(id) {
 async function guardarEdicion() {
     const id = parseInt(document.getElementById('editId').value);
     const tieneVariantes = document.getElementById('editTieneVariantes').checked;
-    let colores = null;
+    let variantesString = '';
+    let coloresNombres = '';
+    let coloresImagenes = '';
+    let coloresPrecios = '';
     
     if (tieneVariantes) {
-        colores = obtenerVariantesEstructuradas('editColoresContainer');
+        const coloresData = obtenerVariantesParaGuardar('editColoresContainer');
+        variantesString = coloresData.join('|');
+        
+        const colores = [];
+        document.querySelectorAll('#editColoresContainer .color-card').forEach(colorCard => {
+            const nombre = colorCard.querySelector('.color-nombre')?.value || '';
+            const imagen = colorCard.querySelector('.color-imagen')?.value || '';
+            const primeraTalla = colorCard.querySelector('.talla-item .talla-precio')?.value || '0';
+            if (nombre) {
+                colores.push({ nombre, imagen, precio: primeraTalla });
+            }
+        });
+        coloresNombres = colores.map(c => c.nombre).join(',');
+        coloresImagenes = colores.map(c => c.imagen).join(',');
+        coloresPrecios = colores.map(c => c.precio).join(',');
     }
     
     const productoEditado = {
@@ -818,10 +885,10 @@ async function guardarEdicion() {
         genero: document.getElementById('editGenero').value,
         categoria: document.getElementById('editCategoria').value,
         tiene_variantes: tieneVariantes ? "SI" : "NO",
-        variantes: tieneVariantes ? JSON.stringify(colores) : null,
-        colores_nombres: tieneVariantes ? colores.map(c => c.nombre).join(',') : '',
-        colores_imagenes: tieneVariantes ? colores.map(c => c.imagen).join(',') : '',
-        colores_precios: tieneVariantes ? colores.map(c => c.tallas[0]?.precio || 0).join(',') : ''
+        variantes: variantesString,
+        colores_nombres: coloresNombres,
+        colores_imagenes: coloresImagenes,
+        colores_precios: coloresPrecios
     };
     
     try {
@@ -909,7 +976,7 @@ function actualizarStats() {
     document.getElementById('totalPedidos').innerText = pedidos.length;
 }
 
-// TOGGLE VARIANTES EN AGREGAR
+// TOGGLE VARIANTES
 document.getElementById('tieneVariantes').addEventListener('change', function() {
     document.getElementById('variantesPanel').style.display = this.checked ? 'block' : 'none';
     if (this.checked && document.getElementById('coloresContainer').children.length === 0) {
@@ -917,7 +984,6 @@ document.getElementById('tieneVariantes').addEventListener('change', function() 
     }
 });
 
-// TOGGLE VARIANTES EN EDITAR
 document.getElementById('editTieneVariantes').addEventListener('change', function() {
     document.getElementById('editVariantesPanel').style.display = this.checked ? 'block' : 'none';
     if (this.checked && document.getElementById('editColoresContainer').children.length === 0) {
