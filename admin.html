@@ -95,6 +95,14 @@ body {
     font-size: 0.9rem;
 }
 
+.btn-secondary {
+    background: linear-gradient(135deg, #81c784, #66bb6a);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef9a9a, #ef5350);
+}
+
 /* APP */
 .app {
     display: none;
@@ -219,6 +227,39 @@ body {
     color: #2e7d32;
 }
 
+/* FORM BOX */
+.form-box {
+    background: rgba(255,255,255,.9);
+    border: 1px solid rgba(76,175,80,.2);
+    padding: 30px;
+    border-radius: 28px;
+    margin-bottom: 40px;
+    box-shadow: 0 5px 15px rgba(0,0,0,.05);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 18px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2e7d32;
+}
+
+textarea.input {
+    min-height: 100px;
+    resize: vertical;
+}
+
 /* TABLES */
 .data-table {
     width: 100%;
@@ -270,7 +311,7 @@ body {
 
 .modal-content {
     width: 100%;
-    max-width: 600px;
+    max-width: 800px;
     background: white;
     border-radius: 28px;
     padding: 0;
@@ -307,37 +348,67 @@ body {
     font-size: 1.2rem;
 }
 
-.solicitud-codigo {
-    font-family: monospace;
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #66bb6a;
-    background: #e8f5e9;
-    display: inline-block;
-    padding: 5px 15px;
+/* VARIANTES PANEL */
+.variantes-panel {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f1f8e9;
+    border-radius: 20px;
+}
+
+.color-card {
+    background: white;
+    border: 2px solid #c8e6c9;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.color-header {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #c8e6c9;
+}
+
+.color-header input {
+    flex: 1;
+    min-width: 150px;
+    padding: 10px;
+    background: #f5f5f5;
+    border: 1px solid #c8e6c9;
     border-radius: 12px;
-    letter-spacing: 3px;
 }
 
-.form-group {
-    margin-bottom: 18px;
+.talla-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
 }
 
-.form-group label {
-    display: block;
-    font-weight: 700;
-    color: #66bb6a;
-    margin-bottom: 8px;
-    font-size: 0.8rem;
+.talla-item input {
+    padding: 8px;
+    background: #f5f5f5;
+    border: 1px solid #c8e6c9;
+    border-radius: 12px;
 }
 
-.form-group input, .form-group textarea, .form-group select {
-    width: 100%;
-    padding: 12px 15px;
-    background: #f1f8f6;
-    border: 2px solid #81c784;
-    border-radius: 60px;
-    font-family: inherit;
+.talla-item .talla-nombre { width: 80px; }
+.talla-item .talla-precio { width: 120px; }
+
+.btn-add-talla {
+    background: #c8e6c9;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 12px;
+    color: #2e7d32;
+    cursor: pointer;
+    margin-top: 5px;
 }
 
 .section {
@@ -369,7 +440,7 @@ body {
 <div class="login-screen" id="loginScreen">
     <div class="login-box">
         <div class="login-title">🌿 GREEN ADMIN</div>
-        <div class="login-sub">Panel de control - Solicitudes de productos</div>
+        <div class="login-sub">Panel de control - Gestión completa</div>
         <input type="password" class="input" id="password" placeholder="Contraseña admin">
         <button class="btn" onclick="login()">ACCEDER</button>
     </div>
@@ -381,8 +452,9 @@ body {
         <div class="logo">🌱 GREEN ADMIN</div>
         <div class="menu">
             <button class="active" data-section="dashboard">📊 Dashboard</button>
-            <button data-section="solicitudes">📌 Solicitudes de Productos</button>
-            <button data-section="productos">📦 Productos</button>
+            <button data-section="productos">➕ Agregar Producto</button>
+            <button data-section="inventario">📚 Inventario</button>
+            <button data-section="solicitudes">📌 Solicitudes</button>
             <button data-section="pedidos">🛒 Pedidos</button>
             <button data-section="config">⚙️ Configuración</button>
         </div>
@@ -397,47 +469,82 @@ body {
         <!-- DASHBOARD -->
         <div id="dashboardSection" class="section active">
             <div class="stats-grid">
-                <div class="stat-card"><h3>SOLICITUDES PENDIENTES</h3><div class="stat-value" id="totalPendientes">0</div></div>
-                <div class="stat-card"><h3>COTIZADAS</h3><div class="stat-value" id="totalCotizadas">0</div></div>
-                <div class="stat-card"><h3>APROBADAS</h3><div class="stat-value" id="totalAprobadas">0</div></div>
-                <div class="stat-card"><h3>TOTAL SOLICITUDES</h3><div class="stat-value" id="totalSolicitudes">0</div></div>
+                <div class="stat-card"><h3>PRODUCTOS</h3><div class="stat-value" id="totalProductos">0</div></div>
+                <div class="stat-card"><h3>SOLICITUDES</h3><div class="stat-value" id="totalSolicitudes">0</div></div>
+                <div class="stat-card"><h3>PEDIDOS</h3><div class="stat-value" id="totalPedidos">0</div></div>
+                <div class="stat-card"><h3>PENDIENTES</h3><div class="stat-value" id="totalPendientes">0</div></div>
             </div>
         </div>
 
-        <!-- SOLICITUDES (PRINCIPAL) -->
-        <div id="solicitudesSection" class="section">
-            <h2 style="margin-bottom:20px;">📌 Solicitudes de Productos</h2>
-            <div class="form-box" style="background:rgba(255,255,255,.9); border-radius:28px; padding:20px;">
-                <div id="solicitudesLoading" class="loading">Cargando solicitudes...</div>
+        <!-- AGREGAR PRODUCTO -->
+        <div id="productosSection" class="section">
+            <div class="form-box">
+                <h2 style="margin-bottom:20px;">➕ Agregar Nuevo Producto</h2>
+                <div class="form-grid">
+                    <div class="form-group"><label>Nombre del producto *</label><input type="text" class="input" id="prodNombre" placeholder="Ej: Camiseta Premium"></div>
+                    <div class="form-group"><label>Precio *</label><input type="number" class="input" id="prodPrecio" placeholder="0.00"></div>
+                    <div class="form-group"><label>Origen/Plataforma</label><select class="input" id="prodOrigen"><option value="Amazon">Amazon</option><option value="Temu">Temu</option><option value="Shein">Shein</option><option value="Sephora">Sephora</option></select></div>
+                    <div class="form-group"><label>Categoría</label><select class="input" id="prodCategoria"><option value="ropa">Ropa</option><option value="zapatos">Zapatos</option><option value="accesorios">Accesorios</option><option value="electronica">Electrónica</option><option value="perfume">Perfume</option><option value="maquillaje">Maquillaje</option></select></div>
+                    <div class="form-group"><label>Género</label><select class="input" id="prodGenero"><option value="mujer">Mujer</option><option value="hombre">Hombre</option><option value="niña">Niña</option><option value="niño">Niño</option><option value="unisex">Unisex</option></select></div>
+                    <div class="form-group"><label>URL Imagen</label><input type="text" class="input" id="prodImagen" placeholder="https://..."></div>
+                    <div class="form-group"><label>Enlace del producto</label><input type="text" class="input" id="prodEnlace" placeholder="URL del producto"></div>
+                    <div class="form-group"><label>Estado</label><select class="input" id="prodActivo"><option value="SI">✅ Disponible</option><option value="NO">❌ No disponible</option></select></div>
+                </div>
+                <div class="form-group"><label>Descripción</label><textarea class="input" id="prodDescripcion" placeholder="Descripción del producto"></textarea></div>
+                
+                <div style="margin:20px 0 15px">
+                    <label style="display:flex; align-items:center; gap:12px; background:#e8f5e9; padding:15px; border-radius:16px; cursor:pointer;">
+                        <input type="checkbox" id="tieneVariantes" style="width:20px; height:20px;">
+                        <span>🎨 ¿Tiene variantes? (Colores y tallas)</span>
+                    </label>
+                </div>
+                
+                <div id="variantesPanel" style="display:none;" class="variantes-panel">
+                    <h3 style="margin-bottom:15px;">🎨 Colores y Tallas</h3>
+                    <div id="coloresContainer"></div>
+                    <button type="button" class="btn-small btn-secondary" onclick="agregarColor()">+ Agregar Color</button>
+                </div>
+                
+                <button class="btn" onclick="agregarProducto()" style="margin-top:25px;">💾 Guardar Producto</button>
+            </div>
+        </div>
+
+        <!-- INVENTARIO (MODIFICAR/ELIMINAR PRODUCTOS) -->
+        <div id="inventarioSection" class="section">
+            <h2 style="margin-bottom:20px;">📚 Inventario - Gestionar Productos</h2>
+            <div class="form-box">
+                <div id="inventarioLoading" class="loading">Cargando productos...</div>
                 <div style="overflow-x: auto;">
-                    <table class="data-table" id="solicitudesTable" style="display:none;">
+                    <table class="data-table" id="inventarioTable" style="display:none;">
                         <thead>
                             <tr>
-                                <th>Código</th>
-                                <th>Fecha</th>
-                                <th>Cliente</th>
-                                <th>Teléfono</th>
-                                <th>Plataforma</th>
+                                <th>ID</th>
                                 <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Origen</th>
+                                <th>Categoría</th>
+                                <th>Género</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="solicitudesBody"></tbody>
+                        <tbody id="inventarioBody"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- PRODUCTOS -->
-        <div id="productosSection" class="section">
-            <h2 style="margin-bottom:20px;">📦 Productos en Catálogo</h2>
-            <div class="form-box" style="background:rgba(255,255,255,.9); border-radius:28px; padding:20px;">
-                <div id="productosLoading" class="loading">Cargando productos...</div>
+        <!-- SOLICITUDES -->
+        <div id="solicitudesSection" class="section">
+            <h2 style="margin-bottom:20px;">📌 Solicitudes de Productos</h2>
+            <div class="form-box">
+                <div id="solicitudesLoading" class="loading">Cargando solicitudes...</div>
                 <div style="overflow-x: auto;">
-                    <table class="data-table" id="productosTable" style="display:none;">
-                        <thead><tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Origen</th><th>Categoría</th><th>Enlace</th><th>Estado</th></tr></thead>
-                        <tbody id="productosBody"></tbody>
+                    <table class="data-table" id="solicitudesTable" style="display:none;">
+                        <thead>
+                            <tr><th>Código</th><th>Fecha</th><th>Cliente</th><th>Teléfono</th><th>Plataforma</th><th>Producto</th><th>Estado</th><th>Acciones</th></tr>
+                        </thead>
+                        <tbody id="solicitudesBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -446,7 +553,7 @@ body {
         <!-- PEDIDOS -->
         <div id="pedidosSection" class="section">
             <h2 style="margin-bottom:20px;">🛒 Pedidos de Clientes</h2>
-            <div class="form-box" style="background:rgba(255,255,255,.9); border-radius:28px; padding:20px;">
+            <div class="form-box">
                 <div id="pedidosLoading" class="loading">Cargando pedidos...</div>
                 <div style="overflow-x: auto;">
                     <table class="data-table" id="pedidosTable" style="display:none;">
@@ -459,12 +566,40 @@ body {
 
         <!-- CONFIGURACION -->
         <div id="configSection" class="section">
-            <div class="form-box" style="background:rgba(255,255,255,.9); border-radius:28px; padding:30px;">
+            <div class="form-box">
                 <h2 style="margin-bottom:20px;">⚙️ Configuración</h2>
                 <div class="form-group"><label>Nombre tienda</label><input type="text" class="input" id="configNombre" placeholder="Mi Tienda"></div>
                 <div class="form-group"><label>Email contacto</label><input type="email" class="input" id="configEmail" placeholder="admin@tienda.com"></div>
                 <div class="form-group"><label>Moneda</label><select class="input" id="configMoneda"><option>USD ($)</option><option>PAB (B/.)</option></select></div>
                 <button class="btn" onclick="guardarConfiguracion()">Guardar Configuración</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDITAR PRODUCTO -->
+<div id="editarModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>✏️ Editar Producto</h2>
+            <button class="modal-cerrar" onclick="cerrarEditarModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editId">
+            <div class="form-grid">
+                <div class="form-group"><label>Nombre</label><input type="text" class="input" id="editNombre"></div>
+                <div class="form-group"><label>Precio</label><input type="number" class="input" id="editPrecio"></div>
+                <div class="form-group"><label>Origen</label><select class="input" id="editOrigen"><option>Amazon</option><option>Temu</option><option>Shein</option><option>Sephora</option></select></div>
+                <div class="form-group"><label>Categoría</label><select class="input" id="editCategoria"><option>ropa</option><option>zapatos</option><option>accesorios</option><option>electronica</option><option>perfume</option><option>maquillaje</option></select></div>
+                <div class="form-group"><label>Género</label><select class="input" id="editGenero"><option>mujer</option><option>hombre</option><option>niña</option><option>niño</option><option>unisex</option></select></div>
+                <div class="form-group"><label>Imagen URL</label><input type="text" class="input" id="editImagen"></div>
+                <div class="form-group"><label>Enlace</label><input type="text" class="input" id="editEnlace"></div>
+                <div class="form-group"><label>Estado</label><select class="input" id="editActivo"><option value="SI">Disponible</option><option value="NO">No disponible</option></select></div>
+            </div>
+            <div class="form-group"><label>Descripción</label><textarea class="input" id="editDescripcion"></textarea></div>
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button class="btn" onclick="guardarEdicion()">Guardar Cambios</button>
+                <button class="btn" onclick="cerrarEditarModal()" style="background:#ef9a9a;">Cancelar</button>
             </div>
         </div>
     </div>
@@ -479,14 +614,8 @@ body {
         </div>
         <div class="modal-body">
             <div id="cotizarInfo"></div>
-            <div class="form-group">
-                <label>💰 Precio cotizado (USD)</label>
-                <input type="number" id="precioCotizado" step="0.01" class="input" placeholder="Ej: 25.99">
-            </div>
-            <div class="form-group">
-                <label>💬 Mensaje para el cliente (opcional)</label>
-                <textarea id="respuestaAdmin" rows="3" class="input" placeholder="Ej: El producto está disponible, precio incluye envío"></textarea>
-            </div>
+            <div class="form-group"><label>💰 Precio cotizado (USD)</label><input type="number" id="precioCotizado" step="0.01" class="input"></div>
+            <div class="form-group"><label>💬 Mensaje para el cliente</label><textarea id="respuestaAdmin" rows="3" class="input"></textarea></div>
             <button class="btn" onclick="enviarCotizacion()">Enviar Cotización</button>
             <button class="btn" onclick="rechazarSolicitud()" style="background:#ef9a9a; margin-top:10px;">❌ Rechazar Solicitud</button>
         </div>
@@ -518,59 +647,242 @@ function logout() { location.reload(); }
 // CARGAR TODOS LOS DATOS
 async function cargarTodosLosDatos() {
     await Promise.all([
-        cargarSolicitudes(),
         cargarProductos(),
-        cargarPedidos()
+        cargarPedidos(),
+        cargarSolicitudes()
     ]);
     actualizarStats();
 }
 
-// CARGAR SOLICITUDES (desde localStorage - misma fuente que la tienda)
-async function cargarSolicitudes() {
-    const loadingDiv = document.getElementById('solicitudesLoading');
-    const table = document.getElementById('solicitudesTable');
+// ==================== CRUD PRODUCTOS ====================
+async function cargarProductos() {
+    const loadingDiv = document.getElementById('inventarioLoading');
+    const table = document.getElementById('inventarioTable');
     
     try {
         loadingDiv.style.display = 'block';
         table.style.display = 'none';
         
-        // Las solicitudes se guardan en localStorage (misma que usa la tienda)
-        const saved = localStorage.getItem('solicitudes');
-        if (saved) {
-            solicitudes = JSON.parse(saved);
+        const response = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
+        const data = await response.json();
+        
+        if (data && Array.isArray(data) && data.length > 0) {
+            productos = data;
         } else {
-            // Solicitudes de ejemplo para demostración
-            solicitudes = [
-                {
-                    codigo: "4827",
-                    nombre: "María González",
-                    telefono: "6123-4567",
-                    link: "https://amazon.com/producto-ejemplo",
-                    plataforma: "Amazon",
-                    notas: "Color negro, talla M, cantidad 2",
-                    estado: "pendiente",
-                    fecha: new Date().toISOString(),
-                    cotizacion: null,
-                    respuestaAdmin: null
-                },
-                {
-                    codigo: "7391",
-                    nombre: "Carlos Ruiz",
-                    telefono: "6474-5914",
-                    link: "https://shein.com/producto-ejemplo",
-                    plataforma: "Shein",
-                    notas: "Talla L, color azul",
-                    estado: "cotizado",
-                    fecha: new Date(Date.now() - 86400000).toISOString(),
-                    cotizacion: 35.50,
-                    respuestaAdmin: "El producto está disponible, precio incluye envío a Panamá"
-                }
-            ];
-            localStorage.setItem('solicitudes', JSON.stringify(solicitudes));
+            productos = [];
+            cargarProductosEjemplo();
         }
     } catch (error) {
-        console.error('Error cargando solicitudes:', error);
+        console.error('Error:', error);
+        cargarProductosEjemplo();
+    }
+    
+    renderizarInventario();
+    loadingDiv.style.display = 'none';
+    table.style.display = 'block';
+}
+
+function cargarProductosEjemplo() {
+    productos = [
+        { id: 1, nombre: "Camiseta Premium", precio: "29.99", origen: "Amazon", categoria: "ropa", genero: "unisex", imagen: "", enlace: "#", activo: "SI", descripcion: "Camiseta de algodón" },
+        { id: 2, nombre: "Zapatillas Deportivas", precio: "89.99", origen: "Temu", categoria: "zapatos", genero: "hombre", imagen: "", enlace: "#", activo: "SI", descripcion: "Zapatillas para running" }
+    ];
+}
+
+function renderizarInventario() {
+    const tablaBody = document.getElementById('inventarioBody');
+    
+    if (!productos || productos.length === 0) {
+        tablaBody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No hay productos registrados</td></tr>';
+        return;
+    }
+    
+    tablaBody.innerHTML = productos.map(prod => `
+        <tr>
+            <td>${prod.id}</td>
+            <td style="max-width:200px;"><strong>${prod.nombre}</strong>${prod.descripcion ? `<br><small style="color:#558b2f;">${prod.descripcion.substring(0, 30)}...</small>` : ''}</td>
+            <td>$${prod.precio}</td>
+            <td>${prod.origen}</td>
+            <td>${prod.categoria}</td>
+            <td>${prod.genero}</td>
+            <td><span class="badge ${prod.activo === 'SI' ? 'badge-aprobado' : 'badge-pendiente'}">${prod.activo === 'SI' ? 'Disponible' : 'No disponible'}</span></td>
+            <td>
+                <button onclick="abrirEditarProducto(${prod.id})" style="background:#81c784; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; margin-right:5px;">✏️ Editar</button>
+                <button onclick="eliminarProducto(${prod.id})" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;">🗑️ Eliminar</button>
+             </td>
+        </table>
+    `).join('');
+}
+
+function abrirEditarProducto(id) {
+    const producto = productos.find(p => p.id == id);
+    if (!producto) return;
+    
+    document.getElementById('editId').value = producto.id;
+    document.getElementById('editNombre').value = producto.nombre;
+    document.getElementById('editPrecio').value = producto.precio;
+    document.getElementById('editOrigen').value = producto.origen;
+    document.getElementById('editCategoria').value = producto.categoria;
+    document.getElementById('editGenero').value = producto.genero;
+    document.getElementById('editImagen').value = producto.imagen || '';
+    document.getElementById('editEnlace').value = producto.enlace || '';
+    document.getElementById('editActivo').value = producto.activo;
+    document.getElementById('editDescripcion').value = producto.descripcion || '';
+    
+    document.getElementById('editarModal').style.display = 'flex';
+}
+
+function guardarEdicion() {
+    const id = parseInt(document.getElementById('editId').value);
+    const producto = productos.find(p => p.id === id);
+    
+    if (producto) {
+        producto.nombre = document.getElementById('editNombre').value;
+        producto.precio = document.getElementById('editPrecio').value;
+        producto.origen = document.getElementById('editOrigen').value;
+        producto.categoria = document.getElementById('editCategoria').value;
+        producto.genero = document.getElementById('editGenero').value;
+        producto.imagen = document.getElementById('editImagen').value;
+        producto.enlace = document.getElementById('editEnlace').value;
+        producto.activo = document.getElementById('editActivo').value;
+        producto.descripcion = document.getElementById('editDescripcion').value;
+        
+        renderizarInventario();
+        cerrarEditarModal();
+        actualizarStats();
+        alert('✅ Producto actualizado correctamente');
+    }
+}
+
+function eliminarProducto(id) {
+    if (confirm('¿Estás seguro de eliminar este producto?')) {
+        productos = productos.filter(p => p.id !== id);
+        renderizarInventario();
+        actualizarStats();
+        alert('✅ Producto eliminado');
+    }
+}
+
+function cerrarEditarModal() {
+    document.getElementById('editarModal').style.display = 'none';
+}
+
+// AGREGAR PRODUCTO NUEVO
+function agregarColor() {
+    const container = document.getElementById('coloresContainer');
+    const colorId = Date.now();
+    const div = document.createElement('div');
+    div.className = 'color-card';
+    div.id = `color_${colorId}`;
+    div.innerHTML = `
+        <div class="color-header">
+            <input type="text" placeholder="Nombre del Color" class="color-nombre">
+            <input type="text" placeholder="URL Imagen" class="color-imagen">
+            <button class="btn-small" onclick="this.parentElement.parentElement.remove()" style="background:#ef9a9a;">🗑️ Eliminar Color</button>
+        </div>
+        <div class="tallas-section">
+            <div class="tallas-title">📏 Tallas y Precios</div>
+            <div class="tallas-list" id="tallas_${colorId}"></div>
+            <button type="button" class="btn-add-talla" onclick="agregarTalla('${colorId}')">+ Agregar Talla</button>
+        </div>
+    `;
+    container.appendChild(div);
+    agregarTalla(colorId);
+}
+
+function agregarTalla(colorId) {
+    const container = document.getElementById(`tallas_${colorId}`);
+    const div = document.createElement('div');
+    div.className = 'talla-item';
+    div.innerHTML = `
+        <input type="text" placeholder="Talla" class="talla-nombre" style="width:80px;">
+        <input type="number" placeholder="Precio" class="talla-precio" style="width:120px;">
+        <button class="btn-small" onclick="this.parentElement.remove()" style="background:#ef9a9a;">✗</button>
+    `;
+    container.appendChild(div);
+}
+
+function obtenerVariantesEstructuradas() {
+    const colores = [];
+    document.querySelectorAll('.color-card').forEach(colorCard => {
+        const colorNombre = colorCard.querySelector('.color-nombre')?.value || '';
+        const colorImagen = colorCard.querySelector('.color-imagen')?.value || '';
+        const tallas = [];
+        colorCard.querySelectorAll('.talla-item').forEach(tallaItem => {
+            const tallaNombre = tallaItem.querySelector('.talla-nombre')?.value || '';
+            const tallaPrecio = tallaItem.querySelector('.talla-precio')?.value || '';
+            if (tallaNombre) tallas.push({ talla: tallaNombre, precio: tallaPrecio });
+        });
+        if (colorNombre && tallas.length > 0) {
+            colores.push({ nombre: colorNombre, imagen: colorImagen, tallas: tallas });
+        }
+    });
+    return colores;
+}
+
+function agregarProducto() {
+    const tieneVariantes = document.getElementById('tieneVariantes').checked;
+    let colores = null;
+    if (tieneVariantes) {
+        colores = obtenerVariantesEstructuradas();
+    }
+    
+    const nuevoProducto = {
+        id: Date.now(),
+        nombre: document.getElementById('prodNombre').value,
+        precio: document.getElementById('prodPrecio').value,
+        origen: document.getElementById('prodOrigen').value,
+        categoria: document.getElementById('prodCategoria').value,
+        genero: document.getElementById('prodGenero').value,
+        imagen: document.getElementById('prodImagen').value,
+        enlace: document.getElementById('prodEnlace').value,
+        activo: document.getElementById('prodActivo').value,
+        descripcion: document.getElementById('prodDescripcion').value,
+        tiene_variantes: tieneVariantes ? "SI" : "NO",
+        colores: colores
+    };
+    
+    if (!nuevoProducto.nombre || !nuevoProducto.precio) {
+        alert('Nombre y precio son obligatorios');
+        return;
+    }
+    
+    productos.unshift(nuevoProducto);
+    renderizarInventario();
+    limpiarFormularioProducto();
+    actualizarStats();
+    alert('✅ Producto agregado correctamente');
+}
+
+function limpiarFormularioProducto() {
+    document.getElementById('prodNombre').value = '';
+    document.getElementById('prodPrecio').value = '';
+    document.getElementById('prodImagen').value = '';
+    document.getElementById('prodEnlace').value = '';
+    document.getElementById('prodDescripcion').value = '';
+    document.getElementById('tieneVariantes').checked = false;
+    document.getElementById('variantesPanel').style.display = 'none';
+    document.getElementById('coloresContainer').innerHTML = '';
+}
+
+document.getElementById('tieneVariantes').addEventListener('change', function() {
+    document.getElementById('variantesPanel').style.display = this.checked ? 'block' : 'none';
+    if (this.checked && document.getElementById('coloresContainer').children.length === 0) {
+        agregarColor();
+    }
+});
+
+// ==================== SOLICITUDES ====================
+async function cargarSolicitudes() {
+    const loadingDiv = document.getElementById('solicitudesLoading');
+    const table = document.getElementById('solicitudesTable');
+    
+    const saved = localStorage.getItem('solicitudes');
+    if (saved) {
+        solicitudes = JSON.parse(saved);
+    } else {
         solicitudes = [];
+        guardarSolicitudes();
     }
     
     renderizarSolicitudes();
@@ -590,13 +902,6 @@ function renderizarSolicitudes() {
         return;
     }
     
-    const estadosTexto = {
-        'pendiente': 'Pendiente',
-        'cotizado': 'Cotizado',
-        'aprobado': 'Aprobado',
-        'rechazado': 'Rechazado'
-    };
-    
     const estadosClass = {
         'pendiente': 'badge-pendiente',
         'cotizado': 'badge-cotizado',
@@ -606,30 +911,24 @@ function renderizarSolicitudes() {
     
     tablaBody.innerHTML = solicitudes.map(sol => `
         <tr>
-            <td><span class="solicitud-codigo" style="font-size:0.9rem; padding:2px 8px;">${sol.codigo}</span></td>
+            <td><span style="font-family:monospace; font-weight:800;">${sol.codigo}</span></td>
             <td>${new Date(sol.fecha).toLocaleDateString()} ${new Date(sol.fecha).toLocaleTimeString()}</td>
             <td><strong>${sol.nombre}</strong></td>
             <td>${sol.telefono}</td>
             <td>${sol.plataforma}</td>
-            <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${sol.link}">
-                <a href="${sol.link}" target="_blank" style="color:#66bb6a;">Ver producto</a>
-                ${sol.notas ? `<br><small style="color:#558b2f;">${sol.notas.substring(0, 30)}...</small>` : ''}
-            </td>
-            <td><span class="badge ${estadosClass[sol.estado]}">${estadosTexto[sol.estado]}</span></td>
+            <td style="max-width:200px;"><a href="${sol.link}" target="_blank" style="color:#66bb6a;">Ver producto</a>${sol.notas ? `<br><small>${sol.notas.substring(0, 30)}</small>` : ''}</td>
+            <td><span class="badge ${estadosClass[sol.estado]}">${sol.estado}</span></td>
             <td>
                 ${sol.estado === 'pendiente' ? `<button onclick="abrirCotizarModal('${sol.codigo}')" style="background:#66bb6a; border:none; padding:6px 12px; border-radius:8px; color:white; cursor:pointer;">💰 Cotizar</button>` : ''}
-                ${sol.estado === 'cotizado' ? `<button onclick="verDetalleSolicitud('${sol.codigo}')" style="background:#81c784; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;">👁️ Ver</button>` : ''}
-                ${sol.estado === 'aprobado' ? `<span style="color:#2e7d32;">✅ Aprobado</span>` : ''}
-                ${sol.estado === 'rechazado' ? `<span style="color:#c62828;">❌ Rechazado</span>` : ''}
-             </tr>
-        `).join('');
+                ${sol.estado === 'cotizado' ? `<span style="color:#1565c0;">💰 $${sol.cotizacion?.toFixed(2)}</span>` : ''}
+             </td>
+        </tr>
+    `).join('');
 }
 
-// ABRIR MODAL COTIZAR
 function abrirCotizarModal(codigo) {
     const solicitud = solicitudes.find(s => s.codigo === codigo);
     if (!solicitud) return;
-    
     solicitudActual = solicitud;
     
     document.getElementById('cotizarInfo').innerHTML = `
@@ -637,25 +936,16 @@ function abrirCotizarModal(codigo) {
             <p><strong>👤 Cliente:</strong> ${solicitud.nombre}</p>
             <p><strong>📞 Teléfono:</strong> ${solicitud.telefono}</p>
             <p><strong>🛒 Plataforma:</strong> ${solicitud.plataforma}</p>
-            <p><strong>🔗 Producto:</strong> <a href="${solicitud.link}" target="_blank" style="color:#66bb6a;">${solicitud.link.substring(0, 50)}...</a></p>
+            <p><strong>🔗 Producto:</strong> <a href="${solicitud.link}" target="_blank">Ver link</a></p>
             <p><strong>📝 Notas:</strong> ${solicitud.notas || 'Sin notas'}</p>
         </div>
     `;
-    
     document.getElementById('precioCotizado').value = solicitud.cotizacion || '';
     document.getElementById('respuestaAdmin').value = solicitud.respuestaAdmin || '';
-    
     document.getElementById('cotizarModal').style.display = 'flex';
 }
 
-function cerrarCotizarModal() {
-    document.getElementById('cotizarModal').style.display = 'none';
-    solicitudActual = null;
-}
-
 function enviarCotizacion() {
-    if (!solicitudActual) return;
-    
     const precio = parseFloat(document.getElementById('precioCotizado').value);
     if (isNaN(precio) || precio <= 0) {
         alert('Ingresa un precio válido');
@@ -665,21 +955,17 @@ function enviarCotizacion() {
     solicitudActual.cotizacion = precio;
     solicitudActual.respuestaAdmin = document.getElementById('respuestaAdmin').value;
     solicitudActual.estado = 'cotizado';
-    
     guardarSolicitudes();
     renderizarSolicitudes();
     cerrarCotizarModal();
     actualizarStats();
-    
-    alert(`✅ Cotización enviada al cliente\n💰 Precio: $${precio.toFixed(2)}\n📱 El cliente puede verlo con su código: ${solicitudActual.codigo}`);
+    alert(`✅ Cotización enviada: $${precio.toFixed(2)}`);
 }
 
 function rechazarSolicitud() {
-    if (!solicitudActual) return;
-    
-    if (confirm('¿Estás seguro de rechazar esta solicitud?')) {
+    if (confirm('¿Rechazar esta solicitud?')) {
         solicitudActual.estado = 'rechazado';
-        solicitudActual.respuestaAdmin = document.getElementById('respuestaAdmin').value || 'Lo sentimos, no podemos procesar esta solicitud.';
+        solicitudActual.respuestaAdmin = document.getElementById('respuestaAdmin').value || 'Solicitud rechazada';
         guardarSolicitudes();
         renderizarSolicitudes();
         cerrarCotizarModal();
@@ -688,62 +974,12 @@ function rechazarSolicitud() {
     }
 }
 
-function verDetalleSolicitud(codigo) {
-    const solicitud = solicitudes.find(s => s.codigo === codigo);
-    if (!solicitud) return;
-    
-    alert(`📋 DETALLE DE SOLICITUD\n\nCódigo: ${solicitud.codigo}\nCliente: ${solicitud.nombre}\nTeléfono: ${solicitud.telefono}\nProducto: ${solicitud.link}\nPlataforma: ${solicitud.plataforma}\nNotas: ${solicitud.notas || 'Sin notas'}\nPrecio cotizado: $${solicitud.cotizacion?.toFixed(2) || 'No cotizado'}\nRespuesta: ${solicitud.respuestaAdmin || 'Sin respuesta'}`);
+function cerrarCotizarModal() {
+    document.getElementById('cotizarModal').style.display = 'none';
+    solicitudActual = null;
 }
 
-// CARGAR PRODUCTOS
-async function cargarProductos() {
-    const loadingDiv = document.getElementById('productosLoading');
-    const table = document.getElementById('productosTable');
-    
-    try {
-        loadingDiv.style.display = 'block';
-        table.style.display = 'none';
-        
-        const response = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
-        const data = await response.json();
-        
-        if (data && Array.isArray(data) && data.length > 0) {
-            productos = data;
-        } else {
-            productos = [];
-        }
-    } catch (error) {
-        console.error('Error cargando productos:', error);
-        productos = [];
-    }
-    
-    renderizarProductos();
-    loadingDiv.style.display = 'none';
-    table.style.display = 'block';
-}
-
-function renderizarProductos() {
-    const tablaBody = document.getElementById('productosBody');
-    
-    if (!productos || productos.length === 0) {
-        tablaBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay productos registrados</td></tr>';
-        return;
-    }
-    
-    tablaBody.innerHTML = productos.map(p => `
-        <tr>
-            <td>${p.id || p.ID || '-'}</td>
-            <td style="max-width:200px;">${p.nombre || p.Nombre || '-'}</td>
-            <td>$${p.precio || p.Precio || '0'}</td>
-            <td>${p.origen || p.Origen || '-'}</td>
-            <td>${p.categoria || p.Categoria || '-'}</td>
-            <td>${p.enlace || p.Enlace ? `<a href="${p.enlace || p.Enlace}" target="_blank">🔗</a>` : '-'}</td>
-            <td><span class="badge ${(p.activo || p.Activo) === 'SI' ? 'badge-aprobado' : 'badge-pendiente'}">${(p.activo || p.Activo) === 'SI' ? 'Activo' : 'Inactivo'}</span></td>
-        </tr>
-    `).join('');
-}
-
-// CARGAR PEDIDOS
+// ==================== PEDIDOS ====================
 async function cargarPedidos() {
     const loadingDiv = document.getElementById('pedidosLoading');
     const table = document.getElementById('pedidosTable');
@@ -754,14 +990,8 @@ async function cargarPedidos() {
         
         const response = await fetch(`${API_URL}?action=getPedidos&t=${Date.now()}`);
         const data = await response.json();
-        
-        if (data && Array.isArray(data) && data.length > 0) {
-            pedidos = data;
-        } else {
-            pedidos = [];
-        }
+        pedidos = (data && Array.isArray(data)) ? data : [];
     } catch (error) {
-        console.error('Error cargando pedidos:', error);
         pedidos = [];
     }
     
@@ -772,9 +1002,8 @@ async function cargarPedidos() {
 
 function renderizarPedidos() {
     const tablaBody = document.getElementById('pedidosBody');
-    
     if (!pedidos || pedidos.length === 0) {
-        tablaBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay pedidos registrados</td></tr>';
+        tablaBody.innerHTML = '<tr><td colspan="7">No hay pedidos</td></tr>';
         return;
     }
     
@@ -793,14 +1022,11 @@ function renderizarPedidos() {
 
 // ACTUALIZAR ESTADÍSTICAS
 function actualizarStats() {
-    const pendientes = solicitudes.filter(s => s.estado === 'pendiente').length;
-    const cotizadas = solicitudes.filter(s => s.estado === 'cotizado').length;
-    const aprobadas = solicitudes.filter(s => s.estado === 'aprobado').length;
-    
+    document.getElementById('totalProductos').innerText = productos?.length || 0;
+    document.getElementById('totalSolicitudes').innerText = solicitudes?.length || 0;
+    document.getElementById('totalPedidos').innerText = pedidos?.length || 0;
+    const pendientes = solicitudes?.filter(s => s.estado === 'pendiente').length || 0;
     document.getElementById('totalPendientes').innerText = pendientes;
-    document.getElementById('totalCotizadas').innerText = cotizadas;
-    document.getElementById('totalAprobadas').innerText = aprobadas;
-    document.getElementById('totalSolicitudes').innerText = solicitudes.length;
 }
 
 // CONFIGURACIÓN
@@ -812,18 +1038,8 @@ function guardarConfiguracion() {
     };
     localStorage.setItem('tiendaConfig', JSON.stringify(config));
     alert('✅ Configuración guardada');
-    
-    // Cargar configuración guardada
-    const saved = localStorage.getItem('config');
-    if(saved) {
-        const cfg = JSON.parse(saved);
-        document.getElementById('configNombre').value = cfg.nombre || '';
-        document.getElementById('configEmail').value = cfg.email || '';
-        document.getElementById('configMoneda').value = cfg.moneda || 'USD ($)';
-    }
 }
 
-// Cargar configuración guardada
 function cargarConfiguracion() {
     const saved = localStorage.getItem('tiendaConfig');
     if(saved) {
@@ -845,8 +1061,9 @@ document.querySelectorAll('.menu button').forEach(btn => {
         
         const sections = {
             dashboard: 'dashboardSection',
-            solicitudes: 'solicitudesSection',
             productos: 'productosSection',
+            inventario: 'inventarioSection',
+            solicitudes: 'solicitudesSection',
             pedidos: 'pedidosSection',
             config: 'configSection'
         };
@@ -855,28 +1072,26 @@ document.querySelectorAll('.menu button').forEach(btn => {
         
         const titles = {
             dashboard: 'Dashboard',
-            solicitudes: 'Solicitudes de Productos',
-            productos: 'Catálogo de Productos',
-            pedidos: 'Pedidos de Clientes',
+            productos: 'Agregar Producto',
+            inventario: 'Inventario',
+            solicitudes: 'Solicitudes',
+            pedidos: 'Pedidos',
             config: 'Configuración'
         };
         
         document.getElementById('currentSectionTitle').innerText = titles[section] || section;
         
+        if (section === 'inventario') renderizarInventario();
         if (section === 'solicitudes') renderizarSolicitudes();
-        if (section === 'productos') renderizarProductos();
         if (section === 'pedidos') renderizarPedidos();
     });
 });
 
-// Cerrar modal con click fuera
 window.onclick = function(e) {
-    if (e.target === document.getElementById('cotizarModal')) {
-        cerrarCotizarModal();
-    }
+    if (e.target === document.getElementById('editarModal')) cerrarEditarModal();
+    if (e.target === document.getElementById('cotizarModal')) cerrarCotizarModal();
 }
 
-// INICIALIZAR
 cargarConfiguracion();
 </script>
 </body>
