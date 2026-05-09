@@ -44,6 +44,26 @@
         .logo-subtitle { font-size: 0.7rem; color: #66bb6a; letter-spacing: 2px; margin-top: 5px; }
         @media (max-width:768px){ .logo-imagen { height: 55px; } .logo-title { font-size: 1.3rem; } }
         
+        .admin-link {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #6BA873;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .admin-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
         
         .filtros-principales { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -206,19 +226,6 @@
         }
 
         /* Estilos para Solicitar Producto */
-        .solicitud-card {
-            background: linear-gradient(135deg, #fff 0%, #f8fdf9 100%);
-            border: 2px solid #c8e6c9;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: all 0.3s;
-        }
-        .solicitud-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.15);
-            border-color: #81c784;
-        }
         .solicitud-codigo {
             font-family: monospace;
             font-size: 1.8rem;
@@ -404,6 +411,9 @@
     </style>
 </head>
 <body>
+    <!-- Enlace al panel admin -->
+    <a href="admin.html" class="admin-link">🔐 Panel Admin</a>
+
     <div class="logo-container">
         <div class="logo">
             <img src="logo.png" alt="TIENDA PRIVADA" class="logo-imagen" onerror="this.src='https://via.placeholder.com/90?text=Logo'">
@@ -462,20 +472,20 @@
             <div class="modal-header"><h2>🔍 Solicitar Producto</h2><button class="modal-cerrar" id="cerrar-solicitar-modal">✕</button></div>
             <div class="modal-body-scroll">
                 <form id="solicitud-form">
-                    <div class="form-group"><label>📝 Tu nombre</label><input type="text" id="solicitante-nombre" required placeholder="Ej: María González"></div>
-                    <div class="form-group"><label>📞 Teléfono</label><input type="tel" id="solicitante-telefono" required placeholder="Ej: 6123-4567"></div>
-                    <div class="form-group"><label>🔗 Link del producto (Temu, Amazon, Shein, Sephora)</label><input type="url" id="producto-link" required placeholder="https://..."></div>
+                    <div class="form-group"><label>📝 Tu nombre completo</label><input type="text" id="solicitante-nombre" required placeholder="Ej: María González"></div>
+                    <div class="form-group"><label>📞 Teléfono de contacto</label><input type="tel" id="solicitante-telefono" required placeholder="Ej: 6123-4567"></div>
+                    <div class="form-group"><label>🔗 Link del producto (Amazon, Temu, Shein, Sephora)</label><input type="url" id="producto-link" required placeholder="https://..."></div>
                     <div class="form-group"><label>🛒 Plataforma</label><select id="producto-plataforma" required>
                         <option value="Amazon">Amazon</option><option value="Temu">Temu</option>
                         <option value="Shein">Shein</option><option value="Sephora">Sephora</option>
                     </select></div>
-                    <div class="form-group"><label>📝 Notas adicionales (opcional)</label><textarea id="solicitud-notas" rows="3" placeholder="Color, talla, cantidad, etc..."></textarea></div>
+                    <div class="form-group"><label>📝 Notas adicionales (color, talla, cantidad, etc)</label><textarea id="solicitud-notas" rows="3" placeholder="Ej: Color negro, talla M, cantidad 2 unidades"></textarea></div>
                     <button type="submit" class="btn-confirmar">📩 Enviar Solicitud</button>
                 </form>
                 <div id="solicitud-resultado" style="margin-top: 20px; display: none;">
                     <div style="background: #e8f5e9; border-radius: 15px; padding: 20px; text-align: center;">
                         <div style="font-size: 3rem;">✅</div>
-                        <h3 style="color: #66bb6a;">¡Solicitud Enviada!</h3>
+                        <h3 style="color: #2e7d32;">¡Solicitud Enviada!</h3>
                         <p>Tu código de seguimiento es:</p>
                         <div class="solicitud-codigo" id="codigo-seguimiento"></div>
                         <p style="margin-top: 15px; font-size: 0.8rem;">Guarda este código para consultar el estado de tu solicitud</p>
@@ -485,7 +495,7 @@
         </div>
     </div>
     
-    <!-- Modal Consultar Solicitud (Cliente) -->
+    <!-- Modal Consultar Solicitud (Mis Pedidos) -->
     <div id="consultar-solicitud-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header"><h2>🔍 Consultar mi Solicitud</h2><button class="modal-cerrar" id="cerrar-consultar-modal">✕</button></div>
@@ -509,19 +519,17 @@
                 <div class="modal-precio-section"><span>PRECIO</span><span id="modal-precio"></span></div>
                 <div id="modal-colores"><div class="seccion-label">🎨 Color</div><div id="selector-color"></div></div>
                 <div id="modal-variantes"><div class="seccion-label">📏 Talla</div><div id="tallas-container" class="tallas-container"></div></div>
-                <button id="modal-agregar">➕ Agregar al carrito</button>
+                <button id="modal-agregar" class="btn-confirmar">➕ Agregar al carrito</button>
             </div>
         </div>
     </div>
     
     <!-- Modales de pago y pedidos -->
-    <div id="pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📋 Datos de envío</h2><button class="modal-cerrar" id="cerrar-pago-modal">✕</button></div><form id="pedido-form-modal" style="padding:20px;"><div class="form-group"><label>📝 Nombre</label><input type="text" id="nombre-modal" required></div><div class="form-group"><label>📞 Teléfono</label><input type="tel" id="telefono-modal" required></div><div class="form-group"><label>🏠 Dirección</label><textarea id="direccion-modal" rows="3" required></textarea></div><div class="form-group"><label>💳 Pago</label><select id="metodo-pago-modal" required><option value="Efectivo">Efectivo al recibir</option><option value="Yappy">Yappy</option></select></div><button type="submit" class="btn-confirmar">Confirmar</button></form></div></div>
+    <div id="pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📋 Datos de envío</h2><button class="modal-cerrar" id="cerrar-pago-modal">✕</button></div><form id="pedido-form-modal" style="padding:20px;"><div class="form-group"><label>📝 Nombre completo</label><input type="text" id="nombre-modal" required></div><div class="form-group"><label>📞 Teléfono</label><input type="tel" id="telefono-modal" required></div><div class="form-group"><label>🏠 Dirección completa</label><textarea id="direccion-modal" rows="3" required></textarea></div><div class="form-group"><label>💳 Método de pago</label><select id="metodo-pago-modal" required><option value="Efectivo">Efectivo al recibir</option><option value="Yappy">Yappy</option></select></div><button type="submit" class="btn-confirmar">Confirmar pedido</button></form></div></div>
     
-    <div id="yappy-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📱 Pagar con Yappy</h2><button class="modal-cerrar" id="cerrar-yappy-modal">✕</button></div><div style="padding:30px; text-align:center;"><p style="font-weight:600;">Transfiere a:</p><div style="background:#e8f5e9; border-radius:15px; padding:15px; border:2px solid #81c784; margin-bottom:15px;"><p style="font-size:1.8rem; font-weight:800; color:#66bb6a; font-family:monospace;">6474-5914</p></div><button id="copiar-yappy" class="btn-confirmar" style="margin-bottom:10px;">📋 Copiar</button><button id="ya-pague" class="btn-confirmar">✅ Ya pagué</button></div></div></div>
+    <div id="yappy-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📱 Pagar con Yappy</h2><button class="modal-cerrar" id="cerrar-yappy-modal">✕</button></div><div style="padding:30px; text-align:center;"><p style="font-weight:600;">Transfiere a:</p><div style="background:#e8f5e9; border-radius:15px; padding:15px; border:2px solid #81c784; margin-bottom:15px;"><p style="font-size:1.8rem; font-weight:800; color:#66bb6a; font-family:monospace;">6474-5914</p></div><button id="copiar-yappy" class="btn-confirmar" style="margin-bottom:10px;">📋 Copiar número</button><button id="ya-pague" class="btn-confirmar">✅ Ya pagué</button></div></div></div>
     
-    <div id="confirmar-pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🔍 Confirmar Pago</h2><button class="modal-cerrar" id="cerrar-confirmar-modal">✕</button></div><div style="padding:20px;"><div class="form-group"><label>Tu nombre</label><input type="text" id="nombre-verificar"></div><button id="verificar-pago" class="btn-confirmar">Verificar</button></div></div></div>
-    
-    <div id="mis-pedidos-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📋 Mis Pedidos</h2><button class="modal-cerrar" id="cerrar-mis-pedidos-modal">✕</button></div><div style="padding:20px;"><div class="form-group"><label>Tu nombre</label><input type="text" id="nombre-consulta-modal"></div><button id="buscar-pedidos-modal" class="btn-confirmar" style="margin-bottom:15px;">🔍 Buscar</button><div id="resultado-pedidos-modal"></div></div></div></div>
+    <div id="confirmar-pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🔍 Confirmar Pago</h2><button class="modal-cerrar" id="cerrar-confirmar-modal">✕</button></div><div style="padding:20px;"><div class="form-group"><label>Tu nombre</label><input type="text" id="nombre-verificar" placeholder="Juan Pérez"></div><button id="verificar-pago" class="btn-confirmar">Verificar pago</button></div></div></div>
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
@@ -529,22 +537,22 @@ let productos = [], carrito = [], productoActual = null, colorSeleccionado = nul
 let filtroPlataforma = 'todos', filtroSubcat = null, filtroGenero = 'todos';
 let solicitudes = [];
 
-// Cargar solicitudes guardadas
+// ========== SOLICITUDES ==========
 function cargarSolicitudes() {
     const saved = localStorage.getItem('solicitudes');
     if(saved) solicitudes = JSON.parse(saved);
+    else solicitudes = [];
 }
 
 function guardarSolicitudes() {
     localStorage.setItem('solicitudes', JSON.stringify(solicitudes));
 }
 
-// Generar código aleatorio de 4 dígitos
 function generarCodigo() {
     return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
-// Enviar solicitud de producto
+// Enviar solicitud
 document.getElementById('solicitud-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const nombre = document.getElementById('solicitante-nombre').value;
@@ -555,12 +563,7 @@ document.getElementById('solicitud-form').addEventListener('submit', (e) => {
     const codigo = generarCodigo();
     
     const nuevaSolicitud = {
-        codigo,
-        nombre,
-        telefono,
-        link,
-        plataforma,
-        notas,
+        codigo, nombre, telefono, link, plataforma, notas,
         estado: 'pendiente',
         fecha: new Date().toISOString(),
         cotizacion: null,
@@ -570,12 +573,10 @@ document.getElementById('solicitud-form').addEventListener('submit', (e) => {
     solicitudes.push(nuevaSolicitud);
     guardarSolicitudes();
     
-    // Mostrar código al usuario
     document.getElementById('codigo-seguimiento').textContent = codigo;
     document.getElementById('solicitud-resultado').style.display = 'block';
     document.getElementById('solicitud-form').style.display = 'none';
     
-    // Limpiar formulario después de un tiempo
     setTimeout(() => {
         document.getElementById('solicitud-form').reset();
         document.getElementById('solicitud-form').style.display = 'block';
@@ -583,7 +584,7 @@ document.getElementById('solicitud-form').addEventListener('submit', (e) => {
         document.getElementById('solicitar-modal').classList.remove('active');
     }, 5000);
     
-    toast('✅ Solicitud enviada. Guarda tu código: ' + codigo);
+    alert('✅ Solicitud enviada. Guarda tu código: ' + codigo);
 });
 
 // Consultar solicitud
@@ -593,7 +594,7 @@ document.getElementById('btn-consultar-solicitud').addEventListener('click', () 
     const detalleDiv = document.getElementById('solicitud-detalle');
     
     if(!solicitud) {
-        detalleDiv.innerHTML = '<div style="background:#ffebee; border-radius:15px; padding:20px; text-align:center; color:#c62828;">❌ Código no encontrado</div>';
+        detalleDiv.innerHTML = '<div style="background:#ffebee; border-radius:15px; padding:20px; text-align:center; color:#c62828;">❌ Código no encontrado. Verifica tu código de 4 dígitos.</div>';
         detalleDiv.style.display = 'block';
         return;
     }
@@ -603,7 +604,7 @@ document.getElementById('btn-consultar-solicitud').addEventListener('click', () 
         case 'pendiente': estadoTexto = '⏳ Pendiente de revisión'; estadoClass = 'estado-pendiente'; break;
         case 'cotizado': estadoTexto = '💰 Cotizado - Revisa el precio'; estadoClass = 'estado-cotizado'; break;
         case 'aprobado': estadoTexto = '✅ Aprobado - Ya puedes comprar'; estadoClass = 'estado-aprobado'; break;
-        case 'rechazado': estadoTexto = '❌ Rechazado'; estadoClass = 'estado-rechazado'; break;
+        case 'rechazado': estadoTexto = '❌ Rechazado - Producto no disponible'; estadoClass = 'estado-rechazado'; break;
         default: estadoTexto = solicitud.estado;
     }
     
@@ -614,58 +615,62 @@ document.getElementById('btn-consultar-solicitud').addEventListener('click', () 
                 <span class="estado-solicitud ${estadoClass}" style="margin-left:10px;">${estadoTexto}</span>
             </div>
             <div style="margin-top:15px;">
-                <p><strong>📦 Producto:</strong> <a href="${solicitud.link}" target="_blank" style="color:#66bb6a;">Ver producto</a></p>
+                <p><strong>📦 Producto solicitado:</strong></p>
+                <p><a href="${solicitud.link}" target="_blank" style="color:#66bb6a; word-break:break-all;">${solicitud.link.substring(0, 60)}...</a></p>
                 <p><strong>🛒 Plataforma:</strong> ${solicitud.plataforma}</p>
                 <p><strong>📝 Notas:</strong> ${solicitud.notas || 'Sin notas'}</p>
-                ${solicitud.cotizacion ? `<p><strong>💰 Precio cotizado:</strong> $${solicitud.cotizacion.toFixed(2)}</p>` : ''}
+                ${solicitud.cotizacion ? `<p><strong>💰 Precio cotizado:</strong> <span style="font-size:1.3rem; color:#66bb6a; font-weight:800;">$${solicitud.cotizacion.toFixed(2)}</span></p>` : ''}
                 ${solicitud.respuestaAdmin ? `<p><strong>💬 Respuesta del administrador:</strong> ${solicitud.respuestaAdmin}</p>` : ''}
             </div>
             ${solicitud.estado === 'cotizado' ? `
-                <button onclick="aprobarSolicitud('${solicitud.codigo}')" class="btn-confirmar" style="margin-top:15px;">✅ Aceptar y comprar</button>
+                <button onclick="aprobarSolicitudCliente('${solicitud.codigo}')" class="btn-confirmar" style="margin-top:15px;">✅ Aceptar precio y comprar</button>
             ` : ''}
             ${solicitud.estado === 'aprobado' ? `
                 <div style="margin-top:15px; padding:15px; background:#e8f5e9; border-radius:12px; text-align:center;">
                     <p style="font-weight:700; color:#2e7d32;">¡Producto disponible!</p>
-                    <p>Puedes agregarlo a tu carrito con el precio de $${solicitud.cotizacion?.toFixed(2)}</p>
+                    <p>Puedes agregarlo a tu carrito con el precio de <strong>$${solicitud.cotizacion?.toFixed(2)}</strong></p>
                     <button onclick="agregarSolicitudAlCarrito('${solicitud.codigo}')" class="btn-confirmar" style="margin-top:10px;">🛒 Agregar al carrito</button>
                 </div>
             ` : ''}
+            ${solicitud.estado === 'pendiente' ? `<p style="margin-top:15px; text-align:center; color:#ef6c00;">⏳ Esperando respuesta del administrador...</p>` : ''}
         </div>
     `;
     detalleDiv.style.display = 'block';
 });
 
-function aprobarSolicitud(codigo) {
+function aprobarSolicitudCliente(codigo) {
     const solicitud = solicitudes.find(s => s.codigo === codigo);
     if(solicitud) {
         solicitud.estado = 'aprobado';
         guardarSolicitudes();
         document.getElementById('btn-consultar-solicitud').click();
-        toast('✅ Solicitud aprobada. Ya puedes agregar el producto al carrito.');
+        alert('✅ Solicitud aprobada. Ya puedes agregar el producto al carrito.');
     }
 }
 
 function agregarSolicitudAlCarrito(codigo) {
     const solicitud = solicitudes.find(s => s.codigo === codigo);
     if(solicitud && solicitud.cotizacion) {
-        const existente = carrito.find(i => i.nombre === `[Solicitud] ${solicitud.link.substring(0, 30)}`);
-        if(existente) existente.cantidad++;
-        else carrito.push({
-            id: `sol_${codigo}`,
-            nombre: `📦 Producto solicitado (${solicitud.plataforma})`,
-            precio: solicitud.cotizacion,
-            origen: solicitud.plataforma,
-            cantidad: 1,
-            link: solicitud.link
-        });
+        const existente = carrito.find(i => i.id === `sol_${codigo}`);
+        if(existente) {
+            existente.cantidad++;
+        } else {
+            carrito.push({
+                id: `sol_${codigo}`,
+                nombre: `📦 Producto solicitado (${solicitud.plataforma})`,
+                precio: solicitud.cotizacion,
+                origen: solicitud.plataforma,
+                cantidad: 1
+            });
+        }
         localStorage.setItem('carrito', JSON.stringify(carrito));
         actualizarCarrito();
         document.getElementById('consultar-solicitud-modal').classList.remove('active');
-        toast('✅ Producto agregado al carrito');
+        alert('✅ Producto agregado al carrito correctamente');
     }
 }
 
-// Categorías por plataforma
+// ========== CATEGORÍAS ==========
 const subcategorias = {
     'Amazon': [
         { id: 'ropa', nombre: '👕 Ropa', valor: 'ropa' },
@@ -698,12 +703,15 @@ const subcategorias = {
 function actualizarSubcategorias() {
     const container = document.getElementById('subcategorias-list');
     const subcatContainer = document.getElementById('subcategorias-container');
+    if(!container) return;
     container.innerHTML = '';
+    
     if (filtroPlataforma === 'todos') {
         subcatContainer.classList.remove('visible');
         filtroSubcat = null;
         return;
     }
+    
     const subs = subcategorias[filtroPlataforma];
     if (subs && subs.length > 0) {
         subs.forEach(sub => {
@@ -729,12 +737,16 @@ function actualizarSubcategorias() {
     }
 }
 
+// ========== PRODUCTOS ==========
 async function cargarProductos() {
     try {
         const res = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
         productos = await res.json();
         mostrarProductos();
-    } catch(e) { console.error(e); }
+    } catch(e) { 
+        console.error(e);
+        document.getElementById('productos').innerHTML = '<div class="loading">Error cargando productos</div>';
+    }
 }
 
 function getIconoGenero(g) { 
@@ -752,11 +764,16 @@ function mostrarProductos() {
         if (filtroGenero !== 'todos' && (p.genero || 'unisex') !== filtroGenero) return false;
         return true;
     });
+    
     const cont = document.getElementById('productos');
-    if (!filtrados.length) { cont.innerHTML = '<div class="vacio">✨ No hay productos</div>'; return; }
+    if (!filtrados.length) { 
+        cont.innerHTML = '<div class="vacio">✨ No hay productos en esta categoría</div>'; 
+        return; 
+    }
+    
     cont.innerHTML = filtrados.map(p => `
         <div class="producto-card" onclick="mostrarModal(${p.id})">
-            <img src="${p.imagen || 'https://via.placeholder.com/310x280'}" class="producto-imagen" onerror="this.src='https://via.placeholder.com/310x280'">
+            <img src="${p.imagen || 'https://via.placeholder.com/310x280'}" class="producto-imagen" onerror="this.src='https://via.placeholder.com/310x280?text=Producto'">
             <div class="producto-info">
                 <div class="producto-origen origen-${(p.origen || 'temu').toLowerCase()}">${p.origen || 'General'}</div>
                 <div class="producto-genero">${getIconoGenero(p.genero)} ${p.genero || 'Unisex'}</div>
@@ -769,6 +786,87 @@ function mostrarProductos() {
     `).join('');
 }
 
+// ========== CARRITO ==========
+function agregarAlCarrito(id) {
+    const prod = productos.find(p => p.id == id);
+    if(prod) {
+        const existente = carrito.find(i => i.id === id);
+        if(existente) {
+            existente.cantidad++;
+        } else {
+            carrito.push({ id: prod.id, nombre: prod.nombre, precio: prod.precio, origen: prod.origen, cantidad: 1 });
+        }
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+        actualizarCarrito();
+        alert('✅ Producto agregado al carrito');
+    }
+}
+
+function actualizarCarrito() {
+    const total = carrito.reduce((s,i) => s + (i.precio || 0) * i.cantidad, 0);
+    const items = carrito.reduce((s,i) => s + i.cantidad, 0);
+    document.getElementById('carrito-contador').textContent = items;
+    document.getElementById('subtotal-carrito').textContent = `$${total.toFixed(2)}`;
+    document.getElementById('total-carrito').textContent = `$${total.toFixed(2)}`;
+    
+    const container = document.getElementById('carrito-items');
+    if(!carrito.length) { 
+        container.innerHTML = '<div class="vacio">✨ Tu carrito está vacío</div>'; 
+        return; 
+    }
+    
+    container.innerHTML = carrito.map((i, idx) => `
+        <div class="carrito-item">
+            <div class="item-info">
+                <div class="item-nombre">${i.nombre || 'Producto'}</div>
+                <div style="font-size:0.8rem; color:#66bb6a;">$${(i.precio || 0).toFixed(2)} c/u</div>
+            </div>
+            <div class="item-cantidad">
+                <button onclick="cambiarCantidad(${idx}, -1)">-</button>
+                <span>${i.cantidad}</span>
+                <button onclick="cambiarCantidad(${idx}, 1)">+</button>
+            </div>
+            <button class="btn-eliminar-item" onclick="eliminarItem(${idx})">🗑️</button>
+        </div>
+    `).join('');
+}
+
+function cambiarCantidad(idx, delta) {
+    if(idx >= 0 && idx < carrito.length) {
+        carrito[idx].cantidad += delta;
+        if(carrito[idx].cantidad <= 0) {
+            eliminarItem(idx);
+        } else {
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            actualizarCarrito();
+        }
+    }
+}
+
+function eliminarItem(idx) {
+    carrito.splice(idx, 1);
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    actualizarCarrito();
+}
+
+// ========== MODALES ==========
+function mostrarModal(id) {
+    productoActual = productos.find(p => p.id == id);
+    if(!productoActual) return;
+    document.getElementById('modal-imagen').src = productoActual.imagen || 'https://via.placeholder.com/400x300';
+    document.getElementById('modal-nombre').textContent = productoActual.nombre || 'Producto';
+    document.getElementById('modal-origen').textContent = productoActual.origen || 'General';
+    document.getElementById('modal-genero').textContent = `${getIconoGenero(productoActual.genero)} ${productoActual.genero || 'Unisex'}`;
+    document.getElementById('modal-descripcion').textContent = productoActual.descripcion || `Producto de ${productoActual.origen}`;
+    document.getElementById('modal-precio').textContent = `$${(productoActual.precio || 0).toFixed(2)}`;
+    document.getElementById('producto-modal').classList.add('active');
+}
+
+function cerrarModal() {
+    document.getElementById('producto-modal').classList.remove('active');
+}
+
+// ========== EVENT LISTENERS ==========
 document.querySelectorAll('.filtro-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
@@ -793,76 +891,138 @@ document.querySelectorAll('.genero-btn').forEach(btn => {
     });
 });
 
-function mostrarModal(id) {
-    productoActual = productos.find(p => p.id == id);
-    if(!productoActual) return;
-    document.getElementById('modal-imagen').src = productoActual.imagen || 'https://via.placeholder.com/400x300';
-    document.getElementById('modal-nombre').textContent = productoActual.nombre;
-    document.getElementById('modal-origen').textContent = productoActual.origen;
-    document.getElementById('modal-genero').textContent = `${getIconoGenero(productoActual.genero)} ${productoActual.genero || 'Unisex'}`;
-    document.getElementById('modal-descripcion').textContent = productoActual.descripcion || `Producto de ${productoActual.origen}`;
-    document.getElementById('modal-precio').textContent = `$${(productoActual.precio || 0).toFixed(2)}`;
-    document.getElementById('producto-modal').classList.add('active');
-}
-
-function agregarAlCarrito(id) {
-    const prod = productos.find(p => p.id == id);
-    if(prod) {
-        const existente = carrito.find(i => i.id === id);
-        if(existente) existente.cantidad++;
-        else carrito.push({ id: prod.id, nombre: prod.nombre, precio: prod.precio, origen: prod.origen, cantidad: 1 });
-        localStorage.setItem('carrito', JSON.stringify(carrito));
-        actualizarCarrito();
-        toast('✅ Producto agregado al carrito');
+document.getElementById('cerrar-modal-producto')?.addEventListener('click', cerrarModal);
+document.getElementById('modal-agregar')?.addEventListener('click', () => {
+    if(productoActual) {
+        agregarAlCarrito(productoActual.id);
+        cerrarModal();
     }
-}
+});
 
-function cerrarModal() { document.getElementById('producto-modal').classList.remove('active'); }
-function actualizarCarrito() {
-    const total = carrito.reduce((s,i) => s + (i.precio || 0) * i.cantidad, 0);
-    const items = carrito.reduce((s,i) => s + i.cantidad, 0);
-    document.getElementById('carrito-contador').textContent = items;
-    document.getElementById('subtotal-carrito').textContent = `$${total.toFixed(2)}`;
-    document.getElementById('total-carrito').textContent = `$${total.toFixed(2)}`;
-    const container = document.getElementById('carrito-items');
-    if(!carrito.length) { container.innerHTML = '<div class="vacio">✨ Tu carrito está vacío</div>'; return; }
-    container.innerHTML = carrito.map((i, idx) => `
-        <div class="carrito-item">
-            <div class="item-info"><div class="item-nombre">${i.nombre}</div><div class="item-precio">$${((i.precio || 0) * i.cantidad).toFixed(2)}</div></div>
-            <div class="item-cantidad"><button onclick="cambiarCantidad(${idx}, -1)">-</button><span>${i.cantidad}</span><button onclick="cambiarCantidad(${idx}, 1)">+</button></div>
-            <button class="btn-eliminar-item" onclick="eliminarItem(${idx})">🗑️</button>
-        </div>
-    `).join('');
-}
+document.getElementById('carrito-toggle')?.addEventListener('click', () => {
+    document.getElementById('carrito-panel').classList.add('open');
+    document.getElementById('overlay').classList.add('active');
+});
 
-function cambiarCantidad(idx, delta) {
-    if(idx >= 0 && idx < carrito.length) {
-        carrito[idx].cantidad += delta;
-        if(carrito[idx].cantidad <= 0) eliminarItem(idx);
-        else { localStorage.setItem('carrito',JSON.stringify(carrito)); actualizarCarrito(); }
+document.getElementById('cerrar-carrito')?.addEventListener('click', () => {
+    document.getElementById('carrito-panel').classList.remove('open');
+    document.getElementById('overlay').classList.remove('active');
+});
+
+document.getElementById('overlay')?.addEventListener('click', () => {
+    document.getElementById('carrito-panel').classList.remove('open');
+    document.getElementById('overlay').classList.remove('active');
+});
+
+document.getElementById('toggle-solicitudes')?.addEventListener('click', () => {
+    document.getElementById('solicitar-modal').classList.add('active');
+});
+
+document.getElementById('cerrar-solicitar-modal')?.addEventListener('click', () => {
+    document.getElementById('solicitar-modal').classList.remove('active');
+});
+
+document.getElementById('toggle-mis-pedidos')?.addEventListener('click', () => {
+    document.getElementById('consultar-solicitud-modal').classList.add('active');
+});
+
+document.getElementById('cerrar-consultar-modal')?.addEventListener('click', () => {
+    document.getElementById('consultar-solicitud-modal').classList.remove('active');
+});
+
+document.getElementById('ir-pagar')?.addEventListener('click', () => {
+    if(carrito.length === 0) {
+        alert('🛒 Tu carrito está vacío');
+        return;
     }
-}
-function eliminarItem(idx) { carrito.splice(idx, 1); localStorage.setItem('carrito',JSON.stringify(carrito)); actualizarCarrito(); }
-function toast(msg) { alert(msg); }
+    document.getElementById('carrito-panel').classList.remove('open');
+    document.getElementById('pago-modal').style.display = 'flex';
+});
 
-// Event listeners
-document.getElementById('cerrar-modal-producto').onclick = cerrarModal;
-document.getElementById('modal-agregar').onclick = () => { agregarAlCarrito(productoActual?.id); cerrarModal(); };
-document.getElementById('carrito-toggle').onclick = () => { document.getElementById('carrito-panel').classList.add('open'); document.getElementById('overlay').classList.add('active'); };
-document.getElementById('cerrar-carrito').onclick = () => { document.getElementById('carrito-panel').classList.remove('open'); document.getElementById('overlay').classList.remove('active'); };
-document.getElementById('overlay').onclick = () => { document.getElementById('carrito-panel').classList.remove('open'); document.getElementById('overlay').classList.remove('active'); };
-document.getElementById('toggle-solicitudes').onclick = () => document.getElementById('solicitar-modal').classList.add('active');
-document.getElementById('cerrar-solicitar-modal').onclick = () => document.getElementById('solicitar-modal').classList.remove('active');
-document.getElementById('toggle-mis-pedidos').onclick = () => document.getElementById('consultar-solicitud-modal').classList.add('active');
-document.getElementById('cerrar-consultar-modal').onclick = () => document.getElementById('consultar-solicitud-modal').classList.remove('active');
-document.getElementById('ir-pagar').onclick = () => { document.getElementById('carrito-panel').classList.remove('open'); document.getElementById('pago-modal').style.display = 'flex'; };
-document.getElementById('cerrar-pago-modal').onclick = () => document.getElementById('pago-modal').style.display = 'none';
+document.getElementById('cerrar-pago-modal')?.addEventListener('click', () => {
+    document.getElementById('pago-modal').style.display = 'none';
+});
 
-// Inicializar
+// PAGO
+document.getElementById('pedido-form-modal')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nombre = document.getElementById('nombre-modal').value;
+    const telefono = document.getElementById('telefono-modal').value;
+    const direccion = document.getElementById('direccion-modal').value;
+    const metodoPago = document.getElementById('metodo-pago-modal').value;
+    
+    if(!nombre || !telefono || !direccion) {
+        alert('Completa todos los campos');
+        return;
+    }
+    
+    let prodTexto = '', total = 0;
+    carrito.forEach(i => {
+        let subtotal = (i.precio || 0) * i.cantidad;
+        total += subtotal;
+        prodTexto += `${i.nombre} x${i.cantidad} - $${subtotal.toFixed(2)}\n`;
+    });
+    
+    const pedido = {
+        nombre, telefono, direccion, metodoPago,
+        estadoPago: metodoPago === 'Yappy' ? 'Pendiente de pago' : 'Pendiente',
+        productos: prodTexto, totalProductos: total
+    };
+    
+    await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(pedido) });
+    carrito = [];
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    actualizarCarrito();
+    document.getElementById('pago-modal').style.display = 'none';
+    
+    if(metodoPago === 'Yappy') {
+        document.getElementById('yappy-modal').style.display = 'flex';
+    } else {
+        alert('✅ Pedido confirmado. Gracias por tu compra.');
+    }
+});
+
+document.getElementById('cerrar-yappy-modal')?.addEventListener('click', () => {
+    document.getElementById('yappy-modal').style.display = 'none';
+});
+
+document.getElementById('copiar-yappy')?.addEventListener('click', () => {
+    navigator.clipboard.writeText('6474-5914');
+    alert('✅ Número copiado: 6474-5914');
+});
+
+document.getElementById('ya-pague')?.addEventListener('click', () => {
+    document.getElementById('yappy-modal').style.display = 'none';
+    document.getElementById('confirmar-pago-modal').style.display = 'flex';
+});
+
+document.getElementById('cerrar-confirmar-modal')?.addEventListener('click', () => {
+    document.getElementById('confirmar-pago-modal').style.display = 'none';
+});
+
+document.getElementById('verificar-pago')?.addEventListener('click', async () => {
+    let nombre = document.getElementById('nombre-verificar').value;
+    if(!nombre) {
+        alert('Ingresa tu nombre');
+        return;
+    }
+    let res = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombre)}`);
+    let pedidos = await res.json();
+    let pedido = pedidos?.find(p => p.estado === 'Pendiente de pago');
+    if(!pedido) {
+        alert('No se encontró un pedido pendiente con ese nombre');
+        return;
+    }
+    await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'actualizarEstado', fila: pedido.id, estado: 'Pagado' }) });
+    document.getElementById('confirmar-pago-modal').style.display = 'none';
+    alert('✅ Pago confirmado. Gracias por tu compra.');
+});
+
+// ========== INICIALIZAR ==========
 cargarSolicitudes();
 cargarProductos();
-let saved = localStorage.getItem('carrito');
-if(saved) carrito = JSON.parse(saved);
+let savedCart = localStorage.getItem('carrito');
+if(savedCart) carrito = JSON.parse(savedCart);
 actualizarCarrito();
 </script>
 </body>
