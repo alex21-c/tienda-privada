@@ -95,6 +95,14 @@ body {
     font-size: 0.9rem;
 }
 
+.btn-secondary {
+    background: linear-gradient(135deg, #81c784, #66bb6a);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #ef9a9a, #ef5350);
+}
+
 /* APP */
 .app {
     display: none;
@@ -235,9 +243,70 @@ body {
     gap: 18px;
 }
 
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2e7d32;
+}
+
 textarea.input {
     min-height: 100px;
     resize: vertical;
+}
+
+/* VARIANTES PANEL */
+.variantes-panel {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f1f8e9;
+    border-radius: 20px;
+}
+
+.variantes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.variante-card {
+    background: white;
+    border: 1px solid #c8e6c9;
+    border-radius: 16px;
+    padding: 15px;
+    margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    align-items: center;
+}
+
+.variante-card input,
+.variante-card select {
+    padding: 10px;
+    background: #f5f5f5;
+    border: 1px solid #c8e6c9;
+    border-radius: 12px;
+    font-size: 0.9rem;
+}
+
+.variante-card .remove-variant {
+    background: #ef9a9a;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 12px;
+    color: #c62828;
+    cursor: pointer;
+    font-weight: 600;
+    width: auto;
 }
 
 /* TABLES */
@@ -310,14 +379,7 @@ textarea.input {
     display: block;
 }
 
-/* LOADING */
-.loading {
-    text-align: center;
-    padding: 40px;
-    color: #66bb6a;
-}
-
-/* PRODUCT DETAIL MODAL */
+/* MODAL */
 .modal {
     position: fixed;
     inset: 0;
@@ -427,36 +489,98 @@ textarea.input {
         <div id="productosSection" class="section">
             <div class="form-box">
                 <h2 style="margin-bottom: 20px; color:#2e7d32;">➕ Agregar Producto</h2>
-                <div class="form-grid">
-                    <input type="text" class="input" id="prodNombre" placeholder="Nombre del producto">
-                    <input type="number" class="input" id="prodPrecio" placeholder="Precio">
-                    <input type="text" class="input" id="prodOrigen" placeholder="Origen">
-                    <input type="text" class="input" id="prodImagen" placeholder="Imagen URL">
-                    <select class="input" id="prodActivo">
-                        <option value="SI">Activo ✅</option>
-                        <option value="NO">Inactivo ❌</option>
-                    </select>
-                    <input type="text" class="input" id="prodEnlace" placeholder="Enlace producto">
-                    <select class="input" id="prodCategoriaGenero">
-                        <option value="Mujer">Mujer</option>
-                        <option value="Hombre">Hombre</option>
-                        <option value="Unisex">Unisex</option>
-                    </select>
-                    <input type="text" class="input" id="prodColoresNombres" placeholder="Colores (Ej: Rojo,Azul)">
-                    <input type="text" class="input" id="prodColoresPrecios" placeholder="Precios por color (opcional)">
-                </div>
-                <textarea class="input" id="prodDescripcion" placeholder="Descripción del producto"></textarea>
                 
-                <div style="margin-top: 20px;">
-                    <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                        <input type="checkbox" id="tieneVariantes"> ¿Tiene variantes?
-                    </label>
-                    <div id="variantesPanel" style="display: none;">
-                        <textarea class="input" id="prodVariantes" placeholder="Variantes (JSON format: [{'talla':'M','color':'Rojo','precio':0}])" rows="4"></textarea>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre del producto *</label>
+                        <input type="text" class="input" id="prodNombre" placeholder="Ej: Camiseta Premium">
+                    </div>
+                    <div class="form-group">
+                        <label>Precio *</label>
+                        <input type="number" class="input" id="prodPrecio" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Origen/Proveedor</label>
+                        <select class="input" id="prodOrigen">
+                            <option value="">Seleccionar origen...</option>
+                            <option value="Sephora">Sephora</option>
+                            <option value="Amazon">Amazon</option>
+                            <option value="Shein">Shein</option>
+                            <option value="Temu">Temu</option>
+                            <option value="AliExpress">AliExpress</option>
+                            <option value="MercadoLibre">MercadoLibre</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría</label>
+                        <select class="input" id="prodCategoria">
+                            <option value="">Seleccionar categoría...</option>
+                            <option value="Ropa">👕 Ropa</option>
+                            <option value="Zapatos">👟 Zapatos</option>
+                            <option value="Accesorios">💍 Accesorios</option>
+                            <option value="Electrónica">📱 Electrónica</option>
+                            <option value="Perfume">🌸 Perfume</option>
+                            <option value="Maquillaje">💄 Maquillaje</option>
+                            <option value="Otro">📦 Otro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Género/Público</label>
+                        <select class="input" id="prodGenero">
+                            <option value="">Seleccionar género...</option>
+                            <option value="Mujer">👩 Mujer</option>
+                            <option value="Hombre">👨 Hombre</option>
+                            <option value="Niña">👧 Niña</option>
+                            <option value="Niño">👦 Niño</option>
+                            <option value="Unisex">👥 Unisex</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>URL Imagen</label>
+                        <input type="text" class="input" id="prodImagen" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label>Enlace del producto</label>
+                        <input type="text" class="input" id="prodEnlace" placeholder="URL del producto">
+                    </div>
+                    <div class="form-group">
+                        <label>Colores disponibles</label>
+                        <input type="text" class="input" id="prodColores" placeholder="Ej: Rojo, Azul, Negro">
+                    </div>
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select class="input" id="prodActivo">
+                            <option value="SI">✅ Disponible</option>
+                            <option value="NO">❌ No disponible</option>
+                        </select>
                     </div>
                 </div>
                 
-                <button class="btn" onclick="agregarProducto()" style="margin-top: 20px;">Guardar Producto</button>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea class="input" id="prodDescripcion" placeholder="Descripción detallada del producto..."></textarea>
+                </div>
+                
+                <!-- VARIANTES TOGGLE -->
+                <div style="margin-top: 20px; margin-bottom: 15px;">
+                    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; background: #e8f5e9; padding: 15px; border-radius: 16px;">
+                        <input type="checkbox" id="tieneVariantes" style="width: 20px; height: 20px; cursor: pointer;">
+                        <span style="font-weight: 600; color: #2e7d32;">🎨 ¿Tiene variantes? (Tallas, colores, etc.)</span>
+                    </label>
+                </div>
+                
+                <!-- PANEL DE VARIANTES FÁCIL -->
+                <div id="variantesPanel" style="display: none;" class="variantes-panel">
+                    <div class="variantes-header">
+                        <h3 style="color: #2e7d32;">📦 Variantes del Producto</h3>
+                        <button type="button" class="btn-small btn-secondary" onclick="agregarVarianteSimple()" style="width: auto;">+ Agregar Variante</button>
+                    </div>
+                    <div id="variantesListSimple"></div>
+                    <p style="font-size: 12px; color: #558b2f; margin-top: 10px;">💡 Cada variante puede tener diferente talla, color y precio</p>
+                </div>
+                
+                <button class="btn" onclick="agregarProducto()" style="margin-top: 25px;">💾 Guardar Producto</button>
             </div>
         </div>
 
@@ -472,6 +596,7 @@ textarea.input {
                                 <th>Producto</th>
                                 <th>Precio</th>
                                 <th>Origen</th>
+                                <th>Categoría</th>
                                 <th>Link</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
@@ -499,8 +624,7 @@ textarea.input {
                                 <th>Productos</th>
                                 <th>Total</th>
                                 <th>Método Pago</th>
-                                <th>Estado Pago</th>
-                                <th>Comprobante</th>
+                                <th>Estado</th>
                             </tr>
                         </thead>
                         <tbody id="pedidosBody"></tbody>
@@ -528,7 +652,7 @@ textarea.input {
         <div id="solicitudesSection" class="section">
             <div class="form-box">
                 <h2 style="margin-bottom: 20px; color:#2e7d32;">📌 Solicitudes</h2>
-                <p>Sección en desarrollo - Próximamente</p>
+                <p style="color: #558b2f;">Sección en desarrollo - Próximamente</p>
             </div>
         </div>
 
@@ -537,16 +661,16 @@ textarea.input {
             <div class="form-box">
                 <h2 style="margin-bottom: 20px; color:#2e7d32;">⚙️ Configuración</h2>
                 <div class="form-grid">
-                    <div>
-                        <label style="display: block; margin-bottom: 8px; color:#558b2f;">Nombre tienda</label>
+                    <div class="form-group">
+                        <label>Nombre tienda</label>
                         <input type="text" class="input" id="configNombre" placeholder="Mi Tienda">
                     </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 8px; color:#558b2f;">Email contacto</label>
+                    <div class="form-group">
+                        <label>Email contacto</label>
                         <input type="email" class="input" id="configEmail" placeholder="admin@tienda.com">
                     </div>
-                    <div>
-                        <label style="display: block; margin-bottom: 8px; color:#558b2f;">Moneda</label>
+                    <div class="form-group">
+                        <label>Moneda</label>
                         <select class="input" id="configMoneda">
                             <option>USD ($)</option>
                             <option>EUR (€)</option>
@@ -591,6 +715,100 @@ function login() {
 
 function logout() {
     location.reload();
+}
+
+// MOSTRAR/OCULTAR PANEL DE VARIANTES
+document.getElementById('tieneVariantes').addEventListener('change', function() {
+    const panel = document.getElementById('variantesPanel');
+    panel.style.display = this.checked ? 'block' : 'none';
+    if (!this.checked) {
+        document.getElementById('variantesListSimple').innerHTML = '';
+    }
+});
+
+// AGREGAR VARIANTE SIMPLE (FÁCIL)
+function agregarVarianteSimple() {
+    const container = document.getElementById('variantesListSimple');
+    const div = document.createElement('div');
+    div.className = 'variante-card';
+    div.innerHTML = `
+        <input type="text" placeholder="Talla (Ej: S, M, L, XL, 40, 41)" class="variant-talla">
+        <input type="text" placeholder="Color (Ej: Rojo, Azul)" class="variant-color">
+        <input type="number" placeholder="Precio extra (0 si es igual)" class="variant-precio" value="0">
+        <button class="remove-variant" onclick="this.parentElement.remove()">🗑️ Eliminar</button>
+    `;
+    container.appendChild(div);
+}
+
+// OBTENER VARIANTES EN FORMATO JSON
+function obtenerVariantesJson() {
+    const variantes = [];
+    document.querySelectorAll('#variantesListSimple .variante-card').forEach(card => {
+        const talla = card.querySelector('.variant-talla')?.value || '';
+        const color = card.querySelector('.variant-color')?.value || '';
+        const precioExtra = parseFloat(card.querySelector('.variant-precio')?.value) || 0;
+        if (talla || color) {
+            variantes.push({ talla, color, precioExtra });
+        }
+    });
+    return variantes;
+}
+
+// AGREGAR PRODUCTO
+function agregarProducto() {
+    const tieneVariantes = document.getElementById('tieneVariantes').checked;
+    let variantes = null;
+    
+    if (tieneVariantes) {
+        variantes = obtenerVariantesJson();
+    }
+    
+    const nuevoProducto = {
+        id: Date.now(),
+        nombre: document.getElementById('prodNombre').value,
+        precio: document.getElementById('prodPrecio').value,
+        origen: document.getElementById('prodOrigen').value,
+        categoria: document.getElementById('prodCategoria').value,
+        genero: document.getElementById('prodGenero').value,
+        imagen: document.getElementById('prodImagen').value,
+        enlace: document.getElementById('prodEnlace').value,
+        colores: document.getElementById('prodColores').value,
+        activo: document.getElementById('prodActivo').value,
+        descripcion: document.getElementById('prodDescripcion').value,
+        tiene_variantes: tieneVariantes ? "SI" : "NO",
+        variantes: variantes
+    };
+    
+    if (!nuevoProducto.nombre) {
+        alert('Por favor ingresa el nombre del producto');
+        return;
+    }
+    
+    if (!nuevoProducto.precio) {
+        alert('Por favor ingresa el precio');
+        return;
+    }
+    
+    productos.unshift(nuevoProducto);
+    renderizarInventario();
+    actualizarStats();
+    limpiarFormulario();
+    alert('✅ Producto agregado correctamente');
+}
+
+function limpiarFormulario() {
+    document.getElementById('prodNombre').value = '';
+    document.getElementById('prodPrecio').value = '';
+    document.getElementById('prodOrigen').value = '';
+    document.getElementById('prodCategoria').value = '';
+    document.getElementById('prodGenero').value = '';
+    document.getElementById('prodImagen').value = '';
+    document.getElementById('prodEnlace').value = '';
+    document.getElementById('prodColores').value = '';
+    document.getElementById('prodDescripcion').value = '';
+    document.getElementById('tieneVariantes').checked = false;
+    document.getElementById('variantesPanel').style.display = 'none';
+    document.getElementById('variantesListSimple').innerHTML = '';
 }
 
 // CARGAR DATOS
@@ -678,95 +896,36 @@ document.querySelectorAll('.menu button').forEach(btn => {
     });
 });
 
-// AGREGAR PRODUCTO
-function agregarProducto() {
-    const tieneVariantes = document.getElementById('tieneVariantes').checked;
-    let variantesJson = null;
-    
-    if (tieneVariantes) {
-        try {
-            variantesJson = JSON.parse(document.getElementById('prodVariantes').value);
-        } catch(e) {
-            variantesJson = document.getElementById('prodVariantes').value;
-        }
-    }
-    
-    const nuevoProducto = {
-        id: Date.now(),
-        nombre: document.getElementById('prodNombre').value,
-        precio: document.getElementById('prodPrecio').value,
-        origen: document.getElementById('prodOrigen').value,
-        imagen: document.getElementById('prodImagen').value,
-        activo: document.getElementById('prodActivo').value,
-        descripción: document.getElementById('prodDescripcion').value,
-        tiene_variantes: tieneVariantes ? "SI" : "NO",
-        variantes: variantesJson,
-        enlace: document.getElementById('prodEnlace').value,
-        categoria_genero: document.getElementById('prodCategoriaGenero').value,
-        colores_nombres: document.getElementById('prodColoresNombres').value,
-        colores_precios: document.getElementById('prodColoresPrecios').value
-    };
-    
-    if (!nuevoProducto.nombre) {
-        alert('Por favor ingresa el nombre del producto');
-        return;
-    }
-    
-    productos.unshift(nuevoProducto);
-    renderizarInventario();
-    actualizarStats();
-    limpiarFormulario();
-    alert('✅ Producto agregado correctamente');
-}
-
-function limpiarFormulario() {
-    document.getElementById('prodNombre').value = '';
-    document.getElementById('prodPrecio').value = '';
-    document.getElementById('prodOrigen').value = '';
-    document.getElementById('prodImagen').value = '';
-    document.getElementById('prodDescripcion').value = '';
-    document.getElementById('prodEnlace').value = '';
-    document.getElementById('prodColoresNombres').value = '';
-    document.getElementById('prodColoresPrecios').value = '';
-    document.getElementById('tieneVariantes').checked = false;
-    document.getElementById('variantesPanel').style.display = 'none';
-    document.getElementById('prodVariantes').value = '';
-}
-
-// Mostrar/ocultar panel de variantes
-document.getElementById('tieneVariantes').addEventListener('change', function() {
-    document.getElementById('variantesPanel').style.display = this.checked ? 'block' : 'none';
-});
-
 // RENDERIZAR INVENTARIO
 function renderizarInventario() {
     const tablaBody = document.getElementById('inventarioBody');
     
     if (productos.length === 0) {
-        tablaBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay productos registrados</td></tr>';
+        tablaBody.innerHTML = '<td><td colspan="8" style="text-align:center;">No hay productos registrados</td></tr>';
         return;
     }
     
     tablaBody.innerHTML = productos.map(prod => `
         <tr>
             <td>${prod.id}</td>
-            <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${prod.nombre}">
-                <strong>${prod.nombre && prod.nombre.length > 50 ? prod.nombre.substring(0, 50) + '...' : prod.nombre}</strong>
+            <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${prod.nombre}">
+                <strong>${prod.nombre && prod.nombre.length > 40 ? prod.nombre.substring(0, 40) + '...' : prod.nombre}</strong>
             </td>
             <td>$${prod.precio}</td>
             <td>${prod.origen || '-'}</td>
+            <td>${prod.categoria || '-'}</td>
             <td>
-                ${prod.enlace ? `<a href="${prod.enlace}" target="_blank" style="color:#43a047;">Ver Link</a>` : '-'}
-            </td>
+                ${prod.enlace ? `<a href="${prod.enlace}" target="_blank" style="color:#43a047;">🔗 Ver Link</a>` : '-'}
+             </td>
             <td>
                 <span class="badge ${prod.activo === 'SI' ? 'badge-success' : 'badge-danger'}">
                     ${prod.activo === 'SI' ? 'Disponible' : 'No disponible'}
                 </span>
-            </td>
+             </td>
             <td>
-                <button onclick="verDetalleProducto(${prod.id})" style="background:#81c784; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; margin-right:5px;">👁️</button>
-                <button onclick="eliminarProducto(${prod.id})" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;">🗑️</button>
-            </td>
+                <button onclick="verDetalleProducto(${prod.id})" style="background:#81c784; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; margin-right:5px;">👁️</button>
+                <button onclick="eliminarProducto(${prod.id})" style="background:#ef9a9a; border:none; padding:8px 12px; border-radius:8px; cursor:pointer;">🗑️</button>
+             </td>
         </tr>
     `).join('');
 }
@@ -775,22 +934,47 @@ function verDetalleProducto(id) {
     const producto = productos.find(p => p.id == id);
     if (!producto) return;
     
+    let variantesHtml = '';
+    if (producto.variantes && producto.variantes.length > 0) {
+        variantesHtml = `
+            <div style="margin-top: 15px;">
+                <strong>🎨 Variantes:</strong>
+                <table style="width:100%; margin-top:10px; border-collapse:collapse;">
+                    <tr style="background:#e8f5e9;">
+                        <th style="padding:8px; text-align:left;">Talla</th>
+                        <th style="padding:8px; text-align:left;">Color</th>
+                        <th style="padding:8px; text-align:left;">Precio extra</th>
+                    </tr>
+                    ${producto.variantes.map(v => `
+                        <tr style="border-bottom:1px solid #c8e6c9;">
+                            <td style="padding:8px;">${v.talla || '-'}</td>
+                            <td style="padding:8px;">${v.color || '-'}</td>
+                            <td style="padding:8px;">$${v.precioExtra || 0}</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            </div>
+        `;
+    }
+    
     document.getElementById('modalProductTitle').innerHTML = `📦 ${producto.nombre}`;
     document.getElementById('modalProductContent').innerHTML = `
         <div class="form-grid">
             <div><strong>ID:</strong> ${producto.id}</div>
             <div><strong>Precio:</strong> $${producto.precio}</div>
             <div><strong>Origen:</strong> ${producto.origen || '-'}</div>
-            <div><strong>Categoría:</strong> ${producto.categoria_genero || '-'}</div>
-            <div><strong>Colores:</strong> ${producto.colores_nombres || '-'}</div>
+            <div><strong>Categoría:</strong> ${producto.categoria || '-'}</div>
+            <div><strong>Género:</strong> ${producto.genero || '-'}</div>
+            <div><strong>Colores:</strong> ${producto.colores || '-'}</div>
             <div><strong>Estado:</strong> ${producto.activo === 'SI' ? 'Activo' : 'Inactivo'}</div>
         </div>
         <div style="margin-top: 15px;">
             <strong>Descripción:</strong>
-            <p style="margin-top: 5px; color:#558b2f;">${producto.descripción || 'Sin descripción'}</p>
+            <p style="margin-top: 5px; color:#558b2f;">${producto.descripcion || 'Sin descripción'}</p>
         </div>
-        ${producto.enlace ? `<div style="margin-top: 15px;"><strong>Enlace:</strong> <a href="${producto.enlace}" target="_blank" style="color:#43a047;">${producto.enlace}</a></div>` : ''}
-        ${producto.imagen ? `<div style="margin-top: 15px;"><strong>Imagen:</strong><br><img src="${producto.imagen}" style="max-width: 200px; border-radius: 12px; margin-top: 10px;"></div>` : ''}
+        ${producto.enlace ? `<div style="margin-top: 15px;"><strong>🔗 Enlace:</strong> <a href="${producto.enlace}" target="_blank" style="color:#43a047;">${producto.enlace}</a></div>` : ''}
+        ${producto.imagen ? `<div style="margin-top: 15px;"><strong>🖼️ Imagen:</strong><br><img src="${producto.imagen}" style="max-width: 200px; border-radius: 12px; margin-top: 10px;"></div>` : ''}
+        ${variantesHtml}
     `;
     
     document.getElementById('productModal').style.display = 'flex';
@@ -814,21 +998,19 @@ function renderizarPedidos() {
     const tablaBody = document.getElementById('pedidosBody');
     
     if (pedidos.length === 0) {
-        tablaBody.innerHTML = '<tr><td colspan="10" style="text-align:center;">No hay pedidos registrados</td></tr>';
+        tablaBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No hay pedidos registrados</td></tr>';
         return;
     }
     
     tablaBody.innerHTML = pedidos.map(pedido => {
-        // Manejar diferentes formatos de los datos
         const fecha = pedido.Fecha || pedido.fecha || '-';
         const nombre = pedido.Nombre || pedido.nombre || '-';
         const telefono = pedido.Teléfono || pedido.telefono || '-';
         const direccion = pedido.Dirección || pedido.direccion || '-';
         const productosTexto = pedido.Productos || pedido.productos || '-';
         const total = pedido.Total || pedido.total || '0';
-        const metodoPago = pedido['Método Pago'] || pedido.metodo_pago || pedido.metodoPago || '-';
-        const estadoPago = pedido['Estado Pago'] || pedido.estado_pago || pedido.estadoPago || '-';
-        const comprobante = pedido.comprobante_numero || pedido.comprobante || '-';
+        const metodoPago = pedido['Método Pago'] || pedido.metodo_pago || '-';
+        const estadoPago = pedido['Estado Pago'] || pedido.estado_pago || '-';
         const idPedido = pedido['ID Pedido'] || pedido.id_pedido || pedido.id || '-';
         
         let estadoClass = 'badge-warning';
@@ -838,15 +1020,14 @@ function renderizarPedidos() {
         return `
             <tr>
                 <td>${idPedido}</td>
-                <td>${fecha}</td>
+                <td style="white-space: nowrap;">${fecha}</td>
                 <td>${nombre}</td>
                 <td>${telefono}</td>
-                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${direccion}">${direccion}</td>
-                <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${productosTexto}">${productosTexto}</td>
+                <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${direccion}">${direccion}</td>
+                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${productosTexto}">${productosTexto}</td>
                 <td>$${total}</td>
                 <td>${metodoPago}</td>
                 <td><span class="badge ${estadoClass}">${estadoPago}</span></td>
-                <td>${comprobante}</td>
             </tr>
         `;
     }).join('');
@@ -857,7 +1038,6 @@ function actualizarStats() {
     const totalProductos = productos.length;
     const totalPedidos = pedidos.length;
     
-    // Calcular ventas totales desde pedidos
     let ventasTotales = 0;
     pedidos.forEach(pedido => {
         const total = parseFloat(pedido.Total || pedido.total || 0);
@@ -888,53 +1068,31 @@ function cargarProductosEjemplo() {
             id: 1,
             nombre: "Waytalk Plancha de pelo a vapor",
             precio: "59.99",
-            origen: "China",
+            origen: "Amazon",
+            categoria: "Electrónica",
+            genero: "Mujer",
             imagen: "",
-            activo: "NO",
-            descripción: "Plancha de pelo a vapor, reduce el daño, nutre el cabello",
             enlace: "https://amazon.com/producto1",
-            categoria_genero: "Mujer",
-            colores_nombres: "Rosa Sakura",
-            colores_precios: ""
+            colores: "Rosa Sakura",
+            activo: "SI",
+            descripcion: "Plancha de pelo a vapor, reduce el daño, nutre el cabello",
+            tiene_variantes: "NO",
+            variantes: []
         },
         {
             id: 2,
             nombre: "Camisa de Rayas para Mujer",
             precio: "11.41",
-            origen: "China",
+            origen: "Shein",
+            categoria: "Ropa",
+            genero: "Mujer",
             imagen: "",
-            activo: "NO",
-            descripción: "Elegante Dirección 2025 Nueva Camisa de Rayas",
-            enlace: "https://amazon.com/producto2",
-            categoria_genero: "Mujer",
-            colores_nombres: "Rayas",
-            colores_precios: ""
-        },
-        {
-            id: 3,
-            nombre: "Remington Shine Therapy",
-            precio: "33.99",
-            origen: "USA",
-            imagen: "",
-            activo: "NO",
-            descripción: "Plancha alisadora con aceite de argán y queratina",
-            enlace: "https://amazon.com/producto3",
-            categoria_genero: "Unisex",
-            colores_nombres: "Negro",
-            colores_precios: ""
-        },
-        {
-            id: 4,
-            nombre: "Camisetas de gran tamaño para hombre",
-            precio: "37.99",
-            origen: "China",
-            imagen: "",
-            activo: "NO",
-            descripción: "Paquete de 3 camisetas estilo vintage",
-            enlace: "https://amazon.com/producto4",
-            categoria_genero: "Hombre",
-            colores_nombres: "Variados",
-            colores_precios: ""
+            enlace: "https://shein.com/producto2",
+            colores: "Rayas",
+            activo: "SI",
+            descripcion: "Elegante Dirección 2025 Nueva Camisa de Rayas",
+            tiene_variantes: "SI",
+            variantes: [{talla: "S", color: "Blanco/Rayas", precioExtra: 0}, {talla: "M", color: "Blanco/Rayas", precioExtra: 0}, {talla: "L", color: "Blanco/Rayas", precioExtra: 0}]
         }
     ];
     renderizarInventario();
@@ -952,20 +1110,18 @@ function cargarPedidosEjemplo() {
             "Estado Pago": "Entregado",
             Productos: "Hanes Paquete de bragas x1 - $20.11",
             Total: "20.11",
-            "ID Pedido": "1776887227521",
-            comprobante_numero: "FACT-10-20260422"
+            "ID Pedido": "1776887227521"
         },
         {
             Fecha: "8/5/2026 21:40:03",
-            Nombre: "alex cruz",
+            Nombre: "Alex Cruz",
             Teléfono: "6474-5914",
             Dirección: "LAS GARZAS",
             "Método Pago": "Yappy",
             "Estado Pago": "Pagado",
-            Productos: "Producto solicitado (Amazon) x1 - $46.30",
+            Productos: "Producto solicitado x1 - $46.30",
             Total: "46.30",
-            "ID Pedido": "1776887227522",
-            comprobante_numero: "FACT-11-20260508"
+            "ID Pedido": "1776887227522"
         }
     ];
     renderizarPedidos();
