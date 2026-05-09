@@ -249,6 +249,92 @@
         .estado-aprobado { background: #e8f5e9; color: #2e7d32; border: 1px solid #81c784; }
         .estado-rechazado { background: #ffebee; color: #c62828; border: 1px solid #ef5350; }
 
+        /* Estilos para el Modal de Producto */
+        .modal-producto-imagen-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .modal-producto-imagen-container img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 15px;
+            object-fit: contain;
+        }
+        .modal-meta {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+        .modal-meta p {
+            background: #e8f5e9;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+        .modal-precio-section {
+            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        .modal-precio-section span:first-child { font-size: 0.8rem; opacity: 0.9; }
+        .modal-precio-section #modal-precio { font-size: 1.8rem; font-weight: 800; }
+        .seccion-label {
+            font-weight: 700;
+            color: #2e7d32;
+            margin: 15px 0 10px 0;
+            font-size: 0.9rem;
+        }
+        #selector-color {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        #selector-color button {
+            padding: 8px 20px;
+            background: white;
+            border: 2px solid #81c784;
+            border-radius: 60px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        #selector-color button:hover { border-color: #66bb6a; background: #f1f8f6; }
+        #selector-color button.active-color {
+            background: #66bb6a;
+            border-color: #4caf50;
+            color: white;
+        }
+        .tallas-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .talla-btn {
+            padding: 8px 20px;
+            background: white;
+            border: 2px solid #81c784;
+            border-radius: 60px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .talla-btn:hover { border-color: #66bb6a; background: #f1f8f6; }
+        .talla-btn.selected {
+            background: #66bb6a;
+            border-color: #4caf50;
+            color: white;
+        }
+
         .carrito-panel {
             position: fixed;
             top: 0;
@@ -352,7 +438,7 @@
         .modal.active, .modal-solicitud.active { display: flex; }
         .modal-content, .modal-solicitud-content {
             background: white;
-            max-width: 600px;
+            max-width: 550px;
             width: 100%;
             max-height: 85vh;
             border-radius: 30px;
@@ -408,6 +494,7 @@
             .modal-content, .modal-solicitud-content { max-height: 80vh; max-width: 95%; }
             .acciones-top { width: 100%; justify-content: center; }
             .solicitud-codigo { font-size: 1.2rem; }
+            .modal-producto-imagen-container img { max-height: 200px; }
         }
     </style>
 </head>
@@ -514,7 +601,7 @@
         </div>
     </div>
     
-    <!-- Modal Producto -->
+    <!-- Modal Producto (CORREGIDO) -->
     <div id="producto-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header"><h2>✨ Detalle del producto</h2><button class="modal-cerrar" id="cerrar-modal-producto">✕</button></div>
@@ -524,8 +611,14 @@
                 <div class="modal-meta"><p id="modal-origen"></p><p id="modal-genero"></p></div>
                 <p id="modal-descripcion"></p>
                 <div class="modal-precio-section"><span>PRECIO</span><span id="modal-precio"></span></div>
-                <div id="modal-colores"><div class="seccion-label">🎨 Color</div><div id="selector-color"></div></div>
-                <div id="modal-variantes"><div class="seccion-label">📏 Talla</div><div id="tallas-container" class="tallas-container"></div></div>
+                <div id="modal-colores">
+                    <div class="seccion-label">🎨 Color</div>
+                    <div id="selector-color"></div>
+                </div>
+                <div id="modal-variantes">
+                    <div class="seccion-label">📏 Talla</div>
+                    <div id="tallas-container" class="tallas-container"></div>
+                </div>
                 <button id="modal-agregar" class="btn-confirmar">➕ Agregar al carrito</button>
             </div>
         </div>
@@ -540,7 +633,7 @@
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
-let productos = [], carrito = [], productoActual = null, colorSeleccionado = null, tallaSeleccionada = null;
+let productos = [], carrito = [], productoActual = null;
 let filtroPlataforma = 'todos', filtroSubcat = null, filtroGenero = 'todos';
 let solicitudes = [];
 
@@ -601,18 +694,17 @@ document.getElementById('btn-consultar-solicitud').addEventListener('click', () 
     const detalleDiv = document.getElementById('solicitud-detalle');
     
     if(!solicitud) {
-        detalleDiv.innerHTML = '<div style="background:#ffebee; border-radius:15px; padding:20px; text-align:center; color:#c62828;">❌ Código no encontrado. Verifica tu código de 4 dígitos.</div>';
+        detalleDiv.innerHTML = '<div style="background:#ffebee; border-radius:15px; padding:20px; text-align:center; color:#c62828;">❌ Código no encontrado</div>';
         detalleDiv.style.display = 'block';
         return;
     }
     
     let estadoTexto = '', estadoClass = '';
     switch(solicitud.estado) {
-        case 'pendiente': estadoTexto = '⏳ Pendiente de revisión'; estadoClass = 'estado-pendiente'; break;
-        case 'cotizado': estadoTexto = '💰 Cotizado - Revisa el precio'; estadoClass = 'estado-cotizado'; break;
-        case 'aprobado': estadoTexto = '✅ Aprobado - Ya puedes comprar'; estadoClass = 'estado-aprobado'; break;
-        case 'rechazado': estadoTexto = '❌ Rechazado - Producto no disponible'; estadoClass = 'estado-rechazado'; break;
-        default: estadoTexto = solicitud.estado;
+        case 'pendiente': estadoTexto = '⏳ Pendiente'; estadoClass = 'estado-pendiente'; break;
+        case 'cotizado': estadoTexto = '💰 Cotizado'; estadoClass = 'estado-cotizado'; break;
+        case 'aprobado': estadoTexto = '✅ Aprobado'; estadoClass = 'estado-aprobado'; break;
+        case 'rechazado': estadoTexto = '❌ Rechazado'; estadoClass = 'estado-rechazado'; break;
     }
     
     detalleDiv.innerHTML = `
@@ -621,25 +713,13 @@ document.getElementById('btn-consultar-solicitud').addEventListener('click', () 
                 <span class="solicitud-codigo" style="font-size:1.2rem;">${solicitud.codigo}</span>
                 <span class="estado-solicitud ${estadoClass}" style="margin-left:10px;">${estadoTexto}</span>
             </div>
-            <div style="margin-top:15px;">
-                <p><strong>📦 Producto solicitado:</strong></p>
-                <p><a href="${solicitud.link}" target="_blank" style="color:#66bb6a; word-break:break-all;">${solicitud.link.substring(0, 60)}...</a></p>
-                <p><strong>🛒 Plataforma:</strong> ${solicitud.plataforma}</p>
-                <p><strong>📝 Notas:</strong> ${solicitud.notas || 'Sin notas'}</p>
-                ${solicitud.cotizacion ? `<p><strong>💰 Precio cotizado:</strong> <span style="font-size:1.3rem; color:#66bb6a; font-weight:800;">$${solicitud.cotizacion.toFixed(2)}</span></p>` : ''}
-                ${solicitud.respuestaAdmin ? `<p><strong>💬 Respuesta del administrador:</strong> ${solicitud.respuestaAdmin}</p>` : ''}
-            </div>
-            ${solicitud.estado === 'cotizado' ? `
-                <button onclick="aprobarSolicitudCliente('${solicitud.codigo}')" class="btn-confirmar" style="margin-top:15px;">✅ Aceptar precio y comprar</button>
-            ` : ''}
-            ${solicitud.estado === 'aprobado' ? `
-                <div style="margin-top:15px; padding:15px; background:#e8f5e9; border-radius:12px; text-align:center;">
-                    <p style="font-weight:700; color:#2e7d32;">¡Producto disponible!</p>
-                    <p>Puedes agregarlo a tu carrito con el precio de <strong>$${solicitud.cotizacion?.toFixed(2)}</strong></p>
-                    <button onclick="agregarSolicitudAlCarrito('${solicitud.codigo}')" class="btn-confirmar" style="margin-top:10px;">🛒 Agregar al carrito</button>
-                </div>
-            ` : ''}
-            ${solicitud.estado === 'pendiente' ? `<p style="margin-top:15px; text-align:center; color:#ef6c00;">⏳ Esperando respuesta del administrador...</p>` : ''}
+            <p><strong>📦 Producto:</strong> <a href="${solicitud.link}" target="_blank">Ver producto</a></p>
+            <p><strong>🛒 Plataforma:</strong> ${solicitud.plataforma}</p>
+            <p><strong>📝 Notas:</strong> ${solicitud.notas || 'Sin notas'}</p>
+            ${solicitud.cotizacion ? `<p><strong>💰 Precio cotizado:</strong> $${solicitud.cotizacion.toFixed(2)}</p>` : ''}
+            ${solicitud.respuestaAdmin ? `<p><strong>💬 Respuesta:</strong> ${solicitud.respuestaAdmin}</p>` : ''}
+            ${solicitud.estado === 'cotizado' ? `<button onclick="aprobarSolicitudCliente('${solicitud.codigo}')" class="btn-confirmar" style="margin-top:15px;">✅ Aceptar y comprar</button>` : ''}
+            ${solicitud.estado === 'aprobado' ? `<button onclick="agregarSolicitudAlCarrito('${solicitud.codigo}')" class="btn-confirmar" style="margin-top:10px;">🛒 Agregar al carrito</button>` : ''}
         </div>
     `;
     detalleDiv.style.display = 'block';
@@ -651,29 +731,24 @@ function aprobarSolicitudCliente(codigo) {
         solicitud.estado = 'aprobado';
         guardarSolicitudes();
         document.getElementById('btn-consultar-solicitud').click();
-        alert('✅ Solicitud aprobada. Ya puedes agregar el producto al carrito.');
+        alert('✅ Solicitud aprobada');
     }
 }
 
 function agregarSolicitudAlCarrito(codigo) {
     const solicitud = solicitudes.find(s => s.codigo === codigo);
     if(solicitud && solicitud.cotizacion) {
-        const existente = carrito.find(i => i.id === `sol_${codigo}`);
-        if(existente) {
-            existente.cantidad++;
-        } else {
-            carrito.push({
-                id: `sol_${codigo}`,
-                nombre: `📦 Producto solicitado (${solicitud.plataforma})`,
-                precio: solicitud.cotizacion,
-                origen: solicitud.plataforma,
-                cantidad: 1
-            });
-        }
+        carrito.push({
+            id: `sol_${codigo}`,
+            nombre: `📦 Producto solicitado (${solicitud.plataforma})`,
+            precio: solicitud.cotizacion,
+            origen: solicitud.plataforma,
+            cantidad: 1
+        });
         localStorage.setItem('carrito', JSON.stringify(carrito));
         actualizarCarrito();
         document.getElementById('consultar-solicitud-modal').classList.remove('active');
-        alert('✅ Producto agregado al carrito correctamente');
+        alert('✅ Producto agregado al carrito');
     }
 }
 
@@ -798,11 +873,8 @@ function agregarAlCarrito(id) {
     const prod = productos.find(p => p.id == id);
     if(prod) {
         const existente = carrito.find(i => i.id === id);
-        if(existente) {
-            existente.cantidad++;
-        } else {
-            carrito.push({ id: prod.id, nombre: prod.nombre, precio: prod.precio, origen: prod.origen, cantidad: 1 });
-        }
+        if(existente) existente.cantidad++;
+        else carrito.push({ id: prod.id, nombre: prod.nombre, precio: prod.precio, origen: prod.origen, cantidad: 1 });
         localStorage.setItem('carrito', JSON.stringify(carrito));
         actualizarCarrito();
         alert('✅ Producto agregado al carrito');
@@ -824,15 +896,8 @@ function actualizarCarrito() {
     
     container.innerHTML = carrito.map((i, idx) => `
         <div class="carrito-item">
-            <div class="item-info">
-                <div class="item-nombre">${i.nombre || 'Producto'}</div>
-                <div style="font-size:0.8rem; color:#66bb6a;">$${(i.precio || 0).toFixed(2)} c/u</div>
-            </div>
-            <div class="item-cantidad">
-                <button onclick="cambiarCantidad(${idx}, -1)">-</button>
-                <span>${i.cantidad}</span>
-                <button onclick="cambiarCantidad(${idx}, 1)">+</button>
-            </div>
+            <div class="item-info"><div class="item-nombre">${i.nombre}</div><div class="item-precio">$${((i.precio || 0) * i.cantidad).toFixed(2)}</div></div>
+            <div class="item-cantidad"><button onclick="cambiarCantidad(${idx}, -1)">-</button><span>${i.cantidad}</span><button onclick="cambiarCantidad(${idx}, 1)">+</button></div>
             <button class="btn-eliminar-item" onclick="eliminarItem(${idx})">🗑️</button>
         </div>
     `).join('');
@@ -841,36 +906,35 @@ function actualizarCarrito() {
 function cambiarCantidad(idx, delta) {
     if(idx >= 0 && idx < carrito.length) {
         carrito[idx].cantidad += delta;
-        if(carrito[idx].cantidad <= 0) {
-            eliminarItem(idx);
-        } else {
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-            actualizarCarrito();
-        }
+        if(carrito[idx].cantidad <= 0) eliminarItem(idx);
+        else { localStorage.setItem('carrito',JSON.stringify(carrito)); actualizarCarrito(); }
     }
 }
+function eliminarItem(idx) { carrito.splice(idx, 1); localStorage.setItem('carrito',JSON.stringify(carrito)); actualizarCarrito(); }
 
-function eliminarItem(idx) {
-    carrito.splice(idx, 1);
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-    actualizarCarrito();
-}
-
-// ========== MODALES ==========
+// ========== MODAL PRODUCTO ==========
 function mostrarModal(id) {
-    productoActual = productos.find(p => p.id == id);
-    if(!productoActual) return;
-    document.getElementById('modal-imagen').src = productoActual.imagen || 'https://via.placeholder.com/400x300';
-    document.getElementById('modal-nombre').textContent = productoActual.nombre || 'Producto';
-    document.getElementById('modal-origen').textContent = productoActual.origen || 'General';
-    document.getElementById('modal-genero').textContent = `${getIconoGenero(productoActual.genero)} ${productoActual.genero || 'Unisex'}`;
-    document.getElementById('modal-descripcion').textContent = productoActual.descripcion || `Producto de ${productoActual.origen}`;
-    document.getElementById('modal-precio').textContent = `$${(productoActual.precio || 0).toFixed(2)}`;
+    const producto = productos.find(p => p.id == id);
+    if(!producto) return;
+    productoActual = producto;
+    
+    document.getElementById('modal-imagen').src = producto.imagen || 'https://via.placeholder.com/400x300';
+    document.getElementById('modal-nombre').textContent = producto.nombre;
+    document.getElementById('modal-origen').textContent = producto.origen;
+    document.getElementById('modal-genero').textContent = `${getIconoGenero(producto.genero)} ${producto.genero || 'Unisex'}`;
+    document.getElementById('modal-descripcion').textContent = producto.descripcion || 'Sin descripción';
+    document.getElementById('modal-precio').textContent = `$${(producto.precio || 0).toFixed(2)}`;
+    
+    // Ocultar secciones que no se usan
+    document.getElementById('modal-colores').style.display = 'none';
+    document.getElementById('modal-variantes').style.display = 'none';
+    
     document.getElementById('producto-modal').classList.add('active');
 }
 
 function cerrarModal() {
     document.getElementById('producto-modal').classList.remove('active');
+    productoActual = null;
 }
 
 // ========== EVENT LISTENERS ==========
