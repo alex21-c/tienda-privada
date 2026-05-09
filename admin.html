@@ -3,808 +3,890 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>TIENDA PRIVADA | ADMIN</title>
+<title>TIENDA PRIVADA | ADMIN PRO</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-body{
-font-family:'Inter',sans-serif;
-background:#050816;
-color:white;
-overflow-x:hidden;
+body {
+    font-family: 'Inter', sans-serif;
+    background: #050816;
+    color: white;
+    overflow-x: hidden;
 }
 
-/* =========================
-BACKGROUND
-========================= */
-
-.bg{
-position:fixed;
-inset:0;
-background:
-radial-gradient(circle at top left,#00e5ff22,transparent 30%),
-radial-gradient(circle at bottom right,#7c4dff22,transparent 30%),
-linear-gradient(135deg,#050816,#0b1020);
-z-index:-1;
+.bg {
+    position: fixed;
+    inset: 0;
+    background: 
+        radial-gradient(circle at top left, #00e5ff22, transparent 30%),
+        radial-gradient(circle at bottom right, #7c4dff22, transparent 30%),
+        linear-gradient(135deg, #050816, #0b1020);
+    z-index: -1;
 }
 
-/* =========================
-LOGIN
-========================= */
-
-.login-screen{
-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:20px;
+/* LOGIN SCREEN */
+.login-screen {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
 
-.login-box{
-width:100%;
-max-width:420px;
-background:rgba(255,255,255,.05);
-backdrop-filter:blur(20px);
-border:1px solid rgba(255,255,255,.08);
-border-radius:28px;
-padding:40px;
-box-shadow:0 10px 40px rgba(0,0,0,.5);
+.login-box {
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255,255,255,.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 28px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0,0,0,.5);
 }
 
-.login-title{
-font-size:2rem;
-font-weight:900;
-margin-bottom:10px;
+.login-title {
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 10px;
 }
 
-.login-sub{
-color:#9ca3af;
-margin-bottom:30px;
+.login-sub {
+    color: #9ca3af;
+    margin-bottom: 30px;
 }
 
-.input{
-width:100%;
-padding:16px;
-background:#0f172a;
-border:1px solid rgba(255,255,255,.08);
-border-radius:16px;
-color:white;
-font-size:1rem;
-outline:none;
-margin-bottom:20px;
+.input {
+    width: 100%;
+    padding: 16px;
+    background: #0f172a;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 16px;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    margin-bottom: 20px;
 }
 
-.btn{
-width:100%;
-padding:16px;
-border:none;
-border-radius:16px;
-background:linear-gradient(135deg,#00e5ff,#7c4dff);
-color:white;
-font-weight:800;
-font-size:1rem;
-cursor:pointer;
-transition:.3s;
+.input:focus {
+    border-color: #00e5ff;
 }
 
-.btn:hover{
-transform:translateY(-2px);
-box-shadow:0 10px 25px rgba(124,77,255,.4);
+.btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #00e5ff, #7c4dff);
+    color: white;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: .3s;
 }
 
-/* =========================
-LAYOUT
-========================= */
-
-.app{
-display:none;
-min-height:100vh;
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(124,77,255,.4);
 }
 
-.sidebar{
-position:fixed;
-left:0;
-top:0;
-bottom:0;
-width:280px;
-background:rgba(255,255,255,.05);
-backdrop-filter:blur(20px);
-border-right:1px solid rgba(255,255,255,.08);
-padding:30px 20px;
-overflow:auto;
+/* APP LAYOUT */
+.app {
+    display: none;
+    min-height: 100vh;
 }
 
-.logo{
-font-size:1.8rem;
-font-weight:900;
-margin-bottom:40px;
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    background: rgba(255,255,255,.05);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255,255,255,.08);
+    padding: 30px 20px;
+    overflow: auto;
 }
 
-.menu{
-display:flex;
-flex-direction:column;
-gap:10px;
+.logo {
+    font-size: 1.8rem;
+    font-weight: 900;
+    margin-bottom: 40px;
+    background: linear-gradient(135deg, #00e5ff, #7c4dff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
-.menu button{
-background:none;
-border:none;
-padding:16px;
-border-radius:18px;
-color:#cbd5e1;
-font-weight:700;
-cursor:pointer;
-text-align:left;
-transition:.3s;
-font-size:1rem;
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.menu button {
+    background: none;
+    border: none;
+    padding: 16px;
+    border-radius: 18px;
+    color: #cbd5e1;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: left;
+    transition: .3s;
+    font-size: 1rem;
 }
 
 .menu button:hover,
-.menu button.active{
-background:linear-gradient(135deg,#00e5ff22,#7c4dff22);
-color:white;
+.menu button.active {
+    background: linear-gradient(135deg, #00e5ff22, #7c4dff22);
+    color: white;
 }
 
-.content{
-margin-left:280px;
-padding:30px;
+.content {
+    margin-left: 280px;
+    padding: 30px;
 }
 
-.topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:30px;
-flex-wrap:wrap;
-gap:20px;
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
-.top-title{
-font-size:2rem;
-font-weight:900;
+.top-title {
+    font-size: 2rem;
+    font-weight: 900;
 }
 
-.logout{
-padding:12px 18px;
-border-radius:14px;
-border:none;
-background:#111827;
-color:white;
-cursor:pointer;
+.logout {
+    padding: 12px 18px;
+    border-radius: 14px;
+    border: none;
+    background: #111827;
+    color: white;
+    cursor: pointer;
+    transition: .3s;
 }
 
-/* =========================
-CARDS
-========================= */
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:24px;
+.logout:hover {
+    background: #ef4444;
 }
 
-.card{
-background:rgba(255,255,255,.05);
-border:1px solid rgba(255,255,255,.08);
-backdrop-filter:blur(18px);
-border-radius:28px;
-overflow:hidden;
-transition:.3s;
-position:relative;
+/* STATS GRID */
+.grid-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+    margin-bottom: 30px;
 }
 
-.card:hover{
-transform:translateY(-6px);
-border-color:#00e5ff55;
+.stat-card {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    backdrop-filter: blur(18px);
+    border-radius: 28px;
+    padding: 25px;
 }
 
-.product-image{
-width:100%;
-height:240px;
-object-fit:cover;
-background:#111827;
+.stat-card h3 {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-bottom: 10px;
 }
 
-.card-body{
-padding:22px;
+.stat-card h1 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #00e5ff, #7c4dff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
-.product-id{
-display:inline-block;
-padding:8px 14px;
-border-radius:999px;
-background:#00e5ff22;
-color:#00e5ff;
-font-size:.8rem;
-font-weight:800;
-margin-bottom:14px;
-cursor:pointer;
+/* PRODUCT GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
 }
 
-.product-title{
-font-size:1.3rem;
-font-weight:800;
-margin-bottom:12px;
+.card {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    backdrop-filter: blur(18px);
+    border-radius: 28px;
+    overflow: hidden;
+    transition: .3s;
 }
 
-.product-desc{
-color:#94a3b8;
-font-size:.95rem;
-margin-bottom:20px;
-line-height:1.6;
+.card:hover {
+    transform: translateY(-6px);
+    border-color: #00e5ff55;
 }
 
-.price{
-font-size:1.5rem;
-font-weight:900;
-margin-bottom:16px;
-color:#00e5ff;
+.product-image {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    background: #111827;
 }
 
-.meta{
-display:flex;
-flex-wrap:wrap;
-gap:10px;
-margin-bottom:20px;
+.card-body {
+    padding: 22px;
 }
 
-.tag{
-padding:8px 14px;
-border-radius:999px;
-background:#111827;
-font-size:.8rem;
-font-weight:700;
+.product-id {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #00e5ff22;
+    color: #00e5ff;
+    font-size: .8rem;
+    font-weight: 800;
+    margin-bottom: 14px;
+    cursor: pointer;
 }
 
-.actions{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
+.product-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 12px;
 }
 
-.action-btn{
-flex:1;
-padding:12px;
-border:none;
-border-radius:14px;
-font-weight:700;
-cursor:pointer;
+.product-desc {
+    color: #94a3b8;
+    font-size: .95rem;
+    margin-bottom: 20px;
+    line-height: 1.6;
 }
 
-.edit-btn{
-background:linear-gradient(135deg,#00e5ff,#2563eb);
-color:white;
+.price {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin-bottom: 16px;
+    color: #00e5ff;
 }
 
-.delete-btn{
-background:#ef4444;
-color:white;
+.meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
-/* =========================
-ADD PRODUCT
-========================= */
-
-.form-box{
-background:rgba(255,255,255,.05);
-border:1px solid rgba(255,255,255,.08);
-padding:30px;
-border-radius:28px;
-margin-bottom:30px;
+.tag {
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #111827;
+    font-size: .8rem;
+    font-weight: 700;
 }
 
-.form-grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:18px;
+.actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-textarea.input{
-min-height:120px;
-resize:none;
+.action-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 14px;
+    font-weight: 700;
+    cursor: pointer;
 }
 
-/* =========================
-MODAL
-========================= */
-
-.modal{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.8);
-display:none;
-align-items:center;
-justify-content:center;
-padding:20px;
-z-index:999;
+.edit-btn {
+    background: linear-gradient(135deg, #00e5ff, #2563eb);
+    color: white;
 }
 
-.modal-box{
-width:100%;
-max-width:700px;
-background:#0f172a;
-border-radius:30px;
-padding:30px;
-max-height:90vh;
-overflow:auto;
+.delete-btn {
+    background: #ef4444;
+    color: white;
 }
 
-.modal-title{
-font-size:1.8rem;
-font-weight:900;
-margin-bottom:25px;
+/* FORM BOX */
+.form-box {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    padding: 30px;
+    border-radius: 28px;
+    margin-bottom: 30px;
 }
 
-.save-btn{
-background:linear-gradient(135deg,#00e5ff,#7c4dff);
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 18px;
 }
 
-/* =========================
-RESPONSIVE
-========================= */
-
-@media(max-width:900px){
-
-.sidebar{
-position:relative;
-width:100%;
-height:auto;
+textarea.input {
+    min-height: 120px;
+    resize: none;
 }
 
-.content{
-margin-left:0;
+/* MODAL */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.8);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 999;
 }
 
+.modal-box {
+    width: 100%;
+    max-width: 700px;
+    background: #0f172a;
+    border-radius: 30px;
+    padding: 30px;
+    max-height: 90vh;
+    overflow: auto;
+    border: 1px solid rgba(255,255,255,.1);
 }
 
+.modal-title {
+    font-size: 1.8rem;
+    font-weight: 900;
+    margin-bottom: 25px;
+}
+
+/* VARIANT SECTION */
+.variant-section {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255,255,255,.03);
+    border-radius: 16px;
+}
+
+.variant-box {
+    padding: 15px;
+    background: rgba(255,255,255,.04);
+    border-radius: 14px;
+    margin-bottom: 12px;
+}
+
+/* TIMELINE */
+.timeline {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.timeline div {
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.05);
+}
+
+/* TABLES */
+.products-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.products-table th,
+.products-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.products-table tr:hover {
+    background: rgba(255,255,255,.03);
+}
+
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.badge.active {
+    background: #00ffae33;
+    color: #00ffae;
+}
+
+.badge.inactive {
+    background: #ff000033;
+    color: #ff7373;
+}
+
+.hidden-section {
+    display: none;
+}
+
+/* RESPONSIVE */
+@media(max-width: 900px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+    
+    .content {
+        margin-left: 0;
+    }
+}
 </style>
 </head>
-
 <body>
 
 <div class="bg"></div>
 
-<!-- LOGIN -->
-
+<!-- LOGIN SCREEN -->
 <div class="login-screen" id="loginScreen">
-
-<div class="login-box">
-
-<div class="login-title">
-🌌 TIENDA PRIVADA
+    <div class="login-box">
+        <div class="login-title">🌌 TIENDA PRIVADA</div>
+        <div class="login-sub">Panel tecnológico premium</div>
+        <input type="password" class="input" id="password" placeholder="Contraseña admin">
+        <button class="btn" onclick="login()">ACCEDER</button>
+    </div>
 </div>
 
-<div class="login-sub">
-Panel tecnológico premium
-</div>
-
-<input type="password" class="input" id="password" placeholder="Contraseña admin">
-
-<button class="btn" onclick="login()">
-ACCEDER
-</button>
-
-</div>
-
-</div>
-
-<!-- APP -->
-
+<!-- MAIN APP -->
 <div class="app" id="app">
+    <div class="sidebar">
+        <div class="logo">⚡ ADMIN PRO</div>
+        <div class="menu">
+            <button class="active" onclick="showSection('dashboard')">📊 Dashboard</button>
+            <button onclick="showSection('inventario')">📦 Inventario</button>
+            <button onclick="showSection('pedidos')">🛒 Pedidos</button>
+            <button onclick="showSection('configuracion')">⚙️ Configuración</button>
+        </div>
+    </div>
 
-<div class="sidebar">
+    <div class="content">
+        <div class="topbar">
+            <div class="top-title" id="sectionTitle">Dashboard</div>
+            <button class="logout" onclick="logout()">Cerrar sesión</button>
+        </div>
 
-<div class="logo">
-⚡ ADMIN PRO
+        <!-- DASHBOARD SECTION -->
+        <div id="dashboardSection">
+            <div class="grid-stats">
+                <div class="stat-card">
+                    <h3>Ventas Totales</h3>
+                    <h1 id="totalVentas">$0</h1>
+                </div>
+                <div class="stat-card">
+                    <h3>Pedidos</h3>
+                    <h1 id="totalPedidos">0</h1>
+                </div>
+                <div class="stat-card">
+                    <h3>Productos</h3>
+                    <h1 id="totalProductos">0</h1>
+                </div>
+                <div class="stat-card">
+                    <h3>Stock Total</h3>
+                    <h1 id="totalStock">0</h1>
+                </div>
+            </div>
+
+            <div class="form-box">
+                <h2 style="margin-bottom:25px;">🚚 Tracking de Pedidos</h2>
+                <div class="timeline">
+                    <div>📋 Procesando</div>
+                    <div>📦 Preparando</div>
+                    <div>✈ Miami</div>
+                    <div>🌎 Panamá</div>
+                    <div>🚚 Delivery</div>
+                    <div>✅ Entregado</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INVENTARIO SECTION (VISIBLE POR DEFECTO) -->
+        <div id="inventarioSection">
+            <!-- ADD PRODUCT FORM -->
+            <div class="form-box">
+                <h2 style="margin-bottom:25px;">➕ Agregar Producto</h2>
+                <div class="form-grid">
+                    <input class="input" id="nombre" placeholder="Nombre">
+                    <input class="input" id="precio" placeholder="Precio">
+                    <input class="input" id="imagen" placeholder="URL imagen">
+                    <input class="input" id="categoria" placeholder="Categoría">
+                    <input class="input" id="tallas" placeholder="Tallas Ej: S,M,L,XL">
+                    <input class="input" id="colores" placeholder="Colores">
+                    <input class="input" id="stock" placeholder="Stock">
+                    <input class="input" id="link" placeholder="Link producto">
+                    <select class="input" id="disponible">
+                        <option value="SI">Disponible</option>
+                        <option value="NO">No disponible</option>
+                    </select>
+                </div>
+                <textarea class="input" id="descripcion" placeholder="Descripción"></textarea>
+                
+                <div class="variant-section">
+                    <h3 style="margin-bottom:15px;">🎨 Variantes del Producto</h3>
+                    <div id="variantesContainer"></div>
+                    <button class="btn" onclick="agregarVariante()" style="width:auto; margin-top:10px;">+ Agregar Variante</button>
+                </div>
+                
+                <button class="btn" onclick="agregarProducto()" style="margin-top:20px;">Guardar Producto</button>
+            </div>
+
+            <!-- PRODUCT INVENTORY GRID -->
+            <div class="grid" id="inventarioGrid"></div>
+        </div>
+
+        <!-- PEDIDOS SECTION -->
+        <div id="pedidosSection" style="display:none;">
+            <div class="form-box">
+                <h2 style="margin-bottom:25px;">🛒 Lista de Pedidos</h2>
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th>Cliente</th>
+                            <th>Productos</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pedidosBody">
+                        <tr>
+                            <td>#001</td>
+                            <td>Juan Pérez</td>
+                            <td>2 productos</td>
+                            <td>$120</td>
+                            <td><span class="badge active">Enviado</span></td>
+                        </tr>
+                        <tr>
+                            <td>#002</td>
+                            <td>María García</td>
+                            <td>1 producto</td>
+                            <td>$45</td>
+                            <td><span class="badge active">Procesando</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CONFIGURACION SECTION -->
+        <div id="configuracionSection" style="display:none;">
+            <div class="form-box">
+                <h2 style="margin-bottom:25px;">⚙️ Configuración del Sistema</h2>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>Nombre de la Tienda</label>
+                        <input class="input" id="tiendaNombre" placeholder="Nombre">
+                    </div>
+                    <div class="input-group">
+                        <label>Email de Contacto</label>
+                        <input class="input" id="tiendaEmail" placeholder="Email">
+                    </div>
+                    <div class="input-group">
+                        <label>Moneda</label>
+                        <select class="input" id="tiendaMoneda">
+                            <option>USD ($)</option>
+                            <option>EUR (€)</option>
+                            <option>COP ($)</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn" onclick="guardarConfiguracion()">Guardar Configuración</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="menu">
-
-<button class="active">
-📦 Inventario
-</button>
-
-<button>
-🛒 Pedidos
-</button>
-
-<button>
-📊 Analytics
-</button>
-
-<button>
-⚙️ Configuración
-</button>
-
-</div>
-
-</div>
-
-<div class="content">
-
-<div class="topbar">
-
-<div class="top-title">
-Inventario Premium
-</div>
-
-<button class="logout" onclick="logout()">
-Cerrar sesión
-</button>
-
-</div>
-
-<!-- ADD PRODUCT -->
-
-<div class="form-box">
-
-<h2 style="margin-bottom:25px;">
-➕ Agregar Producto
-</h2>
-
-<div class="form-grid">
-
-<input class="input" id="nombre" placeholder="Nombre">
-
-<input class="input" id="precio" placeholder="Precio">
-
-<input class="input" id="imagen" placeholder="URL imagen">
-
-<input class="input" id="categoria" placeholder="Categoría">
-
-<input class="input" id="tallas" placeholder="Tallas Ej: 40,41,42">
-
-<input class="input" id="colores" placeholder="Colores">
-
-<input class="input" id="stock" placeholder="Stock">
-
-<input class="input" id="link" placeholder="Link producto">
-
-<select class="input" id="disponible">
-
-<option value="SI">Disponible</option>
-<option value="NO">No disponible</option>
-
-</select>
-
-</div>
-
-<textarea class="input" id="descripcion" placeholder="Descripción"></textarea>
-
-<button class="btn" onclick="agregarProducto()">
-Guardar Producto
-</button>
-
-</div>
-
-<!-- INVENTARIO -->
-
-<div class="grid" id="inventarioGrid">
-
-</div>
-
-</div>
-
-</div>
-
-<!-- MODAL -->
-
+<!-- EDIT MODAL -->
 <div class="modal" id="modal">
-
-<div class="modal-box">
-
-<div class="modal-title">
-✏️ Editar Producto
-</div>
-
-<input type="hidden" id="editId">
-
-<div class="form-grid">
-
-<input class="input" id="editNombre">
-
-<input class="input" id="editPrecio">
-
-<input class="input" id="editImagen">
-
-<input class="input" id="editCategoria">
-
-<input class="input" id="editTallas">
-
-<input class="input" id="editColores">
-
-<input class="input" id="editStock">
-
-<input class="input" id="editLink">
-
-<select class="input" id="editDisponible">
-
-<option value="SI">Disponible</option>
-<option value="NO">No disponible</option>
-
-</select>
-
-</div>
-
-<textarea class="input" id="editDescripcion"></textarea>
-
-<button class="btn save-btn" onclick="guardarEdicion()">
-Guardar Cambios
-</button>
-
-</div>
-
+    <div class="modal-box">
+        <div class="modal-title">✏️ Editar Producto</div>
+        <input type="hidden" id="editId">
+        <div class="form-grid">
+            <input class="input" id="editNombre" placeholder="Nombre">
+            <input class="input" id="editPrecio" placeholder="Precio">
+            <input class="input" id="editImagen" placeholder="URL imagen">
+            <input class="input" id="editCategoria" placeholder="Categoría">
+            <input class="input" id="editTallas" placeholder="Tallas">
+            <input class="input" id="editColores" placeholder="Colores">
+            <input class="input" id="editStock" placeholder="Stock">
+            <input class="input" id="editLink" placeholder="Link">
+            <select class="input" id="editDisponible">
+                <option value="SI">Disponible</option>
+                <option value="NO">No disponible</option>
+            </select>
+        </div>
+        <textarea class="input" id="editDescripcion" placeholder="Descripción"></textarea>
+        <button class="btn save-btn" onclick="guardarEdicion()">Guardar Cambios</button>
+    </div>
 </div>
 
 <script>
-
-const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
-
 let productos = [];
+let variantesGlobales = [];
 
-/* =========================
-LOGIN
-========================= */
-
-function login(){
-
-const pass = document.getElementById('password').value;
-
-if(pass === 'admin123'){
-
-document.getElementById('loginScreen').style.display='none';
-
-document.getElementById('app').style.display='block';
-
-cargarProductos();
-
-}else{
-
-alert('Contraseña incorrecta');
-
+// LOGIN
+function login() {
+    const pass = document.getElementById('password').value;
+    if(pass === 'admin123') {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        cargarProductosEjemplo();
+        actualizarStats();
+    } else {
+        alert('Contraseña incorrecta');
+    }
 }
 
+function logout() {
+    location.reload();
 }
 
-function logout(){
-
-location.reload();
-
+// SHOW SECTIONS
+function showSection(section) {
+    document.getElementById('dashboardSection').style.display = section === 'dashboard' ? 'block' : 'none';
+    document.getElementById('inventarioSection').style.display = section === 'inventario' ? 'block' : 'none';
+    document.getElementById('pedidosSection').style.display = section === 'pedidos' ? 'block' : 'none';
+    document.getElementById('configuracionSection').style.display = section === 'configuracion' ? 'block' : 'none';
+    
+    const titles = {
+        dashboard: 'Dashboard',
+        inventario: 'Inventario Premium',
+        pedidos: 'Gestión de Pedidos',
+        configuracion: 'Configuración'
+    };
+    document.getElementById('sectionTitle').innerText = titles[section];
 }
 
-/* =========================
-CARGAR PRODUCTOS
-========================= */
-
-async function cargarProductos(){
-
-try{
-
-const res = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
-
-productos = await res.json();
-
-renderProductos();
-
-}catch(err){
-
-console.error(err);
-
+// AGREGAR VARIANTE
+function agregarVariante() {
+    const container = document.getElementById('variantesContainer');
+    const div = document.createElement('div');
+    div.className = 'variant-box';
+    div.innerHTML = `
+        <div class="form-grid" style="margin-bottom:10px;">
+            <input type="text" placeholder="Talla (Ej: M)" class="input variant-talla">
+            <input type="text" placeholder="Color" class="input variant-color">
+            <input type="number" placeholder="Precio extra" class="input variant-precio">
+            <input type="number" placeholder="Stock" class="input variant-stock">
+        </div>
+        <button class="btn" onclick="this.parentElement.remove()" style="width:auto; background:#ef4444;">Eliminar</button>
+    `;
+    container.appendChild(div);
 }
 
+// AGREGAR PRODUCTO
+function agregarProducto() {
+    const variantes = [];
+    document.querySelectorAll('.variant-box').forEach(box => {
+        variantes.push({
+            talla: box.querySelector('.variant-talla')?.value || '',
+            color: box.querySelector('.variant-color')?.value || '',
+            precioExtra: box.querySelector('.variant-precio')?.value || 0,
+            stock: box.querySelector('.variant-stock')?.value || 0
+        });
+    });
+    
+    const nuevo = {
+        id: Date.now(),
+        nombre: document.getElementById('nombre').value,
+        precio: document.getElementById('precio').value,
+        imagen: document.getElementById('imagen').value,
+        categoria: document.getElementById('categoria').value,
+        tallas: document.getElementById('tallas').value,
+        colores: document.getElementById('colores').value,
+        stock: document.getElementById('stock').value,
+        link: document.getElementById('link').value,
+        disponible: document.getElementById('disponible').value,
+        descripcion: document.getElementById('descripcion').value,
+        variantes: variantes
+    };
+    
+    productos.unshift(nuevo);
+    renderProductos();
+    actualizarStats();
+    limpiarFormulario();
+    alert('✅ Producto agregado correctamente');
 }
 
-/* =========================
-RENDER
-========================= */
-
-function renderProductos(){
-
-const grid = document.getElementById('inventarioGrid');
-
-if(!productos.length){
-
-grid.innerHTML = `
-<div style="padding:40px;">
-No hay productos
-</div>
-`;
-
-return;
-
+function limpiarFormulario() {
+    document.getElementById('nombre').value = '';
+    document.getElementById('precio').value = '';
+    document.getElementById('imagen').value = '';
+    document.getElementById('categoria').value = '';
+    document.getElementById('tallas').value = '';
+    document.getElementById('colores').value = '';
+    document.getElementById('stock').value = '';
+    document.getElementById('link').value = '';
+    document.getElementById('descripcion').value = '';
+    document.getElementById('variantesContainer').innerHTML = '';
 }
 
-grid.innerHTML = productos.map(producto => `
-
-<div class="card">
-
-<img src="${producto.imagen}" class="product-image">
-
-<div class="card-body">
-
-<div class="product-id"
-onclick="abrirEditor('${producto.id}')">
-ID: ${producto.id}
-</div>
-
-<div class="product-title">
-${producto.nombre}
-</div>
-
-<div class="product-desc">
-${producto.descripcion}
-</div>
-
-<div class="price">
-$${producto.precio}
-</div>
-
-<div class="meta">
-
-<div class="tag">
-📏 ${producto.tallas}
-</div>
-
-<div class="tag">
-🎨 ${producto.colores}
-</div>
-
-<div class="tag">
-📦 ${producto.stock}
-</div>
-
-<div class="tag">
-${producto.disponible}
-</div>
-
-</div>
-
-<div style="margin-bottom:20px;">
-
-<a href="${producto.link}" target="_blank" style="color:#00e5ff;">
-🔗 Ver producto
-</a>
-
-</div>
-
-<div class="actions">
-
-<button class="action-btn edit-btn"
-onclick="abrirEditor('${producto.id}')">
-Editar
-</button>
-
-<button class="action-btn delete-btn">
-Eliminar
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-`).join('');
-
+// RENDER PRODUCTOS
+function renderProductos() {
+    const grid = document.getElementById('inventarioGrid');
+    
+    if(!productos.length) {
+        grid.innerHTML = `<div style="padding:40px; text-align:center;">No hay productos registrados</div>`;
+        return;
+    }
+    
+    grid.innerHTML = productos.map(producto => `
+        <div class="card">
+            <img src="${producto.imagen || 'https://via.placeholder.com/300'}" class="product-image" onerror="this.src='https://via.placeholder.com/300'">
+            <div class="card-body">
+                <div class="product-id" onclick="abrirEditor('${producto.id}')">ID: ${producto.id}</div>
+                <div class="product-title">${producto.nombre}</div>
+                <div class="product-desc">${producto.descripcion || 'Sin descripción'}</div>
+                <div class="price">$${producto.precio}</div>
+                <div class="meta">
+                    <div class="tag">📏 ${producto.tallas || '-'}</div>
+                    <div class="tag">🎨 ${producto.colores || '-'}</div>
+                    <div class="tag">📦 Stock: ${producto.stock || 0}</div>
+                    <div class="tag">${producto.disponible === 'SI' ? '✅ Disponible' : '❌ No disponible'}</div>
+                </div>
+                ${producto.variantes && producto.variantes.length ? `<div class="tag">🎨 +${producto.variantes.length} variantes</div>` : ''}
+                <div style="margin-bottom:20px;">
+                    <a href="${producto.link}" target="_blank" style="color:#00e5ff;">🔗 Ver producto</a>
+                </div>
+                <div class="actions">
+                    <button class="action-btn edit-btn" onclick="abrirEditor('${producto.id}')">Editar</button>
+                    <button class="action-btn delete-btn" onclick="eliminarProducto('${producto.id}')">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
 }
 
-/* =========================
-EDITOR
-========================= */
-
-function abrirEditor(id){
-
-const p = productos.find(x=>x.id==id);
-
-if(!p) return;
-
-document.getElementById('modal').style.display='flex';
-
-document.getElementById('editId').value = p.id;
-document.getElementById('editNombre').value = p.nombre;
-document.getElementById('editPrecio').value = p.precio;
-document.getElementById('editImagen').value = p.imagen;
-document.getElementById('editCategoria').value = p.categoria;
-document.getElementById('editTallas').value = p.tallas;
-document.getElementById('editColores').value = p.colores;
-document.getElementById('editStock').value = p.stock;
-document.getElementById('editLink').value = p.link;
-document.getElementById('editDisponible').value = p.disponible;
-document.getElementById('editDescripcion').value = p.descripcion;
-
+function eliminarProducto(id) {
+    if(confirm('¿Eliminar este producto?')) {
+        productos = productos.filter(p => p.id != id);
+        renderProductos();
+        actualizarStats();
+        alert('✅ Producto eliminado');
+    }
 }
 
-window.onclick = function(e){
-
-if(e.target.id === 'modal'){
-
-document.getElementById('modal').style.display='none';
-
+// EDITOR
+function abrirEditor(id) {
+    const p = productos.find(x => x.id == id);
+    if(!p) return;
+    
+    document.getElementById('modal').style.display = 'flex';
+    document.getElementById('editId').value = p.id;
+    document.getElementById('editNombre').value = p.nombre;
+    document.getElementById('editPrecio').value = p.precio;
+    document.getElementById('editImagen').value = p.imagen;
+    document.getElementById('editCategoria').value = p.categoria;
+    document.getElementById('editTallas').value = p.tallas;
+    document.getElementById('editColores').value = p.colores;
+    document.getElementById('editStock').value = p.stock;
+    document.getElementById('editLink').value = p.link;
+    document.getElementById('editDisponible').value = p.disponible;
+    document.getElementById('editDescripcion').value = p.descripcion;
 }
 
+function guardarEdicion() {
+    const id = document.getElementById('editId').value;
+    const p = productos.find(x => x.id == id);
+    if(!p) return;
+    
+    p.nombre = document.getElementById('editNombre').value;
+    p.precio = document.getElementById('editPrecio').value;
+    p.imagen = document.getElementById('editImagen').value;
+    p.categoria = document.getElementById('editCategoria').value;
+    p.tallas = document.getElementById('editTallas').value;
+    p.colores = document.getElementById('editColores').value;
+    p.stock = document.getElementById('editStock').value;
+    p.link = document.getElementById('editLink').value;
+    p.disponible = document.getElementById('editDisponible').value;
+    p.descripcion = document.getElementById('editDescripcion').value;
+    
+    renderProductos();
+    actualizarStats();
+    document.getElementById('modal').style.display = 'none';
+    alert('✅ Producto actualizado');
 }
 
-/* =========================
-GUARDAR EDICION
-========================= */
-
-function guardarEdicion(){
-
-const id = document.getElementById('editId').value;
-
-const p = productos.find(x=>x.id==id);
-
-if(!p) return;
-
-p.nombre = document.getElementById('editNombre').value;
-p.precio = document.getElementById('editPrecio').value;
-p.imagen = document.getElementById('editImagen').value;
-p.categoria = document.getElementById('editCategoria').value;
-p.tallas = document.getElementById('editTallas').value;
-p.colores = document.getElementById('editColores').value;
-p.stock = document.getElementById('editStock').value;
-p.link = document.getElementById('editLink').value;
-p.disponible = document.getElementById('editDisponible').value;
-p.descripcion = document.getElementById('editDescripcion').value;
-
-renderProductos();
-
-document.getElementById('modal').style.display='none';
-
-alert('Producto editado');
-
+// ACTUALIZAR ESTADÍSTICAS
+function actualizarStats() {
+    const totalProductos = productos.length;
+    const totalStock = productos.reduce((sum, p) => sum + (parseInt(p.stock) || 0), 0);
+    const ventasTotales = 12420; // Simulado
+    const pedidosTotales = 84; // Simulado
+    
+    document.getElementById('totalProductos').innerText = totalProductos;
+    document.getElementById('totalStock').innerText = totalStock;
+    document.getElementById('totalVentas').innerText = `$${ventasTotales}`;
+    document.getElementById('totalPedidos').innerText = pedidosTotales;
 }
 
-/* =========================
-AGREGAR PRODUCTO
-========================= */
-
-function agregarProducto(){
-
-const nuevo = {
-
-id: Date.now(),
-
-nombre: document.getElementById('nombre').value,
-
-precio: document.getElementById('precio').value,
-
-imagen: document.getElementById('imagen').value,
-
-categoria: document.getElementById('categoria').value,
-
-tallas: document.getElementById('tallas').value,
-
-colores: document.getElementById('colores').value,
-
-stock: document.getElementById('stock').value,
-
-link: document.getElementById('link').value,
-
-disponible: document.getElementById('disponible').value,
-
-descripcion: document.getElementById('descripcion').value
-
-};
-
-productos.unshift(nuevo);
-
-renderProductos();
-
-alert('Producto agregado');
-
+// CONFIGURACIÓN
+function guardarConfiguracion() {
+    const nombre = document.getElementById('tiendaNombre').value;
+    const email = document.getElementById('tiendaEmail').value;
+    const moneda = document.getElementById('tiendaMoneda').value;
+    
+    localStorage.setItem('tiendaConfig', JSON.stringify({ nombre, email, moneda }));
+    alert('✅ Configuración guardada');
 }
 
+// CARGAR PRODUCTOS EJEMPLO
+function cargarProductosEjemplo() {
+    productos = [
+        {
+            id: 1,
+            nombre: "Camiseta Premium",
+            precio: "29.99",
+            imagen: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300",
+            categoria: "Ropa",
+            tallas: "S,M,L,XL",
+            colores: "Negro,Blanco",
+            stock: "50",
+            link: "#",
+            disponible: "SI",
+            descripcion: "Camiseta de algodón 100% premium",
+            variantes: []
+        },
+        {
+            id: 2,
+            nombre: "Zapatillas Deportivas",
+            precio: "89.99",
+            imagen: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300",
+            categoria: "Zapatos",
+            tallas: "40,41,42",
+            colores: "Rojo,Azul",
+            stock: "30",
+            link: "#",
+            disponible: "SI",
+            descripcion: "Zapatillas cómodas para running",
+            variantes: []
+        }
+    ];
+    renderProductos();
+}
+
+// CERRAR MODAL CLICK FUERA
+window.onclick = function(e) {
+    if(e.target.id === 'modal') {
+        document.getElementById('modal').style.display = 'none';
+    }
+}
+
+// INICIALIZAR SECCIÓN
+showSection('inventario');
 </script>
-
 </body>
 </html>
