@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GREEN ADMIN | TIENDA</title>
+<title>GREEN ADMIN | PANEL DE CONTROL</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -93,14 +93,6 @@ body {
     width: auto;
     padding: 10px 20px;
     font-size: 0.9rem;
-}
-
-.btn-secondary {
-    background: linear-gradient(135deg, #81c784, #66bb6a);
-}
-
-.btn-danger {
-    background: linear-gradient(135deg, #ef9a9a, #ef5350);
 }
 
 /* APP */
@@ -200,7 +192,7 @@ body {
 /* STATS CARDS */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 24px;
     margin-bottom: 40px;
 }
@@ -211,156 +203,20 @@ body {
     border-radius: 28px;
     padding: 25px;
     box-shadow: 0 5px 15px rgba(0,0,0,.05);
+    text-align: center;
 }
 
 .stat-card h3 {
     font-size: 0.85rem;
     opacity: 0.7;
     margin-bottom: 10px;
-    letter-spacing: 1px;
     color: #558b2f;
 }
 
 .stat-card .stat-value {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 900;
     color: #2e7d32;
-}
-
-/* FORM BOX */
-.form-box {
-    background: rgba(255,255,255,.9);
-    border: 1px solid rgba(76,175,80,.2);
-    padding: 30px;
-    border-radius: 28px;
-    margin-bottom: 40px;
-    box-shadow: 0 5px 15px rgba(0,0,0,.05);
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 18px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.form-group label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #2e7d32;
-}
-
-textarea.input {
-    min-height: 100px;
-    resize: vertical;
-}
-
-/* VARIANTES PANEL - NUEVO DISEÑO */
-.variantes-panel {
-    margin-top: 20px;
-    padding: 20px;
-    background: #f1f8e9;
-    border-radius: 20px;
-}
-
-.color-card {
-    background: white;
-    border: 2px solid #c8e6c9;
-    border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
-.color-header {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #c8e6c9;
-}
-
-.color-header input {
-    flex: 1;
-    min-width: 150px;
-    padding: 10px;
-    background: #f5f5f5;
-    border: 1px solid #c8e6c9;
-    border-radius: 12px;
-}
-
-.color-header .remove-color {
-    background: #ef9a9a;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 12px;
-    color: #c62828;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.tallas-section {
-    margin-top: 15px;
-}
-
-.tallas-title {
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #2e7d32;
-    font-size: 0.9rem;
-}
-
-.tallas-list {
-    margin-bottom: 10px;
-}
-
-.talla-item {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-}
-
-.talla-item input {
-    padding: 10px;
-    background: #f5f5f5;
-    border: 1px solid #c8e6c9;
-    border-radius: 12px;
-}
-
-.talla-item .talla-nombre {
-    width: 80px;
-}
-
-.talla-item .talla-precio {
-    width: 120px;
-}
-
-.talla-item .remove-talla {
-    background: #ef9a9a;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 10px;
-    color: #c62828;
-    cursor: pointer;
-}
-
-.btn-add-talla {
-    background: #c8e6c9;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 12px;
-    color: #2e7d32;
-    cursor: pointer;
-    font-weight: 600;
-    margin-top: 5px;
 }
 
 /* TABLES */
@@ -371,7 +227,7 @@ textarea.input {
 
 .data-table th,
 .data-table td {
-    padding: 15px;
+    padding: 12px;
     text-align: left;
     border-bottom: 1px solid #c8e6c9;
 }
@@ -380,6 +236,8 @@ textarea.input {
     background: #e8f5e9;
     font-weight: 700;
     color: #2e7d32;
+    position: sticky;
+    top: 0;
 }
 
 .data-table tr:hover {
@@ -387,95 +245,16 @@ textarea.input {
 }
 
 .badge {
-    padding: 6px 12px;
+    padding: 4px 10px;
     border-radius: 20px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
 }
 
-.badge-success {
-    background: #c8e6c9;
-    color: #2e7d32;
-}
-
-.badge-warning {
-    background: #fff3e0;
-    color: #ef6c00;
-}
-
-.badge-danger {
-    background: #ffebee;
-    color: #c62828;
-}
-
-.badge-info {
-    background: #e3f2fd;
-    color: #1565c0;
-}
-
-/* TRACKING PANEL */
-.tracking-panel {
-    background: #f1f8e9;
-    border-radius: 20px;
-    padding: 20px;
-    margin-top: 20px;
-}
-
-.tracking-search {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
-.tracking-search input {
-    flex: 1;
-    padding: 14px;
-    border: 1px solid #c8e6c9;
-    border-radius: 14px;
-    background: white;
-}
-
-.tracking-timeline {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    margin: 20px 0;
-    gap: 10px;
-}
-
-.tracking-step {
-    flex: 1;
-    text-align: center;
-    padding: 12px;
-    background: white;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: all 0.3s;
-    border: 2px solid #c8e6c9;
-}
-
-.tracking-step.active {
-    background: #66bb6a;
-    color: white;
-    border-color: #66bb6a;
-}
-
-.tracking-step.completed {
-    background: #a5d6a7;
-    color: #1b5e20;
-    border-color: #a5d6a7;
-}
-
-.tracking-step .step-icon {
-    font-size: 24px;
-    display: block;
-}
-
-.tracking-step .step-name {
-    font-size: 12px;
-    margin-top: 5px;
-}
+.badge-pendiente { background: #fff3e0; color: #ef6c00; }
+.badge-cotizado { background: #e3f2fd; color: #1565c0; }
+.badge-aprobado { background: #c8e6c9; color: #2e7d32; }
+.badge-rechazado { background: #ffebee; color: #c62828; }
 
 /* MODAL */
 .modal {
@@ -491,34 +270,96 @@ textarea.input {
 
 .modal-content {
     width: 100%;
-    max-width: 800px;
+    max-width: 600px;
     background: white;
     border-radius: 28px;
-    padding: 30px;
+    padding: 0;
     max-height: 90vh;
-    overflow: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
-.modal-title {
-    font-size: 1.8rem;
-    font-weight: 900;
-    margin-bottom: 25px;
-    color: #2e7d32;
+.modal-header {
+    background: linear-gradient(135deg, #66bb6a, #43a047);
+    padding: 20px;
+    color: white;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-body {
+    padding: 25px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.modal-cerrar {
+    background: rgba(255,255,255,.2);
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.solicitud-codigo {
+    font-family: monospace;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #66bb6a;
+    background: #e8f5e9;
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 12px;
+    letter-spacing: 3px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 700;
+    color: #66bb6a;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+}
+
+.form-group input, .form-group textarea, .form-group select {
+    width: 100%;
+    padding: 12px 15px;
+    background: #f1f8f6;
+    border: 2px solid #81c784;
+    border-radius: 60px;
+    font-family: inherit;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #66bb6a;
 }
 
 /* RESPONSIVE */
 @media (max-width: 900px) {
-    .sidebar {
-        position: relative;
-        width: 100%;
-        height: auto;
-    }
-    .content {
-        margin-left: 0;
-    }
-    .tracking-timeline {
-        flex-direction: column;
-    }
+    .sidebar { position: relative; width: 100%; height: auto; }
+    .content { margin-left: 0; }
+    .data-table { font-size: 12px; }
+    .data-table th, .data-table td { padding: 8px; }
 }
 </style>
 </head>
@@ -528,7 +369,7 @@ textarea.input {
 <div class="login-screen" id="loginScreen">
     <div class="login-box">
         <div class="login-title">🌿 GREEN ADMIN</div>
-        <div class="login-sub">Panel administrativo</div>
+        <div class="login-sub">Panel de control - Solicitudes de productos</div>
         <input type="password" class="input" id="password" placeholder="Contraseña admin">
         <button class="btn" onclick="login()">ACCEDER</button>
     </div>
@@ -536,20 +377,17 @@ textarea.input {
 
 <!-- APP -->
 <div class="app" id="app">
-    <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="logo">🌱 GREEN ADMIN</div>
         <div class="menu">
             <button class="active" data-section="dashboard">📊 Dashboard</button>
+            <button data-section="solicitudes">📌 Solicitudes de Productos</button>
             <button data-section="productos">📦 Productos</button>
-            <button data-section="inventario">📚 Inventario</button>
             <button data-section="pedidos">🛒 Pedidos</button>
-            <button data-section="tracking">🚚 Tracking</button>
             <button data-section="config">⚙️ Configuración</button>
         </div>
     </div>
 
-    <!-- CONTENT -->
     <div class="content">
         <div class="topbar">
             <div class="top-title" id="currentSectionTitle">Dashboard</div>
@@ -559,123 +397,47 @@ textarea.input {
         <!-- DASHBOARD -->
         <div id="dashboardSection" class="section active">
             <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>VENTAS TOTALES</h3>
-                    <div class="stat-value" id="totalVentas">$0</div>
-                </div>
-                <div class="stat-card">
-                    <h3>PEDIDOS</h3>
-                    <div class="stat-value" id="totalPedidos">0</div>
-                </div>
-                <div class="stat-card">
-                    <h3>PRODUCTOS</h3>
-                    <div class="stat-value" id="totalProductos">0</div>
-                </div>
-                <div class="stat-card">
-                    <h3>ENVÍOS</h3>
-                    <div class="stat-value" id="totalEnvios">0</div>
+                <div class="stat-card"><h3>SOLICITUDES PENDIENTES</h3><div class="stat-value" id="totalPendientes">0</div></div>
+                <div class="stat-card"><h3>COTIZADAS</h3><div class="stat-value" id="totalCotizadas">0</div></div>
+                <div class="stat-card"><h3>APROBADAS</h3><div class="stat-value" id="totalAprobadas">0</div></div>
+                <div class="stat-card"><h3>TOTAL SOLICITUDES</h3><div class="stat-value" id="totalSolicitudes">0</div></div>
+            </div>
+        </div>
+
+        <!-- SOLICITUDES (PRINCIPAL) -->
+        <div id="solicitudesSection" class="section">
+            <h2 style="margin-bottom:20px;">📌 Solicitudes de Productos</h2>
+            <div class="form-box" style="background:rgba(255,255,255,.9); border-radius:28px; padding:20px;">
+                <div id="solicitudesLoading" class="loading">Cargando solicitudes...</div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table" id="solicitudesTable" style="display:none;">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Teléfono</th>
+                                <th>Plataforma</th>
+                                <th>Producto</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="solicitudesBody"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
         <!-- PRODUCTOS -->
         <div id="productosSection" class="section">
-            <div class="form-box">
-                <h2 style="margin-bottom: 20px; color:#2e7d32;">➕ Agregar Producto</h2>
-                
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Nombre del producto *</label>
-                        <input type="text" class="input" id="prodNombre" placeholder="Ej: Camiseta Premium">
-                    </div>
-                    <div class="form-group">
-                        <label>Precio base *</label>
-                        <input type="number" class="input" id="prodPrecio" placeholder="0.00">
-                    </div>
-                    <div class="form-group">
-                        <label>Origen/Proveedor</label>
-                        <select class="input" id="prodOrigen">
-                            <option value="">Seleccionar...</option>
-                            <option value="Sephora">Sephora</option>
-                            <option value="Amazon">Amazon</option>
-                            <option value="Shein">Shein</option>
-                            <option value="Temu">Temu</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Categoría</label>
-                        <select class="input" id="prodCategoria">
-                            <option value="">Seleccionar...</option>
-                            <option value="Ropa">👕 Ropa</option>
-                            <option value="Zapatos">👟 Zapatos</option>
-                            <option value="Accesorios">💍 Accesorios</option>
-                            <option value="Electrónica">📱 Electrónica</option>
-                            <option value="Perfume">🌸 Perfume</option>
-                            <option value="Maquillaje">💄 Maquillaje</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Género</label>
-                        <select class="input" id="prodGenero">
-                            <option value="">Seleccionar...</option>
-                            <option value="Mujer">👩 Mujer</option>
-                            <option value="Hombre">👨 Hombre</option>
-                            <option value="Niña">👧 Niña</option>
-                            <option value="Niño">👦 Niño</option>
-                            <option value="Unisex">👥 Unisex</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>URL Imagen principal</label>
-                        <input type="text" class="input" id="prodImagen" placeholder="https://...">
-                    </div>
-                    <div class="form-group">
-                        <label>Enlace del producto</label>
-                        <input type="text" class="input" id="prodEnlace" placeholder="URL del producto">
-                    </div>
-                    <div class="form-group">
-                        <label>Estado</label>
-                        <select class="input" id="prodActivo">
-                            <option value="SI">✅ Disponible</option>
-                            <option value="NO">❌ No disponible</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Descripción</label>
-                    <textarea class="input" id="prodDescripcion" placeholder="Descripción detallada..."></textarea>
-                </div>
-                
-                <!-- VARIANTES TOGGLE -->
-                <div style="margin-top: 20px; margin-bottom: 15px;">
-                    <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; background: #e8f5e9; padding: 15px; border-radius: 16px;">
-                        <input type="checkbox" id="tieneVariantes" style="width: 20px; height: 20px; cursor: pointer;">
-                        <span style="font-weight: 600; color: #2e7d32;">🎨 ¿Tiene variantes? (Colores y tallas)</span>
-                    </label>
-                </div>
-                
-                <!-- PANEL DE VARIANTES MEJORADO -->
-                <div id="variantesPanel" style="display: none;" class="variantes-panel">
-                    <h3 style="color: #2e7d32; margin-bottom: 15px;">🎨 Colores y Tallas</h3>
-                    <div id="coloresContainer"></div>
-                    <button type="button" class="btn-small btn-secondary" onclick="agregarColor()" style="width: auto; margin-top: 15px;">+ Agregar Color</button>
-                </div>
-                
-                <button class="btn" onclick="agregarProducto()" style="margin-top: 25px;">💾 Guardar Producto</button>
-            </div>
-        </div>
-
-        <!-- INVENTARIO -->
-        <div id="inventarioSection" class="section">
-            <h2 style="margin-bottom: 20px; color:#2e7d32;">📚 Inventario</h2>
-            <div class="form-box">
+            <h2 style="margin-bottom:20px;">📦 Productos en Catálogo</h2>
+            <div class="form-box" style="background:rgba(255,255,255,.9); border-radius:28px; padding:20px;">
+                <div id="productosLoading" class="loading">Cargando productos...</div>
                 <div style="overflow-x: auto;">
-                    <table class="data-table">
-                        <thead>
-                            <tr><th>ID</th><th>Producto</th><th>Precio</th><th>Origen</th><th>Variantes</th><th>Link</th><th>Estado</th><th>Acciones</th></tr>
-                        </thead>
-                        <tbody id="inventarioBody"></tbody>
+                    <table class="data-table" id="productosTable" style="display:none;">
+                        <thead><tr><th>ID</th><th>Nombre</th><th>Precio</th><th>Origen</th><th>Categoría</th><th>Enlace</th><th>Estado</th></tr></thead>
+                        <tbody id="productosBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -683,116 +445,61 @@ textarea.input {
 
         <!-- PEDIDOS -->
         <div id="pedidosSection" class="section">
-            <div class="form-box">
-                <h2 style="margin-bottom: 20px; color:#2e7d32;">🛒 Lista de Pedidos</h2>
+            <h2 style="margin-bottom:20px;">🛒 Pedidos de Clientes</h2>
+            <div class="form-box" style="background:rgba(255,255,255,.9); border-radius:28px; padding:20px;">
+                <div id="pedidosLoading" class="loading">Cargando pedidos...</div>
                 <div style="overflow-x: auto;">
-                    <table class="data-table">
-                        <thead>
-                            <tr><th>ID Pedido</th><th>Fecha</th><th>Cliente</th><th>Teléfono</th><th>Dirección</th><th>Productos</th><th>Total</th><th>Método</th><th>Estado</th><th>Tracking</th></tr>
-                        </thead>
+                    <table class="data-table" id="pedidosTable" style="display:none;">
+                        <thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Teléfono</th><th>Dirección</th><th>Total</th><th>Estado</th></tr></thead>
                         <tbody id="pedidosBody"></tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- TRACKING -->
-        <div id="trackingSection" class="section">
-            <div class="form-box">
-                <h2 style="margin-bottom: 20px; color:#2e7d32;">🚚 Tracking de Pedidos</h2>
-                
-                <div class="tracking-panel">
-                    <div class="tracking-search">
-                        <input type="text" id="trackingIdPedido" placeholder="Ingresa ID del pedido o número de seguimiento">
-                        <button class="btn-small" onclick="buscarPedidoTracking()" style="width: auto;">🔍 Buscar</button>
-                    </div>
-                    
-                    <div id="trackingInfo" style="display: none;">
-                        <div style="background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px;">
-                            <h3 id="trackingCliente" style="color: #2e7d32;">Cliente: -</h3>
-                            <p id="trackingProductos">Productos: -</p>
-                            <p id="trackingTotal">Total: -</p>
-                        </div>
-                        
-                        <div class="tracking-timeline" id="trackingTimeline">
-                            <div class="tracking-step" data-step="0" onclick="actualizarEstadoTracking(0)">
-                                <span class="step-icon">📋</span>
-                                <span class="step-name">Pedido Recibido</span>
-                            </div>
-                            <div class="tracking-step" data-step="1" onclick="actualizarEstadoTracking(1)">
-                                <span class="step-icon">📦</span>
-                                <span class="step-name">Preparando</span>
-                            </div>
-                            <div class="tracking-step" data-step="2" onclick="actualizarEstadoTracking(2)">
-                                <span class="step-icon">✈</span>
-                                <span class="step-name">En Tránsito</span>
-                            </div>
-                            <div class="tracking-step" data-step="3" onclick="actualizarEstadoTracking(3)">
-                                <span class="step-icon">🌎</span>
-                                <span class="step-name">En Destino</span>
-                            </div>
-                            <div class="tracking-step" data-step="4" onclick="actualizarEstadoTracking(4)">
-                                <span class="step-icon">🚚</span>
-                                <span class="step-name">En Reparto</span>
-                            </div>
-                            <div class="tracking-step" data-step="5" onclick="actualizarEstadoTracking(5)">
-                                <span class="step-icon">✅</span>
-                                <span class="step-name">Entregado</span>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-top: 20px; text-align: center;">
-                            <button class="btn-small" onclick="actualizarTracking()" style="background: #43a047;">Actualizar Estado</button>
-                        </div>
-                    </div>
-                    
-                    <div id="trackingNoEncontrado" style="display: none; text-align: center; padding: 40px; color: #ef6c00;">
-                        ⚠️ No se encontró el pedido. Verifica el ID.
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- CONFIGURACION -->
         <div id="configSection" class="section">
-            <div class="form-box">
-                <h2 style="margin-bottom: 20px; color:#2e7d32;">⚙️ Configuración</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Nombre tienda</label>
-                        <input type="text" class="input" id="configNombre" placeholder="Mi Tienda">
-                    </div>
-                    <div class="form-group">
-                        <label>Email contacto</label>
-                        <input type="email" class="input" id="configEmail" placeholder="admin@tienda.com">
-                    </div>
-                    <div class="form-group">
-                        <label>Moneda</label>
-                        <select class="input" id="configMoneda">
-                            <option>USD ($)</option>
-                            <option>PAB (B/.)</option>
-                        </select>
-                    </div>
-                </div>
+            <div class="form-box" style="background:rgba(255,255,255,.9); border-radius:28px; padding:30px;">
+                <h2 style="margin-bottom:20px;">⚙️ Configuración</h2>
+                <div class="form-group"><label>Nombre tienda</label><input type="text" class="input" id="configNombre" placeholder="Mi Tienda"></div>
+                <div class="form-group"><label>Email contacto</label><input type="email" class="input" id="configEmail" placeholder="admin@tienda.com"></div>
+                <div class="form-group"><label>Moneda</label><select class="input" id="configMoneda"><option>USD ($)</option><option>PAB (B/.)</option></select></div>
                 <button class="btn" onclick="guardarConfiguracion()">Guardar Configuración</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- MODAL DETALLE -->
-<div id="productModal" class="modal">
+<!-- MODAL COTIZAR SOLICITUD -->
+<div id="cotizarModal" class="modal">
     <div class="modal-content">
-        <div class="modal-title" id="modalProductTitle">Detalle Producto</div>
-        <div id="modalProductContent"></div>
-        <button class="btn" onclick="cerrarModalProducto()" style="margin-top: 20px;">Cerrar</button>
+        <div class="modal-header">
+            <h2>💰 Cotizar Producto</h2>
+            <button class="modal-cerrar" onclick="cerrarCotizarModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div id="cotizarInfo"></div>
+            <div class="form-group">
+                <label>💰 Precio cotizado (USD)</label>
+                <input type="number" id="precioCotizado" step="0.01" class="input" placeholder="Ej: 25.99">
+            </div>
+            <div class="form-group">
+                <label>💬 Mensaje para el cliente (opcional)</label>
+                <textarea id="respuestaAdmin" rows="3" class="input" placeholder="Ej: El producto está disponible, precio incluye envío"></textarea>
+            </div>
+            <button class="btn" onclick="enviarCotizacion()">Enviar Cotización</button>
+            <button class="btn" onclick="rechazarSolicitud()" style="background:#ef9a9a; margin-top:10px;">❌ Rechazar Solicitud</button>
+        </div>
     </div>
 </div>
 
 <script>
+const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
+
 let productos = [];
 let pedidos = [];
-let trackingActual = null;
+let solicitudes = [];
+let solicitudActual = null;
 
 // LOGIN
 function login() {
@@ -800,7 +507,7 @@ function login() {
     if (pass === 'admin123') {
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('app').style.display = 'block';
-        cargarDatos();
+        cargarTodosLosDatos();
     } else {
         alert('Contraseña incorrecta');
     }
@@ -808,277 +515,295 @@ function login() {
 
 function logout() { location.reload(); }
 
-// ==================== VARIANTES MEJORADAS ====================
-function agregarColor() {
-    const container = document.getElementById('coloresContainer');
-    const colorId = Date.now();
-    const div = document.createElement('div');
-    div.className = 'color-card';
-    div.id = `color_${colorId}`;
-    div.innerHTML = `
-        <div class="color-header">
-            <input type="text" placeholder="Nombre del Color (Ej: Rojo, Azul)" class="color-nombre">
-            <input type="text" placeholder="URL Imagen del Color" class="color-imagen">
-            <button class="remove-color" onclick="eliminarColor('${colorId}')">🗑️ Eliminar Color</button>
-        </div>
-        <div class="tallas-section">
-            <div class="tallas-title">📏 Tallas y Precios para este color</div>
-            <div class="tallas-list" id="tallas_${colorId}"></div>
-            <button type="button" class="btn-add-talla" onclick="agregarTalla('${colorId}')">+ Agregar Talla</button>
-        </div>
-    `;
-    container.appendChild(div);
-    agregarTalla(colorId);
+// CARGAR TODOS LOS DATOS
+async function cargarTodosLosDatos() {
+    await Promise.all([
+        cargarSolicitudes(),
+        cargarProductos(),
+        cargarPedidos()
+    ]);
+    actualizarStats();
 }
 
-function eliminarColor(colorId) {
-    document.getElementById(`color_${colorId}`).remove();
-}
-
-function agregarTalla(colorId) {
-    const container = document.getElementById(`tallas_${colorId}`);
-    const tallaId = Date.now();
-    const div = document.createElement('div');
-    div.className = 'talla-item';
-    div.id = `talla_${tallaId}`;
-    div.innerHTML = `
-        <input type="text" placeholder="Talla (Ej: S, M, L, 40)" class="talla-nombre">
-        <input type="number" placeholder="Precio" class="talla-precio">
-        <button class="remove-talla" onclick="this.parentElement.remove()">✗</button>
-    `;
-    container.appendChild(div);
-}
-
-function obtenerVariantesEstructuradas() {
-    const colores = [];
-    document.querySelectorAll('.color-card').forEach(colorCard => {
-        const colorNombre = colorCard.querySelector('.color-nombre')?.value || '';
-        const colorImagen = colorCard.querySelector('.color-imagen')?.value || '';
-        const tallas = [];
-        colorCard.querySelectorAll('.talla-item').forEach(tallaItem => {
-            const tallaNombre = tallaItem.querySelector('.talla-nombre')?.value || '';
-            const tallaPrecio = tallaItem.querySelector('.talla-precio')?.value || '';
-            if (tallaNombre) {
-                tallas.push({ talla: tallaNombre, precio: tallaPrecio });
-            }
-        });
-        if (colorNombre && tallas.length > 0) {
-            colores.push({ color: colorNombre, imagen: colorImagen, tallas: tallas });
+// CARGAR SOLICITUDES (desde localStorage - misma fuente que la tienda)
+async function cargarSolicitudes() {
+    const loadingDiv = document.getElementById('solicitudesLoading');
+    const table = document.getElementById('solicitudesTable');
+    
+    try {
+        loadingDiv.style.display = 'block';
+        table.style.display = 'none';
+        
+        // Las solicitudes se guardan en localStorage (misma que usa la tienda)
+        const saved = localStorage.getItem('solicitudes');
+        if (saved) {
+            solicitudes = JSON.parse(saved);
+        } else {
+            // Solicitudes de ejemplo para demostración
+            solicitudes = [
+                {
+                    codigo: "4827",
+                    nombre: "María González",
+                    telefono: "6123-4567",
+                    link: "https://amazon.com/producto-ejemplo",
+                    plataforma: "Amazon",
+                    notas: "Color negro, talla M, cantidad 2",
+                    estado: "pendiente",
+                    fecha: new Date().toISOString(),
+                    cotizacion: null,
+                    respuestaAdmin: null
+                },
+                {
+                    codigo: "7391",
+                    nombre: "Carlos Ruiz",
+                    telefono: "6474-5914",
+                    link: "https://shein.com/producto-ejemplo",
+                    plataforma: "Shein",
+                    notas: "Talla L, color azul",
+                    estado: "cotizado",
+                    fecha: new Date(Date.now() - 86400000).toISOString(),
+                    cotizacion: 35.50,
+                    respuestaAdmin: "El producto está disponible, precio incluye envío a Panamá"
+                }
+            ];
+            localStorage.setItem('solicitudes', JSON.stringify(solicitudes));
         }
-    });
-    return colores;
-}
-
-// AGREGAR PRODUCTO
-function agregarProducto() {
-    const tieneVariantes = document.getElementById('tieneVariantes').checked;
-    let variantes = null;
-    if (tieneVariantes) {
-        variantes = obtenerVariantesEstructuradas();
+    } catch (error) {
+        console.error('Error cargando solicitudes:', error);
+        solicitudes = [];
     }
     
-    const nuevoProducto = {
-        id: Date.now(),
-        nombre: document.getElementById('prodNombre').value,
-        precio: document.getElementById('prodPrecio').value,
-        origen: document.getElementById('prodOrigen').value,
-        categoria: document.getElementById('prodCategoria').value,
-        genero: document.getElementById('prodGenero').value,
-        imagen: document.getElementById('prodImagen').value,
-        enlace: document.getElementById('prodEnlace').value,
-        activo: document.getElementById('prodActivo').value,
-        descripcion: document.getElementById('prodDescripcion').value,
-        tiene_variantes: tieneVariantes ? "SI" : "NO",
-        variantes: variantes
+    renderizarSolicitudes();
+    loadingDiv.style.display = 'none';
+    table.style.display = 'block';
+}
+
+function guardarSolicitudes() {
+    localStorage.setItem('solicitudes', JSON.stringify(solicitudes));
+}
+
+function renderizarSolicitudes() {
+    const tablaBody = document.getElementById('solicitudesBody');
+    
+    if (!solicitudes || solicitudes.length === 0) {
+        tablaBody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No hay solicitudes de productos</td></tr>';
+        return;
+    }
+    
+    const estadosTexto = {
+        'pendiente': 'Pendiente',
+        'cotizado': 'Cotizado',
+        'aprobado': 'Aprobado',
+        'rechazado': 'Rechazado'
     };
     
-    if (!nuevoProducto.nombre || !nuevoProducto.precio) {
-        alert('Nombre y precio son obligatorios');
-        return;
-    }
+    const estadosClass = {
+        'pendiente': 'badge-pendiente',
+        'cotizado': 'badge-cotizado',
+        'aprobado': 'badge-aprobado',
+        'rechazado': 'badge-rechazado'
+    };
     
-    productos.unshift(nuevoProducto);
-    renderizarInventario();
-    actualizarStats();
-    limpiarFormulario();
-    alert('✅ Producto agregado');
-}
-
-function limpiarFormulario() {
-    document.getElementById('prodNombre').value = '';
-    document.getElementById('prodPrecio').value = '';
-    document.getElementById('prodOrigen').value = '';
-    document.getElementById('prodCategoria').value = '';
-    document.getElementById('prodGenero').value = '';
-    document.getElementById('prodImagen').value = '';
-    document.getElementById('prodEnlace').value = '';
-    document.getElementById('prodDescripcion').value = '';
-    document.getElementById('tieneVariantes').checked = false;
-    document.getElementById('variantesPanel').style.display = 'none';
-    document.getElementById('coloresContainer').innerHTML = '';
-}
-
-// TOGGLE VARIANTES
-document.getElementById('tieneVariantes').addEventListener('change', function() {
-    document.getElementById('variantesPanel').style.display = this.checked ? 'block' : 'none';
-    if (this.checked && document.getElementById('coloresContainer').children.length === 0) {
-        agregarColor();
-    }
-});
-
-// ==================== TRACKING ====================
-function buscarPedidoTracking() {
-    const idPedido = document.getElementById('trackingIdPedido').value.trim();
-    const pedido = pedidos.find(p => {
-        const pedidoId = p['ID Pedido'] || p.id_pedido || p.id || '';
-        return pedidoId.toString() === idPedido;
-    });
-    
-    if (pedido) {
-        trackingActual = pedido;
-        document.getElementById('trackingInfo').style.display = 'block';
-        document.getElementById('trackingNoEncontrado').style.display = 'none';
-        
-        document.getElementById('trackingCliente').innerHTML = `👤 Cliente: ${pedido.Nombre || pedido.nombre || '-'}`;
-        document.getElementById('trackingProductos').innerHTML = `📦 Productos: ${pedido.Productos || pedido.productos || '-'}`;
-        document.getElementById('trackingTotal').innerHTML = `💰 Total: $${pedido.Total || pedido.total || '0'}`;
-        
-        // Obtener estado actual del tracking
-        let estadoActual = parseInt(localStorage.getItem(`tracking_${idPedido}`)) || 0;
-        actualizarUIEstados(estadoActual);
-    } else {
-        document.getElementById('trackingInfo').style.display = 'none';
-        document.getElementById('trackingNoEncontrado').style.display = 'block';
-        trackingActual = null;
-    }
-}
-
-function actualizarUIEstados(estado) {
-    document.querySelectorAll('.tracking-step').forEach((step, index) => {
-        step.classList.remove('active', 'completed');
-        if (index < estado) {
-            step.classList.add('completed');
-        } else if (index === estado) {
-            step.classList.add('active');
-        }
-    });
-}
-
-function actualizarEstadoTracking(step) {
-    if (trackingActual) {
-        const idPedido = trackingActual['ID Pedido'] || trackingActual.id_pedido || trackingActual.id;
-        localStorage.setItem(`tracking_${idPedido}`, step);
-        actualizarUIEstados(step);
-    }
-}
-
-function actualizarTracking() {
-    if (trackingActual) {
-        const idPedido = trackingActual['ID Pedido'] || trackingActual.id_pedido || trackingActual.id;
-        const estado = localStorage.getItem(`tracking_${idPedido}`) || 0;
-        alert(`✅ Estado actualizado: Pedido ${idPedido} - Etapa ${parseInt(estado) + 1}/6`);
-        actualizarTablaPedidos();
-    }
-}
-
-function actualizarTablaPedidos() {
-    renderizarPedidos();
-}
-
-// ==================== RENDERIZAR ====================
-function renderizarInventario() {
-    const tablaBody = document.getElementById('inventarioBody');
-    if (productos.length === 0) {
-        tablaBody.innerHTML = '<tr><td colspan="8">No hay productos</td></tr>';
-        return;
-    }
-    
-    tablaBody.innerHTML = productos.map(prod => `
+    tablaBody.innerHTML = solicitudes.map(sol => `
         <tr>
-            <td>${prod.id}</td>
-            <td><strong>${prod.nombre?.substring(0, 40) || ''}</strong></td>
-            <td>$${prod.precio}</td>
-            <td>${prod.origen || '-'}</td>
-            <td>${prod.variantes ? prod.variantes.length + ' colores' : 'Sin variantes'}</td>
-            <td>${prod.enlace ? `<a href="${prod.enlace}" target="_blank">🔗</a>` : '-'}</td>
-            <td><span class="badge ${prod.activo === 'SI' ? 'badge-success' : 'badge-danger'}">${prod.activo === 'SI' ? 'Disponible' : 'No'}</span></td>
-            <td><button onclick="verDetalleProducto(${prod.id})">👁️</button> <button onclick="eliminarProducto(${prod.id})">🗑️</button></td>
+            <td><span class="solicitud-codigo" style="font-size:0.9rem; padding:2px 8px;">${sol.codigo}</span></td>
+            <td>${new Date(sol.fecha).toLocaleDateString()} ${new Date(sol.fecha).toLocaleTimeString()}</td>
+            <td><strong>${sol.nombre}</strong></td>
+            <td>${sol.telefono}</td>
+            <td>${sol.plataforma}</td>
+            <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${sol.link}">
+                <a href="${sol.link}" target="_blank" style="color:#66bb6a;">Ver producto</a>
+                ${sol.notas ? `<br><small style="color:#558b2f;">${sol.notas.substring(0, 30)}...</small>` : ''}
+            </td>
+            <td><span class="badge ${estadosClass[sol.estado]}">${estadosTexto[sol.estado]}</span></td>
+            <td>
+                ${sol.estado === 'pendiente' ? `<button onclick="abrirCotizarModal('${sol.codigo}')" style="background:#66bb6a; border:none; padding:6px 12px; border-radius:8px; color:white; cursor:pointer;">💰 Cotizar</button>` : ''}
+                ${sol.estado === 'cotizado' ? `<button onclick="verDetalleSolicitud('${sol.codigo}')" style="background:#81c784; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;">👁️ Ver</button>` : ''}
+                ${sol.estado === 'aprobado' ? `<span style="color:#2e7d32;">✅ Aprobado</span>` : ''}
+                ${sol.estado === 'rechazado' ? `<span style="color:#c62828;">❌ Rechazado</span>` : ''}
+             </tr>
+        `).join('');
+}
+
+// ABRIR MODAL COTIZAR
+function abrirCotizarModal(codigo) {
+    const solicitud = solicitudes.find(s => s.codigo === codigo);
+    if (!solicitud) return;
+    
+    solicitudActual = solicitud;
+    
+    document.getElementById('cotizarInfo').innerHTML = `
+        <div style="background:#e8f5e9; border-radius:16px; padding:15px; margin-bottom:20px;">
+            <p><strong>👤 Cliente:</strong> ${solicitud.nombre}</p>
+            <p><strong>📞 Teléfono:</strong> ${solicitud.telefono}</p>
+            <p><strong>🛒 Plataforma:</strong> ${solicitud.plataforma}</p>
+            <p><strong>🔗 Producto:</strong> <a href="${solicitud.link}" target="_blank" style="color:#66bb6a;">${solicitud.link.substring(0, 50)}...</a></p>
+            <p><strong>📝 Notas:</strong> ${solicitud.notas || 'Sin notas'}</p>
+        </div>
+    `;
+    
+    document.getElementById('precioCotizado').value = solicitud.cotizacion || '';
+    document.getElementById('respuestaAdmin').value = solicitud.respuestaAdmin || '';
+    
+    document.getElementById('cotizarModal').style.display = 'flex';
+}
+
+function cerrarCotizarModal() {
+    document.getElementById('cotizarModal').style.display = 'none';
+    solicitudActual = null;
+}
+
+function enviarCotizacion() {
+    if (!solicitudActual) return;
+    
+    const precio = parseFloat(document.getElementById('precioCotizado').value);
+    if (isNaN(precio) || precio <= 0) {
+        alert('Ingresa un precio válido');
+        return;
+    }
+    
+    solicitudActual.cotizacion = precio;
+    solicitudActual.respuestaAdmin = document.getElementById('respuestaAdmin').value;
+    solicitudActual.estado = 'cotizado';
+    
+    guardarSolicitudes();
+    renderizarSolicitudes();
+    cerrarCotizarModal();
+    actualizarStats();
+    
+    alert(`✅ Cotización enviada al cliente\n💰 Precio: $${precio.toFixed(2)}\n📱 El cliente puede verlo con su código: ${solicitudActual.codigo}`);
+}
+
+function rechazarSolicitud() {
+    if (!solicitudActual) return;
+    
+    if (confirm('¿Estás seguro de rechazar esta solicitud?')) {
+        solicitudActual.estado = 'rechazado';
+        solicitudActual.respuestaAdmin = document.getElementById('respuestaAdmin').value || 'Lo sentimos, no podemos procesar esta solicitud.';
+        guardarSolicitudes();
+        renderizarSolicitudes();
+        cerrarCotizarModal();
+        actualizarStats();
+        alert('❌ Solicitud rechazada');
+    }
+}
+
+function verDetalleSolicitud(codigo) {
+    const solicitud = solicitudes.find(s => s.codigo === codigo);
+    if (!solicitud) return;
+    
+    alert(`📋 DETALLE DE SOLICITUD\n\nCódigo: ${solicitud.codigo}\nCliente: ${solicitud.nombre}\nTeléfono: ${solicitud.telefono}\nProducto: ${solicitud.link}\nPlataforma: ${solicitud.plataforma}\nNotas: ${solicitud.notas || 'Sin notas'}\nPrecio cotizado: $${solicitud.cotizacion?.toFixed(2) || 'No cotizado'}\nRespuesta: ${solicitud.respuestaAdmin || 'Sin respuesta'}`);
+}
+
+// CARGAR PRODUCTOS
+async function cargarProductos() {
+    const loadingDiv = document.getElementById('productosLoading');
+    const table = document.getElementById('productosTable');
+    
+    try {
+        loadingDiv.style.display = 'block';
+        table.style.display = 'none';
+        
+        const response = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
+        const data = await response.json();
+        
+        if (data && Array.isArray(data) && data.length > 0) {
+            productos = data;
+        } else {
+            productos = [];
+        }
+    } catch (error) {
+        console.error('Error cargando productos:', error);
+        productos = [];
+    }
+    
+    renderizarProductos();
+    loadingDiv.style.display = 'none';
+    table.style.display = 'block';
+}
+
+function renderizarProductos() {
+    const tablaBody = document.getElementById('productosBody');
+    
+    if (!productos || productos.length === 0) {
+        tablaBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay productos registrados</td></tr>';
+        return;
+    }
+    
+    tablaBody.innerHTML = productos.map(p => `
+        <tr>
+            <td>${p.id || p.ID || '-'}</td>
+            <td style="max-width:200px;">${p.nombre || p.Nombre || '-'}</td>
+            <td>$${p.precio || p.Precio || '0'}</td>
+            <td>${p.origen || p.Origen || '-'}</td>
+            <td>${p.categoria || p.Categoria || '-'}</td>
+            <td>${p.enlace || p.Enlace ? `<a href="${p.enlace || p.Enlace}" target="_blank">🔗</a>` : '-'}</td>
+            <td><span class="badge ${(p.activo || p.Activo) === 'SI' ? 'badge-aprobado' : 'badge-pendiente'}">${(p.activo || p.Activo) === 'SI' ? 'Activo' : 'Inactivo'}</span></td>
         </tr>
     `).join('');
 }
 
-function verDetalleProducto(id) {
-    const producto = productos.find(p => p.id == id);
-    if (!producto) return;
+// CARGAR PEDIDOS
+async function cargarPedidos() {
+    const loadingDiv = document.getElementById('pedidosLoading');
+    const table = document.getElementById('pedidosTable');
     
-    let variantesHtml = '';
-    if (producto.variantes && producto.variantes.length > 0) {
-        variantesHtml = '<div style="margin-top:15px;"><strong>🎨 Variantes:</strong>';
-        producto.variantes.forEach(color => {
-            variantesHtml += `<div style="margin-top:10px; padding:10px; background:#f1f8e9; border-radius:12px;">
-                <strong>🎨 ${color.color}</strong> ${color.imagen ? `<br>🖼️ <img src="${color.imagen}" style="max-width:100px;">` : ''}
-                <div><strong>Tallas:</strong> ${color.tallas.map(t => `${t.talla} ($${t.precio})`).join(', ')}</div>
-            </div>`;
-        });
-        variantesHtml += '</div>';
+    try {
+        loadingDiv.style.display = 'block';
+        table.style.display = 'none';
+        
+        const response = await fetch(`${API_URL}?action=getPedidos&t=${Date.now()}`);
+        const data = await response.json();
+        
+        if (data && Array.isArray(data) && data.length > 0) {
+            pedidos = data;
+        } else {
+            pedidos = [];
+        }
+    } catch (error) {
+        console.error('Error cargando pedidos:', error);
+        pedidos = [];
     }
     
-    document.getElementById('modalProductContent').innerHTML = `
-        <div><strong>Nombre:</strong> ${producto.nombre}</div>
-        <div><strong>Precio base:</strong> $${producto.precio}</div>
-        <div><strong>Origen:</strong> ${producto.origen || '-'}</div>
-        <div><strong>Categoría:</strong> ${producto.categoria || '-'}</div>
-        ${variantesHtml}
-        ${producto.enlace ? `<div><strong>Link:</strong> <a href="${producto.enlace}" target="_blank">${producto.enlace}</a></div>` : ''}
-    `;
-    document.getElementById('productModal').style.display = 'flex';
-}
-
-function eliminarProducto(id) {
-    if (confirm('¿Eliminar producto?')) {
-        productos = productos.filter(p => p.id !== id);
-        renderizarInventario();
-        actualizarStats();
-    }
+    renderizarPedidos();
+    loadingDiv.style.display = 'none';
+    table.style.display = 'block';
 }
 
 function renderizarPedidos() {
     const tablaBody = document.getElementById('pedidosBody');
-    if (pedidos.length === 0) {
-        tablaBody.innerHTML = '<tr><td colspan="10">No hay pedidos</td></tr>';
+    
+    if (!pedidos || pedidos.length === 0) {
+        tablaBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay pedidos registrados</td></tr>';
         return;
     }
     
-    tablaBody.innerHTML = pedidos.map(pedido => {
-        const idPedido = pedido['ID Pedido'] || pedido.id_pedido || pedido.id || '-';
-        const estadoTracking = localStorage.getItem(`tracking_${idPedido}`) || 0;
-        const estadosTexto = ['Recibido', 'Preparando', 'En Tránsito', 'En Destino', 'En Reparto', 'Entregado'];
-        
-        return `
-            <tr>
-                <td>${idPedido}</td>
-                <td>${pedido.Fecha || pedido.fecha || '-'}</td>
-                <td>${pedido.Nombre || pedido.nombre || '-'}</td>
-                <td>${pedido.Teléfono || pedido.telefono || '-'}</td>
-                <td style="max-width:150px;">${(pedido.Dirección || pedido.direccion || '-').substring(0, 30)}</td>
-                <td style="max-width:200px;">${(pedido.Productos || pedido.productos || '-').substring(0, 40)}</td>
-                <td>$${pedido.Total || pedido.total || '0'}</td>
-                <td>${pedido['Método Pago'] || pedido.metodo_pago || '-'}</td>
-                <td><span class="badge ${pedido['Estado Pago'] === 'Entregado' ? 'badge-success' : 'badge-warning'}">${pedido['Estado Pago'] || '-'}</span></td>
-                <td><span class="badge badge-info">${estadosTexto[estadoTracking] || 'Recibido'}</span></td>
-            </tr>
-        `;
-    }).join('');
+    tablaBody.innerHTML = pedidos.map(p => `
+        <tr>
+            <td>${p['ID Pedido'] || p.id || '-'}</td>
+            <td>${p.Fecha || p.fecha || '-'}</td>
+            <td>${p.Nombre || p.nombre || '-'}</td>
+            <td>${p.Teléfono || p.telefono || '-'}</td>
+            <td style="max-width:150px;">${(p.Dirección || p.direccion || '-').substring(0, 30)}</td>
+            <td>$${p.Total || p.total || '0'}</td>
+            <td><span class="badge ${(p['Estado Pago'] || p.estado_pago) === 'Pagado' ? 'badge-aprobado' : 'badge-pendiente'}">${p['Estado Pago'] || p.estado_pago || 'Pendiente'}</span></td>
+        </tr>
+    `).join('');
 }
 
+// ACTUALIZAR ESTADÍSTICAS
 function actualizarStats() {
-    document.getElementById('totalProductos').innerText = productos.length;
-    document.getElementById('totalPedidos').innerText = pedidos.length;
-    let totalVentas = pedidos.reduce((sum, p) => sum + (parseFloat(p.Total || p.total || 0)), 0);
-    document.getElementById('totalVentas').innerText = `$${totalVentas.toFixed(2)}`;
-    document.getElementById('totalEnvios').innerText = pedidos.length;
+    const pendientes = solicitudes.filter(s => s.estado === 'pendiente').length;
+    const cotizadas = solicitudes.filter(s => s.estado === 'cotizado').length;
+    const aprobadas = solicitudes.filter(s => s.estado === 'aprobado').length;
+    
+    document.getElementById('totalPendientes').innerText = pendientes;
+    document.getElementById('totalCotizadas').innerText = cotizadas;
+    document.getElementById('totalAprobadas').innerText = aprobadas;
+    document.getElementById('totalSolicitudes').innerText = solicitudes.length;
 }
 
+// CONFIGURACIÓN
 function guardarConfiguracion() {
     const config = {
         nombre: document.getElementById('configNombre').value,
@@ -1087,29 +812,26 @@ function guardarConfiguracion() {
     };
     localStorage.setItem('tiendaConfig', JSON.stringify(config));
     alert('✅ Configuración guardada');
+    
+    // Cargar configuración guardada
+    const saved = localStorage.getItem('config');
+    if(saved) {
+        const cfg = JSON.parse(saved);
+        document.getElementById('configNombre').value = cfg.nombre || '';
+        document.getElementById('configEmail').value = cfg.email || '';
+        document.getElementById('configMoneda').value = cfg.moneda || 'USD ($)';
+    }
 }
 
-// CARGAR DATOS
-async function cargarDatos() {
-    await cargarProductosEjemplo();
-    await cargarPedidosEjemplo();
-    actualizarStats();
-}
-
-function cargarProductosEjemplo() {
-    productos = [
-        { id: 1, nombre: "Camiseta Premium", precio: "29.99", origen: "Amazon", categoria: "Ropa", genero: "Unisex", enlace: "#", activo: "SI", tiene_variantes: "SI", variantes: [{ color: "Rojo", imagen: "", tallas: [{ talla: "S", precio: "29.99" }, { talla: "M", precio: "29.99" }] }, { color: "Azul", imagen: "", tallas: [{ talla: "S", precio: "29.99" }, { talla: "L", precio: "29.99" }] }] },
-        { id: 2, nombre: "Zapatillas Deportivas", precio: "89.99", origen: "Sephora", categoria: "Zapatos", genero: "Mujer", enlace: "#", activo: "SI", tiene_variantes: "SI", variantes: [{ color: "Blanco", imagen: "", tallas: [{ talla: "40", precio: "89.99" }, { talla: "41", precio: "89.99" }] }] }
-    ];
-    renderizarInventario();
-}
-
-function cargarPedidosEjemplo() {
-    pedidos = [
-        { "ID Pedido": "1001", Fecha: "22/4/2026", Nombre: "Daira Gonzalez", Teléfono: "6735-4668", Dirección: "Las Garzas", Productos: "Camiseta Premium", Total: "29.99", "Método Pago": "Yappy", "Estado Pago": "Pagado" },
-        { "ID Pedido": "1002", Fecha: "8/5/2026", Nombre: "Alex Cruz", Teléfono: "6474-5914", Dirección: "Las Garzas", Productos: "Zapatillas", Total: "89.99", "Método Pago": "Yappy", "Estado Pago": "Entregado" }
-    ];
-    renderizarPedidos();
+// Cargar configuración guardada
+function cargarConfiguracion() {
+    const saved = localStorage.getItem('tiendaConfig');
+    if(saved) {
+        const cfg = JSON.parse(saved);
+        document.getElementById('configNombre').value = cfg.nombre || '';
+        document.getElementById('configEmail').value = cfg.email || '';
+        document.getElementById('configMoneda').value = cfg.moneda || 'USD ($)';
+    }
 }
 
 // NAVEGACIÓN
@@ -1117,19 +839,45 @@ document.querySelectorAll('.menu button').forEach(btn => {
     btn.addEventListener('click', function() {
         document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
+        
         const section = this.getAttribute('data-section');
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        const sections = { dashboard: 'dashboardSection', productos: 'productosSection', inventario: 'inventarioSection', pedidos: 'pedidosSection', tracking: 'trackingSection', config: 'configSection' };
+        
+        const sections = {
+            dashboard: 'dashboardSection',
+            solicitudes: 'solicitudesSection',
+            productos: 'productosSection',
+            pedidos: 'pedidosSection',
+            config: 'configSection'
+        };
+        
         if (sections[section]) document.getElementById(sections[section]).classList.add('active');
-        const titles = { dashboard: 'Dashboard', productos: 'Agregar Producto', inventario: 'Inventario', pedidos: 'Pedidos', tracking: 'Tracking', config: 'Configuración' };
+        
+        const titles = {
+            dashboard: 'Dashboard',
+            solicitudes: 'Solicitudes de Productos',
+            productos: 'Catálogo de Productos',
+            pedidos: 'Pedidos de Clientes',
+            config: 'Configuración'
+        };
+        
         document.getElementById('currentSectionTitle').innerText = titles[section] || section;
-        if (section === 'inventario') renderizarInventario();
+        
+        if (section === 'solicitudes') renderizarSolicitudes();
+        if (section === 'productos') renderizarProductos();
         if (section === 'pedidos') renderizarPedidos();
     });
 });
 
-function cerrarModalProducto() { document.getElementById('productModal').style.display = 'none'; }
-window.onclick = function(e) { if (e.target === document.getElementById('productModal')) cerrarModalProducto(); };
+// Cerrar modal con click fuera
+window.onclick = function(e) {
+    if (e.target === document.getElementById('cotizarModal')) {
+        cerrarCotizarModal();
+    }
+}
+
+// INICIALIZAR
+cargarConfiguracion();
 </script>
 </body>
 </html>
