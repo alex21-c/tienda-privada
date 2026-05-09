@@ -260,7 +260,7 @@ textarea.input {
     resize: vertical;
 }
 
-/* VARIANTES PANEL */
+/* VARIANTES PANEL - NUEVO DISEÑO */
 .variantes-panel {
     margin-top: 20px;
     padding: 20px;
@@ -268,37 +268,34 @@ textarea.input {
     border-radius: 20px;
 }
 
-.variantes-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.variante-card {
+.color-card {
     background: white;
-    border: 1px solid #c8e6c9;
-    border-radius: 16px;
-    padding: 15px;
-    margin-bottom: 12px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-    align-items: center;
+    border: 2px solid #c8e6c9;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
 }
 
-.variante-card input,
-.variante-card select {
+.color-header {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #c8e6c9;
+}
+
+.color-header input {
+    flex: 1;
+    min-width: 150px;
     padding: 10px;
     background: #f5f5f5;
     border: 1px solid #c8e6c9;
     border-radius: 12px;
-    font-size: 0.9rem;
 }
 
-.variante-card .remove-variant {
+.color-header .remove-color {
     background: #ef9a9a;
     padding: 10px 16px;
     border: none;
@@ -306,7 +303,64 @@ textarea.input {
     color: #c62828;
     cursor: pointer;
     font-weight: 600;
-    width: auto;
+}
+
+.tallas-section {
+    margin-top: 15px;
+}
+
+.tallas-title {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #2e7d32;
+    font-size: 0.9rem;
+}
+
+.tallas-list {
+    margin-bottom: 10px;
+}
+
+.talla-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.talla-item input {
+    padding: 10px;
+    background: #f5f5f5;
+    border: 1px solid #c8e6c9;
+    border-radius: 12px;
+}
+
+.talla-item .talla-nombre {
+    width: 80px;
+}
+
+.talla-item .talla-precio {
+    width: 120px;
+}
+
+.talla-item .remove-talla {
+    background: #ef9a9a;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 10px;
+    color: #c62828;
+    cursor: pointer;
+}
+
+.btn-add-talla {
+    background: #c8e6c9;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 12px;
+    color: #2e7d32;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 5px;
 }
 
 /* TABLES */
@@ -354,29 +408,73 @@ textarea.input {
     color: #c62828;
 }
 
-/* TIMELINE */
-.timeline {
+.badge-info {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+/* TRACKING PANEL */
+.tracking-panel {
+    background: #f1f8e9;
+    border-radius: 20px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.tracking-search {
     display: flex;
     gap: 12px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
 }
 
-.timeline-item {
-    padding: 12px 20px;
-    border-radius: 25px;
-    background: #e8f5e9;
-    color: #2e7d32;
-    font-weight: 600;
-    font-size: 0.9rem;
+.tracking-search input {
+    flex: 1;
+    padding: 14px;
+    border: 1px solid #c8e6c9;
+    border-radius: 14px;
+    background: white;
 }
 
-/* SECTIONS */
-.section {
-    display: none;
+.tracking-timeline {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 20px 0;
+    gap: 10px;
 }
 
-.section.active {
+.tracking-step {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    background: white;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid #c8e6c9;
+}
+
+.tracking-step.active {
+    background: #66bb6a;
+    color: white;
+    border-color: #66bb6a;
+}
+
+.tracking-step.completed {
+    background: #a5d6a7;
+    color: #1b5e20;
+    border-color: #a5d6a7;
+}
+
+.tracking-step .step-icon {
+    font-size: 24px;
     display: block;
+}
+
+.tracking-step .step-name {
+    font-size: 12px;
+    margin-top: 5px;
 }
 
 /* MODAL */
@@ -418,12 +516,8 @@ textarea.input {
     .content {
         margin-left: 0;
     }
-    .data-table {
-        font-size: 12px;
-    }
-    .data-table th,
-    .data-table td {
-        padding: 8px;
+    .tracking-timeline {
+        flex-direction: column;
     }
 }
 </style>
@@ -451,7 +545,6 @@ textarea.input {
             <button data-section="inventario">📚 Inventario</button>
             <button data-section="pedidos">🛒 Pedidos</button>
             <button data-section="tracking">🚚 Tracking</button>
-            <button data-section="solicitudes">📌 Solicitudes</button>
             <button data-section="config">⚙️ Configuración</button>
         </div>
     </div>
@@ -479,13 +572,13 @@ textarea.input {
                     <div class="stat-value" id="totalProductos">0</div>
                 </div>
                 <div class="stat-card">
-                    <h3>GANANCIAS</h3>
-                    <div class="stat-value" id="totalGanancias">$0</div>
+                    <h3>ENVÍOS</h3>
+                    <div class="stat-value" id="totalEnvios">0</div>
                 </div>
             </div>
         </div>
 
-        <!-- PRODUCTOS - Agregar -->
+        <!-- PRODUCTOS -->
         <div id="productosSection" class="section">
             <div class="form-box">
                 <h2 style="margin-bottom: 20px; color:#2e7d32;">➕ Agregar Producto</h2>
@@ -496,39 +589,35 @@ textarea.input {
                         <input type="text" class="input" id="prodNombre" placeholder="Ej: Camiseta Premium">
                     </div>
                     <div class="form-group">
-                        <label>Precio *</label>
+                        <label>Precio base *</label>
                         <input type="number" class="input" id="prodPrecio" placeholder="0.00">
                     </div>
                     <div class="form-group">
                         <label>Origen/Proveedor</label>
                         <select class="input" id="prodOrigen">
-                            <option value="">Seleccionar origen...</option>
+                            <option value="">Seleccionar...</option>
                             <option value="Sephora">Sephora</option>
                             <option value="Amazon">Amazon</option>
                             <option value="Shein">Shein</option>
                             <option value="Temu">Temu</option>
-                            <option value="AliExpress">AliExpress</option>
-                            <option value="MercadoLibre">MercadoLibre</option>
-                            <option value="Otro">Otro</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>Categoría</label>
                         <select class="input" id="prodCategoria">
-                            <option value="">Seleccionar categoría...</option>
+                            <option value="">Seleccionar...</option>
                             <option value="Ropa">👕 Ropa</option>
                             <option value="Zapatos">👟 Zapatos</option>
                             <option value="Accesorios">💍 Accesorios</option>
                             <option value="Electrónica">📱 Electrónica</option>
                             <option value="Perfume">🌸 Perfume</option>
                             <option value="Maquillaje">💄 Maquillaje</option>
-                            <option value="Otro">📦 Otro</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Género/Público</label>
+                        <label>Género</label>
                         <select class="input" id="prodGenero">
-                            <option value="">Seleccionar género...</option>
+                            <option value="">Seleccionar...</option>
                             <option value="Mujer">👩 Mujer</option>
                             <option value="Hombre">👨 Hombre</option>
                             <option value="Niña">👧 Niña</option>
@@ -537,16 +626,12 @@ textarea.input {
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>URL Imagen</label>
+                        <label>URL Imagen principal</label>
                         <input type="text" class="input" id="prodImagen" placeholder="https://...">
                     </div>
                     <div class="form-group">
                         <label>Enlace del producto</label>
                         <input type="text" class="input" id="prodEnlace" placeholder="URL del producto">
-                    </div>
-                    <div class="form-group">
-                        <label>Colores disponibles</label>
-                        <input type="text" class="input" id="prodColores" placeholder="Ej: Rojo, Azul, Negro">
                     </div>
                     <div class="form-group">
                         <label>Estado</label>
@@ -559,25 +644,22 @@ textarea.input {
                 
                 <div class="form-group">
                     <label>Descripción</label>
-                    <textarea class="input" id="prodDescripcion" placeholder="Descripción detallada del producto..."></textarea>
+                    <textarea class="input" id="prodDescripcion" placeholder="Descripción detallada..."></textarea>
                 </div>
                 
                 <!-- VARIANTES TOGGLE -->
                 <div style="margin-top: 20px; margin-bottom: 15px;">
                     <label style="display: flex; align-items: center; gap: 12px; cursor: pointer; background: #e8f5e9; padding: 15px; border-radius: 16px;">
                         <input type="checkbox" id="tieneVariantes" style="width: 20px; height: 20px; cursor: pointer;">
-                        <span style="font-weight: 600; color: #2e7d32;">🎨 ¿Tiene variantes? (Tallas, colores, etc.)</span>
+                        <span style="font-weight: 600; color: #2e7d32;">🎨 ¿Tiene variantes? (Colores y tallas)</span>
                     </label>
                 </div>
                 
-                <!-- PANEL DE VARIANTES FÁCIL -->
+                <!-- PANEL DE VARIANTES MEJORADO -->
                 <div id="variantesPanel" style="display: none;" class="variantes-panel">
-                    <div class="variantes-header">
-                        <h3 style="color: #2e7d32;">📦 Variantes del Producto</h3>
-                        <button type="button" class="btn-small btn-secondary" onclick="agregarVarianteSimple()" style="width: auto;">+ Agregar Variante</button>
-                    </div>
-                    <div id="variantesListSimple"></div>
-                    <p style="font-size: 12px; color: #558b2f; margin-top: 10px;">💡 Cada variante puede tener diferente talla, color y precio</p>
+                    <h3 style="color: #2e7d32; margin-bottom: 15px;">🎨 Colores y Tallas</h3>
+                    <div id="coloresContainer"></div>
+                    <button type="button" class="btn-small btn-secondary" onclick="agregarColor()" style="width: auto; margin-top: 15px;">+ Agregar Color</button>
                 </div>
                 
                 <button class="btn" onclick="agregarProducto()" style="margin-top: 25px;">💾 Guardar Producto</button>
@@ -586,21 +668,12 @@ textarea.input {
 
         <!-- INVENTARIO -->
         <div id="inventarioSection" class="section">
-            <h2 style="margin-bottom: 20px; color:#2e7d32;">📚 Inventario Inteligente</h2>
+            <h2 style="margin-bottom: 20px; color:#2e7d32;">📚 Inventario</h2>
             <div class="form-box">
                 <div style="overflow-x: auto;">
                     <table class="data-table">
                         <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Producto</th>
-                                <th>Precio</th>
-                                <th>Origen</th>
-                                <th>Categoría</th>
-                                <th>Link</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
+                            <tr><th>ID</th><th>Producto</th><th>Precio</th><th>Origen</th><th>Variantes</th><th>Link</th><th>Estado</th><th>Acciones</th></tr>
                         </thead>
                         <tbody id="inventarioBody"></tbody>
                     </table>
@@ -615,17 +688,7 @@ textarea.input {
                 <div style="overflow-x: auto;">
                     <table class="data-table">
                         <thead>
-                            <tr>
-                                <th>ID Pedido</th>
-                                <th>Fecha</th>
-                                <th>Nombre</th>
-                                <th>Teléfono</th>
-                                <th>Dirección</th>
-                                <th>Productos</th>
-                                <th>Total</th>
-                                <th>Método Pago</th>
-                                <th>Estado</th>
-                            </tr>
+                            <tr><th>ID Pedido</th><th>Fecha</th><th>Cliente</th><th>Teléfono</th><th>Dirección</th><th>Productos</th><th>Total</th><th>Método</th><th>Estado</th><th>Tracking</th></tr>
                         </thead>
                         <tbody id="pedidosBody"></tbody>
                     </table>
@@ -637,22 +700,56 @@ textarea.input {
         <div id="trackingSection" class="section">
             <div class="form-box">
                 <h2 style="margin-bottom: 20px; color:#2e7d32;">🚚 Tracking de Pedidos</h2>
-                <div class="timeline">
-                    <div class="timeline-item">📋 Procesando</div>
-                    <div class="timeline-item">📦 Preparando</div>
-                    <div class="timeline-item">✈ En tránsito</div>
-                    <div class="timeline-item">🌎 En destino</div>
-                    <div class="timeline-item">🚚 En reparto</div>
-                    <div class="timeline-item">✅ Entregado</div>
+                
+                <div class="tracking-panel">
+                    <div class="tracking-search">
+                        <input type="text" id="trackingIdPedido" placeholder="Ingresa ID del pedido o número de seguimiento">
+                        <button class="btn-small" onclick="buscarPedidoTracking()" style="width: auto;">🔍 Buscar</button>
+                    </div>
+                    
+                    <div id="trackingInfo" style="display: none;">
+                        <div style="background: white; border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+                            <h3 id="trackingCliente" style="color: #2e7d32;">Cliente: -</h3>
+                            <p id="trackingProductos">Productos: -</p>
+                            <p id="trackingTotal">Total: -</p>
+                        </div>
+                        
+                        <div class="tracking-timeline" id="trackingTimeline">
+                            <div class="tracking-step" data-step="0" onclick="actualizarEstadoTracking(0)">
+                                <span class="step-icon">📋</span>
+                                <span class="step-name">Pedido Recibido</span>
+                            </div>
+                            <div class="tracking-step" data-step="1" onclick="actualizarEstadoTracking(1)">
+                                <span class="step-icon">📦</span>
+                                <span class="step-name">Preparando</span>
+                            </div>
+                            <div class="tracking-step" data-step="2" onclick="actualizarEstadoTracking(2)">
+                                <span class="step-icon">✈</span>
+                                <span class="step-name">En Tránsito</span>
+                            </div>
+                            <div class="tracking-step" data-step="3" onclick="actualizarEstadoTracking(3)">
+                                <span class="step-icon">🌎</span>
+                                <span class="step-name">En Destino</span>
+                            </div>
+                            <div class="tracking-step" data-step="4" onclick="actualizarEstadoTracking(4)">
+                                <span class="step-icon">🚚</span>
+                                <span class="step-name">En Reparto</span>
+                            </div>
+                            <div class="tracking-step" data-step="5" onclick="actualizarEstadoTracking(5)">
+                                <span class="step-icon">✅</span>
+                                <span class="step-name">Entregado</span>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 20px; text-align: center;">
+                            <button class="btn-small" onclick="actualizarTracking()" style="background: #43a047;">Actualizar Estado</button>
+                        </div>
+                    </div>
+                    
+                    <div id="trackingNoEncontrado" style="display: none; text-align: center; padding: 40px; color: #ef6c00;">
+                        ⚠️ No se encontró el pedido. Verifica el ID.
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- SOLICITUDES -->
-        <div id="solicitudesSection" class="section">
-            <div class="form-box">
-                <h2 style="margin-bottom: 20px; color:#2e7d32;">📌 Solicitudes</h2>
-                <p style="color: #558b2f;">Sección en desarrollo - Próximamente</p>
             </div>
         </div>
 
@@ -673,9 +770,6 @@ textarea.input {
                         <label>Moneda</label>
                         <select class="input" id="configMoneda">
                             <option>USD ($)</option>
-                            <option>EUR (€)</option>
-                            <option>MXN ($)</option>
-                            <option>COP ($)</option>
                             <option>PAB (B/.)</option>
                         </select>
                     </div>
@@ -686,7 +780,7 @@ textarea.input {
     </div>
 </div>
 
-<!-- MODAL DETALLE PRODUCTO -->
+<!-- MODAL DETALLE -->
 <div id="productModal" class="modal">
     <div class="modal-content">
         <div class="modal-title" id="modalProductTitle">Detalle Producto</div>
@@ -696,10 +790,9 @@ textarea.input {
 </div>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
-
 let productos = [];
 let pedidos = [];
+let trackingActual = null;
 
 // LOGIN
 function login() {
@@ -713,54 +806,75 @@ function login() {
     }
 }
 
-function logout() {
-    location.reload();
+function logout() { location.reload(); }
+
+// ==================== VARIANTES MEJORADAS ====================
+function agregarColor() {
+    const container = document.getElementById('coloresContainer');
+    const colorId = Date.now();
+    const div = document.createElement('div');
+    div.className = 'color-card';
+    div.id = `color_${colorId}`;
+    div.innerHTML = `
+        <div class="color-header">
+            <input type="text" placeholder="Nombre del Color (Ej: Rojo, Azul)" class="color-nombre">
+            <input type="text" placeholder="URL Imagen del Color" class="color-imagen">
+            <button class="remove-color" onclick="eliminarColor('${colorId}')">🗑️ Eliminar Color</button>
+        </div>
+        <div class="tallas-section">
+            <div class="tallas-title">📏 Tallas y Precios para este color</div>
+            <div class="tallas-list" id="tallas_${colorId}"></div>
+            <button type="button" class="btn-add-talla" onclick="agregarTalla('${colorId}')">+ Agregar Talla</button>
+        </div>
+    `;
+    container.appendChild(div);
+    agregarTalla(colorId);
 }
 
-// MOSTRAR/OCULTAR PANEL DE VARIANTES
-document.getElementById('tieneVariantes').addEventListener('change', function() {
-    const panel = document.getElementById('variantesPanel');
-    panel.style.display = this.checked ? 'block' : 'none';
-    if (!this.checked) {
-        document.getElementById('variantesListSimple').innerHTML = '';
-    }
-});
+function eliminarColor(colorId) {
+    document.getElementById(`color_${colorId}`).remove();
+}
 
-// AGREGAR VARIANTE SIMPLE (FÁCIL)
-function agregarVarianteSimple() {
-    const container = document.getElementById('variantesListSimple');
+function agregarTalla(colorId) {
+    const container = document.getElementById(`tallas_${colorId}`);
+    const tallaId = Date.now();
     const div = document.createElement('div');
-    div.className = 'variante-card';
+    div.className = 'talla-item';
+    div.id = `talla_${tallaId}`;
     div.innerHTML = `
-        <input type="text" placeholder="Talla (Ej: S, M, L, XL, 40, 41)" class="variant-talla">
-        <input type="text" placeholder="Color (Ej: Rojo, Azul)" class="variant-color">
-        <input type="number" placeholder="Precio extra (0 si es igual)" class="variant-precio" value="0">
-        <button class="remove-variant" onclick="this.parentElement.remove()">🗑️ Eliminar</button>
+        <input type="text" placeholder="Talla (Ej: S, M, L, 40)" class="talla-nombre">
+        <input type="number" placeholder="Precio" class="talla-precio">
+        <button class="remove-talla" onclick="this.parentElement.remove()">✗</button>
     `;
     container.appendChild(div);
 }
 
-// OBTENER VARIANTES EN FORMATO JSON
-function obtenerVariantesJson() {
-    const variantes = [];
-    document.querySelectorAll('#variantesListSimple .variante-card').forEach(card => {
-        const talla = card.querySelector('.variant-talla')?.value || '';
-        const color = card.querySelector('.variant-color')?.value || '';
-        const precioExtra = parseFloat(card.querySelector('.variant-precio')?.value) || 0;
-        if (talla || color) {
-            variantes.push({ talla, color, precioExtra });
+function obtenerVariantesEstructuradas() {
+    const colores = [];
+    document.querySelectorAll('.color-card').forEach(colorCard => {
+        const colorNombre = colorCard.querySelector('.color-nombre')?.value || '';
+        const colorImagen = colorCard.querySelector('.color-imagen')?.value || '';
+        const tallas = [];
+        colorCard.querySelectorAll('.talla-item').forEach(tallaItem => {
+            const tallaNombre = tallaItem.querySelector('.talla-nombre')?.value || '';
+            const tallaPrecio = tallaItem.querySelector('.talla-precio')?.value || '';
+            if (tallaNombre) {
+                tallas.push({ talla: tallaNombre, precio: tallaPrecio });
+            }
+        });
+        if (colorNombre && tallas.length > 0) {
+            colores.push({ color: colorNombre, imagen: colorImagen, tallas: tallas });
         }
     });
-    return variantes;
+    return colores;
 }
 
 // AGREGAR PRODUCTO
 function agregarProducto() {
     const tieneVariantes = document.getElementById('tieneVariantes').checked;
     let variantes = null;
-    
     if (tieneVariantes) {
-        variantes = obtenerVariantesJson();
+        variantes = obtenerVariantesEstructuradas();
     }
     
     const nuevoProducto = {
@@ -772,20 +886,14 @@ function agregarProducto() {
         genero: document.getElementById('prodGenero').value,
         imagen: document.getElementById('prodImagen').value,
         enlace: document.getElementById('prodEnlace').value,
-        colores: document.getElementById('prodColores').value,
         activo: document.getElementById('prodActivo').value,
         descripcion: document.getElementById('prodDescripcion').value,
         tiene_variantes: tieneVariantes ? "SI" : "NO",
         variantes: variantes
     };
     
-    if (!nuevoProducto.nombre) {
-        alert('Por favor ingresa el nombre del producto');
-        return;
-    }
-    
-    if (!nuevoProducto.precio) {
-        alert('Por favor ingresa el precio');
+    if (!nuevoProducto.nombre || !nuevoProducto.precio) {
+        alert('Nombre y precio son obligatorios');
         return;
     }
     
@@ -793,7 +901,7 @@ function agregarProducto() {
     renderizarInventario();
     actualizarStats();
     limpiarFormulario();
-    alert('✅ Producto agregado correctamente');
+    alert('✅ Producto agregado');
 }
 
 function limpiarFormulario() {
@@ -804,128 +912,97 @@ function limpiarFormulario() {
     document.getElementById('prodGenero').value = '';
     document.getElementById('prodImagen').value = '';
     document.getElementById('prodEnlace').value = '';
-    document.getElementById('prodColores').value = '';
     document.getElementById('prodDescripcion').value = '';
     document.getElementById('tieneVariantes').checked = false;
     document.getElementById('variantesPanel').style.display = 'none';
-    document.getElementById('variantesListSimple').innerHTML = '';
+    document.getElementById('coloresContainer').innerHTML = '';
 }
 
-// CARGAR DATOS
-async function cargarDatos() {
-    await Promise.all([
-        cargarProductos(),
-        cargarPedidos()
-    ]);
-    actualizarStats();
-}
-
-async function cargarProductos() {
-    try {
-        const response = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
-        const data = await response.json();
-        if (data && data.length > 0) {
-            productos = data;
-        } else {
-            cargarProductosEjemplo();
-        }
-    } catch (error) {
-        console.log('Usando datos locales');
-        cargarProductosEjemplo();
+// TOGGLE VARIANTES
+document.getElementById('tieneVariantes').addEventListener('change', function() {
+    document.getElementById('variantesPanel').style.display = this.checked ? 'block' : 'none';
+    if (this.checked && document.getElementById('coloresContainer').children.length === 0) {
+        agregarColor();
     }
-    renderizarInventario();
+});
+
+// ==================== TRACKING ====================
+function buscarPedidoTracking() {
+    const idPedido = document.getElementById('trackingIdPedido').value.trim();
+    const pedido = pedidos.find(p => {
+        const pedidoId = p['ID Pedido'] || p.id_pedido || p.id || '';
+        return pedidoId.toString() === idPedido;
+    });
+    
+    if (pedido) {
+        trackingActual = pedido;
+        document.getElementById('trackingInfo').style.display = 'block';
+        document.getElementById('trackingNoEncontrado').style.display = 'none';
+        
+        document.getElementById('trackingCliente').innerHTML = `👤 Cliente: ${pedido.Nombre || pedido.nombre || '-'}`;
+        document.getElementById('trackingProductos').innerHTML = `📦 Productos: ${pedido.Productos || pedido.productos || '-'}`;
+        document.getElementById('trackingTotal').innerHTML = `💰 Total: $${pedido.Total || pedido.total || '0'}`;
+        
+        // Obtener estado actual del tracking
+        let estadoActual = parseInt(localStorage.getItem(`tracking_${idPedido}`)) || 0;
+        actualizarUIEstados(estadoActual);
+    } else {
+        document.getElementById('trackingInfo').style.display = 'none';
+        document.getElementById('trackingNoEncontrado').style.display = 'block';
+        trackingActual = null;
+    }
 }
 
-async function cargarPedidos() {
-    try {
-        const response = await fetch(`${API_URL}?action=getPedidos&t=${Date.now()}`);
-        const data = await response.json();
-        if (data && data.length > 0) {
-            pedidos = data;
-        } else {
-            cargarPedidosEjemplo();
+function actualizarUIEstados(estado) {
+    document.querySelectorAll('.tracking-step').forEach((step, index) => {
+        step.classList.remove('active', 'completed');
+        if (index < estado) {
+            step.classList.add('completed');
+        } else if (index === estado) {
+            step.classList.add('active');
         }
-    } catch (error) {
-        console.log('Usando pedidos locales');
-        cargarPedidosEjemplo();
+    });
+}
+
+function actualizarEstadoTracking(step) {
+    if (trackingActual) {
+        const idPedido = trackingActual['ID Pedido'] || trackingActual.id_pedido || trackingActual.id;
+        localStorage.setItem(`tracking_${idPedido}`, step);
+        actualizarUIEstados(step);
     }
+}
+
+function actualizarTracking() {
+    if (trackingActual) {
+        const idPedido = trackingActual['ID Pedido'] || trackingActual.id_pedido || trackingActual.id;
+        const estado = localStorage.getItem(`tracking_${idPedido}`) || 0;
+        alert(`✅ Estado actualizado: Pedido ${idPedido} - Etapa ${parseInt(estado) + 1}/6`);
+        actualizarTablaPedidos();
+    }
+}
+
+function actualizarTablaPedidos() {
     renderizarPedidos();
 }
 
-// NAVEGACIÓN
-document.querySelectorAll('.menu button').forEach(btn => {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        
-        const section = this.getAttribute('data-section');
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        
-        const sections = {
-            dashboard: 'dashboardSection',
-            productos: 'productosSection',
-            inventario: 'inventarioSection',
-            pedidos: 'pedidosSection',
-            tracking: 'trackingSection',
-            solicitudes: 'solicitudesSection',
-            config: 'configSection'
-        };
-        
-        if (sections[section]) {
-            document.getElementById(sections[section]).classList.add('active');
-        }
-        
-        const titles = {
-            dashboard: 'Dashboard Premium',
-            productos: 'Agregar Producto',
-            inventario: 'Inventario Inteligente',
-            pedidos: 'Gestión de Pedidos',
-            tracking: 'Tracking de Pedidos',
-            solicitudes: 'Solicitudes',
-            config: 'Configuración'
-        };
-        
-        document.getElementById('currentSectionTitle').innerText = titles[section] || section;
-        
-        if (section === 'inventario') {
-            renderizarInventario();
-        }
-        if (section === 'pedidos') {
-            renderizarPedidos();
-        }
-    });
-});
-
-// RENDERIZAR INVENTARIO
+// ==================== RENDERIZAR ====================
 function renderizarInventario() {
     const tablaBody = document.getElementById('inventarioBody');
-    
     if (productos.length === 0) {
-        tablaBody.innerHTML = '<td><td colspan="8" style="text-align:center;">No hay productos registrados</td></tr>';
+        tablaBody.innerHTML = '<tr><td colspan="8">No hay productos</td></tr>';
         return;
     }
     
     tablaBody.innerHTML = productos.map(prod => `
         <tr>
             <td>${prod.id}</td>
-            <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${prod.nombre}">
-                <strong>${prod.nombre && prod.nombre.length > 40 ? prod.nombre.substring(0, 40) + '...' : prod.nombre}</strong>
-            </td>
+            <td><strong>${prod.nombre?.substring(0, 40) || ''}</strong></td>
             <td>$${prod.precio}</td>
             <td>${prod.origen || '-'}</td>
-            <td>${prod.categoria || '-'}</td>
-            <td>
-                ${prod.enlace ? `<a href="${prod.enlace}" target="_blank" style="color:#43a047;">🔗 Ver Link</a>` : '-'}
-             </td>
-            <td>
-                <span class="badge ${prod.activo === 'SI' ? 'badge-success' : 'badge-danger'}">
-                    ${prod.activo === 'SI' ? 'Disponible' : 'No disponible'}
-                </span>
-             </td>
-            <td>
-                <button onclick="verDetalleProducto(${prod.id})" style="background:#81c784; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; margin-right:5px;">👁️</button>
-                <button onclick="eliminarProducto(${prod.id})" style="background:#ef9a9a; border:none; padding:8px 12px; border-radius:8px; cursor:pointer;">🗑️</button>
-             </td>
+            <td>${prod.variantes ? prod.variantes.length + ' colores' : 'Sin variantes'}</td>
+            <td>${prod.enlace ? `<a href="${prod.enlace}" target="_blank">🔗</a>` : '-'}</td>
+            <td><span class="badge ${prod.activo === 'SI' ? 'badge-success' : 'badge-danger'}">${prod.activo === 'SI' ? 'Disponible' : 'No'}</span></td>
+            <td><button onclick="verDetalleProducto(${prod.id})">👁️</button> <button onclick="eliminarProducto(${prod.id})">🗑️</button></td>
         </tr>
     `).join('');
 }
@@ -936,121 +1013,72 @@ function verDetalleProducto(id) {
     
     let variantesHtml = '';
     if (producto.variantes && producto.variantes.length > 0) {
-        variantesHtml = `
-            <div style="margin-top: 15px;">
-                <strong>🎨 Variantes:</strong>
-                <table style="width:100%; margin-top:10px; border-collapse:collapse;">
-                    <tr style="background:#e8f5e9;">
-                        <th style="padding:8px; text-align:left;">Talla</th>
-                        <th style="padding:8px; text-align:left;">Color</th>
-                        <th style="padding:8px; text-align:left;">Precio extra</th>
-                    </tr>
-                    ${producto.variantes.map(v => `
-                        <tr style="border-bottom:1px solid #c8e6c9;">
-                            <td style="padding:8px;">${v.talla || '-'}</td>
-                            <td style="padding:8px;">${v.color || '-'}</td>
-                            <td style="padding:8px;">$${v.precioExtra || 0}</td>
-                        </tr>
-                    `).join('')}
-                </table>
-            </div>
-        `;
+        variantesHtml = '<div style="margin-top:15px;"><strong>🎨 Variantes:</strong>';
+        producto.variantes.forEach(color => {
+            variantesHtml += `<div style="margin-top:10px; padding:10px; background:#f1f8e9; border-radius:12px;">
+                <strong>🎨 ${color.color}</strong> ${color.imagen ? `<br>🖼️ <img src="${color.imagen}" style="max-width:100px;">` : ''}
+                <div><strong>Tallas:</strong> ${color.tallas.map(t => `${t.talla} ($${t.precio})`).join(', ')}</div>
+            </div>`;
+        });
+        variantesHtml += '</div>';
     }
     
-    document.getElementById('modalProductTitle').innerHTML = `📦 ${producto.nombre}`;
     document.getElementById('modalProductContent').innerHTML = `
-        <div class="form-grid">
-            <div><strong>ID:</strong> ${producto.id}</div>
-            <div><strong>Precio:</strong> $${producto.precio}</div>
-            <div><strong>Origen:</strong> ${producto.origen || '-'}</div>
-            <div><strong>Categoría:</strong> ${producto.categoria || '-'}</div>
-            <div><strong>Género:</strong> ${producto.genero || '-'}</div>
-            <div><strong>Colores:</strong> ${producto.colores || '-'}</div>
-            <div><strong>Estado:</strong> ${producto.activo === 'SI' ? 'Activo' : 'Inactivo'}</div>
-        </div>
-        <div style="margin-top: 15px;">
-            <strong>Descripción:</strong>
-            <p style="margin-top: 5px; color:#558b2f;">${producto.descripcion || 'Sin descripción'}</p>
-        </div>
-        ${producto.enlace ? `<div style="margin-top: 15px;"><strong>🔗 Enlace:</strong> <a href="${producto.enlace}" target="_blank" style="color:#43a047;">${producto.enlace}</a></div>` : ''}
-        ${producto.imagen ? `<div style="margin-top: 15px;"><strong>🖼️ Imagen:</strong><br><img src="${producto.imagen}" style="max-width: 200px; border-radius: 12px; margin-top: 10px;"></div>` : ''}
+        <div><strong>Nombre:</strong> ${producto.nombre}</div>
+        <div><strong>Precio base:</strong> $${producto.precio}</div>
+        <div><strong>Origen:</strong> ${producto.origen || '-'}</div>
+        <div><strong>Categoría:</strong> ${producto.categoria || '-'}</div>
         ${variantesHtml}
+        ${producto.enlace ? `<div><strong>Link:</strong> <a href="${producto.enlace}" target="_blank">${producto.enlace}</a></div>` : ''}
     `;
-    
     document.getElementById('productModal').style.display = 'flex';
 }
 
-function cerrarModalProducto() {
-    document.getElementById('productModal').style.display = 'none';
-}
-
 function eliminarProducto(id) {
-    if (confirm('¿Estás seguro de eliminar este producto?')) {
+    if (confirm('¿Eliminar producto?')) {
         productos = productos.filter(p => p.id !== id);
         renderizarInventario();
         actualizarStats();
-        alert('✅ Producto eliminado');
     }
 }
 
-// RENDERIZAR PEDIDOS
 function renderizarPedidos() {
     const tablaBody = document.getElementById('pedidosBody');
-    
     if (pedidos.length === 0) {
-        tablaBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No hay pedidos registrados</td></tr>';
+        tablaBody.innerHTML = '<tr><td colspan="10">No hay pedidos</td></tr>';
         return;
     }
     
     tablaBody.innerHTML = pedidos.map(pedido => {
-        const fecha = pedido.Fecha || pedido.fecha || '-';
-        const nombre = pedido.Nombre || pedido.nombre || '-';
-        const telefono = pedido.Teléfono || pedido.telefono || '-';
-        const direccion = pedido.Dirección || pedido.direccion || '-';
-        const productosTexto = pedido.Productos || pedido.productos || '-';
-        const total = pedido.Total || pedido.total || '0';
-        const metodoPago = pedido['Método Pago'] || pedido.metodo_pago || '-';
-        const estadoPago = pedido['Estado Pago'] || pedido.estado_pago || '-';
         const idPedido = pedido['ID Pedido'] || pedido.id_pedido || pedido.id || '-';
-        
-        let estadoClass = 'badge-warning';
-        if (estadoPago === 'Entregado' || estadoPago === 'Pagado') estadoClass = 'badge-success';
-        if (estadoPago === 'Pendiente') estadoClass = 'badge-warning';
+        const estadoTracking = localStorage.getItem(`tracking_${idPedido}`) || 0;
+        const estadosTexto = ['Recibido', 'Preparando', 'En Tránsito', 'En Destino', 'En Reparto', 'Entregado'];
         
         return `
             <tr>
                 <td>${idPedido}</td>
-                <td style="white-space: nowrap;">${fecha}</td>
-                <td>${nombre}</td>
-                <td>${telefono}</td>
-                <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${direccion}">${direccion}</td>
-                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${productosTexto}">${productosTexto}</td>
-                <td>$${total}</td>
-                <td>${metodoPago}</td>
-                <td><span class="badge ${estadoClass}">${estadoPago}</span></td>
+                <td>${pedido.Fecha || pedido.fecha || '-'}</td>
+                <td>${pedido.Nombre || pedido.nombre || '-'}</td>
+                <td>${pedido.Teléfono || pedido.telefono || '-'}</td>
+                <td style="max-width:150px;">${(pedido.Dirección || pedido.direccion || '-').substring(0, 30)}</td>
+                <td style="max-width:200px;">${(pedido.Productos || pedido.productos || '-').substring(0, 40)}</td>
+                <td>$${pedido.Total || pedido.total || '0'}</td>
+                <td>${pedido['Método Pago'] || pedido.metodo_pago || '-'}</td>
+                <td><span class="badge ${pedido['Estado Pago'] === 'Entregado' ? 'badge-success' : 'badge-warning'}">${pedido['Estado Pago'] || '-'}</span></td>
+                <td><span class="badge badge-info">${estadosTexto[estadoTracking] || 'Recibido'}</span></td>
             </tr>
         `;
     }).join('');
 }
 
-// ACTUALIZAR ESTADÍSTICAS
 function actualizarStats() {
-    const totalProductos = productos.length;
-    const totalPedidos = pedidos.length;
-    
-    let ventasTotales = 0;
-    pedidos.forEach(pedido => {
-        const total = parseFloat(pedido.Total || pedido.total || 0);
-        if (!isNaN(total)) ventasTotales += total;
-    });
-    
-    document.getElementById('totalProductos').innerText = totalProductos;
-    document.getElementById('totalPedidos').innerText = totalPedidos;
-    document.getElementById('totalVentas').innerText = `$${ventasTotales.toFixed(2)}`;
-    document.getElementById('totalGanancias').innerText = `$${ventasTotales.toFixed(2)}`;
+    document.getElementById('totalProductos').innerText = productos.length;
+    document.getElementById('totalPedidos').innerText = pedidos.length;
+    let totalVentas = pedidos.reduce((sum, p) => sum + (parseFloat(p.Total || p.total || 0)), 0);
+    document.getElementById('totalVentas').innerText = `$${totalVentas.toFixed(2)}`;
+    document.getElementById('totalEnvios').innerText = pedidos.length;
 }
 
-// CONFIGURACIÓN
 function guardarConfiguracion() {
     const config = {
         nombre: document.getElementById('configNombre').value,
@@ -1061,78 +1089,47 @@ function guardarConfiguracion() {
     alert('✅ Configuración guardada');
 }
 
-// DATOS DE EJEMPLO
+// CARGAR DATOS
+async function cargarDatos() {
+    await cargarProductosEjemplo();
+    await cargarPedidosEjemplo();
+    actualizarStats();
+}
+
 function cargarProductosEjemplo() {
     productos = [
-        {
-            id: 1,
-            nombre: "Waytalk Plancha de pelo a vapor",
-            precio: "59.99",
-            origen: "Amazon",
-            categoria: "Electrónica",
-            genero: "Mujer",
-            imagen: "",
-            enlace: "https://amazon.com/producto1",
-            colores: "Rosa Sakura",
-            activo: "SI",
-            descripcion: "Plancha de pelo a vapor, reduce el daño, nutre el cabello",
-            tiene_variantes: "NO",
-            variantes: []
-        },
-        {
-            id: 2,
-            nombre: "Camisa de Rayas para Mujer",
-            precio: "11.41",
-            origen: "Shein",
-            categoria: "Ropa",
-            genero: "Mujer",
-            imagen: "",
-            enlace: "https://shein.com/producto2",
-            colores: "Rayas",
-            activo: "SI",
-            descripcion: "Elegante Dirección 2025 Nueva Camisa de Rayas",
-            tiene_variantes: "SI",
-            variantes: [{talla: "S", color: "Blanco/Rayas", precioExtra: 0}, {talla: "M", color: "Blanco/Rayas", precioExtra: 0}, {talla: "L", color: "Blanco/Rayas", precioExtra: 0}]
-        }
+        { id: 1, nombre: "Camiseta Premium", precio: "29.99", origen: "Amazon", categoria: "Ropa", genero: "Unisex", enlace: "#", activo: "SI", tiene_variantes: "SI", variantes: [{ color: "Rojo", imagen: "", tallas: [{ talla: "S", precio: "29.99" }, { talla: "M", precio: "29.99" }] }, { color: "Azul", imagen: "", tallas: [{ talla: "S", precio: "29.99" }, { talla: "L", precio: "29.99" }] }] },
+        { id: 2, nombre: "Zapatillas Deportivas", precio: "89.99", origen: "Sephora", categoria: "Zapatos", genero: "Mujer", enlace: "#", activo: "SI", tiene_variantes: "SI", variantes: [{ color: "Blanco", imagen: "", tallas: [{ talla: "40", precio: "89.99" }, { talla: "41", precio: "89.99" }] }] }
     ];
     renderizarInventario();
-    actualizarStats();
 }
 
 function cargarPedidosEjemplo() {
     pedidos = [
-        {
-            Fecha: "22/4/2026 14:47:10",
-            Nombre: "Daira Gonzalez",
-            Teléfono: "6735-4668",
-            Dirección: "las garzas",
-            "Método Pago": "Yappy",
-            "Estado Pago": "Entregado",
-            Productos: "Hanes Paquete de bragas x1 - $20.11",
-            Total: "20.11",
-            "ID Pedido": "1776887227521"
-        },
-        {
-            Fecha: "8/5/2026 21:40:03",
-            Nombre: "Alex Cruz",
-            Teléfono: "6474-5914",
-            Dirección: "LAS GARZAS",
-            "Método Pago": "Yappy",
-            "Estado Pago": "Pagado",
-            Productos: "Producto solicitado x1 - $46.30",
-            Total: "46.30",
-            "ID Pedido": "1776887227522"
-        }
+        { "ID Pedido": "1001", Fecha: "22/4/2026", Nombre: "Daira Gonzalez", Teléfono: "6735-4668", Dirección: "Las Garzas", Productos: "Camiseta Premium", Total: "29.99", "Método Pago": "Yappy", "Estado Pago": "Pagado" },
+        { "ID Pedido": "1002", Fecha: "8/5/2026", Nombre: "Alex Cruz", Teléfono: "6474-5914", Dirección: "Las Garzas", Productos: "Zapatillas", Total: "89.99", "Método Pago": "Yappy", "Estado Pago": "Entregado" }
     ];
     renderizarPedidos();
 }
 
-// Cerrar modal con click fuera
-window.onclick = function(e) {
-    if (e.target === document.getElementById('productModal')) {
-        cerrarModalProducto();
-    }
-}
+// NAVEGACIÓN
+document.querySelectorAll('.menu button').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const section = this.getAttribute('data-section');
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        const sections = { dashboard: 'dashboardSection', productos: 'productosSection', inventario: 'inventarioSection', pedidos: 'pedidosSection', tracking: 'trackingSection', config: 'configSection' };
+        if (sections[section]) document.getElementById(sections[section]).classList.add('active');
+        const titles = { dashboard: 'Dashboard', productos: 'Agregar Producto', inventario: 'Inventario', pedidos: 'Pedidos', tracking: 'Tracking', config: 'Configuración' };
+        document.getElementById('currentSectionTitle').innerText = titles[section] || section;
+        if (section === 'inventario') renderizarInventario();
+        if (section === 'pedidos') renderizarPedidos();
+    });
+});
+
+function cerrarModalProducto() { document.getElementById('productModal').style.display = 'none'; }
+window.onclick = function(e) { if (e.target === document.getElementById('productModal')) cerrarModalProducto(); };
 </script>
 </body>
 </html>
