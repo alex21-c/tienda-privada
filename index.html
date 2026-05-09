@@ -253,12 +253,17 @@
         .modal-producto-imagen-container {
             text-align: center;
             margin-bottom: 20px;
+            cursor: pointer;
         }
         .modal-producto-imagen-container img {
             max-width: 100%;
-            max-height: 300px;
+            max-height: 280px;
             border-radius: 15px;
             object-fit: contain;
+            transition: transform 0.2s;
+        }
+        .modal-producto-imagen-container img:hover {
+            transform: scale(1.02);
         }
         .modal-meta {
             display: flex;
@@ -333,6 +338,41 @@
             background: #66bb6a;
             border-color: #4caf50;
             color: white;
+        }
+
+        /* ZOOM MODAL */
+        .zoom-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 20000;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        .zoom-modal.active {
+            display: flex;
+        }
+        .zoom-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+        .zoom-modal .close-zoom {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
         }
 
         .carrito-panel {
@@ -606,22 +646,30 @@
         <div class="modal-content">
             <div class="modal-header"><h2>✨ Detalle del producto</h2><button class="modal-cerrar" id="cerrar-modal-producto">✕</button></div>
             <div class="modal-body-scroll">
-                <div class="modal-producto-imagen-container"><img id="modal-imagen" src=""></div>
+                <div class="modal-producto-imagen-container" id="modal-imagen-container">
+                    <img id="modal-imagen" src="">
+                </div>
                 <h2 id="modal-nombre"></h2>
                 <div class="modal-meta"><p id="modal-origen"></p><p id="modal-genero"></p></div>
                 <p id="modal-descripcion"></p>
                 <div class="modal-precio-section"><span>PRECIO</span><span id="modal-precio"></span></div>
-                <div id="modal-colores">
+                <div id="modal-colores" style="display: none;">
                     <div class="seccion-label">🎨 Color</div>
                     <div id="selector-color"></div>
                 </div>
-                <div id="modal-variantes">
+                <div id="modal-variantes" style="display: none;">
                     <div class="seccion-label">📏 Talla</div>
                     <div id="tallas-container" class="tallas-container"></div>
                 </div>
                 <button id="modal-agregar" class="btn-confirmar">➕ Agregar al carrito</button>
             </div>
         </div>
+    </div>
+    
+    <!-- ZOOM MODAL para imagen grande -->
+    <div id="zoom-modal" class="zoom-modal" onclick="cerrarZoom()">
+        <button class="close-zoom" onclick="cerrarZoom()">✕</button>
+        <img id="zoom-imagen" src="">
     </div>
     
     <!-- Modales de pago y pedidos -->
@@ -636,6 +684,8 @@ const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQ
 let productos = [], carrito = [], productoActual = null;
 let filtroPlataforma = 'todos', filtroSubcat = null, filtroGenero = 'todos';
 let solicitudes = [];
+let colorSeleccionado = null;
+let tallaSeleccionada = null;
 
 // ========== SOLICITUDES ==========
 function cargarSolicitudes() {
@@ -872,9 +922,24 @@ function mostrarProductos() {
 function agregarAlCarrito(id) {
     const prod = productos.find(p => p.id == id);
     if(prod) {
-        const existente = carrito.find(i => i.id === id);
-        if(existente) existente.cantidad++;
-        else carrito.push({ id: prod.id, nombre: prod.nombre, precio: prod.precio, origen: prod.origen, cantidad: 1 });
+        let precioFinal = prod.precio;
+        let nombreFinal = prod.nombre;
+        
+        if(colorSeleccionado) {
+            precioFinal = colorSeleccionado.precio || prod.precio;
+            nombreFinal += ` (${colorSeleccionado.nombre})`;
+        }
+        if(tallaSeleccionada) {
+            precioFinal = tallaSeleccionada.precio || precioFinal;
+            nombreFinal += ` - Talla: ${tallaSeleccionada.talla}`;
+        }
+        
+        const existente = carrito.find(i => i.id === id && i.nombre === nombreFinal);
+        if(existente) {
+            existente.cantidad++;
+        } else {
+            carrito.push({ id: prod.id, nombre: nombreFinal, precio: precioFinal, origen: prod.origen, cantidad: 1 });
+        }
         localStorage.setItem('carrito', JSON.stringify(carrito));
         actualizarCarrito();
         alert('✅ Producto agregado al carrito');
@@ -912,29 +977,137 @@ function cambiarCantidad(idx, delta) {
 }
 function eliminarItem(idx) { carrito.splice(idx, 1); localStorage.setItem('carrito',JSON.stringify(carrito)); actualizarCarrito(); }
 
-// ========== MODAL PRODUCTO ==========
+// ========== ZOOM ==========
+function abrirZoom(imagenSrc) {
+    document.getElementById('zoom-imagen').src = imagenSrc;
+    document.getElementById('zoom-modal').classList.add('active');
+}
+
+function cerrarZoom() {
+    document.getElementById('zoom-modal').classList.remove('active');
+}
+
+// ========== MODAL PRODUCTO CON COLORES Y TALLAS ==========
 function mostrarModal(id) {
     const producto = productos.find(p => p.id == id);
     if(!producto) return;
     productoActual = producto;
+    colorSeleccionado = null;
+    tallaSeleccionada = null;
     
     document.getElementById('modal-imagen').src = producto.imagen || 'https://via.placeholder.com/400x300';
     document.getElementById('modal-nombre').textContent = producto.nombre;
     document.getElementById('modal-origen').textContent = producto.origen;
     document.getElementById('modal-genero').textContent = `${getIconoGenero(producto.genero)} ${producto.genero || 'Unisex'}`;
     document.getElementById('modal-descripcion').textContent = producto.descripcion || 'Sin descripción';
-    document.getElementById('modal-precio').textContent = `$${(producto.precio || 0).toFixed(2)}`;
+    document.getElementById('modal-precio').innerHTML = `$${(producto.precio || 0).toFixed(2)}`;
     
-    // Ocultar secciones que no se usan
-    document.getElementById('modal-colores').style.display = 'none';
-    document.getElementById('modal-variantes').style.display = 'none';
+    // Configurar zoom al hacer clic en la imagen
+    const imgContainer = document.getElementById('modal-imagen-container');
+    const modalImg = document.getElementById('modal-imagen');
+    modalImg.onclick = () => abrirZoom(modalImg.src);
+    
+    // Procesar colores
+    const coloresDiv = document.getElementById('selector-color');
+    const coloresCont = document.getElementById('modal-colores');
+    
+    // Verificar si el producto tiene colores (del formato colores_nombres, colores_imagenes, colores_precios)
+    if(producto.colores_nombres && producto.colores_nombres.trim() !== "") {
+        const nombres = producto.colores_nombres.split(',');
+        const imagenes = producto.colores_imagenes ? producto.colores_imagenes.split(',') : [];
+        const precios = producto.colores_precios ? producto.colores_precios.split(',').map(p => parseFloat(p)) : [];
+        
+        coloresDiv.innerHTML = '';
+        nombres.forEach((nombre, i) => {
+            const btn = document.createElement('button');
+            btn.textContent = nombre.trim();
+            btn.onclick = () => {
+                document.querySelectorAll('#selector-color button').forEach(b => b.classList.remove('active-color'));
+                btn.classList.add('active-color');
+                colorSeleccionado = {
+                    nombre: nombre.trim(),
+                    imagen: imagenes[i] || producto.imagen,
+                    precio: precios[i] || producto.precio
+                };
+                if(colorSeleccionado.imagen) {
+                    document.getElementById('modal-imagen').src = colorSeleccionado.imagen;
+                }
+                document.getElementById('modal-precio').innerHTML = `$${colorSeleccionado.precio.toFixed(2)}`;
+            };
+            coloresDiv.appendChild(btn);
+        });
+        coloresCont.style.display = 'block';
+    } else {
+        coloresCont.style.display = 'none';
+    }
+    
+    // Procesar tallas (variantes)
+    const tallasContainer = document.getElementById('tallas-container');
+    const variantesCont = document.getElementById('modal-variantes');
+    
+    if(producto.variantes && producto.variantes.trim() !== "") {
+        // Formato esperado: "talla1:precio1,talla2:precio2" o con colores: "color:talla:precio|..."
+        let tallasArray = [];
+        if(producto.variantes.includes('|')) {
+            // Formato con colores: "Rojo:S:10,M:12|Azul:S:11,M:13"
+            const partes = producto.variantes.split('|');
+            partes.forEach(parte => {
+                const [color, ...tallasParte] = parte.split(':');
+                for(let i = 0; i < tallasParte.length; i += 2) {
+                    if(tallasParte[i] && tallasParte[i+1]) {
+                        tallasArray.push({ talla: tallasParte[i], precio: parseFloat(tallasParte[i+1]) });
+                    }
+                }
+            });
+        } else {
+            // Formato simple: "S:10,M:12,L:15"
+            const pares = producto.variantes.split(',');
+            pares.forEach(pair => {
+                const [talla, precio] = pair.split(':');
+                if(talla && precio) {
+                    tallasArray.push({ talla: talla.trim(), precio: parseFloat(precio) });
+                }
+            });
+        }
+        
+        if(tallasArray.length > 0) {
+            tallasContainer.innerHTML = '';
+            tallasArray.forEach(t => {
+                const btn = document.createElement('button');
+                btn.className = 'talla-btn';
+                btn.textContent = t.talla;
+                btn.onclick = () => {
+                    document.querySelectorAll('.talla-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    tallaSeleccionada = t;
+                    let precioActual = colorSeleccionado ? colorSeleccionado.precio : producto.precio;
+                    document.getElementById('modal-precio').innerHTML = `$${t.precio.toFixed(2)}`;
+                };
+                tallasContainer.appendChild(btn);
+            });
+            variantesCont.style.display = 'block';
+        } else {
+            variantesCont.style.display = 'none';
+        }
+    } else {
+        variantesCont.style.display = 'none';
+    }
     
     document.getElementById('producto-modal').classList.add('active');
 }
 
-function cerrarModal() {
+function cerrarModalProducto() {
     document.getElementById('producto-modal').classList.remove('active');
     productoActual = null;
+    colorSeleccionado = null;
+    tallaSeleccionada = null;
+}
+
+function agregarDesdeModal() {
+    if(productoActual) {
+        agregarAlCarrito(productoActual.id);
+        cerrarModalProducto();
+    }
 }
 
 // ========== EVENT LISTENERS ==========
@@ -962,13 +1135,8 @@ document.querySelectorAll('.genero-btn').forEach(btn => {
     });
 });
 
-document.getElementById('cerrar-modal-producto')?.addEventListener('click', cerrarModal);
-document.getElementById('modal-agregar')?.addEventListener('click', () => {
-    if(productoActual) {
-        agregarAlCarrito(productoActual.id);
-        cerrarModal();
-    }
-});
+document.getElementById('cerrar-modal-producto')?.addEventListener('click', cerrarModalProducto);
+document.getElementById('modal-agregar')?.addEventListener('click', agregarDesdeModal);
 
 document.getElementById('carrito-toggle')?.addEventListener('click', () => {
     document.getElementById('carrito-panel').classList.add('open');
@@ -1012,6 +1180,13 @@ document.getElementById('ir-pagar')?.addEventListener('click', () => {
 
 document.getElementById('cerrar-pago-modal')?.addEventListener('click', () => {
     document.getElementById('pago-modal').style.display = 'none';
+});
+
+// Cerrar zoom con escape
+document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') {
+        cerrarZoom();
+    }
 });
 
 // PAGO
