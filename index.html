@@ -608,40 +608,39 @@
                 <form id="solicitud-form">
                     <div class="form-group"><label>📝 Tu nombre completo</label><input type="text" id="solicitante-nombre" required placeholder="Ej: María González"></div>
                     <div class="form-group"><label>📞 Teléfono de contacto</label><input type="tel" id="solicitante-telefono" required placeholder="Ej: 6123-4567"></div>
-                    <div class="form-group"><label>🔗 Link del producto (Amazon, Temu, Shein, Sephora)</label><input type="url" id="producto-link" required placeholder="https://..."></div>
+                    <div class="form-group"><label>🔗 Link del producto</label><input type="url" id="producto-link" required placeholder="https://..."></div>
                     <div class="form-group"><label>🛒 Plataforma</label><select id="producto-plataforma" required>
                         <option value="Amazon">Amazon</option><option value="Temu">Temu</option>
                         <option value="Shein">Shein</option><option value="Sephora">Sephora</option>
                     </select></div>
-                    <div class="form-group"><label>📝 Notas adicionales (color, talla, cantidad, etc)</label><textarea id="solicitud-notas" rows="3" placeholder="Ej: Color negro, talla M, cantidad 2 unidades"></textarea></div>
+                    <div class="form-group"><label>📝 Notas</label><textarea id="solicitud-notas" rows="3" placeholder="Color, talla, cantidad..."></textarea></div>
                     <button type="submit" class="btn-confirmar">📩 Enviar Solicitud</button>
                 </form>
                 <div id="solicitud-resultado" style="margin-top: 20px; display: none;">
                     <div style="background: #e8f5e9; border-radius: 15px; padding: 20px; text-align: center;">
                         <div style="font-size: 3rem;">✅</div>
                         <h3 style="color: #2e7d32;">¡Solicitud Enviada!</h3>
-                        <p>Tu código de seguimiento es:</p>
+                        <p>Tu código es:</p>
                         <div class="solicitud-codigo" id="codigo-seguimiento"></div>
-                        <p style="margin-top: 15px; font-size: 0.8rem;">Guarda este código para consultar el estado de tu solicitud</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Modal Consultar Solicitud (Mis Pedidos) -->
+    <!-- Modal Consultar Solicitud -->
     <div id="consultar-solicitud-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header"><h2>🔍 Consultar mi Solicitud</h2><button class="modal-cerrar" id="cerrar-consultar-modal">✕</button></div>
             <div class="modal-body-scroll">
-                <div class="form-group"><label>📝 Ingresa tu código de 4 dígitos</label><input type="text" id="codigo-consultar" maxlength="4" placeholder="Ej: 1234" style="text-align: center; font-size: 1.5rem; letter-spacing: 5px;"></div>
+                <div class="form-group"><label>Código de 4 dígitos</label><input type="text" id="codigo-consultar" maxlength="4" placeholder="Ej: 1234" style="text-align: center; font-size: 1.5rem;"></div>
                 <button id="btn-consultar-solicitud" class="btn-confirmar">🔍 Consultar</button>
                 <div id="solicitud-detalle" style="margin-top: 20px; display: none;"></div>
             </div>
         </div>
     </div>
     
-    <!-- Modal Producto (CORREGIDO) -->
+    <!-- Modal Producto -->
     <div id="producto-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header"><h2>✨ Detalle del producto</h2><button class="modal-cerrar" id="cerrar-modal-producto">✕</button></div>
@@ -666,32 +665,30 @@
         </div>
     </div>
     
-    <!-- ZOOM MODAL para imagen grande -->
+    <!-- ZOOM MODAL -->
     <div id="zoom-modal" class="zoom-modal" onclick="cerrarZoom()">
         <button class="close-zoom" onclick="cerrarZoom()">✕</button>
         <img id="zoom-imagen" src="">
     </div>
     
-    <!-- Modales de pago y pedidos -->
-    <div id="pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📋 Datos de envío</h2><button class="modal-cerrar" id="cerrar-pago-modal">✕</button></div><form id="pedido-form-modal" style="padding:20px;"><div class="form-group"><label>📝 Nombre completo</label><input type="text" id="nombre-modal" required></div><div class="form-group"><label>📞 Teléfono</label><input type="tel" id="telefono-modal" required></div><div class="form-group"><label>🏠 Dirección completa</label><textarea id="direccion-modal" rows="3" required></textarea></div><div class="form-group"><label>💳 Método de pago</label><select id="metodo-pago-modal" required><option value="Efectivo">Efectivo al recibir</option><option value="Yappy">Yappy</option></select></div><button type="submit" class="btn-confirmar">Confirmar pedido</button></form></div></div>
+    <!-- Modales de pago -->
+    <div id="pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📋 Datos de envío</h2><button class="modal-cerrar" id="cerrar-pago-modal">✕</button></div><form id="pedido-form-modal" style="padding:20px;"><div class="form-group"><label>📝 Nombre</label><input type="text" id="nombre-modal" required></div><div class="form-group"><label>📞 Teléfono</label><input type="tel" id="telefono-modal" required></div><div class="form-group"><label>🏠 Dirección</label><textarea id="direccion-modal" rows="3" required></textarea></div><div class="form-group"><label>💳 Pago</label><select id="metodo-pago-modal" required><option value="Efectivo">Efectivo al recibir</option><option value="Yappy">Yappy</option></select></div><button type="submit" class="btn-confirmar">Confirmar</button></form></div></div>
     
-    <div id="yappy-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📱 Pagar con Yappy</h2><button class="modal-cerrar" id="cerrar-yappy-modal">✕</button></div><div style="padding:30px; text-align:center;"><p style="font-weight:600;">Transfiere a:</p><div style="background:#e8f5e9; border-radius:15px; padding:15px; border:2px solid #81c784; margin-bottom:15px;"><p style="font-size:1.8rem; font-weight:800; color:#66bb6a; font-family:monospace;">6474-5914</p></div><button id="copiar-yappy" class="btn-confirmar" style="margin-bottom:10px;">📋 Copiar número</button><button id="ya-pague" class="btn-confirmar">✅ Ya pagué</button></div></div></div>
+    <div id="yappy-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📱 Yappy</h2><button class="modal-cerrar" id="cerrar-yappy-modal">✕</button></div><div style="padding:30px; text-align:center;"><p style="font-weight:600;">Transfiere a:</p><div style="background:#e8f5e9; border-radius:15px; padding:15px;"><p style="font-size:1.8rem; font-weight:800; color:#66bb6a;">6474-5914</p></div><button id="copiar-yappy" class="btn-confirmar" style="margin-top:10px;">Copiar</button><button id="ya-pague" class="btn-confirmar" style="margin-top:10px;">Ya pagué</button></div></div></div>
     
-    <div id="confirmar-pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🔍 Confirmar Pago</h2><button class="modal-cerrar" id="cerrar-confirmar-modal">✕</button></div><div style="padding:20px;"><div class="form-group"><label>Tu nombre</label><input type="text" id="nombre-verificar" placeholder="Juan Pérez"></div><button id="verificar-pago" class="btn-confirmar">Verificar pago</button></div></div></div>
+    <div id="confirmar-pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Confirmar Pago</h2><button class="modal-cerrar" id="cerrar-confirmar-modal">✕</button></div><div style="padding:20px;"><div class="form-group"><label>Tu nombre</label><input type="text" id="nombre-verificar"></div><button id="verificar-pago" class="btn-confirmar">Verificar</button></div></div></div>
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
 let productos = [], carrito = [], productoActual = null;
 let filtroPlataforma = 'todos', filtroSubcat = null, filtroGenero = 'todos';
 let solicitudes = [];
-let colorSeleccionado = null;
-let tallaSeleccionada = null;
+let colorSeleccionado = null, tallaSeleccionada = null;
 
 // ========== SOLICITUDES ==========
 function cargarSolicitudes() {
     const saved = localStorage.getItem('solicitudes');
-    if(saved) solicitudes = JSON.parse(saved);
-    else solicitudes = [];
+    solicitudes = saved ? JSON.parse(saved) : [];
 }
 
 function guardarSolicitudes() {
@@ -702,103 +699,65 @@ function generarCodigo() {
     return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
-// Enviar solicitud
 document.getElementById('solicitud-form').addEventListener('submit', (e) => {
     e.preventDefault();
-    const nombre = document.getElementById('solicitante-nombre').value;
-    const telefono = document.getElementById('solicitante-telefono').value;
-    const link = document.getElementById('producto-link').value;
-    const plataforma = document.getElementById('producto-plataforma').value;
-    const notas = document.getElementById('solicitud-notas').value;
-    const codigo = generarCodigo();
-    
     const nuevaSolicitud = {
-        codigo, nombre, telefono, link, plataforma, notas,
+        codigo: generarCodigo(),
+        nombre: document.getElementById('solicitante-nombre').value,
+        telefono: document.getElementById('solicitante-telefono').value,
+        link: document.getElementById('producto-link').value,
+        plataforma: document.getElementById('producto-plataforma').value,
+        notas: document.getElementById('solicitud-notas').value,
         estado: 'pendiente',
         fecha: new Date().toISOString(),
         cotizacion: null,
         respuestaAdmin: null
     };
-    
     solicitudes.push(nuevaSolicitud);
     guardarSolicitudes();
-    
-    document.getElementById('codigo-seguimiento').textContent = codigo;
+    document.getElementById('codigo-seguimiento').textContent = nuevaSolicitud.codigo;
     document.getElementById('solicitud-resultado').style.display = 'block';
     document.getElementById('solicitud-form').style.display = 'none';
-    
     setTimeout(() => {
         document.getElementById('solicitud-form').reset();
         document.getElementById('solicitud-form').style.display = 'block';
         document.getElementById('solicitud-resultado').style.display = 'none';
         document.getElementById('solicitar-modal').classList.remove('active');
-    }, 5000);
-    
-    alert('✅ Solicitud enviada. Guarda tu código: ' + codigo);
+    }, 4000);
+    alert('✅ Código: ' + nuevaSolicitud.codigo);
 });
 
-// Consultar solicitud
 document.getElementById('btn-consultar-solicitud').addEventListener('click', () => {
     const codigo = document.getElementById('codigo-consultar').value;
-    const solicitud = solicitudes.find(s => s.codigo === codigo);
-    const detalleDiv = document.getElementById('solicitud-detalle');
-    
-    if(!solicitud) {
-        detalleDiv.innerHTML = '<div style="background:#ffebee; border-radius:15px; padding:20px; text-align:center; color:#c62828;">❌ Código no encontrado</div>';
-        detalleDiv.style.display = 'block';
-        return;
-    }
-    
-    let estadoTexto = '', estadoClass = '';
-    switch(solicitud.estado) {
-        case 'pendiente': estadoTexto = '⏳ Pendiente'; estadoClass = 'estado-pendiente'; break;
-        case 'cotizado': estadoTexto = '💰 Cotizado'; estadoClass = 'estado-cotizado'; break;
-        case 'aprobado': estadoTexto = '✅ Aprobado'; estadoClass = 'estado-aprobado'; break;
-        case 'rechazado': estadoTexto = '❌ Rechazado'; estadoClass = 'estado-rechazado'; break;
-    }
-    
-    detalleDiv.innerHTML = `
-        <div style="background:#f1f8f6; border-radius:15px; padding:20px;">
-            <div style="text-align:center; margin-bottom:15px;">
-                <span class="solicitud-codigo" style="font-size:1.2rem;">${solicitud.codigo}</span>
-                <span class="estado-solicitud ${estadoClass}" style="margin-left:10px;">${estadoTexto}</span>
-            </div>
-            <p><strong>📦 Producto:</strong> <a href="${solicitud.link}" target="_blank">Ver producto</a></p>
-            <p><strong>🛒 Plataforma:</strong> ${solicitud.plataforma}</p>
-            <p><strong>📝 Notas:</strong> ${solicitud.notas || 'Sin notas'}</p>
-            ${solicitud.cotizacion ? `<p><strong>💰 Precio cotizado:</strong> $${solicitud.cotizacion.toFixed(2)}</p>` : ''}
-            ${solicitud.respuestaAdmin ? `<p><strong>💬 Respuesta:</strong> ${solicitud.respuestaAdmin}</p>` : ''}
-            ${solicitud.estado === 'cotizado' ? `<button onclick="aprobarSolicitudCliente('${solicitud.codigo}')" class="btn-confirmar" style="margin-top:15px;">✅ Aceptar y comprar</button>` : ''}
-            ${solicitud.estado === 'aprobado' ? `<button onclick="agregarSolicitudAlCarrito('${solicitud.codigo}')" class="btn-confirmar" style="margin-top:10px;">🛒 Agregar al carrito</button>` : ''}
+    const soli = solicitudes.find(s => s.codigo === codigo);
+    const div = document.getElementById('solicitud-detalle');
+    if(!soli) { div.innerHTML = '<div style="color:red;">❌ No encontrado</div>'; div.style.display = 'block'; return; }
+    div.innerHTML = `
+        <div style="background:#f1f8f6; padding:15px; border-radius:12px;">
+            <p><strong>Código:</strong> ${soli.codigo}</p>
+            <p><strong>Estado:</strong> ${soli.estado}</p>
+            <p><strong>Producto:</strong> <a href="${soli.link}" target="_blank">Ver</a></p>
+            ${soli.cotizacion ? `<p><strong>Precio:</strong> $${soli.cotizacion}</p>` : ''}
+            ${soli.respuestaAdmin ? `<p><strong>Respuesta:</strong> ${soli.respuestaAdmin}</p>` : ''}
+            ${soli.estado === 'cotizado' ? `<button onclick="aprobarSolicitud('${soli.codigo}')" class="btn-confirmar">✅ Aceptar</button>` : ''}
+            ${soli.estado === 'aprobado' ? `<button onclick="agregarAlCarritoSol('${soli.codigo}')" class="btn-confirmar">🛒 Comprar</button>` : ''}
         </div>
     `;
-    detalleDiv.style.display = 'block';
+    div.style.display = 'block';
 });
 
-function aprobarSolicitudCliente(codigo) {
-    const solicitud = solicitudes.find(s => s.codigo === codigo);
-    if(solicitud) {
-        solicitud.estado = 'aprobado';
-        guardarSolicitudes();
-        document.getElementById('btn-consultar-solicitud').click();
-        alert('✅ Solicitud aprobada');
-    }
+function aprobarSolicitud(codigo) {
+    const s = solicitudes.find(s => s.codigo === codigo);
+    if(s) { s.estado = 'aprobado'; guardarSolicitudes(); alert('✅ Aprobado'); document.getElementById('btn-consultar-solicitud').click(); }
 }
 
-function agregarSolicitudAlCarrito(codigo) {
-    const solicitud = solicitudes.find(s => s.codigo === codigo);
-    if(solicitud && solicitud.cotizacion) {
-        carrito.push({
-            id: `sol_${codigo}`,
-            nombre: `📦 Producto solicitado (${solicitud.plataforma})`,
-            precio: solicitud.cotizacion,
-            origen: solicitud.plataforma,
-            cantidad: 1
-        });
+function agregarAlCarritoSol(codigo) {
+    const s = solicitudes.find(s => s.codigo === codigo);
+    if(s && s.cotizacion) {
+        carrito.push({ id: 'sol_' + codigo, nombre: `📦 Solicitado: ${s.link.substring(0,30)}`, precio: s.cotizacion, cantidad: 1 });
         localStorage.setItem('carrito', JSON.stringify(carrito));
         actualizarCarrito();
-        document.getElementById('consultar-solicitud-modal').classList.remove('active');
-        alert('✅ Producto agregado al carrito');
+        alert('✅ Agregado al carrito');
     }
 }
 
@@ -837,13 +796,11 @@ function actualizarSubcategorias() {
     const subcatContainer = document.getElementById('subcategorias-container');
     if(!container) return;
     container.innerHTML = '';
-    
     if (filtroPlataforma === 'todos') {
         subcatContainer.classList.remove('visible');
         filtroSubcat = null;
         return;
     }
-    
     const subs = subcategorias[filtroPlataforma];
     if (subs && subs.length > 0) {
         subs.forEach(sub => {
@@ -882,30 +839,22 @@ async function cargarProductos() {
 }
 
 function getIconoGenero(g) { 
-    const generos = { hombre:'👨', mujer:'👩', niño:'👦', niña:'👧', unisex:'👥' };
-    return generos[g] || '👤';
+    const gentes = { hombre:'👨', mujer:'👩', niño:'👦', niña:'👧', unisex:'👥' };
+    return gentes[g] || '👤';
 }
 
 function mostrarProductos() {
     let filtrados = productos.filter(p => {
         if (filtroPlataforma !== 'todos' && p.origen !== filtroPlataforma) return false;
-        if (filtroSubcat) {
-            const catProd = (p.categoria || '').toLowerCase().trim();
-            if (catProd !== filtroSubcat) return false;
-        }
+        if (filtroSubcat && (p.categoria || '').toLowerCase() !== filtroSubcat) return false;
         if (filtroGenero !== 'todos' && (p.genero || 'unisex') !== filtroGenero) return false;
         return true;
     });
-    
     const cont = document.getElementById('productos');
-    if (!filtrados.length) { 
-        cont.innerHTML = '<div class="vacio">✨ No hay productos en esta categoría</div>'; 
-        return; 
-    }
-    
+    if (!filtrados.length) { cont.innerHTML = '<div class="vacio">✨ No hay productos</div>'; return; }
     cont.innerHTML = filtrados.map(p => `
         <div class="producto-card" onclick="mostrarModal(${p.id})">
-            <img src="${p.imagen || 'https://via.placeholder.com/310x280'}" class="producto-imagen" onerror="this.src='https://via.placeholder.com/310x280?text=Producto'">
+            <img src="${p.imagen || 'https://via.placeholder.com/310x280'}" class="producto-imagen" onerror="this.src='https://via.placeholder.com/310x280'">
             <div class="producto-info">
                 <div class="producto-origen origen-${(p.origen || 'temu').toLowerCase()}">${p.origen || 'General'}</div>
                 <div class="producto-genero">${getIconoGenero(p.genero)} ${p.genero || 'Unisex'}</div>
@@ -922,47 +871,30 @@ function mostrarProductos() {
 function agregarAlCarrito(id) {
     const prod = productos.find(p => p.id == id);
     if(prod) {
-        let precioFinal = prod.precio;
-        let nombreFinal = prod.nombre;
-        
-        if(colorSeleccionado) {
-            precioFinal = colorSeleccionado.precio || prod.precio;
-            nombreFinal += ` (${colorSeleccionado.nombre})`;
-        }
-        if(tallaSeleccionada) {
-            precioFinal = tallaSeleccionada.precio || precioFinal;
-            nombreFinal += ` - Talla: ${tallaSeleccionada.talla}`;
-        }
-        
-        const existente = carrito.find(i => i.id === id && i.nombre === nombreFinal);
-        if(existente) {
-            existente.cantidad++;
-        } else {
-            carrito.push({ id: prod.id, nombre: nombreFinal, precio: precioFinal, origen: prod.origen, cantidad: 1 });
-        }
+        let precio = prod.precio, nombre = prod.nombre;
+        if(colorSeleccionado) { precio = colorSeleccionado.precio; nombre += ` (${colorSeleccionado.nombre})`; }
+        if(tallaSeleccionada) { precio = tallaSeleccionada.precio; nombre += ` Talla:${tallaSeleccionada.talla}`; }
+        const existente = carrito.find(i => i.id === id && i.nombre === nombre);
+        if(existente) existente.cantidad++;
+        else carrito.push({ id, nombre, precio, cantidad: 1 });
         localStorage.setItem('carrito', JSON.stringify(carrito));
         actualizarCarrito();
-        alert('✅ Producto agregado al carrito');
+        alert('✅ Producto agregado');
     }
 }
 
 function actualizarCarrito() {
-    const total = carrito.reduce((s,i) => s + (i.precio || 0) * i.cantidad, 0);
+    const total = carrito.reduce((s,i) => s + i.precio * i.cantidad, 0);
     const items = carrito.reduce((s,i) => s + i.cantidad, 0);
     document.getElementById('carrito-contador').textContent = items;
     document.getElementById('subtotal-carrito').textContent = `$${total.toFixed(2)}`;
     document.getElementById('total-carrito').textContent = `$${total.toFixed(2)}`;
-    
     const container = document.getElementById('carrito-items');
-    if(!carrito.length) { 
-        container.innerHTML = '<div class="vacio">✨ Tu carrito está vacío</div>'; 
-        return; 
-    }
-    
+    if(!carrito.length) { container.innerHTML = '<div class="vacio">✨ Vacío</div>'; return; }
     container.innerHTML = carrito.map((i, idx) => `
         <div class="carrito-item">
-            <div class="item-info"><div class="item-nombre">${i.nombre}</div><div class="item-precio">$${((i.precio || 0) * i.cantidad).toFixed(2)}</div></div>
-            <div class="item-cantidad"><button onclick="cambiarCantidad(${idx}, -1)">-</button><span>${i.cantidad}</span><button onclick="cambiarCantidad(${idx}, 1)">+</button></div>
+            <div class="item-info"><div class="item-nombre">${i.nombre}</div><div class="item-precio">$${i.precio.toFixed(2)} x ${i.cantidad}</div></div>
+            <div class="item-cantidad"><button onclick="cambiarCantidad(${idx},-1)">-</button><span>${i.cantidad}</span><button onclick="cambiarCantidad(${idx},1)">+</button></div>
             <button class="btn-eliminar-item" onclick="eliminarItem(${idx})">🗑️</button>
         </div>
     `).join('');
@@ -971,108 +903,79 @@ function actualizarCarrito() {
 function cambiarCantidad(idx, delta) {
     if(idx >= 0 && idx < carrito.length) {
         carrito[idx].cantidad += delta;
-        if(carrito[idx].cantidad <= 0) eliminarItem(idx);
-        else { localStorage.setItem('carrito',JSON.stringify(carrito)); actualizarCarrito(); }
+        if(carrito[idx].cantidad <= 0) carrito.splice(idx,1);
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+        actualizarCarrito();
     }
 }
-function eliminarItem(idx) { carrito.splice(idx, 1); localStorage.setItem('carrito',JSON.stringify(carrito)); actualizarCarrito(); }
+function eliminarItem(idx) { carrito.splice(idx,1); localStorage.setItem('carrito', JSON.stringify(carrito)); actualizarCarrito(); }
 
-// ========== ZOOM ==========
-function abrirZoom(imagenSrc) {
-    document.getElementById('zoom-imagen').src = imagenSrc;
-    document.getElementById('zoom-modal').classList.add('active');
-}
-
-function cerrarZoom() {
-    document.getElementById('zoom-modal').classList.remove('active');
-}
-
-// ========== MODAL PRODUCTO CON COLORES Y TALLAS ==========
+// ========== MODAL PRODUCTO ==========
 function mostrarModal(id) {
-    const producto = productos.find(p => p.id == id);
-    if(!producto) return;
-    productoActual = producto;
+    const prod = productos.find(p => p.id == id);
+    if(!prod) { alert('Producto no encontrado'); return; }
+    
+    productoActual = prod;
     colorSeleccionado = null;
     tallaSeleccionada = null;
     
-    document.getElementById('modal-imagen').src = producto.imagen || 'https://via.placeholder.com/400x300';
-    document.getElementById('modal-nombre').textContent = producto.nombre;
-    document.getElementById('modal-origen').textContent = producto.origen;
-    document.getElementById('modal-genero').textContent = `${getIconoGenero(producto.genero)} ${producto.genero || 'Unisex'}`;
-    document.getElementById('modal-descripcion').textContent = producto.descripcion || 'Sin descripción';
-    document.getElementById('modal-precio').innerHTML = `$${(producto.precio || 0).toFixed(2)}`;
+    document.getElementById('modal-imagen').src = prod.imagen || 'https://via.placeholder.com/400x300';
+    document.getElementById('modal-nombre').textContent = prod.nombre || 'Producto';
+    document.getElementById('modal-origen').textContent = prod.origen || 'General';
+    document.getElementById('modal-genero').textContent = `${getIconoGenero(prod.genero)} ${prod.genero || 'Unisex'}`;
+    document.getElementById('modal-descripcion').textContent = prod.descripcion || 'Sin descripción';
+    document.getElementById('modal-precio').innerHTML = `$${(prod.precio || 0).toFixed(2)}`;
     
-    // Configurar zoom al hacer clic en la imagen
-    const imgContainer = document.getElementById('modal-imagen-container');
+    // Zoom en imagen
     const modalImg = document.getElementById('modal-imagen');
-    modalImg.onclick = () => abrirZoom(modalImg.src);
+    modalImg.onclick = () => { document.getElementById('zoom-imagen').src = modalImg.src; document.getElementById('zoom-modal').classList.add('active'); };
     
-    // Procesar colores
+    // Colores
     const coloresDiv = document.getElementById('selector-color');
     const coloresCont = document.getElementById('modal-colores');
-    
-    // Verificar si el producto tiene colores (del formato colores_nombres, colores_imagenes, colores_precios)
-    if(producto.colores_nombres && producto.colores_nombres.trim() !== "") {
-        const nombres = producto.colores_nombres.split(',');
-        const imagenes = producto.colores_imagenes ? producto.colores_imagenes.split(',') : [];
-        const precios = producto.colores_precios ? producto.colores_precios.split(',').map(p => parseFloat(p)) : [];
-        
+    if(prod.colores_nombres && prod.colores_nombres.trim()) {
+        const nombres = prod.colores_nombres.split(',');
+        const imagenes = prod.colores_imagenes ? prod.colores_imagenes.split(',') : [];
+        const precios = prod.colores_precios ? prod.colores_precios.split(',').map(p => parseFloat(p)) : [];
         coloresDiv.innerHTML = '';
-        nombres.forEach((nombre, i) => {
+        nombres.forEach((nom, i) => {
             const btn = document.createElement('button');
-            btn.textContent = nombre.trim();
+            btn.textContent = nom.trim();
             btn.onclick = () => {
                 document.querySelectorAll('#selector-color button').forEach(b => b.classList.remove('active-color'));
                 btn.classList.add('active-color');
-                colorSeleccionado = {
-                    nombre: nombre.trim(),
-                    imagen: imagenes[i] || producto.imagen,
-                    precio: precios[i] || producto.precio
-                };
-                if(colorSeleccionado.imagen) {
-                    document.getElementById('modal-imagen').src = colorSeleccionado.imagen;
-                }
+                colorSeleccionado = { nombre: nom.trim(), imagen: imagenes[i], precio: precios[i] || prod.precio };
+                if(colorSeleccionado.imagen) modalImg.src = colorSeleccionado.imagen;
                 document.getElementById('modal-precio').innerHTML = `$${colorSeleccionado.precio.toFixed(2)}`;
             };
             coloresDiv.appendChild(btn);
         });
         coloresCont.style.display = 'block';
-    } else {
-        coloresCont.style.display = 'none';
-    }
+    } else { coloresCont.style.display = 'none'; }
     
-    // Procesar tallas (variantes)
-    const tallasContainer = document.getElementById('tallas-container');
+    // Tallas
+    const tallasCont = document.getElementById('tallas-container');
     const variantesCont = document.getElementById('modal-variantes');
-    
-    if(producto.variantes && producto.variantes.trim() !== "") {
-        // Formato esperado: "talla1:precio1,talla2:precio2" o con colores: "color:talla:precio|..."
-        let tallasArray = [];
-        if(producto.variantes.includes('|')) {
-            // Formato con colores: "Rojo:S:10,M:12|Azul:S:11,M:13"
-            const partes = producto.variantes.split('|');
+    if(prod.variantes && prod.variantes.trim()) {
+        let tallas = [];
+        if(prod.variantes.includes('|')) {
+            const partes = prod.variantes.split('|');
             partes.forEach(parte => {
-                const [color, ...tallasParte] = parte.split(':');
-                for(let i = 0; i < tallasParte.length; i += 2) {
-                    if(tallasParte[i] && tallasParte[i+1]) {
-                        tallasArray.push({ talla: tallasParte[i], precio: parseFloat(tallasParte[i+1]) });
-                    }
+                const [color, ...tall] = parte.split(':');
+                for(let i=0; i<tall.length; i+=2) {
+                    if(tall[i] && tall[i+1]) tallas.push({ talla: tall[i], precio: parseFloat(tall[i+1]) });
                 }
             });
         } else {
-            // Formato simple: "S:10,M:12,L:15"
-            const pares = producto.variantes.split(',');
+            const pares = prod.variantes.split(',');
             pares.forEach(pair => {
                 const [talla, precio] = pair.split(':');
-                if(talla && precio) {
-                    tallasArray.push({ talla: talla.trim(), precio: parseFloat(precio) });
-                }
+                if(talla && precio) tallas.push({ talla: talla.trim(), precio: parseFloat(precio) });
             });
         }
-        
-        if(tallasArray.length > 0) {
-            tallasContainer.innerHTML = '';
-            tallasArray.forEach(t => {
+        if(tallas.length > 0) {
+            tallasCont.innerHTML = '';
+            tallas.forEach(t => {
                 const btn = document.createElement('button');
                 btn.className = 'talla-btn';
                 btn.textContent = t.talla;
@@ -1080,18 +983,13 @@ function mostrarModal(id) {
                     document.querySelectorAll('.talla-btn').forEach(b => b.classList.remove('selected'));
                     btn.classList.add('selected');
                     tallaSeleccionada = t;
-                    let precioActual = colorSeleccionado ? colorSeleccionado.precio : producto.precio;
                     document.getElementById('modal-precio').innerHTML = `$${t.precio.toFixed(2)}`;
                 };
-                tallasContainer.appendChild(btn);
+                tallasCont.appendChild(btn);
             });
             variantesCont.style.display = 'block';
-        } else {
-            variantesCont.style.display = 'none';
-        }
-    } else {
-        variantesCont.style.display = 'none';
-    }
+        } else { variantesCont.style.display = 'none'; }
+    } else { variantesCont.style.display = 'none'; }
     
     document.getElementById('producto-modal').classList.add('active');
 }
@@ -1099,18 +997,11 @@ function mostrarModal(id) {
 function cerrarModalProducto() {
     document.getElementById('producto-modal').classList.remove('active');
     productoActual = null;
-    colorSeleccionado = null;
-    tallaSeleccionada = null;
 }
+function cerrarZoom() { document.getElementById('zoom-modal').classList.remove('active'); }
+function agregarDesdeModal() { if(productoActual) agregarAlCarrito(productoActual.id); cerrarModalProducto(); }
 
-function agregarDesdeModal() {
-    if(productoActual) {
-        agregarAlCarrito(productoActual.id);
-        cerrarModalProducto();
-    }
-}
-
-// ========== EVENT LISTENERS ==========
+// ========== EVENTOS ==========
 document.querySelectorAll('.filtro-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
@@ -1125,7 +1016,6 @@ document.querySelectorAll('.filtro-btn').forEach(btn => {
         mostrarProductos();
     });
 });
-
 document.querySelectorAll('.genero-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.genero-btn').forEach(b => b.classList.remove('active'));
@@ -1134,137 +1024,55 @@ document.querySelectorAll('.genero-btn').forEach(btn => {
         mostrarProductos();
     });
 });
-
 document.getElementById('cerrar-modal-producto')?.addEventListener('click', cerrarModalProducto);
 document.getElementById('modal-agregar')?.addEventListener('click', agregarDesdeModal);
-
-document.getElementById('carrito-toggle')?.addEventListener('click', () => {
-    document.getElementById('carrito-panel').classList.add('open');
-    document.getElementById('overlay').classList.add('active');
-});
-
-document.getElementById('cerrar-carrito')?.addEventListener('click', () => {
-    document.getElementById('carrito-panel').classList.remove('open');
-    document.getElementById('overlay').classList.remove('active');
-});
-
-document.getElementById('overlay')?.addEventListener('click', () => {
-    document.getElementById('carrito-panel').classList.remove('open');
-    document.getElementById('overlay').classList.remove('active');
-});
-
-document.getElementById('toggle-solicitudes')?.addEventListener('click', () => {
-    document.getElementById('solicitar-modal').classList.add('active');
-});
-
-document.getElementById('cerrar-solicitar-modal')?.addEventListener('click', () => {
-    document.getElementById('solicitar-modal').classList.remove('active');
-});
-
-document.getElementById('toggle-mis-pedidos')?.addEventListener('click', () => {
-    document.getElementById('consultar-solicitud-modal').classList.add('active');
-});
-
-document.getElementById('cerrar-consultar-modal')?.addEventListener('click', () => {
-    document.getElementById('consultar-solicitud-modal').classList.remove('active');
-});
-
+document.getElementById('carrito-toggle')?.addEventListener('click', () => { document.getElementById('carrito-panel').classList.add('open'); document.getElementById('overlay').classList.add('active'); });
+document.getElementById('cerrar-carrito')?.addEventListener('click', () => { document.getElementById('carrito-panel').classList.remove('open'); document.getElementById('overlay').classList.remove('active'); });
+document.getElementById('overlay')?.addEventListener('click', () => { document.getElementById('carrito-panel').classList.remove('open'); document.getElementById('overlay').classList.remove('active'); });
+document.getElementById('toggle-solicitudes')?.addEventListener('click', () => document.getElementById('solicitar-modal').classList.add('active'));
+document.getElementById('cerrar-solicitar-modal')?.addEventListener('click', () => document.getElementById('solicitar-modal').classList.remove('active'));
+document.getElementById('toggle-mis-pedidos')?.addEventListener('click', () => document.getElementById('consultar-solicitud-modal').classList.add('active'));
+document.getElementById('cerrar-consultar-modal')?.addEventListener('click', () => document.getElementById('consultar-solicitud-modal').classList.remove('active'));
 document.getElementById('ir-pagar')?.addEventListener('click', () => {
-    if(carrito.length === 0) {
-        alert('🛒 Tu carrito está vacío');
-        return;
-    }
+    if(carrito.length === 0) { alert('Carrito vacío'); return; }
     document.getElementById('carrito-panel').classList.remove('open');
     document.getElementById('pago-modal').style.display = 'flex';
 });
-
-document.getElementById('cerrar-pago-modal')?.addEventListener('click', () => {
-    document.getElementById('pago-modal').style.display = 'none';
-});
-
-// Cerrar zoom con escape
-document.addEventListener('keydown', (e) => {
-    if(e.key === 'Escape') {
-        cerrarZoom();
-    }
-});
-
-// PAGO
+document.getElementById('cerrar-pago-modal')?.addEventListener('click', () => document.getElementById('pago-modal').style.display = 'none');
 document.getElementById('pedido-form-modal')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const nombre = document.getElementById('nombre-modal').value;
-    const telefono = document.getElementById('telefono-modal').value;
-    const direccion = document.getElementById('direccion-modal').value;
-    const metodoPago = document.getElementById('metodo-pago-modal').value;
-    
-    if(!nombre || !telefono || !direccion) {
-        alert('Completa todos los campos');
-        return;
-    }
-    
-    let prodTexto = '', total = 0;
-    carrito.forEach(i => {
-        let subtotal = (i.precio || 0) * i.cantidad;
-        total += subtotal;
-        prodTexto += `${i.nombre} x${i.cantidad} - $${subtotal.toFixed(2)}\n`;
-    });
-    
     const pedido = {
-        nombre, telefono, direccion, metodoPago,
-        estadoPago: metodoPago === 'Yappy' ? 'Pendiente de pago' : 'Pendiente',
-        productos: prodTexto, totalProductos: total
+        nombre: document.getElementById('nombre-modal').value,
+        telefono: document.getElementById('telefono-modal').value,
+        direccion: document.getElementById('direccion-modal').value,
+        metodoPago: document.getElementById('metodo-pago-modal').value,
+        productos: carrito.map(i => `${i.nombre} x${i.cantidad} - $${i.precio*i.cantidad}`).join('\n'),
+        total: carrito.reduce((s,i) => s + i.precio*i.cantidad, 0)
     };
-    
     await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(pedido) });
-    carrito = [];
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-    actualizarCarrito();
+    carrito = []; localStorage.setItem('carrito', JSON.stringify(carrito)); actualizarCarrito();
     document.getElementById('pago-modal').style.display = 'none';
-    
-    if(metodoPago === 'Yappy') {
-        document.getElementById('yappy-modal').style.display = 'flex';
-    } else {
-        alert('✅ Pedido confirmado. Gracias por tu compra.');
-    }
+    if(pedido.metodoPago === 'Yappy') document.getElementById('yappy-modal').style.display = 'flex';
+    else alert('✅ Pedido confirmado');
 });
-
-document.getElementById('cerrar-yappy-modal')?.addEventListener('click', () => {
-    document.getElementById('yappy-modal').style.display = 'none';
-});
-
-document.getElementById('copiar-yappy')?.addEventListener('click', () => {
-    navigator.clipboard.writeText('6474-5914');
-    alert('✅ Número copiado: 6474-5914');
-});
-
-document.getElementById('ya-pague')?.addEventListener('click', () => {
-    document.getElementById('yappy-modal').style.display = 'none';
-    document.getElementById('confirmar-pago-modal').style.display = 'flex';
-});
-
-document.getElementById('cerrar-confirmar-modal')?.addEventListener('click', () => {
-    document.getElementById('confirmar-pago-modal').style.display = 'none';
-});
-
+document.getElementById('cerrar-yappy-modal')?.addEventListener('click', () => document.getElementById('yappy-modal').style.display = 'none');
+document.getElementById('copiar-yappy')?.addEventListener('click', () => { navigator.clipboard.writeText('6474-5914'); alert('✅ Copiado'); });
+document.getElementById('ya-pague')?.addEventListener('click', () => { document.getElementById('yappy-modal').style.display = 'none'; document.getElementById('confirmar-pago-modal').style.display = 'flex'; });
+document.getElementById('cerrar-confirmar-modal')?.addEventListener('click', () => document.getElementById('confirmar-pago-modal').style.display = 'none');
 document.getElementById('verificar-pago')?.addEventListener('click', async () => {
     let nombre = document.getElementById('nombre-verificar').value;
-    if(!nombre) {
-        alert('Ingresa tu nombre');
-        return;
-    }
+    if(!nombre) return alert('Ingresa tu nombre');
     let res = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombre)}`);
     let pedidos = await res.json();
     let pedido = pedidos?.find(p => p.estado === 'Pendiente de pago');
-    if(!pedido) {
-        alert('No se encontró un pedido pendiente con ese nombre');
-        return;
-    }
+    if(!pedido) return alert('No se encontró pedido pendiente');
     await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'actualizarEstado', fila: pedido.id, estado: 'Pagado' }) });
     document.getElementById('confirmar-pago-modal').style.display = 'none';
-    alert('✅ Pago confirmado. Gracias por tu compra.');
+    alert('✅ Pago confirmado');
 });
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') cerrarZoom(); });
 
-// ========== INICIALIZAR ==========
+// ========== INICIO ==========
 cargarSolicitudes();
 cargarProductos();
 let savedCart = localStorage.getItem('carrito');
