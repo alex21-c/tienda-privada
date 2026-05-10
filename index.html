@@ -643,7 +643,6 @@
                 <button class="filtro-btn" data-filtro="Sephora">Sephora</button>
             </div>
             <div class="acciones-top">
-                <!-- UN SOLO BOTÓN: MIS PEDIDOS / CONSULTAR SOLICITUD -->
                 <button id="toggle-mis-pedidos" class="mis-pedidos-btn">📋 Mis Pedidos / Solicitudes</button>
                 <button id="toggle-solicitar" class="solicitar-btn">🔍 Solicitar Producto</button>
                 <button id="carrito-toggle" class="carrito-btn">🛒 Carrito <span id="carrito-contador" class="carrito-contador">0</span></button>
@@ -684,7 +683,7 @@
     </div>
     <div id="overlay" class="overlay"></div>
     
-    <!-- MODAL SOLICITAR PRODUCTO (Genera código de 4 dígitos) -->
+    <!-- MODAL SOLICITAR PRODUCTO -->
     <div id="solicitar-modal" class="modal-solicitud">
         <div class="modal-solicitud-content">
             <div class="modal-header"><h2>🔍 Solicitar Producto</h2><button class="modal-cerrar" id="cerrar-solicitar-modal">✕</button></div>
@@ -721,13 +720,12 @@
                 <button class="modal-cerrar" id="cerrar-consultar-modal">✕</button>
             </div>
             <div class="modal-body-scroll">
-                <!-- PESTAÑAS -->
                 <div class="tab-buttons">
                     <button class="tab-btn active" data-tab="solicitud">🔍 Consultar Solicitud</button>
                     <button class="tab-btn" data-tab="pedido">📦 Consultar Pedido</button>
                 </div>
                 
-                <!-- TAB 1: CONSULTAR SOLICITUD (por código de 4 dígitos) -->
+                <!-- TAB 1: CONSULTAR SOLICITUD -->
                 <div id="tab-solicitud" class="tab-content active">
                     <div class="form-group">
                         <label>📝 Ingresa tu código de 4 dígitos</label>
@@ -737,7 +735,7 @@
                     <div id="solicitud-detalle" style="margin-top: 20px; display: none;"></div>
                 </div>
                 
-                <!-- TAB 2: CONSULTAR PEDIDO (por nombre) -->
+                <!-- TAB 2: CONSULTAR PEDIDO -->
                 <div id="tab-pedido" class="tab-content">
                     <div class="form-group">
                         <label>📝 Tu nombre completo</label>
@@ -810,7 +808,7 @@ function generarCodigo() {
     return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
-// Enviar solicitud (SOLICITAR PRODUCTO)
+// Enviar solicitud
 document.getElementById('solicitud-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const nombre = document.getElementById('solicitante-nombre').value;
@@ -845,7 +843,7 @@ document.getElementById('solicitud-form').addEventListener('submit', (e) => {
     alert('✅ Solicitud enviada. Guarda tu código: ' + codigo);
 });
 
-// Consultar solicitud (por código de 4 dígitos)
+// Consultar solicitud
 document.getElementById('btn-consultar-solicitud').addEventListener('click', () => {
     const codigo = document.getElementById('codigo-consultar').value;
     const solicitud = solicitudes.find(s => s.codigo === codigo);
@@ -1088,7 +1086,7 @@ function actualizarCarrito() {
         <div class="carrito-item">
             <div class="item-info">
                 <div class="item-nombre">${i.nombre || 'Producto'}</div>
-                <div class="item-precio">$${((i.precio || 0) * i.cantidad).toFixed(2)} c/u</div>
+                <div class="item-precio">$${((i.precio || 0) * i.cantidad).toFixed(2)}</div>
             </div>
             <div class="item-cantidad">
                 <button onclick="cambiarCantidad(${idx}, -1)">-</button>
@@ -1286,26 +1284,57 @@ function verTrackingPedido(idPedido) {
     }
 }
 
-// Buscar pedidos por nombre
+// ========== BUSCAR PEDIDOS POR NOMBRE (CORREGIDO) ==========
 document.getElementById('btn-consultar-pedido').addEventListener('click', async () => {
-    let nombre = document.getElementById('nombre-consulta').value;
-    if(!nombre) return;
-    let res = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombre)}`);
-    let pedidosCliente = await res.json();
+    let nombre = document.getElementById('nombre-consulta').value.trim();
     const resultadoDiv = document.getElementById('resultado-pedidos');
     const trackingDiv = document.getElementById('tracking-detalle-pedido');
     trackingDiv.style.display = 'none';
     
-    resultadoDiv.innerHTML = (pedidosCliente || []).map(p => `
-        <div class="tracking-info-pedido" onclick="verTrackingPedido('${p.idPedido || p.id}')">
-            <b style="color:#66bb6a;">#${p.idPedido || p.id}</b><br>
-            📅 ${new Date(p.fecha).toLocaleDateString()}<br>
-            💰 $${(p.total || 0).toFixed(2)}<br>
-            📍 Estado: ${p.estado || 'Pendiente'}<br>
-            <small style="color:#558b2f;">👉 Haz clic para ver el seguimiento</small>
-        </div>
-    `).join('');
-    if(!pedidosCliente.length) resultadoDiv.innerHTML = '<div class="vacio">No se encontraron pedidos con ese nombre</div>';
+    if(!nombre) {
+        resultadoDiv.innerHTML = '<div class="vacio">⚠️ Ingresa tu nombre para buscar</div>';
+        return;
+    }
+    
+    resultadoDiv.innerHTML = '<div class="loading">🔍 Buscando tus pedidos...</div>';
+    
+    try {
+        // Intentar obtener pedidos desde Google Sheets
+        const response = await fetch(`${API_URL}?action=getPedidos&t=${Date.now()}`);
+        let todosLosPedidos = await response.json();
+        
+        console.log('Pedidos recibidos:', todosLosPedidos);
+        
+        // Filtrar por nombre (sin importar mayúsculas/minúsculas)
+        let pedidosCliente = [];
+        if(Array.isArray(todosLosPedidos) && todosLosPedidos.length > 0) {
+            pedidosCliente = todosLosPedidos.filter(p => {
+                const nombrePedido = (p.Nombre || p.nombre || '').toLowerCase().trim();
+                return nombrePedido === nombre.toLowerCase().trim();
+            });
+        }
+        
+        console.log('Pedidos filtrados para', nombre, ':', pedidosCliente);
+        
+        if(pedidosCliente.length === 0) {
+            resultadoDiv.innerHTML = '<div class="vacio">📭 No se encontraron pedidos con el nombre "' + nombre + '"</div>';
+            return;
+        }
+        
+        resultadoDiv.innerHTML = pedidosCliente.map(p => `
+            <div class="tracking-info-pedido" onclick="verTrackingPedido('${p.idPedido || p.id}')">
+                <b style="color:#66bb6a;">#${p.idPedido || p.id}</b><br>
+                📅 ${p.Fecha || p.fecha ? new Date(p.Fecha || p.fecha).toLocaleDateString() : '-'}<br>
+                💰 $${parseFloat(p.Total || p.total || 0).toFixed(2)}<br>
+                📍 Estado: ${p['Estado Pago'] || p.estado_pago || p.estado || 'Pendiente'}<br>
+                <small style="color:#558b2f;">👉 Haz clic para ver el seguimiento</small>
+            </div>
+        `).join('');
+        
+    } catch(error) {
+        console.error('Error buscando pedidos:', error);
+        resultadoDiv.innerHTML = '<div class="vacio">❌ Error al buscar pedidos. Intenta de nuevo.</div>';
+    }
 });
 
 // ========== EVENT LISTENERS ==========
@@ -1352,7 +1381,6 @@ document.getElementById('overlay')?.addEventListener('click', () => {
     document.getElementById('overlay').classList.remove('active');
 });
 
-// BOTÓN CONSULTAR (abre el modal con tabs)
 document.getElementById('toggle-mis-pedidos')?.addEventListener('click', () => {
     document.getElementById('consultar-modal').style.display = 'flex';
     document.getElementById('solicitud-detalle').style.display = 'none';
@@ -1373,14 +1401,12 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.add('active');
         document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
         document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
-        // Limpiar resultados al cambiar de tab
         document.getElementById('solicitud-detalle').style.display = 'none';
         document.getElementById('resultado-pedidos').innerHTML = '';
         document.getElementById('tracking-detalle-pedido').style.display = 'none';
     });
 });
 
-// BOTÓN SOLICITAR PRODUCTO
 document.getElementById('toggle-solicitar')?.addEventListener('click', () => {
     document.getElementById('solicitar-modal').classList.add('active');
 });
