@@ -249,6 +249,63 @@
         .estado-aprobado { background: #e8f5e9; color: #2e7d32; border: 1px solid #81c784; }
         .estado-rechazado { background: #ffebee; color: #c62828; border: 1px solid #ef5350; }
 
+        /* Estilos para Tracking del Cliente */
+        .tracking-container {
+            background: #e8f5e9;
+            border-radius: 20px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .tracking-timeline-cliente {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            gap: 8px;
+        }
+        .tracking-step-cliente {
+            flex: 1;
+            text-align: center;
+            padding: 12px 8px;
+            background: white;
+            border-radius: 16px;
+            border: 2px solid #c8e6c9;
+            opacity: 0.5;
+        }
+        .tracking-step-cliente.completed {
+            background: #a5d6a7;
+            border-color: #66bb6a;
+            opacity: 1;
+        }
+        .tracking-step-cliente.active {
+            background: #66bb6a;
+            color: white;
+            border-color: #43a047;
+            opacity: 1;
+        }
+        .tracking-step-cliente .step-icon { font-size: 24px; display: block; }
+        .tracking-step-cliente .step-name { font-size: 10px; margin-top: 5px; }
+        .tracking-info-pedido {
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #c8e6c9;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tracking-info-pedido:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2);
+        }
+        .fecha-estimada {
+            background: #66bb6a20;
+            padding: 10px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 15px;
+        }
+
         .carrito-panel {
             position: fixed;
             top: 0;
@@ -531,6 +588,7 @@
             .acciones-top { width: 100%; justify-content: center; }
             .solicitud-codigo { font-size: 1.2rem; }
             .modal-producto-imagen-container img { max-height: 200px; }
+            .tracking-timeline-cliente { flex-direction: column; }
         }
     </style>
 </head>
@@ -669,13 +727,26 @@
     </div>
     
     <!-- Modales de pago y pedidos -->
-    <div id="pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📋 Datos de envío</h2><button class="modal-cerrar" id="cerrar-pago-modal">✕</button></div><form id="pedido-form-modal" style="padding:20px;"><div class="form-group"><label>📝 Nombre completo</label><input type="text" id="nombre-modal" required></div><div class="form-group"><label>📞 Teléfono</label><input type="tel" id="telefono-modal" required></div><div class="form-group"><label>🏠 Dirección completa</label><textarea id="direccion-modal" rows="3" required></textarea></div><div class="form-group"><label>💳 Método de pago</label><select id="metodo-pago-modal" required><option value="Efectivo">Efectivo al recibir</option><option value="Yappy">Yappy</option></select></div><button type="submit" class="btn-confirmar">Confirmar pedido</button></form></div></div>
+    <div id="pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📋 Datos de envío</h2><button class="modal-cerrar" id="cerrar-pago-modal">✕</button></div><form id="pedido-form-modal" style="padding:20px;"><div class="form-group"><label>📝 Nombre completo</label><input type="text" id="nombre-modal" required></div><div class="form-group"><label>📞 Teléfono</label><input type="tel" id="telefono-modal" required></div><div class="form-group"><label>🏠 Dirección completa</label><textarea id="direccion-modal" rows="3" required></textarea></div><div class="form-group"><label>💳 Método de pago</label><select id="metodo-pago-modal" required><option value="Efectivo"</option><option value="Yappy">Yappy</option></select></div><button type="submit" class="btn-confirmar">Confirmar pedido</button></form></div></div>
     
     <div id="yappy-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📱 Pagar con Yappy</h2><button class="modal-cerrar" id="cerrar-yappy-modal">✕</button></div><div style="padding:30px; text-align:center;"><p style="font-weight:600;">Transfiere a:</p><div style="background:#e8f5e9; border-radius:15px; padding:15px; border:2px solid #81c784; margin-bottom:15px;"><p style="font-size:1.8rem; font-weight:800; color:#66bb6a; font-family:monospace;">6474-5914</p></div><button id="copiar-yappy" class="btn-confirmar" style="margin-bottom:10px;">📋 Copiar número</button><button id="ya-pague" class="btn-confirmar">✅ Ya pagué</button></div></div></div>
     
     <div id="confirmar-pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🔍 Confirmar Pago</h2><button class="modal-cerrar" id="cerrar-confirmar-modal">✕</button></div><div style="padding:20px;"><div class="form-group"><label>Tu nombre</label><input type="text" id="nombre-verificar" placeholder="Juan Pérez"></div><button id="verificar-pago" class="btn-confirmar">Verificar pago</button></div></div></div>
     
-    <div id="mis-pedidos-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📋 Mis Pedidos</h2><button class="modal-cerrar" id="cerrar-mis-pedidos-modal">✕</button></div><div style="padding:20px;"><div class="form-group"><label>Tu nombre</label><input type="text" id="nombre-consulta-modal" placeholder="Juan Pérez"></div><button id="buscar-pedidos-modal" class="btn-confirmar" style="margin-bottom:15px;">🔍 Buscar</button><div id="resultado-pedidos-modal"></div></div></div></div>
+    <!-- Modal Mis Pedidos CON TRACKING -->
+    <div id="mis-pedidos-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header"><h2>📋 Mis Pedidos</h2><button class="modal-cerrar" id="cerrar-mis-pedidos-modal">✕</button></div>
+            <div style="padding:20px;">
+                <div class="form-group"><label>Tu nombre</label><input type="text" id="nombre-consulta-modal" placeholder="Juan Pérez"></div>
+                <button id="buscar-pedidos-modal" class="btn-confirmar" style="margin-bottom:15px;">🔍 Buscar</button>
+                <div id="resultado-pedidos-modal"></div>
+                
+                <!-- Sección de Tracking que se mostrará al seleccionar un pedido -->
+                <div id="tracking-detalle-pedido" style="display: none; margin-top: 20px;"></div>
+            </div>
+        </div>
+    </div>
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
@@ -1127,6 +1198,56 @@ function cerrarModalProducto() {
     tallaSeleccionada = null;
 }
 
+// ========== TRACKING PARA CLIENTE ==========
+function verTrackingPedido(idPedido, nombreCliente) {
+    const trackingKey = `tracking_${idPedido}`;
+    const saved = localStorage.getItem(trackingKey);
+    const trackingDiv = document.getElementById('tracking-detalle-pedido');
+    
+    if(saved) {
+        const data = JSON.parse(saved);
+        const estados = ['Pedido Recibido', 'Preparando', 'En Tránsito', 'En Panamá', 'En Reparto', 'Entregado'];
+        const estadoActual = data.estado || 0;
+        
+        let timelineHtml = '<div class="tracking-timeline-cliente">';
+        estados.forEach((estado, idx) => {
+            let clase = '';
+            if(idx < estadoActual) clase = 'completed';
+            else if(idx === estadoActual) clase = 'active';
+            timelineHtml += `<div class="tracking-step-cliente ${clase}"><span class="step-icon">${['📋','📦','✈','🌎','🚚','✅'][idx]}</span><span class="step-name">${estado}</span></div>`;
+        });
+        timelineHtml += '</div>';
+        
+        let fechaHtml = '';
+        if(data.fechaEstimada) {
+            const fecha = new Date(data.fechaEstimada);
+            const hoy = new Date();
+            const diffTime = fecha - hoy;
+            const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            fechaHtml = `<div class="fecha-estimada">📅 Fecha estimada de llegada: <strong>${fecha.toLocaleDateString()}</strong><br>${diffDias > 0 ? `Faltan ${diffDias} días` : diffDias === 0 ? '¡Llega hoy!' : 'Ya debería haber llegado'}</div>`;
+        }
+        
+        let notaHtml = '';
+        if(data.nota) notaHtml = `<div style="margin-top: 10px; padding: 10px; background: #fff3e0; border-radius: 12px;">📌 ${data.nota}</div>`;
+        
+        trackingDiv.innerHTML = `
+            <div class="tracking-container">
+                <h3 style="color:#2e7d32;">🚚 Seguimiento de tu pedido #${idPedido}</h3>
+                ${timelineHtml}
+                ${fechaHtml}
+                ${notaHtml}
+                <div style="margin-top: 15px; font-size: 0.8rem; color: #558b2f; text-align: center;">
+                    Última actualización: ${new Date(data.ultimaActualizacion).toLocaleString()}
+                </div>
+            </div>
+        `;
+        trackingDiv.style.display = 'block';
+    } else {
+        trackingDiv.innerHTML = `<div class="tracking-container"><p>📦 Tu pedido está siendo procesado. Pronto tendrás información de seguimiento.</p></div>`;
+        trackingDiv.style.display = 'block';
+    }
+}
+
 // ========== EVENT LISTENERS ==========
 document.querySelectorAll('.filtro-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1271,8 +1392,8 @@ document.getElementById('verificar-pago')?.addEventListener('click', async () =>
         return;
     }
     let res = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombre)}`);
-    let pedidos = await res.json();
-    let pedido = pedidos?.find(p => p.estado === 'Pendiente de pago');
+    let pedidosCliente = await res.json();
+    let pedido = pedidosCliente?.find(p => p.estado === 'Pendiente de pago');
     if(!pedido) {
         alert('No se encontró un pedido pendiente con ese nombre');
         return;
@@ -1282,16 +1403,26 @@ document.getElementById('verificar-pago')?.addEventListener('click', async () =>
     alert('✅ Pago confirmado. Gracias por tu compra.');
 });
 
-document.getElementById('buscar-pedidos-modal')?.addEventListener('click', async () => {
+// Buscar pedidos y mostrar tracking
+document.getElementById('buscar-pedidos-modal').addEventListener('click', async () => {
     let nombre = document.getElementById('nombre-consulta-modal').value;
     if(!nombre) return;
     let res = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombre)}`);
-    let pedidos = await res.json();
-    document.getElementById('resultado-pedidos-modal').innerHTML = (pedidos || []).map(p => `
-        <div style="background:#e8f5e9; border-radius:12px; padding:12px; margin-bottom:10px; border:1px solid #c8e6c9;">
-            <b style="color:#66bb6a;">#${p.id}</b> - ${p.estado || 'Pendiente'} - $${(p.total || 0).toFixed(2)}
+    let pedidosCliente = await res.json();
+    const resultadoDiv = document.getElementById('resultado-pedidos-modal');
+    const trackingDiv = document.getElementById('tracking-detalle-pedido');
+    trackingDiv.style.display = 'none';
+    
+    resultadoDiv.innerHTML = (pedidosCliente || []).map(p => `
+        <div class="tracking-info-pedido" onclick="verTrackingPedido('${p.idPedido || p.id}', '${p.nombre}')">
+            <b style="color:#66bb6a;">#${p.idPedido || p.id}</b><br>
+            📅 ${new Date(p.fecha).toLocaleDateString()}<br>
+            💰 $${(p.total || 0).toFixed(2)}<br>
+            📍 Estado: ${p.estado || 'Pendiente'}<br>
+            <small style="color:#558b2f;">👉 Haz clic para ver el seguimiento</small>
         </div>
     `).join('');
+    if(!pedidosCliente.length) resultadoDiv.innerHTML = '<div class="vacio">No se encontraron pedidos</div>';
 });
 
 // ========== INICIALIZAR ==========
