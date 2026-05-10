@@ -8,11 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
     font-family: 'Inter', sans-serif;
@@ -274,10 +270,12 @@ textarea.input { min-height: 100px; resize: vertical; }
 .data-table tr:hover { background: #f1f8e9; }
 
 .badge {
-    padding: 4px 10px;
+    padding: 4px 12px;
     border-radius: 20px;
     font-size: 11px;
     font-weight: 700;
+    cursor: pointer;
+    display: inline-block;
 }
 
 .badge-success { background: #c8e6c9; color: #2e7d32; }
@@ -373,6 +371,28 @@ textarea.input { min-height: 100px; resize: vertical; }
 .tracking-step .step-icon { font-size: 24px; display: block; }
 .tracking-step .step-name { font-size: 10px; margin-top: 5px; }
 
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 5px 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+.btn-icon:hover { background: rgba(0,0,0,0.1); transform: scale(1.1); }
+
+.estado-select {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid #c8e6c9;
+    background: white;
+    color: #2e7d32;
+    font-weight: 600;
+    font-size: 11px;
+    cursor: pointer;
+}
+
 @media (max-width: 900px) {
     .sidebar { position: relative; width: 100%; height: auto; }
     .content { margin-left: 0; }
@@ -415,8 +435,8 @@ textarea.input { min-height: 100px; resize: vertical; }
             <div class="stats-grid">
                 <div class="stat-card"><h3>PRODUCTOS</h3><div class="stat-value" id="totalProductos">0</div></div>
                 <div class="stat-card"><h3>SOLICITUDES PENDIENTES</h3><div class="stat-value" id="totalSolicitudesPendientes">0</div></div>
-                <div class="stat-card"><h3>SOLICITUDES APROBADAS</h3><div class="stat-value" id="totalSolicitudesAprobadas">0</div></div>
                 <div class="stat-card"><h3>PEDIDOS</h3><div class="stat-value" id="totalPedidos">0</div></div>
+                <div class="stat-card"><h3>PAGADOS</h3><div class="stat-value" id="totalPagados">0</div></div>
             </div>
         </div>
 
@@ -475,17 +495,7 @@ textarea.input { min-height: 100px; resize: vertical; }
                 <div style="overflow-x: auto;">
                     <table class="data-table" id="solicitudesTable" style="display:none;">
                         <thead>
-                            <tr>
-                                <th>Código</th>
-                                <th>Fecha</th>
-                                <th>Cliente</th>
-                                <th>Teléfono</th>
-                                <th>Plataforma</th>
-                                <th>Producto</th>
-                                <th>Notas</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
+                            <tr><th>Código</th><th>Fecha</th><th>Cliente</th><th>Teléfono</th><th>Plataforma</th><th>Producto</th><th>Notas</th><th>Estado</th><th>Acciones</th></tr>
                         </thead>
                         <tbody id="solicitudesBody"></tbody>
                     </table>
@@ -495,13 +505,32 @@ textarea.input { min-height: 100px; resize: vertical; }
 
         <!-- PEDIDOS -->
         <div id="pedidosSection" class="section">
+            <h2 style="margin-bottom:20px;">🛒 Pedidos - Gestionar Estados</h2>
             <div class="form-box">
-                <h2>🛒 Pedidos</h2>
-                <div id="pedidosList"></div>
+                <div id="pedidosLoading" class="loading">Cargando pedidos...</div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table" id="pedidosTable" style="display:none;">
+                        <thead>
+                            <tr>
+                                <th>ID Pedido</th>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Teléfono</th>
+                                <th>Dirección</th>
+                                <th>Productos</th>
+                                <th>Total</th>
+                                <th>Método Pago</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pedidosBody"></tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <!-- TRACKING - NUEVA SECCIÓN -->
+        <!-- TRACKING -->
         <div id="trackingSection" class="section">
             <h2 style="margin-bottom:20px;">🚚 GESTIÓN DE TRACKING</h2>
             <div class="form-box">
@@ -810,7 +839,7 @@ function renderizarInventario() {
     const tbody = document.getElementById('inventarioBody');
     
     if (!productos.length) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay productos registrados</td>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay productos registrados</td></tr>';
         return;
     }
     
@@ -839,7 +868,7 @@ function renderizarInventario() {
                 <td>
                     <button onclick="abrirEditarProducto(${p.id})" style="background:#81c784; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; margin-right:5px;">✏️ Editar</button>
                     <button onclick="eliminarProducto(${p.id})" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;">🗑️</button>
-                 </td>
+                  </td>
             </tr>
         `;
     }).join('');
@@ -1042,32 +1071,7 @@ function cargarSolicitudes() {
     if (saved) {
         solicitudes = JSON.parse(saved);
     } else {
-        solicitudes = [
-            {
-                codigo: "4827",
-                nombre: "María González",
-                telefono: "6123-4567",
-                link: "https://amazon.com/producto-ejemplo",
-                plataforma: "Amazon",
-                notas: "Color negro, talla M, cantidad 2",
-                estado: "pendiente",
-                fecha: new Date().toISOString(),
-                cotizacion: null,
-                respuestaAdmin: null
-            },
-            {
-                codigo: "7391",
-                nombre: "Carlos Ruiz",
-                telefono: "6474-5914",
-                link: "https://shein.com/producto-ejemplo",
-                plataforma: "Shein",
-                notas: "Talla L, color azul",
-                estado: "cotizado",
-                fecha: new Date(Date.now() - 86400000).toISOString(),
-                cotizacion: 35.50,
-                respuestaAdmin: "El producto está disponible"
-            }
-        ];
+        solicitudes = [];
         guardarSolicitudes();
     }
     renderizarSolicitudes();
@@ -1084,7 +1088,7 @@ function renderizarSolicitudes() {
     const table = document.getElementById('solicitudesTable');
     
     if (!solicitudes.length) {
-        tablaBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No hay solicitudes de productos</td>';
+        tablaBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No hay solicitudes de productos</td></tr>';
         loading.style.display = 'none';
         table.style.display = 'block';
         return;
@@ -1204,60 +1208,204 @@ function aprobarSolicitudAdmin(codigo) {
 
 // ==================== PEDIDOS ====================
 async function cargarPedidos() {
+    const loading = document.getElementById('pedidosLoading');
+    const table = document.getElementById('pedidosTable');
+    
     try {
+        loading.style.display = 'block';
+        table.style.display = 'none';
+        
         const response = await fetch(`${API_URL}?action=getPedidos&t=${Date.now()}`);
         const data = await response.json();
         pedidos = Array.isArray(data) ? data : [];
+        
         renderizarPedidos();
     } catch (error) {
+        console.error('Error cargando pedidos:', error);
         pedidos = [];
         renderizarPedidos();
     }
+    
+    loading.style.display = 'none';
+    table.style.display = 'block';
 }
 
 function renderizarPedidos() {
-    const container = document.getElementById('pedidosList');
+    const tbody = document.getElementById('pedidosBody');
+    
     if (!pedidos.length) {
-        container.innerHTML = '<div class="loading">No hay pedidos</div>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">No hay pedidos registrados</td></tr>';
         return;
     }
-    container.innerHTML = `<div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Total</th><th>Estado</th></tr></thead><tbody>${pedidos.map(p => `<tr><td>${p.idPedido || p.id}</td><td>${p.fecha ? new Date(p.fecha).toLocaleDateString() : '-'}</td><td>${p.nombre}</td><td>$${parseFloat(p.total || 0).toFixed(2)}</td><td><span class="badge ${p.estado === 'Pagado' ? 'badge-success' : 'badge-pending'}">${p.estado || 'Pendiente'}</span></td></td>`).join('')}</tbody></table></div>`;
+    
+    tbody.innerHTML = pedidos.map((p, index) => {
+        const idPedido = p['ID Pedido'] || p.id_pedido || p.id || index;
+        const estadoActual = p['Estado Pago'] || p.estado_pago || p.estado || 'Pendiente de pago';
+        
+        // Determinar clase del badge según estado
+        let estadoClass = 'badge-pending';
+        if (estadoActual === 'Pagado') estadoClass = 'badge-info';
+        if (estadoActual === 'Entregado') estadoClass = 'badge-success';
+        
+        return `
+            <tr>
+                <td>${idPedido}</td>
+                <td>${p.Fecha || p.fecha || '-'}</td>
+                <td>${p.Nombre || p.nombre || '-'}</td>
+                <td>${p.Teléfono || p.telefono || '-'}</td>
+                <td style="max-width:150px;">${(p.Dirección || p.direccion || '-').substring(0, 30)}</td>
+                <td style="max-width:200px;">${(p.Productos || p.productos || '-').substring(0, 40)}</td>
+                <td>$${parseFloat(p.Total || p.total || 0).toFixed(2)}</td>
+                <td>${p['Método Pago'] || p.metodo_pago || '-'}</td>
+                <td>
+                    <select id="estado_${idPedido}" class="estado-select" onchange="cambiarEstadoPedido('${idPedido}', this.value)">
+                        <option value="Pendiente de pago" ${estadoActual === 'Pendiente de pago' ? 'selected' : ''}>⏳ Pendiente de pago</option>
+                        <option value="Pagado" ${estadoActual === 'Pagado' ? 'selected' : ''}>💰 Pagado</option>
+                        <option value="Entregado" ${estadoActual === 'Entregado' ? 'selected' : ''}>✅ Entregado</option>
+                    </select>
+                </td>
+                <td>
+                    <button onclick="eliminarPedido('${idPedido}')" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;" title="Eliminar pedido">🗑️ Eliminar</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+async function cambiarEstadoPedido(idPedido, nuevoEstado) {
+    if (!confirm(`¿Cambiar estado del pedido ${idPedido} a "${nuevoEstado}"?`)) {
+        // Revertir el select si cancela
+        const select = document.getElementById(`estado_${idPedido}`);
+        const pedido = pedidos.find(p => (p['ID Pedido'] || p.id_pedido || p.id) == idPedido);
+        if (pedido) {
+            select.value = pedido['Estado Pago'] || pedido.estado_pago || pedido.estado || 'Pendiente de pago';
+        }
+        return;
+    }
+    
+    try {
+        // Actualizar localmente
+        const pedido = pedidos.find(p => (p['ID Pedido'] || p.id_pedido || p.id) == idPedido);
+        if (pedido) {
+            pedido['Estado Pago'] = nuevoEstado;
+        }
+        
+        // Enviar a Google Sheets
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({ 
+                action: 'actualizarEstadoPedido', 
+                idPedido: idPedido, 
+                estado: nuevoEstado 
+            })
+        });
+        
+        renderizarPedidos();
+        actualizarStats();
+        alert(`✅ Estado del pedido ${idPedido} actualizado a: ${nuevoEstado}`);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al actualizar el estado');
+    }
+}
+
+async function eliminarPedido(idPedido) {
+    if (!confirm(`⚠️ ¿Estás SEGURO de eliminar el pedido ${idPedido}?\nEsta acción no se puede deshacer.`)) return;
+    
+    if (!confirm(`Confirma: ¿Eliminar pedido ${idPedido} permanentemente?`)) return;
+    
+    try {
+        // Eliminar localmente
+        pedidos = pedidos.filter(p => (p['ID Pedido'] || p.id_pedido || p.id) != idPedido);
+        
+        // Eliminar tracking asociado
+        localStorage.removeItem(`tracking_${idPedido}`);
+        
+        // Enviar a Google Sheets
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({ 
+                action: 'eliminarPedido', 
+                idPedido: idPedido 
+            })
+        });
+        
+        renderizarPedidos();
+        renderizarTrackingPedidos();
+        actualizarStats();
+        alert(`✅ Pedido ${idPedido} eliminado correctamente`);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al eliminar el pedido');
+    }
 }
 
 // ==================== TRACKING ====================
 function renderizarTrackingPedidos() {
     const tbody = document.getElementById('trackingPedidosBody');
-    if (!pedidos.length) { tbody.innerHTML = '<tr><td colspan="6">No hay pedidos</td>'; return; }
+    if (!pedidos.length) { 
+        tbody.innerHTML = '<tr><td colspan="6">No hay pedidos</td></tr>'; 
+        return; 
+    }
+    
     tbody.innerHTML = pedidos.map(p => {
-        const id = p.idPedido || p.id;
+        const id = p['ID Pedido'] || p.id_pedido || p.id;
         const saved = localStorage.getItem(`tracking_${id}`);
         let estado = 0, fechaEst = '';
         if(saved) { const data = JSON.parse(saved); estado = data.estado || 0; fechaEst = data.fechaEstimada || ''; }
         const estados = ['Recibido', 'Preparando', 'En Tránsito', 'En Panamá', 'En Reparto', 'Entregado'];
-        return `<tr><td>${id}</td><td>${p.nombre}</td><td>$${p.total}</td><td><span class="badge badge-info">${estados[estado]}</span></td><td>${fechaEst || '-'}</td><td><button onclick="cargarPedidoTracking(${id})">✏️ Editar</button></td></tr>`;
+        return `<tr>
+            <td>${id}</td>
+            <td>${p.Nombre || p.nombre || '-'}</td>
+            <td>$${parseFloat(p.Total || p.total || 0).toFixed(2)}</td>
+            <td><span class="badge badge-info">${estados[estado]}</span></td>
+            <td>${fechaEst || '-'}</td>
+            <td>
+                <button onclick="cargarPedidoTracking(${id})" style="background:#81c784; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;">✏️ Editar Tracking</button>
+                <button onclick="eliminarTrackingPedido(${id})" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; margin-left:5px;">🗑️ Eliminar Tracking</button>
+             </td>
+        </tr>`;
     }).join('');
+}
+
+function eliminarTrackingPedido(idPedido) {
+    if (!confirm(`¿Eliminar el tracking del pedido ${idPedido}?`)) return;
+    
+    localStorage.removeItem(`tracking_${idPedido}`);
+    renderizarTrackingPedidos();
+    if (trackingActual && (trackingActual['ID Pedido'] || trackingActual.id_pedido || trackingActual.id) == idPedido) {
+        document.getElementById('trackingInfo').style.display = 'none';
+        trackingActual = null;
+    }
+    alert(`✅ Tracking del pedido ${idPedido} eliminado`);
 }
 
 function buscarPedidoParaTracking() {
     const busqueda = document.getElementById('buscarPedidoTracking').value.trim();
-    const pedido = pedidos.find(p => (p.idPedido || p.id).toString() === busqueda || p.nombre?.toLowerCase().includes(busqueda.toLowerCase()));
-    if(pedido) { cargarPedidoTracking(pedido.idPedido || pedido.id); }
+    const pedido = pedidos.find(p => {
+        const id = p['ID Pedido'] || p.id_pedido || p.id;
+        const nombre = p.Nombre || p.nombre || '';
+        return id.toString() === busqueda || nombre.toLowerCase().includes(busqueda.toLowerCase());
+    });
+    if(pedido) { cargarPedidoTracking(pedido['ID Pedido'] || pedido.id_pedido || pedido.id); }
     else { document.getElementById('trackingInfo').style.display = 'none'; document.getElementById('trackingNoEncontrado').style.display = 'block'; }
 }
 
 function cargarPedidoTracking(id) {
-    const pedido = pedidos.find(p => (p.idPedido || p.id) == id);
+    const pedido = pedidos.find(p => (p['ID Pedido'] || p.id_pedido || p.id) == id);
     if(!pedido) return;
     trackingActual = pedido;
-    const idPedido = pedido.idPedido || pedido.id;
+    const idPedido = pedido['ID Pedido'] || pedido.id_pedido || pedido.id;
     const saved = localStorage.getItem(`tracking_${idPedido}`);
     let estado = 0, fechaEst = '', nota = '';
     if(saved) { const data = JSON.parse(saved); estado = data.estado || 0; fechaEst = data.fechaEstimada || ''; nota = data.nota || ''; }
     estadoSeleccionado = estado;
-    document.getElementById('trackingCliente').innerHTML = `👤 Cliente: ${pedido.nombre}`;
-    document.getElementById('trackingProductos').innerHTML = `📦 Productos: ${(pedido.productos || '').substring(0, 100)}`;
-    document.getElementById('trackingTotal').innerHTML = `💰 Total: $${pedido.total || 0}`;
-    document.getElementById('trackingFecha').innerHTML = `📅 Fecha: ${pedido.fecha ? new Date(pedido.fecha).toLocaleDateString() : '-'}`;
+    document.getElementById('trackingCliente').innerHTML = `👤 Cliente: ${pedido.Nombre || pedido.nombre || '-'}`;
+    document.getElementById('trackingProductos').innerHTML = `📦 Productos: ${(pedido.Productos || pedido.productos || '').substring(0, 100)}`;
+    document.getElementById('trackingTotal').innerHTML = `💰 Total: $${parseFloat(pedido.Total || pedido.total || 0).toFixed(2)}`;
+    document.getElementById('trackingFecha').innerHTML = `📅 Fecha: ${pedido.Fecha || pedido.fecha || '-'}`;
     document.getElementById('fechaEstimada').value = fechaEst;
     document.getElementById('notaTracking').value = nota;
     actualizarUIEstadosTracking(estado);
@@ -1280,7 +1428,7 @@ function seleccionarEstadoTracking(step) {
 
 function actualizarTrackingPedido() {
     if(!trackingActual) return;
-    const idPedido = trackingActual.idPedido || trackingActual.id;
+    const idPedido = trackingActual['ID Pedido'] || trackingActual.id_pedido || trackingActual.id;
     const fechaEstimada = document.getElementById('fechaEstimada').value;
     const nota = document.getElementById('notaTracking').value;
     const trackingData = { estado: estadoSeleccionado, fechaEstimada, nota, ultimaActualizacion: new Date().toISOString() };
@@ -1299,10 +1447,14 @@ function limpiarTracking() {
 function actualizarStats() {
     document.getElementById('totalProductos').innerText = productos.length;
     const pendientes = solicitudes.filter(s => s.estado === 'pendiente').length;
-    const aprobadas = solicitudes.filter(s => s.estado === 'aprobado').length;
     document.getElementById('totalSolicitudesPendientes').innerText = pendientes;
-    document.getElementById('totalSolicitudesAprobadas').innerText = aprobadas;
     document.getElementById('totalPedidos').innerText = pedidos.length;
+    
+    const pagados = pedidos.filter(p => {
+        const estado = p['Estado Pago'] || p.estado_pago || p.estado || '';
+        return estado === 'Pagado' || estado === 'Entregado';
+    }).length;
+    document.getElementById('totalPagados').innerText = pagados;
 }
 
 // TOGGLE VARIANTES
@@ -1332,6 +1484,7 @@ document.querySelectorAll('.menu button').forEach(btn => {
         document.getElementById('currentSectionTitle').innerText = titles[section] || section;
         if (section === 'inventario') renderizarInventario();
         if (section === 'solicitudes') renderizarSolicitudes();
+        if (section === 'pedidos') renderizarPedidos();
         if (section === 'tracking') renderizarTrackingPedidos();
     });
 });
