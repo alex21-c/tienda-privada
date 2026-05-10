@@ -305,6 +305,34 @@
             text-align: center;
             margin-top: 15px;
         }
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #c8e6c9;
+            padding-bottom: 10px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            border-radius: 60px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #66bb6a;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #66bb6a, #4caf50);
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
 
         .carrito-panel {
             position: fixed;
@@ -589,6 +617,7 @@
             .solicitud-codigo { font-size: 1.2rem; }
             .modal-producto-imagen-container img { max-height: 200px; }
             .tracking-timeline-cliente { flex-direction: column; }
+            .tab-buttons { flex-direction: column; }
         }
     </style>
 </head>
@@ -614,7 +643,8 @@
                 <button class="filtro-btn" data-filtro="Sephora">Sephora</button>
             </div>
             <div class="acciones-top">
-                <button id="toggle-mis-pedidos" class="mis-pedidos-btn">📦 Mis Pedidos</button>
+                <!-- UN SOLO BOTÓN: MIS PEDIDOS / CONSULTAR SOLICITUD -->
+                <button id="toggle-mis-pedidos" class="mis-pedidos-btn">📋 Mis Pedidos / Solicitudes</button>
                 <button id="toggle-solicitar" class="solicitar-btn">🔍 Solicitar Producto</button>
                 <button id="carrito-toggle" class="carrito-btn">🛒 Carrito <span id="carrito-contador" class="carrito-contador">0</span></button>
             </div>
@@ -654,7 +684,7 @@
     </div>
     <div id="overlay" class="overlay"></div>
     
-    <!-- Modal Solicitar Producto -->
+    <!-- MODAL SOLICITAR PRODUCTO (Genera código de 4 dígitos) -->
     <div id="solicitar-modal" class="modal-solicitud">
         <div class="modal-solicitud-content">
             <div class="modal-header"><h2>🔍 Solicitar Producto</h2><button class="modal-cerrar" id="cerrar-solicitar-modal">✕</button></div>
@@ -683,14 +713,40 @@
         </div>
     </div>
     
-    <!-- Modal Consultar Solicitud -->
-    <div id="consultar-solicitud-modal" class="modal">
+    <!-- MODAL CONSULTAR (UN SOLO MODAL CON DOS TABS) -->
+    <div id="consultar-modal" class="modal">
         <div class="modal-content">
-            <div class="modal-header"><h2>🔍 Consultar mi Solicitud</h2><button class="modal-cerrar" id="cerrar-consultar-modal">✕</button></div>
+            <div class="modal-header">
+                <h2>📋 Consultar</h2>
+                <button class="modal-cerrar" id="cerrar-consultar-modal">✕</button>
+            </div>
             <div class="modal-body-scroll">
-                <div class="form-group"><label>📝 Ingresa tu código de 4 dígitos</label><input type="text" id="codigo-consultar" maxlength="4" placeholder="Ej: 1234" style="text-align: center; font-size: 1.5rem; letter-spacing: 5px;"></div>
-                <button id="btn-consultar-solicitud" class="btn-confirmar">🔍 Consultar</button>
-                <div id="solicitud-detalle" style="margin-top: 20px; display: none;"></div>
+                <!-- PESTAÑAS -->
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="solicitud">🔍 Consultar Solicitud</button>
+                    <button class="tab-btn" data-tab="pedido">📦 Consultar Pedido</button>
+                </div>
+                
+                <!-- TAB 1: CONSULTAR SOLICITUD (por código de 4 dígitos) -->
+                <div id="tab-solicitud" class="tab-content active">
+                    <div class="form-group">
+                        <label>📝 Ingresa tu código de 4 dígitos</label>
+                        <input type="text" id="codigo-consultar" maxlength="4" placeholder="Ej: 1234" style="text-align: center; font-size: 1.5rem; letter-spacing: 5px;">
+                    </div>
+                    <button id="btn-consultar-solicitud" class="btn-confirmar">🔍 Consultar mi Solicitud</button>
+                    <div id="solicitud-detalle" style="margin-top: 20px; display: none;"></div>
+                </div>
+                
+                <!-- TAB 2: CONSULTAR PEDIDO (por nombre) -->
+                <div id="tab-pedido" class="tab-content">
+                    <div class="form-group">
+                        <label>📝 Tu nombre completo</label>
+                        <input type="text" id="nombre-consulta" placeholder="Ej: Juan Pérez">
+                    </div>
+                    <button id="btn-consultar-pedido" class="btn-confirmar">🔍 Buscar mis pedidos</button>
+                    <div id="resultado-pedidos" style="margin-top: 20px;"></div>
+                    <div id="tracking-detalle-pedido" style="display: none; margin-top: 20px;"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -726,27 +782,12 @@
         <img id="zoom-imagen" src="">
     </div>
     
-    <!-- Modales de pago y pedidos -->
-    <div id="pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📋 Datos de envío</h2><button class="modal-cerrar" id="cerrar-pago-modal">✕</button></div><form id="pedido-form-modal" style="padding:20px;"><div class="form-group"><label>📝 Nombre completo</label><input type="text" id="nombre-modal" required></div><div class="form-group"><label>📞 Teléfono</label><input type="tel" id="telefono-modal" required></div><div class="form-group"><label>🏠 Dirección completa</label><textarea id="direccion-modal" rows="3" required></textarea></div><div class="form-group"><label>💳 Método de pago</label><select id="metodo-pago-modal" required><option value="Efectivo"</option><option value="Yappy">Yappy</option></select></div><button type="submit" class="btn-confirmar">Confirmar pedido</button></form></div></div>
+    <!-- Modales de pago -->
+    <div id="pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📋 Datos de envío</h2><button class="modal-cerrar" id="cerrar-pago-modal">✕</button></div><form id="pedido-form-modal" style="padding:20px;"><div class="form-group"><label>📝 Nombre completo</label><input type="text" id="nombre-modal" required></div><div class="form-group"><label>📞 Teléfono</label><input type="tel" id="telefono-modal" required></div><div class="form-group"><label>🏠 Dirección completa</label><textarea id="direccion-modal" rows="3" required></textarea></div><div class="form-group"><label>💳 Método de pago</label><select id="metodo-pago-modal" required><option value="Efectivo">Efectivo al recibir</option><option value="Yappy">Yappy</option></select></div><button type="submit" class="btn-confirmar">Confirmar pedido</button></form></div></div>
     
     <div id="yappy-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📱 Pagar con Yappy</h2><button class="modal-cerrar" id="cerrar-yappy-modal">✕</button></div><div style="padding:30px; text-align:center;"><p style="font-weight:600;">Transfiere a:</p><div style="background:#e8f5e9; border-radius:15px; padding:15px; border:2px solid #81c784; margin-bottom:15px;"><p style="font-size:1.8rem; font-weight:800; color:#66bb6a; font-family:monospace;">6474-5914</p></div><button id="copiar-yappy" class="btn-confirmar" style="margin-bottom:10px;">📋 Copiar número</button><button id="ya-pague" class="btn-confirmar">✅ Ya pagué</button></div></div></div>
     
     <div id="confirmar-pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🔍 Confirmar Pago</h2><button class="modal-cerrar" id="cerrar-confirmar-modal">✕</button></div><div style="padding:20px;"><div class="form-group"><label>Tu nombre</label><input type="text" id="nombre-verificar" placeholder="Juan Pérez"></div><button id="verificar-pago" class="btn-confirmar">Verificar pago</button></div></div></div>
-    
-    <!-- Modal Mis Pedidos CON TRACKING -->
-    <div id="mis-pedidos-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h2>📋 Mis Pedidos</h2><button class="modal-cerrar" id="cerrar-mis-pedidos-modal">✕</button></div>
-            <div style="padding:20px;">
-                <div class="form-group"><label>Tu nombre</label><input type="text" id="nombre-consulta-modal" placeholder="Juan Pérez"></div>
-                <button id="buscar-pedidos-modal" class="btn-confirmar" style="margin-bottom:15px;">🔍 Buscar</button>
-                <div id="resultado-pedidos-modal"></div>
-                
-                <!-- Sección de Tracking que se mostrará al seleccionar un pedido -->
-                <div id="tracking-detalle-pedido" style="display: none; margin-top: 20px;"></div>
-            </div>
-        </div>
-    </div>
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
@@ -769,7 +810,7 @@ function generarCodigo() {
     return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
-// Enviar solicitud
+// Enviar solicitud (SOLICITAR PRODUCTO)
 document.getElementById('solicitud-form').addEventListener('submit', (e) => {
     e.preventDefault();
     const nombre = document.getElementById('solicitante-nombre').value;
@@ -804,7 +845,7 @@ document.getElementById('solicitud-form').addEventListener('submit', (e) => {
     alert('✅ Solicitud enviada. Guarda tu código: ' + codigo);
 });
 
-// Consultar solicitud
+// Consultar solicitud (por código de 4 dígitos)
 document.getElementById('btn-consultar-solicitud').addEventListener('click', () => {
     const codigo = document.getElementById('codigo-consultar').value;
     const solicitud = solicitudes.find(s => s.codigo === codigo);
@@ -881,7 +922,7 @@ function agregarSolicitudAlCarrito(codigo) {
         }
         localStorage.setItem('carrito', JSON.stringify(carrito));
         actualizarCarrito();
-        document.getElementById('consultar-solicitud-modal').classList.remove('active');
+        document.getElementById('consultar-modal').style.display = 'none';
         alert('✅ Producto agregado al carrito correctamente');
     }
 }
@@ -1106,11 +1147,9 @@ function mostrarModal(id) {
     document.getElementById('modal-descripcion').textContent = producto.descripcion || 'Sin descripción';
     document.getElementById('modal-precio').innerHTML = `$${(producto.precio || 0).toFixed(2)}`;
     
-    // Configurar zoom
     const modalImg = document.getElementById('modal-imagen');
     modalImg.onclick = () => abrirZoom(modalImg.src);
     
-    // Colores
     const coloresDiv = document.getElementById('selector-color');
     const coloresCont = document.getElementById('modal-colores');
     if(producto.colores && Array.isArray(producto.colores) && producto.colores.length > 0) {
@@ -1137,7 +1176,6 @@ function mostrarModal(id) {
         else document.getElementById('modal-variantes').style.display = 'none';
     } else {
         coloresCont.style.display = 'none';
-        // Tallas sin colores
         if(producto.variantes && typeof producto.variantes === 'string' && producto.variantes.trim()) {
             const tallas = producto.variantes.split(',').map(t => { 
                 const [talla, precio] = t.split(':'); 
@@ -1199,7 +1237,7 @@ function cerrarModalProducto() {
 }
 
 // ========== TRACKING PARA CLIENTE ==========
-function verTrackingPedido(idPedido, nombreCliente) {
+function verTrackingPedido(idPedido) {
     const trackingKey = `tracking_${idPedido}`;
     const saved = localStorage.getItem(trackingKey);
     const trackingDiv = document.getElementById('tracking-detalle-pedido');
@@ -1248,6 +1286,28 @@ function verTrackingPedido(idPedido, nombreCliente) {
     }
 }
 
+// Buscar pedidos por nombre
+document.getElementById('btn-consultar-pedido').addEventListener('click', async () => {
+    let nombre = document.getElementById('nombre-consulta').value;
+    if(!nombre) return;
+    let res = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombre)}`);
+    let pedidosCliente = await res.json();
+    const resultadoDiv = document.getElementById('resultado-pedidos');
+    const trackingDiv = document.getElementById('tracking-detalle-pedido');
+    trackingDiv.style.display = 'none';
+    
+    resultadoDiv.innerHTML = (pedidosCliente || []).map(p => `
+        <div class="tracking-info-pedido" onclick="verTrackingPedido('${p.idPedido || p.id}')">
+            <b style="color:#66bb6a;">#${p.idPedido || p.id}</b><br>
+            📅 ${new Date(p.fecha).toLocaleDateString()}<br>
+            💰 $${(p.total || 0).toFixed(2)}<br>
+            📍 Estado: ${p.estado || 'Pendiente'}<br>
+            <small style="color:#558b2f;">👉 Haz clic para ver el seguimiento</small>
+        </div>
+    `).join('');
+    if(!pedidosCliente.length) resultadoDiv.innerHTML = '<div class="vacio">No se encontraron pedidos con ese nombre</div>';
+});
+
 // ========== EVENT LISTENERS ==========
 document.querySelectorAll('.filtro-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -1292,20 +1352,41 @@ document.getElementById('overlay')?.addEventListener('click', () => {
     document.getElementById('overlay').classList.remove('active');
 });
 
+// BOTÓN CONSULTAR (abre el modal con tabs)
+document.getElementById('toggle-mis-pedidos')?.addEventListener('click', () => {
+    document.getElementById('consultar-modal').style.display = 'flex';
+    document.getElementById('solicitud-detalle').style.display = 'none';
+    document.getElementById('resultado-pedidos').innerHTML = '';
+    document.getElementById('tracking-detalle-pedido').style.display = 'none';
+    document.getElementById('codigo-consultar').value = '';
+    document.getElementById('nombre-consulta').value = '';
+});
+
+document.getElementById('cerrar-consultar-modal')?.addEventListener('click', () => {
+    document.getElementById('consultar-modal').style.display = 'none';
+});
+
+// TABS
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+        // Limpiar resultados al cambiar de tab
+        document.getElementById('solicitud-detalle').style.display = 'none';
+        document.getElementById('resultado-pedidos').innerHTML = '';
+        document.getElementById('tracking-detalle-pedido').style.display = 'none';
+    });
+});
+
+// BOTÓN SOLICITAR PRODUCTO
 document.getElementById('toggle-solicitar')?.addEventListener('click', () => {
     document.getElementById('solicitar-modal').classList.add('active');
 });
 
 document.getElementById('cerrar-solicitar-modal')?.addEventListener('click', () => {
     document.getElementById('solicitar-modal').classList.remove('active');
-});
-
-document.getElementById('toggle-mis-pedidos')?.addEventListener('click', () => {
-    document.getElementById('consultar-solicitud-modal').classList.add('active');
-});
-
-document.getElementById('cerrar-consultar-modal')?.addEventListener('click', () => {
-    document.getElementById('consultar-solicitud-modal').classList.remove('active');
 });
 
 document.getElementById('ir-pagar')?.addEventListener('click', () => {
@@ -1321,7 +1402,6 @@ document.getElementById('cerrar-pago-modal')?.addEventListener('click', () => {
     document.getElementById('pago-modal').style.display = 'none';
 });
 
-// Cerrar zoom con Escape
 document.addEventListener('keydown', (e) => {
     if(e.key === 'Escape') {
         cerrarZoom();
@@ -1401,28 +1481,6 @@ document.getElementById('verificar-pago')?.addEventListener('click', async () =>
     await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'actualizarEstado', fila: pedido.id, estado: 'Pagado' }) });
     document.getElementById('confirmar-pago-modal').style.display = 'none';
     alert('✅ Pago confirmado. Gracias por tu compra.');
-});
-
-// Buscar pedidos y mostrar tracking
-document.getElementById('buscar-pedidos-modal').addEventListener('click', async () => {
-    let nombre = document.getElementById('nombre-consulta-modal').value;
-    if(!nombre) return;
-    let res = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombre)}`);
-    let pedidosCliente = await res.json();
-    const resultadoDiv = document.getElementById('resultado-pedidos-modal');
-    const trackingDiv = document.getElementById('tracking-detalle-pedido');
-    trackingDiv.style.display = 'none';
-    
-    resultadoDiv.innerHTML = (pedidosCliente || []).map(p => `
-        <div class="tracking-info-pedido" onclick="verTrackingPedido('${p.idPedido || p.id}', '${p.nombre}')">
-            <b style="color:#66bb6a;">#${p.idPedido || p.id}</b><br>
-            📅 ${new Date(p.fecha).toLocaleDateString()}<br>
-            💰 $${(p.total || 0).toFixed(2)}<br>
-            📍 Estado: ${p.estado || 'Pendiente'}<br>
-            <small style="color:#558b2f;">👉 Haz clic para ver el seguimiento</small>
-        </div>
-    `).join('');
-    if(!pedidosCliente.length) resultadoDiv.innerHTML = '<div class="vacio">No se encontraron pedidos</div>';
 });
 
 // ========== INICIALIZAR ==========
