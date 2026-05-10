@@ -1,1520 +1,1498 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TIENDA PRIVADA | Cyber Store</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🛍️%3C/text%3E%3C/svg%3E">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Inter', 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            padding: 20px;
-            color: #1b5e20;
-            min-height: 100vh;
-        }
-        
-        .container { 
-            max-width: 1400px; 
-            margin: 0 auto; 
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            border-radius: 30px; 
-            padding: 30px; 
-            box-shadow: 0 8px 20px rgba(76, 175, 80, 0.1);
-            border: 1px solid rgba(129, 199, 132, 0.2);
-        }
-        
-        .logo-container { text-align: center; margin-bottom: 30px; padding: 20px; }
-        .logo { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
-        .logo-imagen { height: 80px; width: auto; object-fit: contain; border-radius: 15px; filter: drop-shadow(0 4px 10px rgba(76, 175, 80, 0.2)); transition: transform 0.3s; }
-        .logo-imagen:hover { transform: scale(1.05); }
-        
-        .logo-title { 
-            font-size: 2rem; 
-            font-weight: 800; 
-            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            letter-spacing: 2px;
-        }
-        .logo-subtitle { font-size: 0.7rem; color: #66bb6a; letter-spacing: 2px; margin-top: 5px; }
-        @media (max-width:768px){ .logo-imagen { height: 55px; } .logo-title { font-size: 1.3rem; } }
-        
-        .admin-link {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #6BA873;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.8rem;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-        }
-        .admin-link:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
-        }
-        
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 15px; }
-        
-        .filtros-principales { display: flex; gap: 12px; flex-wrap: wrap; }
-        .filtro-btn { 
-            padding: 10px 24px; 
-            background: rgba(255, 255, 255, 0.7);
-            border: 1.5px solid #81c784;
-            border-radius: 60px; 
-            cursor: pointer; 
-            transition: all 0.2s; 
-            color: #66bb6a; 
-            font-weight: 500;
-        }
-        .filtro-btn.active { 
-            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
-            border-color: #4caf50;
-            color: white;
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-            transform: translateY(-2px);
-        }
-        .filtro-btn:hover:not(.active) { 
-            border-color: #66bb6a; 
-            color: #4caf50; 
-        }
-        
-        .subcategorias-container { 
-            margin: 15px 0; 
-            padding: 15px 0; 
-            border-radius: 30px; 
-            background: rgba(76, 175, 80, 0.08);
-            display: none;
-            transition: all 0.3s;
-        }
-        .subcategorias-container.visible { display: block; }
-        .subcategorias { 
-            display: flex; 
-            gap: 12px; 
-            flex-wrap: wrap; 
-            justify-content: center;
-        }
-        .subcat-btn { 
-            padding: 10px 24px; 
-            background: rgba(255, 255, 255, 0.8);
-            border: 2px solid #81c784;
-            border-radius: 60px; 
-            cursor: pointer; 
-            transition: all 0.2s; 
-            color: #66bb6a; 
-            font-weight: 600; 
-            font-size: 0.85rem;
-        }
-        .subcat-btn.active { 
-            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
-            color: white; 
-            border-color: #4caf50;
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.25);
-            transform: translateY(-2px);
-        }
-        .subcat-btn:hover:not(.active) { 
-            border-color: #66bb6a; 
-            color: #4caf50;
-            background: rgba(102, 187, 106, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .genero-container { margin: 15px 0; padding: 12px 0; background: rgba(76, 175, 80, 0.05); border-radius: 30px; display: none; }
-        .genero-container.visible { display: block; }
-        .genero-filtros { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-        .genero-btn { 
-            padding: 8px 20px; 
-            background: rgba(255, 255, 255, 0.7);
-            border: 1px solid #81c784;
-            border-radius: 60px; 
-            cursor: pointer; 
-            transition: all 0.2s; 
-            color: #66bb6a; 
-            font-weight: 500; 
-            font-size: 0.8rem; 
-        }
-        .genero-btn.active { 
-            background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%);
-            color: white; 
-            border-color: #4caf50;
-            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.2);
-            transform: translateY(-2px);
-        }
-        .genero-btn:hover:not(.active) { border-color: #66bb6a; color: #4caf50; }
-        
-        .acciones-top { display: flex; gap: 15px; }
-        .mis-pedidos-btn, .carrito-btn, .solicitar-btn { 
-            background: rgba(255, 255, 255, 0.7);
-            border: 1.5px solid #81c784;
-            color: #66bb6a; 
-            padding: 8px 20px; 
-            border-radius: 60px; 
-            cursor: pointer; 
-            font-weight: 600; 
-            transition: all 0.2s; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-        }
-        .mis-pedidos-btn:hover, .carrito-btn:hover, .solicitar-btn:hover { 
-            background: #66bb6a;
-            color: white; 
-            border-color: #4caf50;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(76, 175, 80, 0.2);
-        }
-        .carrito-contador { 
-            background: #66bb6a; 
-            color: white; 
-            border-radius: 50px; 
-            padding: 2px 10px; 
-            font-size: 0.75rem; 
-            font-weight: 700;
-            margin-left: 8px; 
-        }
-        
-        .productos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .producto-card { 
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px; 
-            overflow: hidden; 
-            transition: all 0.3s; 
-            border: 1px solid rgba(129, 199, 132, 0.2);
-            cursor: pointer; 
-        }
-        .producto-card:hover { 
-            transform: translateY(-8px); 
-            box-shadow: 0 15px 30px rgba(76, 175, 80, 0.15); 
-            border-color: #81c784;
-        }
-        .producto-imagen { width: 100%; height: 260px; object-fit: cover; transition: transform 0.3s; }
-        .producto-card:hover .producto-imagen { transform: scale(1.05); }
-        .producto-info { padding: 18px; }
-        .producto-origen { display: inline-block; padding: 4px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 600; margin-right: 6px; margin-bottom: 8px; }
-        .origen-amazon { background: #ffd54f20; color: #f57f17; border: 1px solid #ffd54f40; }
-        .origen-temu { background: #ff7043; color: white; border: 1px solid #ff5722; }
-        .origen-shein { background: #e91e6320; color: #c2185b; border: 1px solid #e91e6340; }
-        .origen-sephora { background: linear-gradient(135deg, #e91e63, #c2185b); color: white; border: 1px solid #ad1457; }
-        .producto-genero { display: inline-block; padding: 4px 12px; border-radius: 60px; font-size: 0.7rem; background: #e8f5e9; color: #66bb6a; border: 1px solid #81c784; }
-        .producto-categoria { display: inline-block; padding: 4px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 600; background: rgba(102, 187, 106, 0.1); color: #66bb6a; }
-        .producto-titulo { font-size: 1rem; font-weight: 600; color: #1b5e20; margin: 10px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .producto-precio { font-size: 1.5rem; font-weight: 700; color: #66bb6a; margin: 12px 0; }
-        .btn-agregar { 
-            width: 100%; 
-            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
-            color: white; 
-            border: none; 
-            padding: 12px; 
-            border-radius: 60px; 
-            cursor: pointer; 
-            font-weight: 600; 
-            transition: all 0.2s; 
-        }
-        .btn-agregar:hover { 
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(76, 175, 80, 0.3);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GREEN ADMIN | PANEL DE CONTROL</title>
 
-        /* Estilos para Solicitar Producto */
-        .solicitud-codigo {
-            font-family: monospace;
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #66bb6a;
-            background: #e8f5e9;
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 12px;
-            letter-spacing: 3px;
-        }
-        .estado-solicitud {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        .estado-pendiente { background: #fff3e0; color: #ef6c00; border: 1px solid #ffb74d; }
-        .estado-cotizado { background: #e3f2fd; color: #1565c0; border: 1px solid #64b5f6; }
-        .estado-aprobado { background: #e8f5e9; color: #2e7d32; border: 1px solid #81c784; }
-        .estado-rechazado { background: #ffebee; color: #c62828; border: 1px solid #ef5350; }
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-        /* Estilos para Tracking del Cliente */
-        .tracking-container {
-            background: #e8f5e9;
-            border-radius: 20px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        .tracking-timeline-cliente {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin: 20px 0;
-            gap: 8px;
-        }
-        .tracking-step-cliente {
-            flex: 1;
-            text-align: center;
-            padding: 12px 8px;
-            background: white;
-            border-radius: 16px;
-            border: 2px solid #c8e6c9;
-            opacity: 0.5;
-        }
-        .tracking-step-cliente.completed {
-            background: #a5d6a7;
-            border-color: #66bb6a;
-            opacity: 1;
-        }
-        .tracking-step-cliente.active {
-            background: #66bb6a;
-            color: white;
-            border-color: #43a047;
-            opacity: 1;
-        }
-        .tracking-step-cliente .step-icon { font-size: 24px; display: block; }
-        .tracking-step-cliente .step-name { font-size: 10px; margin-top: 5px; }
-        .tracking-info-pedido {
-            background: white;
-            border-radius: 16px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border: 1px solid #c8e6c9;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .tracking-info-pedido:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.2);
-        }
-        .fecha-estimada {
-            background: #66bb6a20;
-            padding: 10px;
-            border-radius: 12px;
-            text-align: center;
-            margin-top: 15px;
-        }
-        .tab-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #c8e6c9;
-            padding-bottom: 10px;
-        }
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            background: none;
-            border: none;
-            border-radius: 60px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: #66bb6a;
-        }
-        .tab-btn.active {
-            background: linear-gradient(135deg, #66bb6a, #4caf50);
-            color: white;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .carrito-panel {
-            position: fixed;
-            top: 0;
-            right: -500px;
-            width: 500px;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.98);
-            z-index: 1001;
-            transition: right 0.3s;
-            box-shadow: -8px 0 20px rgba(76, 175, 80, 0.15);
-            padding: 0;
-            overflow-y: auto;
-            border-left: 2px solid #81c784;
-            display: flex;
-            flex-direction: column;
-        }
-        .carrito-panel.open { right: 0; }
+body {
+    font-family: 'Inter', sans-serif;
+    background: #e8f5e9;
+    color: #1b5e20;
+    overflow-x: hidden;
+}
 
-        .carrito-header {
-            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
-            padding: 20px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            font-weight: 700;
-        }
+.login-screen {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+}
 
-        .cerrar-carrito-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-            color: white;
-            font-size: 1.2rem;
-            transition: all 0.2s;
-        }
-        .cerrar-carrito-btn:hover { background: rgba(255, 255, 255, 0.4); transform: scale(1.1); }
+.login-box {
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255,255,255,.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(76,175,80,.3);
+    border-radius: 28px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0,0,0,.1);
+}
 
-        .carrito-items { flex: 1; padding: 20px; overflow-y: auto; }
-        .carrito-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: #f1f8f6;
-            border-radius: 15px;
-            margin-bottom: 12px;
-            border: 1px solid #c8e6c9;
-        }
-        .item-info { flex: 1; }
-        .item-nombre { font-weight: 700; color: #1b5e20; margin-bottom: 4px; font-size: 0.95rem; }
-        .item-precio { color: #66bb6a; font-weight: 600; font-size: 0.85rem; }
-        .item-cantidad { display: flex; align-items: center; gap: 8px; margin-right: 10px; }
-        .item-cantidad button {
-            background: white; border: 1px solid #81c784; width: 28px; height: 28px;
-            border-radius: 50%; cursor: pointer; font-weight: bold; color: #66bb6a;
-        }
-        .item-cantidad button:hover { background: #66bb6a; color: white; transform: scale(1.1); }
-        .btn-eliminar-item {
-            background: #ffebee; color: #c62828; border: 1px solid #ef5350;
-            padding: 6px 12px; border-radius: 50px; cursor: pointer; font-size: 0.75rem;
-        }
-        .btn-eliminar-item:hover { background: #ef5350; color: white; }
+.login-title { font-size: 2rem; font-weight: 900; margin-bottom: 10px; color: #2e7d32; }
+.login-sub { color: #558b2f; margin-bottom: 30px; }
 
-        .carrito-resumen {
-            background: #f1f8f6; padding: 20px; border-radius: 15px;
-            margin: 20px; border: 1px solid #c8e6c9;
-        }
-        .resumen-linea { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #81c784; color: #1b5e20; font-weight: 600; }
-        .resumen-total { font-size: 1.3rem; font-weight: 800; color: #2e7d32; margin-top: 10px; padding-top: 10px; border-top: 2px solid #81c784; display: flex; justify-content: space-between; }
-        .envio-info-card {
-            background: #e8f5e9; border-radius: 15px; padding: 15px; margin: 20px;
-            border: 1px solid #c8e6c9; font-size: 0.9rem; color: #2e7d32; font-weight: 600;
-        }
-        .envio-info-card p { margin: 5px 0; }
-        .btn-pagar {
-            width: calc(100% - 40px); margin: 0 20px 20px;
-            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
-            color: white; border: none; padding: 15px; border-radius: 60px; font-weight: 700;
-            cursor: pointer; transition: all 0.2s;
-        }
-        .btn-pagar:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3); }
+.input {
+    width: 100%;
+    padding: 16px;
+    background: #f5f5f5;
+    border: 1px solid #c8e6c9;
+    border-radius: 16px;
+    color: #1b5e20;
+    font-size: 1rem;
+    outline: none;
+    margin-bottom: 20px;
+}
 
-        .modal, .modal-solicitud {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 10000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .modal.active, .modal-solicitud.active { display: flex; }
-        .modal-content, .modal-solicitud-content {
-            background: white;
-            max-width: 550px;
-            width: 100%;
-            max-height: 85vh;
-            border-radius: 30px;
-            overflow: hidden;
-            border: 1px solid #c8e6c9;
-            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.2);
-            display: flex;
-            flex-direction: column;
-        }
-        .modal-header {
-            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
-            padding: 20px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 700;
-        }
-        .modal-cerrar {
-            background: rgba(255, 255, 255, 0.2); border: none;
-            width: 35px; height: 35px; border-radius: 50%;
-            cursor: pointer; color: white; font-size: 1.2rem;
-        }
-        .modal-cerrar:hover { background: rgba(255, 255, 255, 0.4); transform: scale(1.1); }
-        .modal-body-scroll { flex: 1; overflow-y: auto; padding: 20px; }
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; font-weight: 700; color: #66bb6a; margin-bottom: 8px; font-size: 0.8rem; }
-        .form-group input, .form-group textarea, .form-group select {
-            width: 100%; padding: 12px 15px; background: #f1f8f6;
-            border: 2px solid #81c784; border-radius: 60px;
-            font-family: inherit; transition: all 0.2s; color: #1b5e20;
-        }
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            outline: none; border-color: #66bb6a; background: white;
-        }
-        .btn-confirmar {
-            width: 100%; background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
-            color: white; border: none; padding: 14px; border-radius: 60px;
-            font-weight: 700; cursor: pointer; transition: all 0.2s;
-        }
-        .btn-confirmar:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(76, 175, 80, 0.3); }
+.input:focus {
+    border-color: #66bb6a;
+    box-shadow: 0 0 0 3px rgba(102,187,106,.2);
+}
 
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.2); z-index: 1000; display: none; }
-        .overlay.active { display: block; }
-        .vacio { text-align: center; color: #66bb6a; padding: 40px 20px; font-size: 1rem; font-weight: 600; }
-        .loading { text-align: center; padding: 40px 20px; color: #66bb6a; font-size: 1rem; font-weight: 600; }
+.btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #66bb6a, #43a047);
+    color: white;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: .3s;
+}
 
-        /* Estilos para el Modal de Producto */
-        .modal-producto-imagen-container {
-            text-align: center;
-            margin-bottom: 20px;
-            cursor: pointer;
-        }
-        .modal-producto-imagen-container img {
-            max-width: 100%;
-            max-height: 280px;
-            border-radius: 15px;
-            object-fit: contain;
-        }
-        .modal-meta {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin: 15px 0;
-        }
-        .modal-meta p {
-            background: #e8f5e9;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #2e7d32;
-        }
-        .modal-precio-section {
-            background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
-            border-radius: 15px;
-            padding: 15px;
-            margin: 15px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-        }
-        .modal-precio-section span:first-child { font-size: 0.8rem; opacity: 0.9; }
-        .modal-precio-section #modal-precio { font-size: 1.8rem; font-weight: 800; }
-        .seccion-label {
-            font-weight: 700;
-            color: #2e7d32;
-            margin: 15px 0 10px 0;
-            font-size: 0.9rem;
-        }
-        #selector-color {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-        #selector-color button {
-            padding: 8px 20px;
-            background: white;
-            border: 2px solid #81c784;
-            border-radius: 60px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        #selector-color button:hover { border-color: #66bb6a; background: #f1f8f6; }
-        #selector-color button.active-color {
-            background: #66bb6a;
-            border-color: #4caf50;
-            color: white;
-        }
-        .tallas-container {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-        .talla-btn {
-            padding: 8px 20px;
-            background: white;
-            border: 2px solid #81c784;
-            border-radius: 60px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .talla-btn:hover { border-color: #66bb6a; background: #f1f8f6; }
-        .talla-btn.selected {
-            background: #66bb6a;
-            border-color: #4caf50;
-            color: white;
-        }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(67,160,71,.4); }
+.btn-small { width: auto; padding: 10px 20px; font-size: 0.9rem; }
+.btn-secondary { background: linear-gradient(135deg, #81c784, #66bb6a); }
+.btn-danger { background: linear-gradient(135deg, #ef9a9a, #ef5350); }
+.app { display: none; min-height: 100vh; }
 
-        /* ZOOM MODAL */
-        .zoom-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 20000;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-        }
-        .zoom-modal.active {
-            display: flex;
-        }
-        .zoom-modal img {
-            max-width: 90%;
-            max-height: 90%;
-            object-fit: contain;
-            border-radius: 10px;
-        }
-        .zoom-modal .close-zoom {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: white;
-            font-size: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    background: rgba(255,255,255,.95);
+    backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(76,175,80,.2);
+    padding: 30px 20px;
+    overflow: auto;
+    z-index: 100;
+}
 
-        @media (max-width: 768px) {
-            .container { padding: 15px; }
-            .productos-grid { grid-template-columns: 1fr; gap: 15px; }
-            .top-bar { flex-direction: column; gap: 12px; }
-            .carrito-panel { width: 100%; right: -100%; }
-            .modal-content, .modal-solicitud-content { max-height: 80vh; max-width: 95%; }
-            .acciones-top { width: 100%; justify-content: center; }
-            .solicitud-codigo { font-size: 1.2rem; }
-            .modal-producto-imagen-container img { max-height: 200px; }
-            .tracking-timeline-cliente { flex-direction: column; }
-            .tab-buttons { flex-direction: column; }
-        }
-    </style>
+.logo {
+    font-size: 1.8rem;
+    font-weight: 900;
+    margin-bottom: 40px;
+    background: linear-gradient(135deg, #43a047, #2e7d32);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.menu { display: flex; flex-direction: column; gap: 8px; }
+.menu button {
+    background: none;
+    border: none;
+    padding: 14px 16px;
+    border-radius: 14px;
+    color: #2e7d32;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+    transition: .3s;
+    font-size: 0.95rem;
+}
+
+.menu button:hover, .menu button.active { background: #c8e6c9; color: #1b5e20; transform: translateX(5px); }
+
+.content { margin-left: 280px; padding: 30px; }
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.top-title { font-size: 2rem; font-weight: 900; color: #2e7d32; }
+
+.logout {
+    padding: 12px 18px;
+    border-radius: 14px;
+    border: none;
+    background: #ef9a9a;
+    color: #c62828;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.logout:hover { background: #ef5350; color: white; }
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: rgba(255,255,255,.9);
+    border: 1px solid rgba(76,175,80,.2);
+    border-radius: 28px;
+    padding: 25px;
+    text-align: center;
+}
+
+.stat-card h3 { font-size: 0.85rem; opacity: 0.7; margin-bottom: 10px; color: #558b2f; }
+.stat-card .stat-value { font-size: 2rem; font-weight: 900; color: #2e7d32; }
+
+.form-box {
+    background: rgba(255,255,255,.9);
+    border: 1px solid rgba(76,175,80,.2);
+    padding: 30px;
+    border-radius: 28px;
+    margin-bottom: 40px;
+}
+
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; }
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-group label { font-size: 0.85rem; font-weight: 600; color: #2e7d32; }
+textarea.input { min-height: 100px; resize: vertical; }
+
+.variantes-panel {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f1f8e9;
+    border-radius: 20px;
+}
+
+.color-card {
+    background: white;
+    border: 2px solid #c8e6c9;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.color-header {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #c8e6c9;
+}
+
+.color-header input {
+    flex: 1;
+    min-width: 150px;
+    padding: 10px;
+    background: #f5f5f5;
+    border: 1px solid #c8e6c9;
+    border-radius: 12px;
+}
+
+.color-header .remove-color {
+    background: #ef9a9a;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 12px;
+    color: #c62828;
+    cursor: pointer;
+}
+
+.tallas-section { margin-top: 15px; }
+.tallas-title { font-weight: 600; margin-bottom: 10px; color: #2e7d32; font-size: 0.9rem; }
+.tallas-list { margin-bottom: 10px; }
+
+.talla-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.talla-item input {
+    padding: 10px;
+    background: #f5f5f5;
+    border: 1px solid #c8e6c9;
+    border-radius: 12px;
+}
+
+.talla-item .talla-nombre { width: 80px; }
+.talla-item .talla-precio { width: 120px; }
+.talla-item .remove-talla {
+    background: #ef9a9a;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-add-talla {
+    background: #c8e6c9;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 12px;
+    color: #2e7d32;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th, .data-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #c8e6c9;
+}
+
+.data-table th { background: #e8f5e9; font-weight: 700; color: #2e7d32; }
+.data-table tr:hover { background: #f1f8e9; }
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.badge-success { background: #c8e6c9; color: #2e7d32; }
+.badge-pending { background: #fff3e0; color: #ef6c00; }
+.badge-danger { background: #ffebee; color: #c62828; }
+.badge-info { background: #e3f2fd; color: #1565c0; }
+.badge-warning { background: #fff8e1; color: #f9a825; }
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 700px;
+    background: white;
+    border-radius: 28px;
+    padding: 0;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #66bb6a, #43a047);
+    padding: 20px;
+    color: white;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-body { padding: 25px; overflow-y: auto; flex: 1; }
+.modal-cerrar { background: rgba(255,255,255,.2); border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; color: white; font-size: 1.2rem; }
+
+.section { display: none; }
+.section.active { display: block; }
+.loading { text-align: center; padding: 40px; color: #66bb6a; }
+
+.solicitud-codigo {
+    font-family: monospace;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #66bb6a;
+    background: #e8f5e9;
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    letter-spacing: 2px;
+}
+
+/* Tracking Timeline */
+.tracking-timeline {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 20px 0;
+    gap: 8px;
+}
+
+.tracking-step {
+    flex: 1;
+    text-align: center;
+    padding: 12px 8px;
+    background: white;
+    border-radius: 16px;
+    cursor: pointer;
+    border: 2px solid #c8e6c9;
+    transition: all 0.3s;
+}
+
+.tracking-step.active {
+    background: #66bb6a;
+    color: white;
+    border-color: #66bb6a;
+}
+
+.tracking-step.completed {
+    background: #a5d6a7;
+    color: #1b5e20;
+    border-color: #a5d6a7;
+}
+
+.tracking-step .step-icon { font-size: 24px; display: block; }
+.tracking-step .step-name { font-size: 10px; margin-top: 5px; }
+
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 5px 8px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+.btn-icon:hover { background: rgba(0,0,0,0.1); transform: scale(1.1); }
+
+.estado-select {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid #c8e6c9;
+    background: white;
+    color: #2e7d32;
+    font-weight: 600;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+@media (max-width: 900px) {
+    .sidebar { position: relative; width: 100%; height: auto; }
+    .content { margin-left: 0; }
+    .data-table { font-size: 12px; }
+    .tracking-timeline { flex-direction: column; }
+}
+</style>
 </head>
 <body>
-    <!-- Enlace al panel admin -->
-    <a href="admin.html" class="admin-link">🔐 Panel Admin</a>
 
-    <div class="logo-container">
-        <div class="logo">
-            <img src="logo.png" alt="TIENDA PRIVADA" class="logo-imagen" onerror="this.src='https://via.placeholder.com/90?text=Logo'">
-            <h1 class="logo-title">TIENDA PRIVADA</h1>
+<div class="login-screen" id="loginScreen">
+    <div class="login-box">
+        <div class="login-title">🌿 GREEN ADMIN</div>
+        <div class="login-sub">Panel de control</div>
+        <input type="password" class="input" id="password" placeholder="Contraseña admin">
+        <button class="btn" onclick="login()">ACCEDER</button>
+    </div>
+</div>
+
+<div class="app" id="app">
+    <div class="sidebar">
+        <div class="logo">🌱 GREEN ADMIN</div>
+        <div class="menu">
+            <button class="active" data-section="dashboard">📊 Dashboard</button>
+            <button data-section="productos">➕ Agregar Producto</button>
+            <button data-section="inventario">📚 Inventario</button>
+            <button data-section="solicitudes">📌 Solicitudes</button>
+            <button data-section="pedidos">🛒 Pedidos</button>
+            <button data-section="tracking">🚚 TRACKING</button>
         </div>
-        <p class="logo-subtitle">✨ Estilo · Exclusividad · Seguridad</p>
     </div>
 
-    <div class="container">
-        <div class="top-bar">
-            <div class="filtros-principales">
-                <button class="filtro-btn active" data-filtro="todos">Todos</button>
-                <button class="filtro-btn" data-filtro="Amazon">Amazon</button>
-                <button class="filtro-btn" data-filtro="Temu">Temu</button>
-                <button class="filtro-btn" data-filtro="Shein">Shein</button>
-                <button class="filtro-btn" data-filtro="Sephora">Sephora</button>
-            </div>
-            <div class="acciones-top">
-                <button id="toggle-mis-pedidos" class="mis-pedidos-btn">📋 Mis Pedidos / Solicitudes</button>
-                <button id="toggle-solicitar" class="solicitar-btn">🔍 Solicitar Producto</button>
-                <button id="carrito-toggle" class="carrito-btn">🛒 Carrito <span id="carrito-contador" class="carrito-contador">0</span></button>
-            </div>
+    <div class="content">
+        <div class="topbar">
+            <div class="top-title" id="currentSectionTitle">Dashboard</div>
+            <button class="logout" onclick="logout()">Cerrar sesión</button>
         </div>
-        
-        <div id="subcategorias-container" class="subcategorias-container">
-            <div class="subcategorias" id="subcategorias-list"></div>
-        </div>
-        
-        <div id="genero-container" class="genero-container">
-            <div class="genero-filtros">
-                <button class="genero-btn active" data-genero="todos">Todos</button>
-                <button class="genero-btn" data-genero="mujer">👩 Mujer</button>
-                <button class="genero-btn" data-genero="hombre">👨 Hombre</button>
-                <button class="genero-btn" data-genero="niño">👦 Niño</button>
-                <button class="genero-btn" data-genero="niña">👧 Niña</button>
-                <button class="genero-btn" data-genero="unisex">👥 Unisex</button>
+
+        <div id="dashboardSection" class="section active">
+            <div class="stats-grid">
+                <div class="stat-card"><h3>PRODUCTOS</h3><div class="stat-value" id="totalProductos">0</div></div>
+                <div class="stat-card"><h3>SOLICITUDES PENDIENTES</h3><div class="stat-value" id="totalSolicitudesPendientes">0</div></div>
+                <div class="stat-card"><h3>PEDIDOS</h3><div class="stat-value" id="totalPedidos">0</div></div>
+                <div class="stat-card"><h3>PAGADOS</h3><div class="stat-value" id="totalPagados">0</div></div>
             </div>
         </div>
-        
-        <div id="productos" class="productos-grid"><div class="loading">Cargando productos...</div></div>
-    </div>
-    
-    <!-- Carrito -->
-    <div id="carrito-panel" class="carrito-panel">
-        <div class="carrito-header"><h3>🛒 Mi Carrito</h3><button class="cerrar-carrito-btn" id="cerrar-carrito">✕</button></div>
-        <div id="carrito-items" class="carrito-items"></div>
-        <div class="envio-info-card">
-            <p>🚚 COSTOS DE ENVÍO (SE PAGAN AL LLEGAR EL PAQUETE A PANAMÁ)</p>
-            <p>📦 Por libra: $3.50</p>
-            <p>🏠 Delivery a domicilio: $1.00</p>
-            <hr style="margin: 8px 0; border-color: #c8e6c9;">
-            <p style="font-size: 0.8rem;">✨ El envío se calcula según el peso final del paquete</p>
-        </div>
-        <div class="carrito-resumen"><div class="resumen-linea"><span>Subtotal</span><span id="subtotal-carrito">$0.00</span></div><div class="resumen-total"><span>💰 Total</span><span id="total-carrito">$0.00</span></div></div>
-        <button id="ir-pagar" class="btn-pagar">💳 Pagar →</button>
-    </div>
-    <div id="overlay" class="overlay"></div>
-    
-    <!-- MODAL SOLICITAR PRODUCTO -->
-    <div id="solicitar-modal" class="modal-solicitud">
-        <div class="modal-solicitud-content">
-            <div class="modal-header"><h2>🔍 Solicitar Producto</h2><button class="modal-cerrar" id="cerrar-solicitar-modal">✕</button></div>
-            <div class="modal-body-scroll">
-                <form id="solicitud-form">
-                    <div class="form-group"><label>📝 Tu nombre completo</label><input type="text" id="solicitante-nombre" required placeholder="Ej: María González"></div>
-                    <div class="form-group"><label>📞 Teléfono de contacto</label><input type="tel" id="solicitante-telefono" required placeholder="Ej: 6123-4567"></div>
-                    <div class="form-group"><label>🔗 Link del producto (Amazon, Temu, Shein, Sephora)</label><input type="url" id="producto-link" required placeholder="https://..."></div>
-                    <div class="form-group"><label>🛒 Plataforma</label><select id="producto-plataforma" required>
-                        <option value="Amazon">Amazon</option><option value="Temu">Temu</option>
-                        <option value="Shein">Shein</option><option value="Sephora">Sephora</option>
-                    </select></div>
-                    <div class="form-group"><label>📝 Notas adicionales (color, talla, cantidad, etc)</label><textarea id="solicitud-notas" rows="3" placeholder="Ej: Color negro, talla M, cantidad 2 unidades"></textarea></div>
-                    <button type="submit" class="btn-confirmar">📩 Enviar Solicitud</button>
-                </form>
-                <div id="solicitud-resultado" style="margin-top: 20px; display: none;">
-                    <div style="background: #e8f5e9; border-radius: 15px; padding: 20px; text-align: center;">
-                        <div style="font-size: 3rem;">✅</div>
-                        <h3 style="color: #2e7d32;">¡Solicitud Enviada!</h3>
-                        <p>Tu código de seguimiento es:</p>
-                        <div class="solicitud-codigo" id="codigo-seguimiento"></div>
-                        <p style="margin-top: 15px; font-size: 0.8rem;">Guarda este código para consultar el estado de tu solicitud</p>
-                    </div>
+
+        <!-- AGREGAR PRODUCTO -->
+        <div id="productosSection" class="section">
+            <div class="form-box">
+                <h2 style="margin-bottom:20px;">➕ Agregar Nuevo Producto</h2>
+                <div class="form-grid">
+                    <div class="form-group"><label>Nombre del producto *</label><input type="text" class="input" id="prodNombre" placeholder="Ej: Camiseta Premium"></div>
+                    <div class="form-group"><label>Precio base *</label><input type="number" class="input" id="prodPrecio" step="0.01" placeholder="0.00"></div>
+                    <div class="form-group"><label>Origen/Plataforma</label><select class="input" id="prodOrigen"><option value="Amazon">Amazon</option><option value="Temu">Temu</option><option value="Shein">Shein</option><option value="Sephora">Sephora</option></select></div>
+                    <div class="form-group"><label>Categoría</label><select class="input" id="prodCategoria"><option value="ropa">Ropa</option><option value="zapatos">Zapatos</option><option value="accesorios">Accesorios</option><option value="electronica">Electrónica</option><option value="perfume">Perfume</option><option value="maquillaje">Maquillaje</option></select></div>
+                    <div class="form-group"><label>Género</label><select class="input" id="prodGenero"><option value="mujer">Mujer</option><option value="hombre">Hombre</option><option value="unisex">Unisex</option></select></div>
+                    <div class="form-group"><label>URL Imagen</label><input type="text" class="input" id="prodImagen" placeholder="https://..."></div>
+                    <div class="form-group"><label>Enlace producto</label><input type="text" class="input" id="prodEnlace" placeholder="URL del producto"></div>
+                    <div class="form-group"><label>Estado</label><select class="input" id="prodActivo"><option value="SI">✅ Disponible</option><option value="NO">❌ No disponible</option></select></div>
                 </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- MODAL CONSULTAR (UN SOLO MODAL CON DOS TABS) -->
-    <div id="consultar-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>📋 Consultar</h2>
-                <button class="modal-cerrar" id="cerrar-consultar-modal">✕</button>
-            </div>
-            <div class="modal-body-scroll">
-                <div class="tab-buttons">
-                    <button class="tab-btn active" data-tab="solicitud">🔍 Consultar Solicitud</button>
-                    <button class="tab-btn" data-tab="pedido">📦 Consultar Pedido</button>
+                <div class="form-group"><label>Descripción</label><textarea class="input" id="prodDescripcion" placeholder="Descripción del producto"></textarea></div>
+                
+                <div style="margin:20px 0">
+                    <label style="display:flex; align-items:center; gap:12px; background:#e8f5e9; padding:15px; border-radius:16px; cursor:pointer;">
+                        <input type="checkbox" id="tieneVariantes" style="width:20px; height:20px;">
+                        <span>🎨 ¿Tiene variantes? (Colores, tallas y precios)</span>
+                    </label>
                 </div>
                 
-                <!-- TAB 1: CONSULTAR SOLICITUD -->
-                <div id="tab-solicitud" class="tab-content active">
-                    <div class="form-group">
-                        <label>📝 Ingresa tu código de 4 dígitos</label>
-                        <input type="text" id="codigo-consultar" maxlength="4" placeholder="Ej: 1234" style="text-align: center; font-size: 1.5rem; letter-spacing: 5px;">
-                    </div>
-                    <button id="btn-consultar-solicitud" class="btn-confirmar">🔍 Consultar mi Solicitud</button>
-                    <div id="solicitud-detalle" style="margin-top: 20px; display: none;"></div>
+                <div id="variantesPanel" style="display:none;" class="variantes-panel">
+                    <h3 style="margin-bottom:15px;">🎨 Colores y Tallas</h3>
+                    <div id="coloresContainer"></div>
+                    <button type="button" class="btn-small btn-secondary" onclick="agregarColor()">+ Agregar Color</button>
                 </div>
                 
-                <!-- TAB 2: CONSULTAR PEDIDO -->
-                <div id="tab-pedido" class="tab-content">
-                    <div class="form-group">
-                        <label>📝 Tu nombre completo</label>
-                        <input type="text" id="nombre-consulta" placeholder="Ej: Juan Pérez">
+                <button class="btn" onclick="agregarProducto()" style="margin-top:25px;">💾 Guardar Producto</button>
+            </div>
+        </div>
+
+        <!-- INVENTARIO -->
+        <div id="inventarioSection" class="section">
+            <h2 style="margin-bottom:20px;">📚 Inventario - Gestionar Productos</h2>
+            <div class="form-box">
+                <div id="inventarioLoading" class="loading">Cargando productos...</div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table" id="inventarioTable" style="display:none;">
+                        <thead><tr><th>ID</th><th>Producto</th><th>Precio</th><th>Origen</th><th>Tallas</th><th>Estado</th><th>Acciones</th></tr></thead>
+                        <tbody id="inventarioBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SOLICITUDES -->
+        <div id="solicitudesSection" class="section">
+            <h2 style="margin-bottom:20px;">📌 Solicitudes de Productos</h2>
+            <div class="form-box">
+                <div id="solicitudesLoading" class="loading">Cargando solicitudes...</div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table" id="solicitudesTable" style="display:none;">
+                        <thead>
+                            <tr><th>Código</th><th>Fecha</th><th>Cliente</th><th>Teléfono</th><th>Plataforma</th><th>Producto</th><th>Notas</th><th>Estado</th><th>Acciones</th></tr>
+                        </thead>
+                        <tbody id="solicitudesBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- PEDIDOS -->
+        <div id="pedidosSection" class="section">
+            <h2 style="margin-bottom:20px;">🛒 Pedidos - Gestionar Estados</h2>
+            <div class="form-box">
+                <div id="pedidosLoading" class="loading">Cargando pedidos...</div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table" id="pedidosTable" style="display:none;">
+                        <thead>
+                            <tr>
+                                <th>ID Pedido</th>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Teléfono</th>
+                                <th>Dirección</th>
+                                <th>Productos</th>
+                                <th>Total</th>
+                                <th>Método Pago</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pedidosBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRACKING -->
+        <div id="trackingSection" class="section">
+            <h2 style="margin-bottom:20px;">🚚 GESTIÓN DE TRACKING</h2>
+            <div class="form-box">
+                <div class="form-group">
+                    <label>🔍 Buscar pedido por ID o nombre del cliente</label>
+                    <input type="text" id="buscarPedidoTracking" class="input" placeholder="ID del pedido o nombre del cliente">
+                </div>
+                <button class="btn-small" onclick="buscarPedidoParaTracking()" style="width: auto; margin-bottom: 20px;">🔍 Buscar Pedido</button>
+                
+                <div id="trackingInfo" style="display: none;">
+                    <div style="background: #e8f5e9; border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+                        <h3 id="trackingCliente" style="color: #2e7d32;">Cliente: -</h3>
+                        <p id="trackingProductos">Productos: -</p>
+                        <p id="trackingTotal">Total: -</p>
+                        <p id="trackingFecha">Fecha: -</p>
                     </div>
-                    <button id="btn-consultar-pedido" class="btn-confirmar">🔍 Buscar mis pedidos</button>
-                    <div id="resultado-pedidos" style="margin-top: 20px;"></div>
-                    <div id="tracking-detalle-pedido" style="display: none; margin-top: 20px;"></div>
+                    
+                    <div class="tracking-timeline" id="trackingTimeline">
+                        <div class="tracking-step" data-step="0" onclick="seleccionarEstadoTracking(0)"><span class="step-icon">📋</span><span class="step-name">Pedido Recibido</span></div>
+                        <div class="tracking-step" data-step="1" onclick="seleccionarEstadoTracking(1)"><span class="step-icon">📦</span><span class="step-name">Preparando</span></div>
+                        <div class="tracking-step" data-step="2" onclick="seleccionarEstadoTracking(2)"><span class="step-icon">✈</span><span class="step-name">En Tránsito</span></div>
+                        <div class="tracking-step" data-step="3" onclick="seleccionarEstadoTracking(3)"><span class="step-icon">🌎</span><span class="step-name">En Panamá</span></div>
+                        <div class="tracking-step" data-step="4" onclick="seleccionarEstadoTracking(4)"><span class="step-icon">🚚</span><span class="step-name">En Reparto</span></div>
+                        <div class="tracking-step" data-step="5" onclick="seleccionarEstadoTracking(5)"><span class="step-icon">✅</span><span class="step-name">Entregado</span></div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <div class="form-group"><label>📝 Fecha estimada de llegada</label><input type="date" id="fechaEstimada" class="input"></div>
+                        <div class="form-group"><label>📌 Nota de seguimiento</label><textarea id="notaTracking" rows="2" class="input" placeholder="Ej: El paquete llegó a Panamá, pendiente de aduana"></textarea></div>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn" onclick="actualizarTrackingPedido()">💾 Guardar Cambios</button>
+                            <button class="btn" onclick="limpiarTracking()" style="background:#ef9a9a;">Limpiar</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="trackingNoEncontrado" style="display: none; text-align: center; padding: 40px; color: #ef6c00;">⚠️ No se encontró el pedido</div>
+            </div>
+            
+            <h3>📋 Lista de Pedidos con Tracking</h3>
+            <div class="form-box">
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead><tr><th>ID Pedido</th><th>Cliente</th><th>Total</th><th>Estado Tracking</th><th>Fecha Estimada</th><th>Acciones</th></tr></thead>
+                        <tbody id="trackingPedidosBody"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- Modal Producto -->
-    <div id="producto-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header"><h2>✨ Detalle del producto</h2><button class="modal-cerrar" id="cerrar-modal-producto">✕</button></div>
-            <div class="modal-body-scroll">
-                <div class="modal-producto-imagen-container" id="modal-imagen-container">
-                    <img id="modal-imagen" src="">
-                </div>
-                <h2 id="modal-nombre"></h2>
-                <div class="modal-meta"><p id="modal-origen"></p><p id="modal-genero"></p></div>
-                <p id="modal-descripcion"></p>
-                <div class="modal-precio-section"><span>PRECIO</span><span id="modal-precio"></span></div>
-                <div id="modal-colores" style="display: none;">
-                    <div class="seccion-label">🎨 Color</div>
-                    <div id="selector-color"></div>
-                </div>
-                <div id="modal-variantes" style="display: none;">
-                    <div class="seccion-label">📏 Talla</div>
-                    <div id="tallas-container" class="tallas-container"></div>
-                </div>
-                <button id="modal-agregar" class="btn-confirmar">➕ Agregar al carrito</button>
+</div>
+
+<!-- MODAL COTIZAR SOLICITUD -->
+<div id="cotizarModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>💰 Cotizar Producto</h2>
+            <button class="modal-cerrar" onclick="cerrarCotizarModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <div id="cotizarInfo"></div>
+            <div class="form-group"><label>💰 Precio cotizado (USD)</label><input type="number" id="precioCotizado" step="0.01" class="input" placeholder="0.00"></div>
+            <div class="form-group"><label>💬 Mensaje para el cliente</label><textarea id="respuestaAdmin" rows="3" class="input" placeholder="Ej: El producto está disponible, precio incluye envío a Panamá"></textarea></div>
+            <div style="display: flex; gap: 12px; margin-top: 10px;">
+                <button class="btn" onclick="enviarCotizacion()">💰 Enviar Cotización</button>
+                <button class="btn" onclick="rechazarSolicitud()" style="background:#ef9a9a;">❌ Rechazar</button>
             </div>
         </div>
     </div>
-    
-    <!-- ZOOM MODAL -->
-    <div id="zoom-modal" class="zoom-modal" onclick="cerrarZoom()">
-        <button class="close-zoom" onclick="cerrarZoom()">✕</button>
-        <img id="zoom-imagen" src="">
+</div>
+
+<!-- MODAL EDITAR PRODUCTO -->
+<div id="editarModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>✏️ Editar Producto</h2>
+            <button class="modal-cerrar" onclick="cerrarEditarModal()">✕</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editId">
+            <div class="form-grid">
+                <div class="form-group"><label>Nombre</label><input type="text" class="input" id="editNombre"></div>
+                <div class="form-group"><label>Precio base</label><input type="number" class="input" id="editPrecio" step="0.01"></div>
+                <div class="form-group"><label>Origen</label><select class="input" id="editOrigen"><option>Amazon</option><option>Temu</option><option>Shein</option><option>Sephora</option></select></div>
+                <div class="form-group"><label>Categoría</label><input type="text" class="input" id="editCategoria"></div>
+                <div class="form-group"><label>Género</label><select class="input" id="editGenero"><option>mujer</option><option>hombre</option><option>unisex</option></select></div>
+                <div class="form-group"><label>Imagen URL</label><input type="text" class="input" id="editImagen"></div>
+                <div class="form-group"><label>Enlace</label><input type="text" class="input" id="editEnlace"></div>
+                <div class="form-group"><label>Estado</label><select class="input" id="editActivo"><option value="SI">Disponible</option><option value="NO">No disponible</option></select></div>
+            </div>
+            <div class="form-group"><label>Descripción</label><textarea class="input" id="editDescripcion" rows="3"></textarea></div>
+            
+            <div style="margin:20px 0">
+                <label style="display:flex; align-items:center; gap:12px; background:#e8f5e9; padding:15px; border-radius:16px; cursor:pointer;">
+                    <input type="checkbox" id="editTieneVariantes" style="width:20px; height:20px;">
+                    <span>🎨 Editar variantes (Colores, tallas y precios)</span>
+                </label>
+            </div>
+            
+            <div id="editVariantesPanel" style="display:none;" class="variantes-panel">
+                <h3 style="margin-bottom:15px;">🎨 Colores y Tallas</h3>
+                <div id="editColoresContainer"></div>
+                <button type="button" class="btn-small btn-secondary" onclick="agregarColorEdicion()">+ Agregar Color</button>
+            </div>
+            
+            <div style="display: flex; gap: 12px; margin-top: 20px;">
+                <button class="btn" onclick="guardarEdicion()">💾 Guardar Cambios</button>
+                <button class="btn" onclick="cerrarEditarModal()" style="background:#ef9a9a;">Cancelar</button>
+            </div>
+        </div>
     </div>
-    
-    <!-- Modales de pago -->
-    <div id="pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📋 Datos de envío</h2><button class="modal-cerrar" id="cerrar-pago-modal">✕</button></div><form id="pedido-form-modal" style="padding:20px;"><div class="form-group"><label>📝 Nombre completo</label><input type="text" id="nombre-modal" required></div><div class="form-group"><label>📞 Teléfono</label><input type="tel" id="telefono-modal" required></div><div class="form-group"><label>🏠 Dirección completa</label><textarea id="direccion-modal" rows="3" required></textarea></div><div class="form-group"><label>💳 Método de pago</label><select id="metodo-pago-modal" required><option value="Efectivo">Efectivo al recibir</option><option value="Yappy">Yappy</option></select></div><button type="submit" class="btn-confirmar">Confirmar pedido</button></form></div></div>
-    
-    <div id="yappy-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📱 Pagar con Yappy</h2><button class="modal-cerrar" id="cerrar-yappy-modal">✕</button></div><div style="padding:30px; text-align:center;"><p style="font-weight:600;">Transfiere a:</p><div style="background:#e8f5e9; border-radius:15px; padding:15px; border:2px solid #81c784; margin-bottom:15px;"><p style="font-size:1.8rem; font-weight:800; color:#66bb6a; font-family:monospace;">6474-5914</p></div><button id="copiar-yappy" class="btn-confirmar" style="margin-bottom:10px;">📋 Copiar número</button><button id="ya-pague" class="btn-confirmar">✅ Ya pagué</button></div></div></div>
-    
-    <div id="confirmar-pago-modal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🔍 Confirmar Pago</h2><button class="modal-cerrar" id="cerrar-confirmar-modal">✕</button></div><div style="padding:20px;"><div class="form-group"><label>Tu nombre</label><input type="text" id="nombre-verificar" placeholder="Juan Pérez"></div><button id="verificar-pago" class="btn-confirmar">Verificar pago</button></div></div></div>
+</div>
 
 <script>
 const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
-let productos = [], carrito = [], productoActual = null, colorSeleccionado = null, tallaSeleccionada = null;
-let filtroPlataforma = 'todos', filtroSubcat = null, filtroGenero = 'todos';
+let productos = [];
+let pedidos = [];
 let solicitudes = [];
+let solicitudActual = null;
+let trackingActual = null;
+let estadoSeleccionado = 0;
 
-// ========== SOLICITUDES ==========
+function login() {
+    const pass = document.getElementById('password').value;
+    if (pass === 'admin123') {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        cargarTodosLosDatos();
+    } else {
+        alert('Contraseña incorrecta');
+    }
+}
+
+function logout() { location.reload(); }
+
+async function cargarTodosLosDatos() {
+    await cargarProductos();
+    await cargarPedidos();
+    cargarSolicitudes();
+    actualizarStats();
+    renderizarTrackingPedidos();
+}
+
+// ==================== VARIANTES ====================
+function agregarColor() {
+    const container = document.getElementById('coloresContainer');
+    const colorId = Date.now();
+    const div = document.createElement('div');
+    div.className = 'color-card';
+    div.id = `color_${colorId}`;
+    div.innerHTML = `
+        <div class="color-header">
+            <input type="text" placeholder="Nombre del Color" class="color-nombre">
+            <input type="text" placeholder="URL Imagen del Color" class="color-imagen">
+            <button class="remove-color" onclick="this.closest('.color-card').remove()">🗑️ Eliminar Color</button>
+        </div>
+        <div class="tallas-section">
+            <div class="tallas-title">📏 Tallas y Precios</div>
+            <div class="tallas-list" id="tallas_${colorId}"></div>
+            <button type="button" class="btn-add-talla" onclick="agregarTalla('${colorId}')">+ Agregar Talla</button>
+        </div>
+    `;
+    container.appendChild(div);
+    agregarTalla(colorId);
+}
+
+function agregarTalla(colorId) {
+    const container = document.getElementById(`tallas_${colorId}`);
+    if (!container) return;
+    const div = document.createElement('div');
+    div.className = 'talla-item';
+    div.innerHTML = `
+        <input type="text" placeholder="Talla" class="talla-nombre" style="width:80px;">
+        <input type="number" placeholder="Precio" class="talla-precio" step="0.01" style="width:120px;">
+        <button class="remove-talla" onclick="this.parentElement.remove()">✗</button>
+    `;
+    container.appendChild(div);
+}
+
+function obtenerVariantesParaGuardar(containerId) {
+    const colores = [];
+    const container = document.getElementById(containerId);
+    if (!container) return [];
+    
+    container.querySelectorAll('.color-card').forEach(colorCard => {
+        const colorNombre = colorCard.querySelector('.color-nombre')?.value || '';
+        const colorImagen = colorCard.querySelector('.color-imagen')?.value || '';
+        const tallas = [];
+        colorCard.querySelectorAll('.talla-item').forEach(tallaItem => {
+            const tallaNombre = tallaItem.querySelector('.talla-nombre')?.value || '';
+            const tallaPrecio = tallaItem.querySelector('.talla-precio')?.value || '';
+            if (tallaNombre) {
+                tallas.push(`${tallaNombre}:${tallaPrecio}`);
+            }
+        });
+        if (colorNombre && tallas.length > 0) {
+            colores.push(`${colorNombre}:${tallas.join(',')}`);
+        }
+    });
+    return colores;
+}
+
+function cargarVariantesEnEdicion(coloresArray) {
+    const container = document.getElementById('editColoresContainer');
+    container.innerHTML = '';
+    
+    if (!coloresArray || !coloresArray.length) return;
+    
+    coloresArray.forEach(color => {
+        const colorId = Date.now() + Math.random();
+        const div = document.createElement('div');
+        div.className = 'color-card';
+        div.id = `edit_color_${colorId}`;
+        div.innerHTML = `
+            <div class="color-header">
+                <input type="text" placeholder="Nombre del Color" class="color-nombre" value="${color.nombre || ''}">
+                <input type="text" placeholder="URL Imagen del Color" class="color-imagen" value="${color.imagen || ''}">
+                <button class="remove-color" onclick="this.closest('.color-card').remove()">🗑️ Eliminar Color</button>
+            </div>
+            <div class="tallas-section">
+                <div class="tallas-title">📏 Tallas y Precios</div>
+                <div class="tallas-list" id="edit_tallas_${colorId}"></div>
+                <button type="button" class="btn-add-talla" onclick="agregarTallaEdicion('${colorId}')">+ Agregar Talla</button>
+            </div>
+        `;
+        container.appendChild(div);
+        
+        const tallasContainer = document.getElementById(`edit_tallas_${colorId}`);
+        if (color.tallas && color.tallas.length) {
+            color.tallas.forEach(talla => {
+                const tallaDiv = document.createElement('div');
+                tallaDiv.className = 'talla-item';
+                tallaDiv.innerHTML = `
+                    <input type="text" placeholder="Talla" class="talla-nombre" value="${talla.talla || ''}" style="width:80px;">
+                    <input type="number" placeholder="Precio" class="talla-precio" value="${talla.precio || 0}" step="0.01" style="width:120px;">
+                    <button class="remove-talla" onclick="this.parentElement.remove()">✗</button>
+                `;
+                tallasContainer.appendChild(tallaDiv);
+            });
+        } else {
+            agregarTallaEdicion(colorId);
+        }
+    });
+}
+
+function agregarTallaEdicion(colorId) {
+    const container = document.getElementById(`edit_tallas_${colorId}`);
+    if (!container) return;
+    const div = document.createElement('div');
+    div.className = 'talla-item';
+    div.innerHTML = `
+        <input type="text" placeholder="Talla" class="talla-nombre" style="width:80px;">
+        <input type="number" placeholder="Precio" class="talla-precio" step="0.01" style="width:120px;">
+        <button class="remove-talla" onclick="this.parentElement.remove()">✗</button>
+    `;
+    container.appendChild(div);
+}
+
+function agregarColorEdicion() {
+    const container = document.getElementById('editColoresContainer');
+    const colorId = Date.now() + Math.random();
+    const div = document.createElement('div');
+    div.className = 'color-card';
+    div.id = `edit_color_${colorId}`;
+    div.innerHTML = `
+        <div class="color-header">
+            <input type="text" placeholder="Nombre del Color" class="color-nombre">
+            <input type="text" placeholder="URL Imagen del Color" class="color-imagen">
+            <button class="remove-color" onclick="this.closest('.color-card').remove()">🗑️ Eliminar Color</button>
+        </div>
+        <div class="tallas-section">
+            <div class="tallas-title">📏 Tallas y Precios</div>
+            <div class="tallas-list" id="edit_tallas_${colorId}"></div>
+            <button type="button" class="btn-add-talla" onclick="agregarTallaEdicion('${colorId}')">+ Agregar Talla</button>
+        </div>
+    `;
+    container.appendChild(div);
+    agregarTallaEdicion(colorId);
+}
+
+// ==================== PRODUCTOS ====================
+async function cargarProductos() {
+    const loading = document.getElementById('inventarioLoading');
+    const table = document.getElementById('inventarioTable');
+    
+    try {
+        loading.style.display = 'block';
+        table.style.display = 'none';
+        
+        const response = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
+        const data = await response.json();
+        productos = Array.isArray(data) ? data : [];
+        
+        renderizarInventario();
+    } catch (error) {
+        console.error('Error:', error);
+        productos = [];
+        renderizarInventario();
+    }
+    
+    loading.style.display = 'none';
+    table.style.display = 'block';
+}
+
+function renderizarInventario() {
+    const tbody = document.getElementById('inventarioBody');
+    
+    if (!productos.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay productos registrados</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = productos.map(p => {
+        let tallasInfo = 'Sin tallas';
+        if (p.colores && p.colores.length) {
+            const todasTallas = [];
+            p.colores.forEach(color => {
+                if (color.tallas && color.tallas.length) {
+                    color.tallas.forEach(t => {
+                        if (t.talla) todasTallas.push(t.talla);
+                    });
+                }
+            });
+            if (todasTallas.length) tallasInfo = [...new Set(todasTallas)].join(', ');
+        }
+        
+        return `
+            <tr>
+                <td>${p.id || '-'}</td>
+                <td><strong>${p.nombre || '-'}</strong><br><small>${(p.descripcion || '').substring(0, 40)}</small></td>
+                <td>$${parseFloat(p.precio || 0).toFixed(2)}</td>
+                <td>${p.origen || '-'}</td>
+                <td>${tallasInfo}</td>
+                <td><span class="badge ${p.activo === 'SI' ? 'badge-success' : 'badge-danger'}">${p.activo === 'SI' ? 'Disponible' : 'No disponible'}</span></td>
+                <td>
+                    <button onclick="abrirEditarProducto(${p.id})" style="background:#81c784; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; margin-right:5px;">✏️ Editar</button>
+                    <button onclick="eliminarProducto(${p.id})" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;">🗑️</button>
+                  </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+async function agregarProducto() {
+    const tieneVariantes = document.getElementById('tieneVariantes').checked;
+    let variantesString = '';
+    let coloresNombres = '';
+    let coloresImagenes = '';
+    let coloresPrecios = '';
+    
+    if (tieneVariantes) {
+        const coloresData = obtenerVariantesParaGuardar('coloresContainer');
+        variantesString = coloresData.join('|');
+        
+        const colores = [];
+        document.querySelectorAll('#coloresContainer .color-card').forEach(colorCard => {
+            const nombre = colorCard.querySelector('.color-nombre')?.value || '';
+            const imagen = colorCard.querySelector('.color-imagen')?.value || '';
+            const primeraTalla = colorCard.querySelector('.talla-item .talla-precio')?.value || '0';
+            if (nombre) {
+                colores.push({ nombre, imagen, precio: primeraTalla });
+            }
+        });
+        coloresNombres = colores.map(c => c.nombre).join(',');
+        coloresImagenes = colores.map(c => c.imagen).join(',');
+        coloresPrecios = colores.map(c => c.precio).join(',');
+    }
+    
+    const nuevoProducto = {
+        action: 'agregarProducto',
+        nombre: document.getElementById('prodNombre').value,
+        precio: parseFloat(document.getElementById('prodPrecio').value),
+        origen: document.getElementById('prodOrigen').value,
+        imagen: document.getElementById('prodImagen').value || 'https://via.placeholder.com/300x200',
+        descripcion: document.getElementById('prodDescripcion').value,
+        enlace: document.getElementById('prodEnlace').value,
+        categoria_genero: document.getElementById('prodGenero').value,
+        categoria: document.getElementById('prodCategoria').value,
+        tiene_variantes: tieneVariantes ? "SI" : "NO",
+        variantes: variantesString,
+        colores_nombres: coloresNombres,
+        colores_imagenes: coloresImagenes,
+        colores_precios: coloresPrecios
+    };
+    
+    if (!nuevoProducto.nombre || !nuevoProducto.precio) {
+        alert('Nombre y precio son obligatorios');
+        return;
+    }
+    
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(nuevoProducto)
+        });
+        
+        alert('✅ Producto agregado correctamente');
+        limpiarFormularioProducto();
+        await cargarProductos();
+        actualizarStats();
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al conectar con Google Sheets');
+    }
+}
+
+function limpiarFormularioProducto() {
+    document.getElementById('prodNombre').value = '';
+    document.getElementById('prodPrecio').value = '';
+    document.getElementById('prodImagen').value = '';
+    document.getElementById('prodEnlace').value = '';
+    document.getElementById('prodDescripcion').value = '';
+    document.getElementById('tieneVariantes').checked = false;
+    document.getElementById('variantesPanel').style.display = 'none';
+    document.getElementById('coloresContainer').innerHTML = '';
+}
+
+function abrirEditarProducto(id) {
+    const producto = productos.find(p => p.id == id);
+    if (!producto) return;
+    
+    document.getElementById('editId').value = producto.id;
+    document.getElementById('editNombre').value = producto.nombre || '';
+    document.getElementById('editPrecio').value = producto.precio || 0;
+    document.getElementById('editOrigen').value = producto.origen || 'Amazon';
+    document.getElementById('editCategoria').value = producto.categoria || '';
+    document.getElementById('editGenero').value = producto.genero || 'unisex';
+    document.getElementById('editImagen').value = producto.imagen || '';
+    document.getElementById('editEnlace').value = producto.enlace || '';
+    document.getElementById('editActivo').value = producto.activo || 'SI';
+    document.getElementById('editDescripcion').value = producto.descripcion || '';
+    
+    const tieneVariantes = (producto.colores && producto.colores.length > 0);
+    document.getElementById('editTieneVariantes').checked = tieneVariantes;
+    document.getElementById('editVariantesPanel').style.display = tieneVariantes ? 'block' : 'none';
+    
+    if (tieneVariantes && producto.colores) {
+        cargarVariantesEnEdicion(producto.colores);
+    } else {
+        document.getElementById('editColoresContainer').innerHTML = '';
+    }
+    
+    document.getElementById('editarModal').style.display = 'flex';
+}
+
+async function guardarEdicion() {
+    const id = parseInt(document.getElementById('editId').value);
+    const tieneVariantes = document.getElementById('editTieneVariantes').checked;
+    let variantesString = '';
+    let coloresNombres = '';
+    let coloresImagenes = '';
+    let coloresPrecios = '';
+    
+    if (tieneVariantes) {
+        const coloresData = obtenerVariantesParaGuardar('editColoresContainer');
+        variantesString = coloresData.join('|');
+        
+        const colores = [];
+        document.querySelectorAll('#editColoresContainer .color-card').forEach(colorCard => {
+            const nombre = colorCard.querySelector('.color-nombre')?.value || '';
+            const imagen = colorCard.querySelector('.color-imagen')?.value || '';
+            const primeraTalla = colorCard.querySelector('.talla-item .talla-precio')?.value || '0';
+            if (nombre) {
+                colores.push({ nombre, imagen, precio: primeraTalla });
+            }
+        });
+        coloresNombres = colores.map(c => c.nombre).join(',');
+        coloresImagenes = colores.map(c => c.imagen).join(',');
+        coloresPrecios = colores.map(c => c.precio).join(',');
+    }
+    
+    const productoEditado = {
+        action: 'editarProductoCompleto',
+        id: id,
+        nombre: document.getElementById('editNombre').value,
+        precio: parseFloat(document.getElementById('editPrecio').value),
+        origen: document.getElementById('editOrigen').value,
+        imagen: document.getElementById('editImagen').value,
+        activo: document.getElementById('editActivo').value,
+        descripcion: document.getElementById('editDescripcion').value,
+        enlace: document.getElementById('editEnlace').value,
+        genero: document.getElementById('editGenero').value,
+        categoria: document.getElementById('editCategoria').value,
+        tiene_variantes: tieneVariantes ? "SI" : "NO",
+        variantes: variantesString,
+        colores_nombres: coloresNombres,
+        colores_imagenes: coloresImagenes,
+        colores_precios: coloresPrecios
+    };
+    
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(productoEditado)
+        });
+        
+        alert('✅ Producto actualizado');
+        cerrarEditarModal();
+        await cargarProductos();
+        actualizarStats();
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al actualizar');
+    }
+}
+
+async function eliminarProducto(id) {
+    if (!confirm('¿Estás seguro de eliminar este producto?')) return;
+    
+    try {
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({ action: 'eliminarProducto', id: id })
+        });
+        
+        alert('✅ Producto eliminado');
+        await cargarProductos();
+        actualizarStats();
+    } catch (error) {
+        console.error('Error:', error);
+        productos = productos.filter(p => p.id !== id);
+        renderizarInventario();
+        actualizarStats();
+    }
+}
+
+function cerrarEditarModal() {
+    document.getElementById('editarModal').style.display = 'none';
+}
+
+// ==================== SOLICITUDES ====================
 function cargarSolicitudes() {
     const saved = localStorage.getItem('solicitudes');
-    if(saved) solicitudes = JSON.parse(saved);
-    else solicitudes = [];
+    if (saved) {
+        solicitudes = JSON.parse(saved);
+    } else {
+        solicitudes = [];
+        guardarSolicitudes();
+    }
+    renderizarSolicitudes();
+    actualizarStats();
 }
 
 function guardarSolicitudes() {
     localStorage.setItem('solicitudes', JSON.stringify(solicitudes));
 }
 
-function generarCodigo() {
-    return Math.floor(1000 + Math.random() * 9000).toString();
-}
-
-// Enviar solicitud
-document.getElementById('solicitud-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const nombre = document.getElementById('solicitante-nombre').value;
-    const telefono = document.getElementById('solicitante-telefono').value;
-    const link = document.getElementById('producto-link').value;
-    const plataforma = document.getElementById('producto-plataforma').value;
-    const notas = document.getElementById('solicitud-notas').value;
-    const codigo = generarCodigo();
+function renderizarSolicitudes() {
+    const tablaBody = document.getElementById('solicitudesBody');
+    const loading = document.getElementById('solicitudesLoading');
+    const table = document.getElementById('solicitudesTable');
     
-    const nuevaSolicitud = {
-        codigo, nombre, telefono, link, plataforma, notas,
-        estado: 'pendiente',
-        fecha: new Date().toISOString(),
-        cotizacion: null,
-        respuestaAdmin: null
-    };
-    
-    solicitudes.push(nuevaSolicitud);
-    guardarSolicitudes();
-    
-    document.getElementById('codigo-seguimiento').textContent = codigo;
-    document.getElementById('solicitud-resultado').style.display = 'block';
-    document.getElementById('solicitud-form').style.display = 'none';
-    
-    setTimeout(() => {
-        document.getElementById('solicitud-form').reset();
-        document.getElementById('solicitud-form').style.display = 'block';
-        document.getElementById('solicitud-resultado').style.display = 'none';
-        document.getElementById('solicitar-modal').classList.remove('active');
-    }, 5000);
-    
-    alert('✅ Solicitud enviada. Guarda tu código: ' + codigo);
-});
-
-// Consultar solicitud
-document.getElementById('btn-consultar-solicitud').addEventListener('click', () => {
-    const codigo = document.getElementById('codigo-consultar').value;
-    const solicitud = solicitudes.find(s => s.codigo === codigo);
-    const detalleDiv = document.getElementById('solicitud-detalle');
-    
-    if(!solicitud) {
-        detalleDiv.innerHTML = '<div style="background:#ffebee; border-radius:15px; padding:20px; text-align:center; color:#c62828;">❌ Código no encontrado</div>';
-        detalleDiv.style.display = 'block';
+    if (!solicitudes.length) {
+        tablaBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No hay solicitudes de productos</td></tr>';
+        loading.style.display = 'none';
+        table.style.display = 'block';
         return;
     }
     
-    let estadoTexto = '', estadoClass = '';
-    switch(solicitud.estado) {
-        case 'pendiente': estadoTexto = '⏳ Pendiente de revisión'; estadoClass = 'estado-pendiente'; break;
-        case 'cotizado': estadoTexto = '💰 Cotizado - Revisa el precio'; estadoClass = 'estado-cotizado'; break;
-        case 'aprobado': estadoTexto = '✅ Aprobado - Ya puedes comprar'; estadoClass = 'estado-aprobado'; break;
-        case 'rechazado': estadoTexto = '❌ Rechazado'; estadoClass = 'estado-rechazado'; break;
-        default: estadoTexto = solicitud.estado;
-    }
+    const estadosClass = {
+        'pendiente': 'badge-pending',
+        'cotizado': 'badge-info',
+        'aprobado': 'badge-success',
+        'rechazado': 'badge-danger'
+    };
     
-    detalleDiv.innerHTML = `
-        <div style="background:#f1f8f6; border-radius:15px; padding:20px;">
-            <div style="text-align:center; margin-bottom:15px;">
-                <span class="solicitud-codigo" style="font-size:1.2rem;">${solicitud.codigo}</span>
-                <span class="estado-solicitud ${estadoClass}" style="margin-left:10px;">${estadoTexto}</span>
-            </div>
-            <div style="margin-top:15px;">
-                <p><strong>📦 Producto:</strong> <a href="${solicitud.link}" target="_blank" style="color:#66bb6a;">Ver producto</a></p>
-                <p><strong>🛒 Plataforma:</strong> ${solicitud.plataforma}</p>
-                <p><strong>📝 Notas:</strong> ${solicitud.notas || 'Sin notas'}</p>
-                ${solicitud.cotizacion ? `<p><strong>💰 Precio cotizado:</strong> $${solicitud.cotizacion.toFixed(2)}</p>` : ''}
-                ${solicitud.respuestaAdmin ? `<p><strong>💬 Respuesta del administrador:</strong> ${solicitud.respuestaAdmin}</p>` : ''}
-            </div>
-            ${solicitud.estado === 'cotizado' ? `
-                <button onclick="aprobarSolicitudCliente('${solicitud.codigo}')" class="btn-confirmar" style="margin-top:15px;">✅ Aceptar precio y comprar</button>
-            ` : ''}
-            ${solicitud.estado === 'aprobado' ? `
-                <div style="margin-top:15px; padding:15px; background:#e8f5e9; border-radius:12px; text-align:center;">
-                    <p style="font-weight:700; color:#2e7d32;">¡Producto disponible!</p>
-                    <p>Puedes agregarlo a tu carrito con el precio de <strong>$${solicitud.cotizacion?.toFixed(2)}</strong></p>
-                    <button onclick="agregarSolicitudAlCarrito('${solicitud.codigo}')" class="btn-confirmar" style="margin-top:10px;">🛒 Agregar al carrito</button>
-                </div>
-            ` : ''}
-            ${solicitud.estado === 'pendiente' ? `<p style="margin-top:15px; text-align:center; color:#ef6c00;">⏳ Esperando respuesta del administrador...</p>` : ''}
+    const estadosTexto = {
+        'pendiente': '⏳ Pendiente',
+        'cotizado': '💰 Cotizado',
+        'aprobado': '✅ Aprobado',
+        'rechazado': '❌ Rechazado'
+    };
+    
+    tablaBody.innerHTML = solicitudes.map(sol => `
+        <tr>
+            <td><span class="solicitud-codigo">${sol.codigo}</span></td>
+            <td>${new Date(sol.fecha).toLocaleDateString()} ${new Date(sol.fecha).toLocaleTimeString()}</td>
+            <td><strong>${sol.nombre}</strong></td>
+            <td>${sol.telefono}</td>
+            <td>${sol.plataforma}</td>
+            <td style="max-width:200px;">
+                <a href="${sol.link}" target="_blank" style="color:#66bb6a;">Ver producto</a>
+                ${sol.notas ? `<br><small>${sol.notas.substring(0, 40)}</small>` : ''}
+              </td>
+            <td style="max-width:150px;">${sol.notas ? sol.notas.substring(0, 50) + (sol.notas.length > 50 ? '...' : '') : '-'}</td>
+            <td><span class="badge ${estadosClass[sol.estado]}">${estadosTexto[sol.estado]}</span></td>
+            <td>
+                ${sol.estado === 'pendiente' ? `<button onclick="abrirCotizarModal('${sol.codigo}')" style="background:#66bb6a; border:none; padding:6px 12px; border-radius:8px; color:white; cursor:pointer;">💰 Cotizar</button>` : ''}
+                ${sol.estado === 'cotizado' ? `<div><span>💰 $${sol.cotizacion?.toFixed(2)}</span><br><button onclick="aprobarSolicitudAdmin('${sol.codigo}')" style="background:#81c784; border:none; padding:4px 10px; border-radius:8px; margin-top:5px; cursor:pointer;">✅ Aprobar</button></div>` : ''}
+                ${sol.estado === 'aprobado' ? `<span>✅ Aprobado</span>` : ''}
+                ${sol.estado === 'rechazado' ? `<span>❌ Rechazado</span>` : ''}
+              </td>
+        </tr>
+    `).join('');
+    
+    loading.style.display = 'none';
+    table.style.display = 'block';
+}
+
+function abrirCotizarModal(codigo) {
+    const solicitud = solicitudes.find(s => s.codigo === codigo);
+    if (!solicitud) return;
+    
+    solicitudActual = solicitud;
+    
+    document.getElementById('cotizarInfo').innerHTML = `
+        <div style="background:#e8f5e9; border-radius:16px; padding:15px; margin-bottom:20px;">
+            <p><strong>👤 Cliente:</strong> ${solicitud.nombre}</p>
+            <p><strong>📞 Teléfono:</strong> ${solicitud.telefono}</p>
+            <p><strong>🛒 Plataforma:</strong> ${solicitud.plataforma}</p>
+            <p><strong>🔗 Producto:</strong> <a href="${solicitud.link}" target="_blank" style="color:#66bb6a;">${solicitud.link.substring(0, 50)}...</a></p>
+            <p><strong>📝 Notas:</strong> ${solicitud.notas || 'Sin notas'}</p>
         </div>
     `;
-    detalleDiv.style.display = 'block';
-});
+    
+    document.getElementById('precioCotizado').value = solicitud.cotizacion || '';
+    document.getElementById('respuestaAdmin').value = solicitud.respuestaAdmin || '';
+    document.getElementById('cotizarModal').style.display = 'flex';
+}
 
-function aprobarSolicitudCliente(codigo) {
-    const solicitud = solicitudes.find(s => s.codigo === codigo);
-    if(solicitud) {
-        solicitud.estado = 'aprobado';
+function cerrarCotizarModal() {
+    document.getElementById('cotizarModal').style.display = 'none';
+    solicitudActual = null;
+}
+
+function enviarCotizacion() {
+    if (!solicitudActual) return;
+    
+    const precio = parseFloat(document.getElementById('precioCotizado').value);
+    if (isNaN(precio) || precio <= 0) {
+        alert('Ingresa un precio válido');
+        return;
+    }
+    
+    solicitudActual.cotizacion = precio;
+    solicitudActual.respuestaAdmin = document.getElementById('respuestaAdmin').value;
+    solicitudActual.estado = 'cotizado';
+    
+    guardarSolicitudes();
+    renderizarSolicitudes();
+    cerrarCotizarModal();
+    actualizarStats();
+    
+    alert(`✅ Cotización enviada al cliente\n💰 Precio: $${precio.toFixed(2)}\n📱 El cliente puede verlo con su código: ${solicitudActual.codigo}`);
+}
+
+function rechazarSolicitud() {
+    if (!solicitudActual) return;
+    
+    if (confirm('¿Estás seguro de rechazar esta solicitud?')) {
+        solicitudActual.estado = 'rechazado';
+        solicitudActual.respuestaAdmin = document.getElementById('respuestaAdmin').value || 'Lo sentimos, no podemos procesar esta solicitud.';
         guardarSolicitudes();
-        document.getElementById('btn-consultar-solicitud').click();
-        alert('✅ Solicitud aprobada. Ya puedes agregar el producto al carrito.');
+        renderizarSolicitudes();
+        cerrarCotizarModal();
+        actualizarStats();
+        alert('❌ Solicitud rechazada');
     }
 }
 
-function agregarSolicitudAlCarrito(codigo) {
+function aprobarSolicitudAdmin(codigo) {
     const solicitud = solicitudes.find(s => s.codigo === codigo);
-    if(solicitud && solicitud.cotizacion) {
-        const existente = carrito.find(i => i.id === `sol_${codigo}`);
-        if(existente) {
-            existente.cantidad++;
-        } else {
-            carrito.push({
-                id: `sol_${codigo}`,
-                nombre: `📦 Producto solicitado (${solicitud.plataforma})`,
-                precio: solicitud.cotizacion,
-                origen: solicitud.plataforma,
-                cantidad: 1
-            });
-        }
-        localStorage.setItem('carrito', JSON.stringify(carrito));
-        actualizarCarrito();
-        document.getElementById('consultar-modal').style.display = 'none';
-        alert('✅ Producto agregado al carrito correctamente');
-    }
-}
-
-// ========== CATEGORÍAS ==========
-const subcategorias = {
-    'Amazon': [
-        { id: 'ropa', nombre: '👕 Ropa', valor: 'ropa' },
-        { id: 'zapatos', nombre: '👟 Zapatos', valor: 'zapatos' },
-        { id: 'accesorios', nombre: '💍 Accesorios', valor: 'accesorios' },
-        { id: 'electronica', nombre: '📱 Electrónica', valor: 'electrónica' },
-        { id: 'perfume', nombre: '🌸 Perfume', valor: 'perfume' },
-        { id: 'maquillaje', nombre: '💄 Maquillaje', valor: 'maquillaje' }
-    ],
-    'Temu': [
-        { id: 'ropa', nombre: '👕 Ropa', valor: 'ropa' },
-        { id: 'zapatos', nombre: '👟 Zapatos', valor: 'zapatos' },
-        { id: 'accesorios', nombre: '💍 Accesorios', valor: 'accesorios' },
-        { id: 'electronica', nombre: '📱 Electrónica', valor: 'electrónica' }
-    ],
-    'Shein': [
-        { id: 'ropa', nombre: '👕 Ropa', valor: 'ropa' },
-        { id: 'zapatos', nombre: '👟 Zapatos', valor: 'zapatos' },
-        { id: 'accesorios', nombre: '💍 Accesorios', valor: 'accesorios' },
-        { id: 'electronica', nombre: '📱 Electrónica', valor: 'electrónica' }
-    ],
-    'Sephora': [
-        { id: 'cuidado_piel', nombre: '🧴 Cuidado de la piel', valor: 'cuidado de la piel' },
-        { id: 'cuidado_cabello', nombre: '💇 Cuidado del cabello', valor: 'cuidado del cabello' },
-        { id: 'maquillaje', nombre: '💄 Maquillaje', valor: 'maquillaje' },
-        { id: 'perfume', nombre: '🌸 Perfume', valor: 'perfume' }
-    ]
-};
-
-function actualizarSubcategorias() {
-    const container = document.getElementById('subcategorias-list');
-    const subcatContainer = document.getElementById('subcategorias-container');
-    if(!container) return;
-    container.innerHTML = '';
+    if (!solicitud) return;
     
-    if (filtroPlataforma === 'todos') {
-        subcatContainer.classList.remove('visible');
-        filtroSubcat = null;
-        return;
-    }
-    
-    const subs = subcategorias[filtroPlataforma];
-    if (subs && subs.length > 0) {
-        subs.forEach(sub => {
-            const btn = document.createElement('button');
-            btn.className = 'subcat-btn';
-            btn.textContent = sub.nombre;
-            btn.onclick = () => {
-                document.querySelectorAll('.subcat-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                filtroSubcat = sub.valor;
-                document.getElementById('genero-container').classList.add('visible');
-                filtroGenero = 'todos';
-                document.querySelectorAll('.genero-btn').forEach(b => b.classList.remove('active'));
-                document.querySelector('.genero-btn[data-genero="todos"]')?.classList.add('active');
-                mostrarProductos();
-            };
-            container.appendChild(btn);
-        });
-        subcatContainer.classList.add('visible');
-    } else {
-        subcatContainer.classList.remove('visible');
-        filtroSubcat = null;
-    }
+    solicitud.estado = 'aprobado';
+    guardarSolicitudes();
+    renderizarSolicitudes();
+    actualizarStats();
+    alert(`✅ Solicitud ${codigo} aprobada. El cliente ya puede comprar.`);
 }
 
-// ========== PRODUCTOS ==========
-async function cargarProductos() {
-    try {
-        const res = await fetch(`${API_URL}?action=getProductos&t=${Date.now()}`);
-        productos = await res.json();
-        mostrarProductos();
-    } catch(e) { 
-        console.error(e);
-        document.getElementById('productos').innerHTML = '<div class="loading">Error cargando productos</div>';
-    }
-}
-
-function getIconoGenero(g) { 
-    const generos = { hombre:'👨', mujer:'👩', niño:'👦', niña:'👧', unisex:'👥' };
-    return generos[g] || '👤';
-}
-
-function mostrarProductos() {
-    let filtrados = productos.filter(p => {
-        if (filtroPlataforma !== 'todos' && p.origen !== filtroPlataforma) return false;
-        if (filtroSubcat) {
-            const catProd = (p.categoria || '').toLowerCase().trim();
-            if (catProd !== filtroSubcat) return false;
-        }
-        if (filtroGenero !== 'todos' && (p.genero || 'unisex') !== filtroGenero) return false;
-        return true;
-    });
-    
-    const cont = document.getElementById('productos');
-    if (!filtrados.length) { 
-        cont.innerHTML = '<div class="vacio">✨ No hay productos en esta categoría</div>'; 
-        return; 
-    }
-    
-    cont.innerHTML = filtrados.map(p => `
-        <div class="producto-card" onclick="mostrarModal(${p.id})">
-            <img src="${p.imagen || 'https://via.placeholder.com/310x280'}" class="producto-imagen" onerror="this.src='https://via.placeholder.com/310x280?text=Producto'">
-            <div class="producto-info">
-                <div class="producto-origen origen-${(p.origen || 'temu').toLowerCase()}">${p.origen || 'General'}</div>
-                <div class="producto-genero">${getIconoGenero(p.genero)} ${p.genero || 'Unisex'}</div>
-                ${p.categoria ? `<div class="producto-categoria">📂 ${p.categoria}</div>` : ''}
-                <h3 class="producto-titulo">${p.nombre || 'Producto'}</h3>
-                <div class="producto-precio">$${(p.precio || 0).toFixed(2)}</div>
-                <button class="btn-agregar" onclick="event.stopPropagation(); agregarAlCarrito(${p.id})">➕ Agregar</button>
-            </div>
-        </div>
-    `).join('');
-}
-
-// ========== CARRITO ==========
-function agregarAlCarrito(id) {
-    const prod = productos.find(p => p.id == id);
-    if(prod) {
-        let precio = prod.precio || 0;
-        let nombre = prod.nombre || 'Producto';
-        
-        if(colorSeleccionado) {
-            precio = colorSeleccionado.precio || precio;
-            nombre += ` (${colorSeleccionado.nombre})`;
-        }
-        if(tallaSeleccionada) {
-            precio = tallaSeleccionada.precio || precio;
-            nombre += ` - Talla: ${tallaSeleccionada.talla}`;
-        }
-        
-        const existente = carrito.find(i => i.id === id && i.nombre === nombre);
-        if(existente) {
-            existente.cantidad++;
-        } else {
-            carrito.push({ id, nombre, precio, origen: prod.origen, cantidad: 1 });
-        }
-        localStorage.setItem('carrito', JSON.stringify(carrito));
-        actualizarCarrito();
-        alert('✅ Producto agregado al carrito');
-    }
-}
-
-function actualizarCarrito() {
-    const total = carrito.reduce((s,i) => s + (i.precio || 0) * i.cantidad, 0);
-    const items = carrito.reduce((s,i) => s + i.cantidad, 0);
-    document.getElementById('carrito-contador').textContent = items;
-    document.getElementById('subtotal-carrito').textContent = `$${total.toFixed(2)}`;
-    document.getElementById('total-carrito').textContent = `$${total.toFixed(2)}`;
-    
-    const container = document.getElementById('carrito-items');
-    if(!carrito.length) { 
-        container.innerHTML = '<div class="vacio">✨ Tu carrito está vacío</div>'; 
-        return; 
-    }
-    
-    container.innerHTML = carrito.map((i, idx) => `
-        <div class="carrito-item">
-            <div class="item-info">
-                <div class="item-nombre">${i.nombre || 'Producto'}</div>
-                <div class="item-precio">$${((i.precio || 0) * i.cantidad).toFixed(2)}</div>
-            </div>
-            <div class="item-cantidad">
-                <button onclick="cambiarCantidad(${idx}, -1)">-</button>
-                <span>${i.cantidad}</span>
-                <button onclick="cambiarCantidad(${idx}, 1)">+</button>
-            </div>
-            <button class="btn-eliminar-item" onclick="eliminarItem(${idx})">🗑️</button>
-        </div>
-    `).join('');
-}
-
-function cambiarCantidad(idx, delta) {
-    if(idx >= 0 && idx < carrito.length) {
-        carrito[idx].cantidad += delta;
-        if(carrito[idx].cantidad <= 0) {
-            eliminarItem(idx);
-        } else {
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-            actualizarCarrito();
-        }
-    }
-}
-
-function eliminarItem(idx) {
-    carrito.splice(idx, 1);
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-    actualizarCarrito();
-}
-
-// ========== MODALES ==========
-let currentZoomImg = null;
-
-function abrirZoom(imagenSrc) {
-    document.getElementById('zoom-imagen').src = imagenSrc;
-    document.getElementById('zoom-modal').classList.add('active');
-}
-
-function cerrarZoom() {
-    document.getElementById('zoom-modal').classList.remove('active');
-}
-
-function mostrarModal(id) {
-    const producto = productos.find(p => p.id == id);
-    if(!producto) {
-        alert('Producto no encontrado');
-        return;
-    }
-    productoActual = producto;
-    colorSeleccionado = null;
-    tallaSeleccionada = null;
-    
-    document.getElementById('modal-imagen').src = producto.imagen || 'https://via.placeholder.com/400x300';
-    document.getElementById('modal-nombre').textContent = producto.nombre || 'Producto';
-    document.getElementById('modal-origen').textContent = producto.origen || 'General';
-    document.getElementById('modal-genero').textContent = `${getIconoGenero(producto.genero)} ${producto.genero || 'Unisex'}`;
-    document.getElementById('modal-descripcion').textContent = producto.descripcion || 'Sin descripción';
-    document.getElementById('modal-precio').innerHTML = `$${(producto.precio || 0).toFixed(2)}`;
-    
-    const modalImg = document.getElementById('modal-imagen');
-    modalImg.onclick = () => abrirZoom(modalImg.src);
-    
-    const coloresDiv = document.getElementById('selector-color');
-    const coloresCont = document.getElementById('modal-colores');
-    if(producto.colores && Array.isArray(producto.colores) && producto.colores.length > 0) {
-        coloresCont.style.display = 'block';
-        coloresDiv.innerHTML = '';
-        producto.colores.forEach((c, i) => {
-            const btn = document.createElement('button');
-            btn.innerHTML = c.nombre || 'Color';
-            if(i === 0) btn.classList.add('active-color');
-            btn.onclick = (e) => {
-                e.preventDefault();
-                document.querySelectorAll('#selector-color button').forEach(b => b.classList.remove('active-color'));
-                btn.classList.add('active-color');
-                colorSeleccionado = c;
-                if(c.imagen) document.getElementById('modal-imagen').src = c.imagen;
-                document.getElementById('modal-precio').innerHTML = `$${(c.precio || producto.precio || 0).toFixed(2)}`;
-                if(c.tallas && c.tallas.length) mostrarTallasBotones(c.tallas);
-                else document.getElementById('modal-variantes').style.display = 'none';
-            };
-            coloresDiv.appendChild(btn);
-        });
-        colorSeleccionado = producto.colores[0];
-        if(colorSeleccionado.tallas && colorSeleccionado.tallas.length) mostrarTallasBotones(colorSeleccionado.tallas);
-        else document.getElementById('modal-variantes').style.display = 'none';
-    } else {
-        coloresCont.style.display = 'none';
-        if(producto.variantes && typeof producto.variantes === 'string' && producto.variantes.trim()) {
-            const tallas = producto.variantes.split(',').map(t => { 
-                const [talla, precio] = t.split(':'); 
-                return { talla: talla.trim(), precio: parseFloat(precio) }; 
-            });
-            mostrarTallasBotones(tallas);
-        } else {
-            document.getElementById('modal-variantes').style.display = 'none';
-        }
-    }
-    document.getElementById('producto-modal').classList.add('active');
-}
-
-function mostrarTallasBotones(tallas) {
-    if(!tallas || !tallas.length) return;
-    const container = document.getElementById('tallas-container');
-    const variantesDiv = document.getElementById('modal-variantes');
-    
-    variantesDiv.style.display = 'block';
-    container.style.display = 'flex';
-    container.innerHTML = '';
-    
-    tallas.forEach(t => {
-        const btn = document.createElement('button');
-        btn.className = 'talla-btn';
-        btn.type = 'button';
-        btn.textContent = t.talla;
-        btn.onclick = (e) => {
-            e.preventDefault();
-            document.querySelectorAll('.talla-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            tallaSeleccionada = { talla: t.talla, precio: t.precio };
-            document.getElementById('modal-precio').innerHTML = `$${(t.precio || 0).toFixed(2)}`;
-        };
-        container.appendChild(btn);
-    });
-    
-    if(tallas.length > 0) {
-        const firstBtn = container.querySelector('.talla-btn');
-        if(firstBtn) {
-            firstBtn.classList.add('selected');
-            tallaSeleccionada = { talla: tallas[0].talla, precio: tallas[0].precio };
-        }
-    }
-}
-
-function agregarDesdeModal() {
-    if(productoActual) {
-        agregarAlCarrito(productoActual.id);
-        cerrarModalProducto();
-    }
-}
-
-function cerrarModalProducto() {
-    document.getElementById('producto-modal').classList.remove('active');
-    productoActual = null;
-    colorSeleccionado = null;
-    tallaSeleccionada = null;
-}
-
-// ========== TRACKING PARA CLIENTE ==========
-function verTrackingPedido(idPedido) {
-    const trackingKey = `tracking_${idPedido}`;
-    const saved = localStorage.getItem(trackingKey);
-    const trackingDiv = document.getElementById('tracking-detalle-pedido');
-    
-    if(saved) {
-        const data = JSON.parse(saved);
-        const estados = ['Pedido Recibido', 'Preparando', 'En Tránsito', 'En Panamá', 'En Reparto', 'Entregado'];
-        const estadoActual = data.estado || 0;
-        
-        let timelineHtml = '<div class="tracking-timeline-cliente">';
-        estados.forEach((estado, idx) => {
-            let clase = '';
-            if(idx < estadoActual) clase = 'completed';
-            else if(idx === estadoActual) clase = 'active';
-            timelineHtml += `<div class="tracking-step-cliente ${clase}"><span class="step-icon">${['📋','📦','✈','🌎','🚚','✅'][idx]}</span><span class="step-name">${estado}</span></div>`;
-        });
-        timelineHtml += '</div>';
-        
-        let fechaHtml = '';
-        if(data.fechaEstimada) {
-            const fecha = new Date(data.fechaEstimada);
-            const hoy = new Date();
-            const diffTime = fecha - hoy;
-            const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            fechaHtml = `<div class="fecha-estimada">📅 Fecha estimada de llegada: <strong>${fecha.toLocaleDateString()}</strong><br>${diffDias > 0 ? `Faltan ${diffDias} días` : diffDias === 0 ? '¡Llega hoy!' : 'Ya debería haber llegado'}</div>`;
-        }
-        
-        let notaHtml = '';
-        if(data.nota) notaHtml = `<div style="margin-top: 10px; padding: 10px; background: #fff3e0; border-radius: 12px;">📌 ${data.nota}</div>`;
-        
-        trackingDiv.innerHTML = `
-            <div class="tracking-container">
-                <h3 style="color:#2e7d32;">🚚 Seguimiento de tu pedido #${idPedido}</h3>
-                ${timelineHtml}
-                ${fechaHtml}
-                ${notaHtml}
-                <div style="margin-top: 15px; font-size: 0.8rem; color: #558b2f; text-align: center;">
-                    Última actualización: ${new Date(data.ultimaActualizacion).toLocaleString()}
-                </div>
-            </div>
-        `;
-        trackingDiv.style.display = 'block';
-    } else {
-        trackingDiv.innerHTML = `<div class="tracking-container"><p>📦 Tu pedido está siendo procesado. Pronto tendrás información de seguimiento.</p></div>`;
-        trackingDiv.style.display = 'block';
-    }
-}
-
-// ========== BUSCAR PEDIDOS POR NOMBRE (CORREGIDO) ==========
-document.getElementById('btn-consultar-pedido').addEventListener('click', async () => {
-    let nombre = document.getElementById('nombre-consulta').value.trim();
-    const resultadoDiv = document.getElementById('resultado-pedidos');
-    const trackingDiv = document.getElementById('tracking-detalle-pedido');
-    trackingDiv.style.display = 'none';
-    
-    if(!nombre) {
-        resultadoDiv.innerHTML = '<div class="vacio">⚠️ Ingresa tu nombre para buscar</div>';
-        return;
-    }
-    
-    resultadoDiv.innerHTML = '<div class="loading">🔍 Buscando tus pedidos...</div>';
+// ==================== PEDIDOS ====================
+async function cargarPedidos() {
+    const loading = document.getElementById('pedidosLoading');
+    const table = document.getElementById('pedidosTable');
     
     try {
-        // Intentar obtener pedidos desde Google Sheets
+        loading.style.display = 'block';
+        table.style.display = 'none';
+        
         const response = await fetch(`${API_URL}?action=getPedidos&t=${Date.now()}`);
-        let todosLosPedidos = await response.json();
+        const data = await response.json();
+        pedidos = Array.isArray(data) ? data : [];
         
-        console.log('Pedidos recibidos:', todosLosPedidos);
+        renderizarPedidos();
+    } catch (error) {
+        console.error('Error cargando pedidos:', error);
+        pedidos = [];
+        renderizarPedidos();
+    }
+    
+    loading.style.display = 'none';
+    table.style.display = 'block';
+}
+
+function renderizarPedidos() {
+    const tbody = document.getElementById('pedidosBody');
+    
+    if (!pedidos.length) {
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">No hay pedidos registrados</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = pedidos.map((p, index) => {
+        const idPedido = p['ID Pedido'] || p.id_pedido || p.id || index;
+        const estadoActual = p['Estado Pago'] || p.estado_pago || p.estado || 'Pendiente de pago';
         
-        // Filtrar por nombre (sin importar mayúsculas/minúsculas)
-        let pedidosCliente = [];
-        if(Array.isArray(todosLosPedidos) && todosLosPedidos.length > 0) {
-            pedidosCliente = todosLosPedidos.filter(p => {
-                const nombrePedido = (p.Nombre || p.nombre || '').toLowerCase().trim();
-                return nombrePedido === nombre.toLowerCase().trim();
-            });
+        // Determinar clase del badge según estado
+        let estadoClass = 'badge-pending';
+        if (estadoActual === 'Pagado') estadoClass = 'badge-info';
+        if (estadoActual === 'Entregado') estadoClass = 'badge-success';
+        
+        return `
+            <tr>
+                <td>${idPedido}</td>
+                <td>${p.Fecha || p.fecha || '-'}</td>
+                <td>${p.Nombre || p.nombre || '-'}</td>
+                <td>${p.Teléfono || p.telefono || '-'}</td>
+                <td style="max-width:150px;">${(p.Dirección || p.direccion || '-').substring(0, 30)}</td>
+                <td style="max-width:200px;">${(p.Productos || p.productos || '-').substring(0, 40)}</td>
+                <td>$${parseFloat(p.Total || p.total || 0).toFixed(2)}</td>
+                <td>${p['Método Pago'] || p.metodo_pago || '-'}</td>
+                <td>
+                    <select id="estado_${idPedido}" class="estado-select" onchange="cambiarEstadoPedido('${idPedido}', this.value)">
+                        <option value="Pendiente de pago" ${estadoActual === 'Pendiente de pago' ? 'selected' : ''}>⏳ Pendiente de pago</option>
+                        <option value="Pagado" ${estadoActual === 'Pagado' ? 'selected' : ''}>💰 Pagado</option>
+                        <option value="Entregado" ${estadoActual === 'Entregado' ? 'selected' : ''}>✅ Entregado</option>
+                    </select>
+                </td>
+                <td>
+                    <button onclick="eliminarPedido('${idPedido}')" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;" title="Eliminar pedido">🗑️ Eliminar</button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+async function cambiarEstadoPedido(idPedido, nuevoEstado) {
+    if (!confirm(`¿Cambiar estado del pedido ${idPedido} a "${nuevoEstado}"?`)) {
+        // Revertir el select si cancela
+        const select = document.getElementById(`estado_${idPedido}`);
+        const pedido = pedidos.find(p => (p['ID Pedido'] || p.id_pedido || p.id) == idPedido);
+        if (pedido) {
+            select.value = pedido['Estado Pago'] || pedido.estado_pago || pedido.estado || 'Pendiente de pago';
+        }
+        return;
+    }
+    
+    try {
+        // Actualizar localmente
+        const pedido = pedidos.find(p => (p['ID Pedido'] || p.id_pedido || p.id) == idPedido);
+        if (pedido) {
+            pedido['Estado Pago'] = nuevoEstado;
         }
         
-        console.log('Pedidos filtrados para', nombre, ':', pedidosCliente);
+        // Enviar a Google Sheets
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({ 
+                action: 'actualizarEstadoPedido', 
+                idPedido: idPedido, 
+                estado: nuevoEstado 
+            })
+        });
         
-        if(pedidosCliente.length === 0) {
-            resultadoDiv.innerHTML = '<div class="vacio">📭 No se encontraron pedidos con el nombre "' + nombre + '"</div>';
-            return;
-        }
+        renderizarPedidos();
+        actualizarStats();
+        alert(`✅ Estado del pedido ${idPedido} actualizado a: ${nuevoEstado}`);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al actualizar el estado');
+    }
+}
+
+async function eliminarPedido(idPedido) {
+    if (!confirm(`⚠️ ¿Estás SEGURO de eliminar el pedido ${idPedido}?\nEsta acción no se puede deshacer.`)) return;
+    
+    if (!confirm(`Confirma: ¿Eliminar pedido ${idPedido} permanentemente?`)) return;
+    
+    try {
+        // Eliminar localmente
+        pedidos = pedidos.filter(p => (p['ID Pedido'] || p.id_pedido || p.id) != idPedido);
         
-        resultadoDiv.innerHTML = pedidosCliente.map(p => `
-            <div class="tracking-info-pedido" onclick="verTrackingPedido('${p.idPedido || p.id}')">
-                <b style="color:#66bb6a;">#${p.idPedido || p.id}</b><br>
-                📅 ${p.Fecha || p.fecha ? new Date(p.Fecha || p.fecha).toLocaleDateString() : '-'}<br>
-                💰 $${parseFloat(p.Total || p.total || 0).toFixed(2)}<br>
-                📍 Estado: ${p['Estado Pago'] || p.estado_pago || p.estado || 'Pendiente'}<br>
-                <small style="color:#558b2f;">👉 Haz clic para ver el seguimiento</small>
-            </div>
-        `).join('');
+        // Eliminar tracking asociado
+        localStorage.removeItem(`tracking_${idPedido}`);
         
-    } catch(error) {
-        console.error('Error buscando pedidos:', error);
-        resultadoDiv.innerHTML = '<div class="vacio">❌ Error al buscar pedidos. Intenta de nuevo.</div>';
+        // Enviar a Google Sheets
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({ 
+                action: 'eliminarPedido', 
+                idPedido: idPedido 
+            })
+        });
+        
+        renderizarPedidos();
+        renderizarTrackingPedidos();
+        actualizarStats();
+        alert(`✅ Pedido ${idPedido} eliminado correctamente`);
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error al eliminar el pedido');
+    }
+}
+
+// ==================== TRACKING ====================
+function renderizarTrackingPedidos() {
+    const tbody = document.getElementById('trackingPedidosBody');
+    if (!pedidos.length) { 
+        tbody.innerHTML = '<tr><td colspan="6">No hay pedidos</td></tr>'; 
+        return; 
+    }
+    
+    tbody.innerHTML = pedidos.map(p => {
+        const id = p['ID Pedido'] || p.id_pedido || p.id;
+        const saved = localStorage.getItem(`tracking_${id}`);
+        let estado = 0, fechaEst = '';
+        if(saved) { const data = JSON.parse(saved); estado = data.estado || 0; fechaEst = data.fechaEstimada || ''; }
+        const estados = ['Recibido', 'Preparando', 'En Tránsito', 'En Panamá', 'En Reparto', 'Entregado'];
+        return `<tr>
+            <td>${id}</td>
+            <td>${p.Nombre || p.nombre || '-'}</td>
+            <td>$${parseFloat(p.Total || p.total || 0).toFixed(2)}</td>
+            <td><span class="badge badge-info">${estados[estado]}</span></td>
+            <td>${fechaEst || '-'}</td>
+            <td>
+                <button onclick="cargarPedidoTracking(${id})" style="background:#81c784; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;">✏️ Editar Tracking</button>
+                <button onclick="eliminarTrackingPedido(${id})" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; margin-left:5px;">🗑️ Eliminar Tracking</button>
+             </td>
+        </tr>`;
+    }).join('');
+}
+
+function eliminarTrackingPedido(idPedido) {
+    if (!confirm(`¿Eliminar el tracking del pedido ${idPedido}?`)) return;
+    
+    localStorage.removeItem(`tracking_${idPedido}`);
+    renderizarTrackingPedidos();
+    if (trackingActual && (trackingActual['ID Pedido'] || trackingActual.id_pedido || trackingActual.id) == idPedido) {
+        document.getElementById('trackingInfo').style.display = 'none';
+        trackingActual = null;
+    }
+    alert(`✅ Tracking del pedido ${idPedido} eliminado`);
+}
+
+function buscarPedidoParaTracking() {
+    const busqueda = document.getElementById('buscarPedidoTracking').value.trim();
+    const pedido = pedidos.find(p => {
+        const id = p['ID Pedido'] || p.id_pedido || p.id;
+        const nombre = p.Nombre || p.nombre || '';
+        return id.toString() === busqueda || nombre.toLowerCase().includes(busqueda.toLowerCase());
+    });
+    if(pedido) { cargarPedidoTracking(pedido['ID Pedido'] || pedido.id_pedido || pedido.id); }
+    else { document.getElementById('trackingInfo').style.display = 'none'; document.getElementById('trackingNoEncontrado').style.display = 'block'; }
+}
+
+function cargarPedidoTracking(id) {
+    const pedido = pedidos.find(p => (p['ID Pedido'] || p.id_pedido || p.id) == id);
+    if(!pedido) return;
+    trackingActual = pedido;
+    const idPedido = pedido['ID Pedido'] || pedido.id_pedido || pedido.id;
+    const saved = localStorage.getItem(`tracking_${idPedido}`);
+    let estado = 0, fechaEst = '', nota = '';
+    if(saved) { const data = JSON.parse(saved); estado = data.estado || 0; fechaEst = data.fechaEstimada || ''; nota = data.nota || ''; }
+    estadoSeleccionado = estado;
+    document.getElementById('trackingCliente').innerHTML = `👤 Cliente: ${pedido.Nombre || pedido.nombre || '-'}`;
+    document.getElementById('trackingProductos').innerHTML = `📦 Productos: ${(pedido.Productos || pedido.productos || '').substring(0, 100)}`;
+    document.getElementById('trackingTotal').innerHTML = `💰 Total: $${parseFloat(pedido.Total || pedido.total || 0).toFixed(2)}`;
+    document.getElementById('trackingFecha').innerHTML = `📅 Fecha: ${pedido.Fecha || pedido.fecha || '-'}`;
+    document.getElementById('fechaEstimada').value = fechaEst;
+    document.getElementById('notaTracking').value = nota;
+    actualizarUIEstadosTracking(estado);
+    document.getElementById('trackingInfo').style.display = 'block';
+    document.getElementById('trackingNoEncontrado').style.display = 'none';
+}
+
+function actualizarUIEstadosTracking(estado) {
+    document.querySelectorAll('#trackingTimeline .tracking-step').forEach((step, index) => {
+        step.classList.remove('active', 'completed');
+        if(index < estado) step.classList.add('completed');
+        else if(index === estado) step.classList.add('active');
+    });
+}
+
+function seleccionarEstadoTracking(step) {
+    estadoSeleccionado = step;
+    actualizarUIEstadosTracking(step);
+}
+
+function actualizarTrackingPedido() {
+    if(!trackingActual) return;
+    const idPedido = trackingActual['ID Pedido'] || trackingActual.id_pedido || trackingActual.id;
+    const fechaEstimada = document.getElementById('fechaEstimada').value;
+    const nota = document.getElementById('notaTracking').value;
+    const trackingData = { estado: estadoSeleccionado, fechaEstimada, nota, ultimaActualizacion: new Date().toISOString() };
+    localStorage.setItem(`tracking_${idPedido}`, JSON.stringify(trackingData));
+    alert(`✅ Tracking actualizado para pedido ${idPedido}\nEstado: ${['Recibido','Preparando','En Tránsito','En Panamá','En Reparto','Entregado'][estadoSeleccionado]}\nFecha estimada: ${fechaEstimada || 'No especificada'}`);
+    renderizarTrackingPedidos();
+}
+
+function limpiarTracking() {
+    document.getElementById('fechaEstimada').value = '';
+    document.getElementById('notaTracking').value = '';
+    if(trackingActual) { estadoSeleccionado = 0; actualizarUIEstadosTracking(0); }
+}
+
+// ACTUALIZAR ESTADÍSTICAS
+function actualizarStats() {
+    document.getElementById('totalProductos').innerText = productos.length;
+    const pendientes = solicitudes.filter(s => s.estado === 'pendiente').length;
+    document.getElementById('totalSolicitudesPendientes').innerText = pendientes;
+    document.getElementById('totalPedidos').innerText = pedidos.length;
+    
+    const pagados = pedidos.filter(p => {
+        const estado = p['Estado Pago'] || p.estado_pago || p.estado || '';
+        return estado === 'Pagado' || estado === 'Entregado';
+    }).length;
+    document.getElementById('totalPagados').innerText = pagados;
+}
+
+// TOGGLE VARIANTES
+document.getElementById('tieneVariantes').addEventListener('change', function() {
+    document.getElementById('variantesPanel').style.display = this.checked ? 'block' : 'none';
+    if (this.checked && document.getElementById('coloresContainer').children.length === 0) {
+        agregarColor();
     }
 });
 
-// ========== EVENT LISTENERS ==========
-document.querySelectorAll('.filtro-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        filtroPlataforma = btn.dataset.filtro;
-        filtroSubcat = null;
-        filtroGenero = 'todos';
-        document.querySelectorAll('.genero-btn').forEach(b => b.classList.remove('active'));
-        document.querySelector('.genero-btn[data-genero="todos"]')?.classList.add('active');
-        document.getElementById('genero-container').classList.remove('visible');
-        actualizarSubcategorias();
-        mostrarProductos();
+document.getElementById('editTieneVariantes').addEventListener('change', function() {
+    document.getElementById('editVariantesPanel').style.display = this.checked ? 'block' : 'none';
+    if (this.checked && document.getElementById('editColoresContainer').children.length === 0) {
+        agregarColorEdicion();
+    }
+});
+
+// NAVEGACIÓN
+document.querySelectorAll('.menu button').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const section = this.dataset.section;
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(`${section}Section`).classList.add('active');
+        const titles = { dashboard:'Dashboard', productos:'Agregar Producto', inventario:'Inventario', solicitudes:'Solicitudes', pedidos:'Pedidos', tracking:'TRACKING' };
+        document.getElementById('currentSectionTitle').innerText = titles[section] || section;
+        if (section === 'inventario') renderizarInventario();
+        if (section === 'solicitudes') renderizarSolicitudes();
+        if (section === 'pedidos') renderizarPedidos();
+        if (section === 'tracking') renderizarTrackingPedidos();
     });
 });
 
-document.querySelectorAll('.genero-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.genero-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        filtroGenero = btn.dataset.genero;
-        mostrarProductos();
-    });
-});
-
-document.getElementById('cerrar-modal-producto')?.addEventListener('click', cerrarModalProducto);
-document.getElementById('modal-agregar')?.addEventListener('click', agregarDesdeModal);
-document.getElementById('producto-modal')?.addEventListener('click', (e) => { if(e.target === document.getElementById('producto-modal')) cerrarModalProducto(); });
-
-document.getElementById('carrito-toggle')?.addEventListener('click', () => {
-    document.getElementById('carrito-panel').classList.add('open');
-    document.getElementById('overlay').classList.add('active');
-});
-
-document.getElementById('cerrar-carrito')?.addEventListener('click', () => {
-    document.getElementById('carrito-panel').classList.remove('open');
-    document.getElementById('overlay').classList.remove('active');
-});
-
-document.getElementById('overlay')?.addEventListener('click', () => {
-    document.getElementById('carrito-panel').classList.remove('open');
-    document.getElementById('overlay').classList.remove('active');
-});
-
-document.getElementById('toggle-mis-pedidos')?.addEventListener('click', () => {
-    document.getElementById('consultar-modal').style.display = 'flex';
-    document.getElementById('solicitud-detalle').style.display = 'none';
-    document.getElementById('resultado-pedidos').innerHTML = '';
-    document.getElementById('tracking-detalle-pedido').style.display = 'none';
-    document.getElementById('codigo-consultar').value = '';
-    document.getElementById('nombre-consulta').value = '';
-});
-
-document.getElementById('cerrar-consultar-modal')?.addEventListener('click', () => {
-    document.getElementById('consultar-modal').style.display = 'none';
-});
-
-// TABS
-document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
-        document.getElementById('solicitud-detalle').style.display = 'none';
-        document.getElementById('resultado-pedidos').innerHTML = '';
-        document.getElementById('tracking-detalle-pedido').style.display = 'none';
-    });
-});
-
-document.getElementById('toggle-solicitar')?.addEventListener('click', () => {
-    document.getElementById('solicitar-modal').classList.add('active');
-});
-
-document.getElementById('cerrar-solicitar-modal')?.addEventListener('click', () => {
-    document.getElementById('solicitar-modal').classList.remove('active');
-});
-
-document.getElementById('ir-pagar')?.addEventListener('click', () => {
-    if(carrito.length === 0) {
-        alert('🛒 Tu carrito está vacío');
-        return;
-    }
-    document.getElementById('carrito-panel').classList.remove('open');
-    document.getElementById('pago-modal').style.display = 'flex';
-});
-
-document.getElementById('cerrar-pago-modal')?.addEventListener('click', () => {
-    document.getElementById('pago-modal').style.display = 'none';
-});
-
-document.addEventListener('keydown', (e) => {
-    if(e.key === 'Escape') {
-        cerrarZoom();
-    }
-});
-
-// PAGO
-document.getElementById('pedido-form-modal')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const nombre = document.getElementById('nombre-modal').value;
-    const telefono = document.getElementById('telefono-modal').value;
-    const direccion = document.getElementById('direccion-modal').value;
-    const metodoPago = document.getElementById('metodo-pago-modal').value;
-    
-    if(!nombre || !telefono || !direccion) {
-        alert('Completa todos los campos');
-        return;
-    }
-    
-    let prodTexto = '', total = 0;
-    carrito.forEach(i => {
-        let subtotal = (i.precio || 0) * i.cantidad;
-        total += subtotal;
-        prodTexto += `${i.nombre} x${i.cantidad} - $${subtotal.toFixed(2)}\n`;
-    });
-    
-    const pedido = {
-        nombre, telefono, direccion, metodoPago,
-        estadoPago: metodoPago === 'Yappy' ? 'Pendiente de pago' : 'Pendiente',
-        productos: prodTexto, totalProductos: total
-    };
-    
-    await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(pedido) });
-    carrito = [];
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-    actualizarCarrito();
-    document.getElementById('pago-modal').style.display = 'none';
-    
-    if(metodoPago === 'Yappy') {
-        document.getElementById('yappy-modal').style.display = 'flex';
-    } else {
-        alert('✅ Pedido confirmado. Gracias por tu compra.');
-    }
-});
-
-document.getElementById('cerrar-yappy-modal')?.addEventListener('click', () => {
-    document.getElementById('yappy-modal').style.display = 'none';
-});
-
-document.getElementById('copiar-yappy')?.addEventListener('click', () => {
-    navigator.clipboard.writeText('6474-5914');
-    alert('✅ Número copiado: 6474-5914');
-});
-
-document.getElementById('ya-pague')?.addEventListener('click', () => {
-    document.getElementById('yappy-modal').style.display = 'none';
-    document.getElementById('confirmar-pago-modal').style.display = 'flex';
-});
-
-document.getElementById('cerrar-confirmar-modal')?.addEventListener('click', () => {
-    document.getElementById('confirmar-pago-modal').style.display = 'none';
-});
-
-document.getElementById('verificar-pago')?.addEventListener('click', async () => {
-    let nombre = document.getElementById('nombre-verificar').value;
-    if(!nombre) {
-        alert('Ingresa tu nombre');
-        return;
-    }
-    let res = await fetch(`${API_URL}?action=getPedidosByNombre&nombre=${encodeURIComponent(nombre)}`);
-    let pedidosCliente = await res.json();
-    let pedido = pedidosCliente?.find(p => p.estado === 'Pendiente de pago');
-    if(!pedido) {
-        alert('No se encontró un pedido pendiente con ese nombre');
-        return;
-    }
-    await fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'actualizarEstado', fila: pedido.id, estado: 'Pagado' }) });
-    document.getElementById('confirmar-pago-modal').style.display = 'none';
-    alert('✅ Pago confirmado. Gracias por tu compra.');
-});
-
-// ========== INICIALIZAR ==========
-cargarSolicitudes();
-cargarProductos();
-let savedCart = localStorage.getItem('carrito');
-if(savedCart) carrito = JSON.parse(savedCart);
-actualizarCarrito();
+window.onclick = function(e) {
+    if (e.target === document.getElementById('editarModal')) cerrarEditarModal();
+    if (e.target === document.getElementById('cotizarModal')) cerrarCotizarModal();
+}
 </script>
 </body>
 </html>
