@@ -284,6 +284,7 @@ textarea.input { min-height: 100px; resize: vertical; }
 .badge-pending { background: #fff3e0; color: #ef6c00; }
 .badge-danger { background: #ffebee; color: #c62828; }
 .badge-info { background: #e3f2fd; color: #1565c0; }
+.badge-warning { background: #fff8e1; color: #f9a825; }
 
 .modal {
     position: fixed;
@@ -337,10 +338,46 @@ textarea.input { min-height: 100px; resize: vertical; }
     letter-spacing: 2px;
 }
 
+/* Tracking Timeline */
+.tracking-timeline {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 20px 0;
+    gap: 8px;
+}
+
+.tracking-step {
+    flex: 1;
+    text-align: center;
+    padding: 12px 8px;
+    background: white;
+    border-radius: 16px;
+    cursor: pointer;
+    border: 2px solid #c8e6c9;
+    transition: all 0.3s;
+}
+
+.tracking-step.active {
+    background: #66bb6a;
+    color: white;
+    border-color: #66bb6a;
+}
+
+.tracking-step.completed {
+    background: #a5d6a7;
+    color: #1b5e20;
+    border-color: #a5d6a7;
+}
+
+.tracking-step .step-icon { font-size: 24px; display: block; }
+.tracking-step .step-name { font-size: 10px; margin-top: 5px; }
+
 @media (max-width: 900px) {
     .sidebar { position: relative; width: 100%; height: auto; }
     .content { margin-left: 0; }
     .data-table { font-size: 12px; }
+    .tracking-timeline { flex-direction: column; }
 }
 </style>
 </head>
@@ -364,6 +401,7 @@ textarea.input { min-height: 100px; resize: vertical; }
             <button data-section="inventario">📚 Inventario</button>
             <button data-section="solicitudes">📌 Solicitudes</button>
             <button data-section="pedidos">🛒 Pedidos</button>
+            <button data-section="tracking">🚚 TRACKING</button>
         </div>
     </div>
 
@@ -457,7 +495,61 @@ textarea.input { min-height: 100px; resize: vertical; }
 
         <!-- PEDIDOS -->
         <div id="pedidosSection" class="section">
-            <div class="form-box"><h2>🛒 Pedidos</h2><div id="pedidosList"></div></div>
+            <div class="form-box">
+                <h2>🛒 Pedidos</h2>
+                <div id="pedidosList"></div>
+            </div>
+        </div>
+
+        <!-- TRACKING - NUEVA SECCIÓN -->
+        <div id="trackingSection" class="section">
+            <h2 style="margin-bottom:20px;">🚚 GESTIÓN DE TRACKING</h2>
+            <div class="form-box">
+                <div class="form-group">
+                    <label>🔍 Buscar pedido por ID o nombre del cliente</label>
+                    <input type="text" id="buscarPedidoTracking" class="input" placeholder="ID del pedido o nombre del cliente">
+                </div>
+                <button class="btn-small" onclick="buscarPedidoParaTracking()" style="width: auto; margin-bottom: 20px;">🔍 Buscar Pedido</button>
+                
+                <div id="trackingInfo" style="display: none;">
+                    <div style="background: #e8f5e9; border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+                        <h3 id="trackingCliente" style="color: #2e7d32;">Cliente: -</h3>
+                        <p id="trackingProductos">Productos: -</p>
+                        <p id="trackingTotal">Total: -</p>
+                        <p id="trackingFecha">Fecha: -</p>
+                    </div>
+                    
+                    <div class="tracking-timeline" id="trackingTimeline">
+                        <div class="tracking-step" data-step="0" onclick="seleccionarEstadoTracking(0)"><span class="step-icon">📋</span><span class="step-name">Pedido Recibido</span></div>
+                        <div class="tracking-step" data-step="1" onclick="seleccionarEstadoTracking(1)"><span class="step-icon">📦</span><span class="step-name">Preparando</span></div>
+                        <div class="tracking-step" data-step="2" onclick="seleccionarEstadoTracking(2)"><span class="step-icon">✈</span><span class="step-name">En Tránsito</span></div>
+                        <div class="tracking-step" data-step="3" onclick="seleccionarEstadoTracking(3)"><span class="step-icon">🌎</span><span class="step-name">En Panamá</span></div>
+                        <div class="tracking-step" data-step="4" onclick="seleccionarEstadoTracking(4)"><span class="step-icon">🚚</span><span class="step-name">En Reparto</span></div>
+                        <div class="tracking-step" data-step="5" onclick="seleccionarEstadoTracking(5)"><span class="step-icon">✅</span><span class="step-name">Entregado</span></div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <div class="form-group"><label>📝 Fecha estimada de llegada</label><input type="date" id="fechaEstimada" class="input"></div>
+                        <div class="form-group"><label>📌 Nota de seguimiento</label><textarea id="notaTracking" rows="2" class="input" placeholder="Ej: El paquete llegó a Panamá, pendiente de aduana"></textarea></div>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn" onclick="actualizarTrackingPedido()">💾 Guardar Cambios</button>
+                            <button class="btn" onclick="limpiarTracking()" style="background:#ef9a9a;">Limpiar</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="trackingNoEncontrado" style="display: none; text-align: center; padding: 40px; color: #ef6c00;">⚠️ No se encontró el pedido</div>
+            </div>
+            
+            <h3>📋 Lista de Pedidos con Tracking</h3>
+            <div class="form-box">
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead><tr><th>ID Pedido</th><th>Cliente</th><th>Total</th><th>Estado Tracking</th><th>Fecha Estimada</th><th>Acciones</th></tr></thead>
+                        <tbody id="trackingPedidosBody"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -529,6 +621,8 @@ let productos = [];
 let pedidos = [];
 let solicitudes = [];
 let solicitudActual = null;
+let trackingActual = null;
+let estadoSeleccionado = 0;
 
 function login() {
     const pass = document.getElementById('password').value;
@@ -548,6 +642,7 @@ async function cargarTodosLosDatos() {
     await cargarPedidos();
     cargarSolicitudes();
     actualizarStats();
+    renderizarTrackingPedidos();
 }
 
 // ==================== VARIANTES ====================
@@ -715,7 +810,7 @@ function renderizarInventario() {
     const tbody = document.getElementById('inventarioBody');
     
     if (!productos.length) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay productos registrados</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay productos registrados</td>';
         return;
     }
     
@@ -744,7 +839,7 @@ function renderizarInventario() {
                 <td>
                     <button onclick="abrirEditarProducto(${p.id})" style="background:#81c784; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; margin-right:5px;">✏️ Editar</button>
                     <button onclick="eliminarProducto(${p.id})" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;">🗑️</button>
-                </td>
+                 </td>
             </tr>
         `;
     }).join('');
@@ -941,13 +1036,12 @@ function cerrarEditarModal() {
     document.getElementById('editarModal').style.display = 'none';
 }
 
-// ==================== SOLICITUDES (FUNCIONALIDAD COMPLETA) ====================
+// ==================== SOLICITUDES ====================
 function cargarSolicitudes() {
     const saved = localStorage.getItem('solicitudes');
     if (saved) {
         solicitudes = JSON.parse(saved);
     } else {
-        // Solicitudes de ejemplo
         solicitudes = [
             {
                 codigo: "4827",
@@ -990,7 +1084,7 @@ function renderizarSolicitudes() {
     const table = document.getElementById('solicitudesTable');
     
     if (!solicitudes.length) {
-        tablaBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No hay solicitudes de productos</td></tr>';
+        tablaBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No hay solicitudes de productos</td>';
         loading.style.display = 'none';
         table.style.display = 'block';
         return;
@@ -1019,16 +1113,16 @@ function renderizarSolicitudes() {
             <td>${sol.plataforma}</td>
             <td style="max-width:200px;">
                 <a href="${sol.link}" target="_blank" style="color:#66bb6a;">Ver producto</a>
-                ${sol.notas ? `<br><small style="color:#558b2f;">${sol.notas.substring(0, 40)}</small>` : ''}
-             </td>
+                ${sol.notas ? `<br><small>${sol.notas.substring(0, 40)}</small>` : ''}
+              </td>
             <td style="max-width:150px;">${sol.notas ? sol.notas.substring(0, 50) + (sol.notas.length > 50 ? '...' : '') : '-'}</td>
             <td><span class="badge ${estadosClass[sol.estado]}">${estadosTexto[sol.estado]}</span></td>
             <td>
                 ${sol.estado === 'pendiente' ? `<button onclick="abrirCotizarModal('${sol.codigo}')" style="background:#66bb6a; border:none; padding:6px 12px; border-radius:8px; color:white; cursor:pointer;">💰 Cotizar</button>` : ''}
-                ${sol.estado === 'cotizado' ? `<div><span style="color:#1565c0;">💰 $${sol.cotizacion?.toFixed(2)}</span><br><button onclick="aprobarSolicitudAdmin('${sol.codigo}')" style="background:#81c784; border:none; padding:4px 10px; border-radius:8px; margin-top:5px; cursor:pointer;">✅ Aprobar</button></div>` : ''}
-                ${sol.estado === 'aprobado' ? `<span style="color:#2e7d32;">✅ Aprobado</span>` : ''}
-                ${sol.estado === 'rechazado' ? `<span style="color:#c62828;">❌ Rechazado</span>` : ''}
-             </td>
+                ${sol.estado === 'cotizado' ? `<div><span>💰 $${sol.cotizacion?.toFixed(2)}</span><br><button onclick="aprobarSolicitudAdmin('${sol.codigo}')" style="background:#81c784; border:none; padding:4px 10px; border-radius:8px; margin-top:5px; cursor:pointer;">✅ Aprobar</button></div>` : ''}
+                ${sol.estado === 'aprobado' ? `<span>✅ Aprobado</span>` : ''}
+                ${sol.estado === 'rechazado' ? `<span>❌ Rechazado</span>` : ''}
+              </td>
         </tr>
     `).join('');
     
@@ -1127,7 +1221,78 @@ function renderizarPedidos() {
         container.innerHTML = '<div class="loading">No hay pedidos</div>';
         return;
     }
-    container.innerHTML = `<div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Total</th><th>Estado</th></tr></thead><tbody>${pedidos.map(p => `<tr><td>${p.idPedido || p.id}</td><td>${p.fecha ? new Date(p.fecha).toLocaleDateString() : '-'}</td><td>${p.nombre}</td><td>$${parseFloat(p.total || 0).toFixed(2)}</td><td><span class="badge ${p.estado === 'Pagado' ? 'badge-success' : 'badge-pending'}">${p.estado || 'Pendiente'}</span></td></tr>`).join('')}</tbody></table></div>`;
+    container.innerHTML = `<div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>ID</th><th>Fecha</th><th>Cliente</th><th>Total</th><th>Estado</th></tr></thead><tbody>${pedidos.map(p => `<tr><td>${p.idPedido || p.id}</td><td>${p.fecha ? new Date(p.fecha).toLocaleDateString() : '-'}</td><td>${p.nombre}</td><td>$${parseFloat(p.total || 0).toFixed(2)}</td><td><span class="badge ${p.estado === 'Pagado' ? 'badge-success' : 'badge-pending'}">${p.estado || 'Pendiente'}</span></td></td>`).join('')}</tbody></table></div>`;
+}
+
+// ==================== TRACKING ====================
+function renderizarTrackingPedidos() {
+    const tbody = document.getElementById('trackingPedidosBody');
+    if (!pedidos.length) { tbody.innerHTML = '<tr><td colspan="6">No hay pedidos</td>'; return; }
+    tbody.innerHTML = pedidos.map(p => {
+        const id = p.idPedido || p.id;
+        const saved = localStorage.getItem(`tracking_${id}`);
+        let estado = 0, fechaEst = '';
+        if(saved) { const data = JSON.parse(saved); estado = data.estado || 0; fechaEst = data.fechaEstimada || ''; }
+        const estados = ['Recibido', 'Preparando', 'En Tránsito', 'En Panamá', 'En Reparto', 'Entregado'];
+        return `<tr><td>${id}</td><td>${p.nombre}</td><td>$${p.total}</td><td><span class="badge badge-info">${estados[estado]}</span></td><td>${fechaEst || '-'}</td><td><button onclick="cargarPedidoTracking(${id})">✏️ Editar</button></td></tr>`;
+    }).join('');
+}
+
+function buscarPedidoParaTracking() {
+    const busqueda = document.getElementById('buscarPedidoTracking').value.trim();
+    const pedido = pedidos.find(p => (p.idPedido || p.id).toString() === busqueda || p.nombre?.toLowerCase().includes(busqueda.toLowerCase()));
+    if(pedido) { cargarPedidoTracking(pedido.idPedido || pedido.id); }
+    else { document.getElementById('trackingInfo').style.display = 'none'; document.getElementById('trackingNoEncontrado').style.display = 'block'; }
+}
+
+function cargarPedidoTracking(id) {
+    const pedido = pedidos.find(p => (p.idPedido || p.id) == id);
+    if(!pedido) return;
+    trackingActual = pedido;
+    const idPedido = pedido.idPedido || pedido.id;
+    const saved = localStorage.getItem(`tracking_${idPedido}`);
+    let estado = 0, fechaEst = '', nota = '';
+    if(saved) { const data = JSON.parse(saved); estado = data.estado || 0; fechaEst = data.fechaEstimada || ''; nota = data.nota || ''; }
+    estadoSeleccionado = estado;
+    document.getElementById('trackingCliente').innerHTML = `👤 Cliente: ${pedido.nombre}`;
+    document.getElementById('trackingProductos').innerHTML = `📦 Productos: ${(pedido.productos || '').substring(0, 100)}`;
+    document.getElementById('trackingTotal').innerHTML = `💰 Total: $${pedido.total || 0}`;
+    document.getElementById('trackingFecha').innerHTML = `📅 Fecha: ${pedido.fecha ? new Date(pedido.fecha).toLocaleDateString() : '-'}`;
+    document.getElementById('fechaEstimada').value = fechaEst;
+    document.getElementById('notaTracking').value = nota;
+    actualizarUIEstadosTracking(estado);
+    document.getElementById('trackingInfo').style.display = 'block';
+    document.getElementById('trackingNoEncontrado').style.display = 'none';
+}
+
+function actualizarUIEstadosTracking(estado) {
+    document.querySelectorAll('#trackingTimeline .tracking-step').forEach((step, index) => {
+        step.classList.remove('active', 'completed');
+        if(index < estado) step.classList.add('completed');
+        else if(index === estado) step.classList.add('active');
+    });
+}
+
+function seleccionarEstadoTracking(step) {
+    estadoSeleccionado = step;
+    actualizarUIEstadosTracking(step);
+}
+
+function actualizarTrackingPedido() {
+    if(!trackingActual) return;
+    const idPedido = trackingActual.idPedido || trackingActual.id;
+    const fechaEstimada = document.getElementById('fechaEstimada').value;
+    const nota = document.getElementById('notaTracking').value;
+    const trackingData = { estado: estadoSeleccionado, fechaEstimada, nota, ultimaActualizacion: new Date().toISOString() };
+    localStorage.setItem(`tracking_${idPedido}`, JSON.stringify(trackingData));
+    alert(`✅ Tracking actualizado para pedido ${idPedido}\nEstado: ${['Recibido','Preparando','En Tránsito','En Panamá','En Reparto','Entregado'][estadoSeleccionado]}\nFecha estimada: ${fechaEstimada || 'No especificada'}`);
+    renderizarTrackingPedidos();
+}
+
+function limpiarTracking() {
+    document.getElementById('fechaEstimada').value = '';
+    document.getElementById('notaTracking').value = '';
+    if(trackingActual) { estadoSeleccionado = 0; actualizarUIEstadosTracking(0); }
 }
 
 // ACTUALIZAR ESTADÍSTICAS
@@ -1163,10 +1328,11 @@ document.querySelectorAll('.menu button').forEach(btn => {
         const section = this.dataset.section;
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.getElementById(`${section}Section`).classList.add('active');
-        const titles = { dashboard:'Dashboard', productos:'Agregar Producto', inventario:'Inventario', solicitudes:'Solicitudes', pedidos:'Pedidos' };
+        const titles = { dashboard:'Dashboard', productos:'Agregar Producto', inventario:'Inventario', solicitudes:'Solicitudes', pedidos:'Pedidos', tracking:'TRACKING' };
         document.getElementById('currentSectionTitle').innerText = titles[section] || section;
         if (section === 'inventario') renderizarInventario();
         if (section === 'solicitudes') renderizarSolicitudes();
+        if (section === 'tracking') renderizarTrackingPedidos();
     });
 });
 
