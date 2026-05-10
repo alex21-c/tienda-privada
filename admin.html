@@ -274,7 +274,6 @@ textarea.input { min-height: 100px; resize: vertical; }
     border-radius: 20px;
     font-size: 11px;
     font-weight: 700;
-    cursor: pointer;
     display: inline-block;
 }
 
@@ -495,7 +494,17 @@ textarea.input { min-height: 100px; resize: vertical; }
                 <div style="overflow-x: auto;">
                     <table class="data-table" id="solicitudesTable" style="display:none;">
                         <thead>
-                            <tr><th>Código</th><th>Fecha</th><th>Cliente</th><th>Teléfono</th><th>Plataforma</th><th>Producto</th><th>Notas</th><th>Estado</th><th>Acciones</th></tr>
+                            <tr>
+                                <th>Código</th>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Teléfono</th>
+                                <th>Plataforma</th>
+                                <th>Producto</th>
+                                <th>Notas</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
                         </thead>
                         <tbody id="solicitudesBody"></tbody>
                     </table>
@@ -839,7 +848,7 @@ function renderizarInventario() {
     const tbody = document.getElementById('inventarioBody');
     
     if (!productos.length) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay productos registrados</td></tr>';
+        tbody.innerHTML = '<td><td colspan="7" style="text-align:center;">No hay productos registrados</td>';
         return;
     }
     
@@ -868,7 +877,7 @@ function renderizarInventario() {
                 <td>
                     <button onclick="abrirEditarProducto(${p.id})" style="background:#81c784; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; margin-right:5px;">✏️ Editar</button>
                     <button onclick="eliminarProducto(${p.id})" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;">🗑️</button>
-                  </td>
+                </td>
             </tr>
         `;
     }).join('');
@@ -1082,13 +1091,23 @@ function guardarSolicitudes() {
     localStorage.setItem('solicitudes', JSON.stringify(solicitudes));
 }
 
+function eliminarSolicitud(codigo) {
+    if (!confirm(`⚠️ ¿Eliminar la solicitud con código ${codigo}?\nEsta acción no se puede deshacer.`)) return;
+    
+    solicitudes = solicitudes.filter(s => s.codigo !== codigo);
+    guardarSolicitudes();
+    renderizarSolicitudes();
+    actualizarStats();
+    alert(`✅ Solicitud ${codigo} eliminada correctamente`);
+}
+
 function renderizarSolicitudes() {
     const tablaBody = document.getElementById('solicitudesBody');
     const loading = document.getElementById('solicitudesLoading');
     const table = document.getElementById('solicitudesTable');
     
     if (!solicitudes.length) {
-        tablaBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No hay solicitudes de productos</td></tr>';
+        tablaBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No hay solicitudes de productos</td>';
         loading.style.display = 'none';
         table.style.display = 'block';
         return;
@@ -1118,15 +1137,16 @@ function renderizarSolicitudes() {
             <td style="max-width:200px;">
                 <a href="${sol.link}" target="_blank" style="color:#66bb6a;">Ver producto</a>
                 ${sol.notas ? `<br><small>${sol.notas.substring(0, 40)}</small>` : ''}
-              </td>
+            </td>
             <td style="max-width:150px;">${sol.notas ? sol.notas.substring(0, 50) + (sol.notas.length > 50 ? '...' : '') : '-'}</td>
             <td><span class="badge ${estadosClass[sol.estado]}">${estadosTexto[sol.estado]}</span></td>
             <td>
-                ${sol.estado === 'pendiente' ? `<button onclick="abrirCotizarModal('${sol.codigo}')" style="background:#66bb6a; border:none; padding:6px 12px; border-radius:8px; color:white; cursor:pointer;">💰 Cotizar</button>` : ''}
+                ${sol.estado === 'pendiente' ? `<button onclick="abrirCotizarModal('${sol.codigo}')" style="background:#66bb6a; border:none; padding:6px 12px; border-radius:8px; color:white; cursor:pointer; margin-right:5px;">💰 Cotizar</button>` : ''}
                 ${sol.estado === 'cotizado' ? `<div><span>💰 $${sol.cotizacion?.toFixed(2)}</span><br><button onclick="aprobarSolicitudAdmin('${sol.codigo}')" style="background:#81c784; border:none; padding:4px 10px; border-radius:8px; margin-top:5px; cursor:pointer;">✅ Aprobar</button></div>` : ''}
                 ${sol.estado === 'aprobado' ? `<span>✅ Aprobado</span>` : ''}
                 ${sol.estado === 'rechazado' ? `<span>❌ Rechazado</span>` : ''}
-              </td>
+                <button onclick="eliminarSolicitud('${sol.codigo}')" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; margin-top:5px;">🗑️ Eliminar</button>
+            </td>
         </tr>
     `).join('');
     
@@ -1234,7 +1254,7 @@ function renderizarPedidos() {
     const tbody = document.getElementById('pedidosBody');
     
     if (!pedidos.length) {
-        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">No hay pedidos registrados</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">No hay pedidos registrados</td>';
         return;
     }
     
@@ -1242,7 +1262,6 @@ function renderizarPedidos() {
         const idPedido = p['ID Pedido'] || p.id_pedido || p.id || index;
         const estadoActual = p['Estado Pago'] || p.estado_pago || p.estado || 'Pendiente de pago';
         
-        // Determinar clase del badge según estado
         let estadoClass = 'badge-pending';
         if (estadoActual === 'Pagado') estadoClass = 'badge-info';
         if (estadoActual === 'Entregado') estadoClass = 'badge-success';
@@ -1274,7 +1293,6 @@ function renderizarPedidos() {
 
 async function cambiarEstadoPedido(idPedido, nuevoEstado) {
     if (!confirm(`¿Cambiar estado del pedido ${idPedido} a "${nuevoEstado}"?`)) {
-        // Revertir el select si cancela
         const select = document.getElementById(`estado_${idPedido}`);
         const pedido = pedidos.find(p => (p['ID Pedido'] || p.id_pedido || p.id) == idPedido);
         if (pedido) {
@@ -1284,13 +1302,11 @@ async function cambiarEstadoPedido(idPedido, nuevoEstado) {
     }
     
     try {
-        // Actualizar localmente
         const pedido = pedidos.find(p => (p['ID Pedido'] || p.id_pedido || p.id) == idPedido);
         if (pedido) {
             pedido['Estado Pago'] = nuevoEstado;
         }
         
-        // Enviar a Google Sheets
         await fetch(API_URL, {
             method: 'POST',
             mode: 'no-cors',
@@ -1312,17 +1328,12 @@ async function cambiarEstadoPedido(idPedido, nuevoEstado) {
 
 async function eliminarPedido(idPedido) {
     if (!confirm(`⚠️ ¿Estás SEGURO de eliminar el pedido ${idPedido}?\nEsta acción no se puede deshacer.`)) return;
-    
     if (!confirm(`Confirma: ¿Eliminar pedido ${idPedido} permanentemente?`)) return;
     
     try {
-        // Eliminar localmente
         pedidos = pedidos.filter(p => (p['ID Pedido'] || p.id_pedido || p.id) != idPedido);
-        
-        // Eliminar tracking asociado
         localStorage.removeItem(`tracking_${idPedido}`);
         
-        // Enviar a Google Sheets
         await fetch(API_URL, {
             method: 'POST',
             mode: 'no-cors',
@@ -1346,7 +1357,7 @@ async function eliminarPedido(idPedido) {
 function renderizarTrackingPedidos() {
     const tbody = document.getElementById('trackingPedidosBody');
     if (!pedidos.length) { 
-        tbody.innerHTML = '<tr><td colspan="6">No hay pedidos</td></tr>'; 
+        tbody.innerHTML = '<td><td colspan="6">No hay pedidos</td>';
         return; 
     }
     
@@ -1365,7 +1376,7 @@ function renderizarTrackingPedidos() {
             <td>
                 <button onclick="cargarPedidoTracking(${id})" style="background:#81c784; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;">✏️ Editar Tracking</button>
                 <button onclick="eliminarTrackingPedido(${id})" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; margin-left:5px;">🗑️ Eliminar Tracking</button>
-             </td>
+            </td>
         </tr>`;
     }).join('');
 }
