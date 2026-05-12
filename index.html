@@ -1073,7 +1073,12 @@ function mostrarProductos() {
         return; 
     }
     
-    cont.innerHTML = productos.map(p => `
+    cont.innerHTML = productos.map(p => {
+        // Asegurar que precio es número
+        let precioNum = parseFloat(p.precio);
+        if (isNaN(precioNum)) precioNum = 0;
+        
+        return `
         <div class="producto-card" onclick="mostrarModal(${p.id})">
             <img src="${p.imagen || 'https://via.placeholder.com/310x280'}" class="producto-imagen" onerror="this.src='https://via.placeholder.com/310x280?text=Producto'">
             <div class="producto-info">
@@ -1081,13 +1086,12 @@ function mostrarProductos() {
                 <div class="producto-genero">${getIconoGenero(p.genero)} ${p.genero || 'Unisex'}</div>
                 ${p.categoria ? `<div class="producto-categoria">📂 ${p.categoria}</div>` : ''}
                 <h3 class="producto-titulo">${p.nombre || 'Producto'}</h3>
-                <div class="producto-precio">$${(p.precio || 0).toFixed(2)}</div>
+                <div class="producto-precio">$${precioNum.toFixed(2)}</div>
                 <button class="btn-agregar" onclick="event.stopPropagation(); agregarAlCarrito(${p.id})">➕ Agregar</button>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
-
 // ========== CARRITO ==========
 function agregarAlCarrito(id) {
     const prod = productos.find(p => p.id == id);
