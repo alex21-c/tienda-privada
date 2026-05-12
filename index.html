@@ -1018,6 +1018,7 @@ async function cargarProductos() {
     if (genero) url += `&genero=${encodeURIComponent(genero)}`;
     
     try {
+        // 🔥 IMPORTANTE: Agregar este header para evitar la página de advertencia de Ngrok 🔥
         const response = await fetch(url, {
             headers: {
                 'ngrok-skip-browser-warning': '69420'
