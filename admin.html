@@ -481,7 +481,7 @@ textarea.input { min-height: 100px; resize: vertical; }
                     <table class="data-table" id="inventarioTable" style="display:none;">
                         <thead><tr><th>ID</th><th>Producto</th><th>Precio</th><th>Origen</th><th>Tallas</th><th>Estado</th><th>Acciones</th></tr></thead>
                         <tbody id="inventarioBody"></tbody>
-                    </tr>
+                    </table>
                 </div>
             </div>
         </div>
@@ -655,7 +655,7 @@ textarea.input { min-height: 100px; resize: vertical; }
 
 <script>
 // ============================================
-// 🔥 URL CAMBIADA - AHORA APUNTA A TU TV BOX 🔥
+// 🔥 URL DE LA API - TV BOX 🔥
 // ============================================
 const API_URL = 'https://loving-chef-performer-coat.trycloudflare.com/tienda/api.php';
 
@@ -835,9 +835,14 @@ async function cargarProductos() {
         
         const response = await fetch(`${API_URL}?action=productos&t=${Date.now()}`);
         const data = await response.json();
-        productos = Array.isArray(data) ? data : [];
         
-        renderizarInventario();
+        if (data.success && data.data) {
+            productos = data.data;
+            renderizarInventario();
+        } else {
+            productos = [];
+            renderizarInventario();
+        }
     } catch (error) {
         console.error('Error:', error);
         productos = [];
@@ -852,7 +857,7 @@ function renderizarInventario() {
     const tbody = document.getElementById('inventarioBody');
     
     if (!productos.length) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay productos registrados</td>';
+        tbody.innerHTML = '<td><td colspan="7" style="text-align:center;">No hay productos registrados</td></tr>';
         return;
     }
     
@@ -877,7 +882,7 @@ function renderizarInventario() {
                 <td>$${parseFloat(p.precio || 0).toFixed(2)}</td>
                 <td>${p.origen || '-'}</td>
                 <td>${tallasInfo}</td>
-                <td><span class="badge ${p.activo === 'SI' ? 'badge-success' : 'badge-danger'}">${p.activo === 'SI' ? 'Disponible' : 'No disponible'}</span></td>
+                <td><span class="badge ${p.activo == 1 ? 'badge-success' : 'badge-danger'}">${p.activo == 1 ? 'Disponible' : 'No disponible'}</span></td>
                 <td>
                     <button onclick="abrirEditarProducto(${p.id})" style="background:#81c784; border:none; padding:6px 12px; border-radius:8px; cursor:pointer; margin-right:5px;">✏️ Editar</button>
                     <button onclick="eliminarProducto(${p.id})" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;">🗑️</button>
@@ -887,6 +892,7 @@ function renderizarInventario() {
     }).join('');
 }
 
+// ==================== AGREGAR PRODUCTO (CORREGIDO) ====================
 async function agregarProducto() {
     const tieneVariantes = document.getElementById('tieneVariantes').checked;
     let variantesString = '';
@@ -926,28 +932,35 @@ async function agregarProducto() {
         variantes: variantesString,
         colores_nombres: coloresNombres,
         colores_imagenes: coloresImagenes,
-        colores_precios: coloresPrecios
+        colores_precios: coloresPrecios,
+        activo: document.getElementById('prodActivo').value === 'SI' ? 1 : 0
     };
     
     if (!nuevoProducto.nombre || !nuevoProducto.precio) {
-        alert('Nombre y precio son obligatorios');
+        alert('❌ Nombre y precio son obligatorios');
         return;
     }
     
     try {
-        await fetch(API_URL, {
+        const response = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(nuevoProducto)
         });
         
-        alert('✅ Producto agregado correctamente');
-        limpiarFormularioProducto();
-        await cargarProductos();
-        actualizarStats();
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('✅ Producto agregado correctamente');
+            limpiarFormularioProducto();
+            await cargarProductos();
+            actualizarStats();
+        } else {
+            alert('❌ Error: ' + (data.error || 'No se pudo guardar'));
+        }
     } catch (error) {
         console.error('Error:', error);
-        alert('Error al conectar con la TV Box');
+        alert('❌ Error al conectar con la TV Box: ' + error.message);
     }
 }
 
@@ -974,7 +987,7 @@ function abrirEditarProducto(id) {
     document.getElementById('editGenero').value = producto.genero || 'unisex';
     document.getElementById('editImagen').value = producto.imagen || '';
     document.getElementById('editEnlace').value = producto.enlace || '';
-    document.getElementById('editActivo').value = producto.activo || 'SI';
+    document.getElementById('editActivo').value = producto.activo == 1 ? 'SI' : 'NO';
     document.getElementById('editDescripcion').value = producto.descripcion || '';
     
     const tieneVariantes = (producto.colores && producto.colores.length > 0);
@@ -988,6 +1001,31 @@ function abrirEditarProducto(id) {
     }
     
     document.getElementById('editarModal').style.display = 'flex';
+}
+
+// ==================== ELIMINAR PRODUCTO (CORREGIDO) ====================
+async function eliminarProducto(id) {
+    if (!confirm('⚠️ ¿Estás seguro de eliminar este producto?')) return;
+    
+    try {
+        const response = await fetch(`${API_URL}?id=${id}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('✅ Producto eliminado');
+            await cargarProductos();
+            actualizarStats();
+        } else {
+            alert('❌ Error al eliminar');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('❌ Error al conectar con la TV Box');
+    }
 }
 
 async function guardarEdicion() {
@@ -1023,7 +1061,7 @@ async function guardarEdicion() {
         precio: parseFloat(document.getElementById('editPrecio').value),
         origen: document.getElementById('editOrigen').value,
         imagen: document.getElementById('editImagen').value,
-        activo: document.getElementById('editActivo').value,
+        activo: document.getElementById('editActivo').value === 'SI' ? 1 : 0,
         descripcion: document.getElementById('editDescripcion').value,
         enlace: document.getElementById('editEnlace').value,
         genero: document.getElementById('editGenero').value,
@@ -1036,38 +1074,25 @@ async function guardarEdicion() {
     };
     
     try {
-        await fetch(API_URL, {
+        const response = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(productoEditado)
         });
         
-        alert('✅ Producto actualizado');
-        cerrarEditarModal();
-        await cargarProductos();
-        actualizarStats();
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('✅ Producto actualizado');
+            cerrarEditarModal();
+            await cargarProductos();
+            actualizarStats();
+        } else {
+            alert('❌ Error al actualizar');
+        }
     } catch (error) {
         console.error('Error:', error);
         alert('Error al actualizar');
-    }
-}
-
-async function eliminarProducto(id) {
-    if (!confirm('¿Estás seguro de eliminar este producto?')) return;
-    
-    try {
-        await fetch(`${API_URL}?id=${id}`, {
-            method: 'DELETE'
-        });
-        
-        alert('✅ Producto eliminado');
-        await cargarProductos();
-        actualizarStats();
-    } catch (error) {
-        console.error('Error:', error);
-        productos = productos.filter(p => p.id !== id);
-        renderizarInventario();
-        actualizarStats();
     }
 }
 
@@ -1108,7 +1133,7 @@ function renderizarSolicitudes() {
     const table = document.getElementById('solicitudesTable');
     
     if (!solicitudes.length) {
-        tablaBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No hay solicitudes de productos</td>';
+        tablaBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No hay solicitudes de productos</td></tr>';
         loading.style.display = 'none';
         table.style.display = 'block';
         return;
@@ -1138,7 +1163,7 @@ function renderizarSolicitudes() {
             <td style="max-width:200px;">
                 <a href="${sol.link}" target="_blank" style="color:#66bb6a;">Ver producto</a>
                 ${sol.notas ? `<br><small>${sol.notas.substring(0, 40)}</small>` : ''}
-              </td>
+            </td>
             <td style="max-width:150px;">${sol.notas ? sol.notas.substring(0, 50) + (sol.notas.length > 50 ? '...' : '') : '-'}</td>
             <td><span class="badge ${estadosClass[sol.estado]}">${estadosTexto[sol.estado]}</span></td>
             <td>
@@ -1255,7 +1280,7 @@ function renderizarPedidos() {
     const tbody = document.getElementById('pedidosBody');
     
     if (!pedidos.length) {
-        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">No hay pedidos registrados</td>';
+        tbody.innerHTML = '<td><td colspan="10" style="text-align:center;">No hay pedidos registrados</td></tr>';
         return;
     }
     
@@ -1355,7 +1380,7 @@ async function eliminarPedido(idPedido) {
 function renderizarTrackingPedidos() {
     const tbody = document.getElementById('trackingPedidosBody');
     if (!pedidos.length) { 
-        tbody.innerHTML = '<td><td colspan="6">No hay pedidos</td>';
+        tbody.innerHTML = '<tr><td colspan="6">No hay pedidos</td></tr>';
         return; 
     }
     
