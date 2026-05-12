@@ -789,12 +789,8 @@
 
 <script>
 // ============================================
-// ⚠️ CAMBIO IMPORTANTE: NUEVA API EN TU TV BOX ⚠️
+// CONFIGURACIÓN - API DE LA TV BOX
 // ============================================
-// URL de tu Google Script (ANTIGUA - con límites)
-// const API_URL = 'https://script.google.com/macros/s/AKfycby6Lzye_pHp4FgWkm5WRFwQwrN42Yc32KtABgiVJKl2fCXFu2QoH7yQnAiNomZURhSbnw/exec';
-
-// NUEVA URL: Tu TV Box con Ngrok (SIN LÍMITES - HASTA 500,000 PRODUCTOS)
 const API_URL = 'https://loving-chef-performer-coat.trycloudflare.com/tienda/api.php';
 
 let productos = [], carrito = [], productoActual = null, colorSeleccionado = null, tallaSeleccionada = null;
@@ -992,6 +988,7 @@ function actualizarSubcategorias() {
                 filtroGenero = 'todos';
                 document.querySelectorAll('.genero-btn').forEach(b => b.classList.remove('active'));
                 document.querySelector('.genero-btn[data-genero="todos"]')?.classList.add('active');
+                paginaActual = 0;
                 cargarProductos();
             };
             container.appendChild(btn);
@@ -1003,10 +1000,10 @@ function actualizarSubcategorias() {
     }
 }
 
-// ========== PRODUCTOS (NUEVA VERSIÓN CON PAGINACIÓN) ==========
+// ========== PRODUCTOS (NUEVA VERSIÓN CON TV BOX) ==========
 async function cargarProductos() {
-    const container = document.getElementById('productos');
-    container.innerHTML = '<div class="loading">🔄 Cargando productos desde tu TV Box...</div>';
+    const contenedor = document.getElementById('productos');
+    contenedor.innerHTML = '<div class="loading">🔄 Cargando productos desde tu TV Box...</div>';
     
     const categoria = filtroSubcat || '';
     const origen = filtroPlataforma !== 'todos' ? filtroPlataforma : '';
@@ -1018,8 +1015,7 @@ async function cargarProductos() {
     if (genero) url += `&genero=${encodeURIComponent(genero)}`;
     
     try {
-        // 🔥 IMPORTANTE: Agregar este header para evitar la página de advertencia de Ngrok 🔥
-     const response = await fetch(url);
+        const response = await fetch(url);
         const data = await response.json();
         
         if (data.success && data.data) {
@@ -1028,11 +1024,11 @@ async function cargarProductos() {
             mostrarProductos();
             renderizarPaginacion();
         } else {
-            container.innerHTML = '<div class="vacio">❌ Error al cargar productos</div>';
+            contenedor.innerHTML = '<div class="vacio">❌ Error al cargar productos</div>';
         }
     } catch(e) { 
-        console.error(e);
-        container.innerHTML = '<div class="loading">❌ No se pudo conectar a la TV Box. ¿Está encendida?</div>';
+        console.error('Error:', e);
+        contenedor.innerHTML = '<div class="loading">❌ No se pudo conectar a la TV Box. ¿Está encendida?</div>';
     }
 }
 
@@ -1074,7 +1070,6 @@ function mostrarProductos() {
     }
     
     cont.innerHTML = productos.map(p => {
-        // Asegurar que precio es número
         let precioNum = parseFloat(p.precio);
         if (isNaN(precioNum)) precioNum = 0;
         
@@ -1085,13 +1080,21 @@ function mostrarProductos() {
                 <div class="producto-origen origen-${(p.origen || 'temu').toLowerCase()}">${p.origen || 'General'}</div>
                 <div class="producto-genero">${getIconoGenero(p.genero)} ${p.genero || 'Unisex'}</div>
                 ${p.categoria ? `<div class="producto-categoria">📂 ${p.categoria}</div>` : ''}
-                <h3 class="producto-titulo">${p.nombre || 'Producto'}</h3>
+                <h3 class="producto-titulo">${escapeHtml(p.nombre) || 'Producto'}</h3>
                 <div class="producto-precio">$${precioNum.toFixed(2)}</div>
                 <button class="btn-agregar" onclick="event.stopPropagation(); agregarAlCarrito(${p.id})">➕ Agregar</button>
             </div>
         </div>
     `}).join('');
 }
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 // ========== CARRITO ==========
 function agregarAlCarrito(id) {
     const prod = productos.find(p => p.id == id);
@@ -1351,11 +1354,9 @@ document.getElementById('btn-consultar-pedido').addEventListener('click', async 
     
     try {
         const response = await fetch(`${API_URL}?action=pedidos&nombre=${encodeURIComponent(nombre)}`);
-        let data = await response.json();
+        const data = await response.json();
         
         let pedidosCliente = data.success ? data.data : [];
-        
-        console.log('Pedidos encontrados:', pedidosCliente);
         
         if(pedidosCliente.length === 0) {
             resultadoDiv.innerHTML = '<div class="vacio">📭 No se encontraron pedidos con el nombre "' + nombre + '"</div>';
@@ -1491,40 +1492,34 @@ document.getElementById('pedido-form-modal')?.addEventListener('submit', async (
     }
     
     let prodTexto = '', total = 0;
-    const productosCarrito = [];
     carrito.forEach(i => {
         let subtotal = (i.precio || 0) * i.cantidad;
         total += subtotal;
         prodTexto += `${i.nombre} x${i.cantidad} - $${subtotal.toFixed(2)}\n`;
-        productosCarrito.push({ nombre: i.nombre, cantidad: i.cantidad, precio: i.precio });
     });
     
     const pedido = {
+        action: 'pedido',
         nombre, telefono, direccion, metodoPago,
-        productos_json: JSON.stringify(productosCarrito),
+        productos_json: JSON.stringify(carrito.map(i => ({ nombre: i.nombre, cantidad: i.cantidad, precio: i.precio }))),
         total: total
     };
     
-    try {
-        await fetch(`${API_URL}?action=pedido`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(pedido)
-        });
-        
-        carrito = [];
-        localStorage.setItem('carrito', JSON.stringify(carrito));
-        actualizarCarrito();
-        document.getElementById('pago-modal').style.display = 'none';
-        
-        if(metodoPago === 'Yappy') {
-            document.getElementById('yappy-modal').style.display = 'flex';
-        } else {
-            alert('✅ Pedido confirmado. Gracias por tu compra.');
-        }
-    } catch(error) {
-        console.error('Error:', error);
-        alert('Error al procesar el pedido');
+    await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pedido)
+    });
+    
+    carrito = [];
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    actualizarCarrito();
+    document.getElementById('pago-modal').style.display = 'none';
+    
+    if(metodoPago === 'Yappy') {
+        document.getElementById('yappy-modal').style.display = 'flex';
+    } else {
+        alert('✅ Pedido confirmado. Gracias por tu compra.');
     }
 });
 
@@ -1564,7 +1559,6 @@ document.getElementById('verificar-pago')?.addEventListener('click', async () =>
             return;
         }
         
-        // Actualizar estado del pedido
         await fetch(`${API_URL}?action=actualizarEstado`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
