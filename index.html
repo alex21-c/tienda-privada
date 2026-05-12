@@ -1020,7 +1020,6 @@ async function cargarProductos() {
     try {
         // 🔥 IMPORTANTE: Agregar este header para evitar la página de advertencia de Ngrok 🔥
      const response = await fetch(url);
-        });
         const data = await response.json();
         
         if (data.success && data.data) {
