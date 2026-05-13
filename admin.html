@@ -446,9 +446,26 @@ textarea.input { min-height: 100px; resize: vertical; }
                 <div class="form-grid">
                     <div class="form-group"><label>Nombre del producto *</label><input type="text" class="input" id="prodNombre" placeholder="Ej: Camiseta Premium"></div>
                     <div class="form-group"><label>Precio base *</label><input type="number" class="input" id="prodPrecio" step="0.01" placeholder="0.00"></div>
-                    <div class="form-group"><label>Origen/Plataforma</label><select class="input" id="prodOrigen"><option value="Amazon">Amazon</option><option value="Temu">Temu</option><option value="Shein">Shein</option><option value="Sephora">Sephora</option></select></div>
-                    <div class="form-group"><label>Categoría</label><select class="input" id="prodCategoria"><option value="ropa">Ropa</option><option value="zapatos">Zapatos</option><option value="accesorios">Accesorios</option><option value="electronica">Electrónica</option><option value="perfume">Perfume</option><option value="maquillaje">Maquillaje</option></select></div>
-                    <div class="form-group"><label>Género</label><select class="input" id="prodGenero"><option value="mujer">Mujer</option><option value="hombre">Hombre</option><option value="unisex">Unisex</option></select></div>
+                    <div class="form-group"><label>Origen/Plataforma</label>
+                        <select class="input" id="prodOrigen" onchange="actualizarCategorias()">
+                            <option value="Amazon">Amazon</option>
+                            <option value="Temu">Temu</option>
+                            <option value="Shein">Shein</option>
+                            <option value="Sephora">Sephora</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Categoría</label>
+                        <select class="input" id="prodCategoria"></select>
+                    </div>
+                    <div class="form-group"><label>Género</label>
+                        <select class="input" id="prodGenero">
+                            <option value="mujer">👩 Mujer</option>
+                            <option value="hombre">👨 Hombre</option>
+                            <option value="niña">👧 Niña</option>
+                            <option value="niño">👦 Niño</option>
+                            <option value="unisex">👥 Unisex</option>
+                        </select>
+                    </div>
                     <div class="form-group"><label>URL Imagen</label><input type="text" class="input" id="prodImagen" placeholder="https://..."></div>
                     <div class="form-group"><label>Enlace producto</label><input type="text" class="input" id="prodEnlace" placeholder="URL del producto"></div>
                     <div class="form-group"><label>Estado</label><select class="input" id="prodActivo"><option value="SI">✅ Disponible</option><option value="NO">❌ No disponible</option></select></div>
@@ -531,7 +548,7 @@ textarea.input { min-height: 100px; resize: vertical; }
                                 <th>Método Pago</th>
                                 <th>Estado</th>
                                 <th>Acciones</th>
-                            </tr>
+                            </td>
                         </thead>
                         <tbody id="pedidosBody"></tbody>
                     </table>
@@ -583,7 +600,7 @@ textarea.input { min-height: 100px; resize: vertical; }
             <div class="form-box">
                 <div style="overflow-x: auto;">
                     <table class="data-table">
-                        <thead><tr><th>ID Pedido</th><th>Cliente</th><th>Total</th><th>Estado Tracking</th><th>Fecha Estimada</th><th>Acciones</th></tr></thead>
+                        <thead></td><th>ID Pedido</th><th>Cliente</th><th>Total</th><th>Estado Tracking</th><th>Fecha Estimada</th><th>Acciones</th></tr></thead>
                         <tbody id="trackingPedidosBody"></tbody>
                     </table>
                 </div>
@@ -625,7 +642,7 @@ textarea.input { min-height: 100px; resize: vertical; }
                 <div class="form-group"><label>Precio base</label><input type="number" class="input" id="editPrecio" step="0.01"></div>
                 <div class="form-group"><label>Origen</label><select class="input" id="editOrigen"><option>Amazon</option><option>Temu</option><option>Shein</option><option>Sephora</option></select></div>
                 <div class="form-group"><label>Categoría</label><input type="text" class="input" id="editCategoria"></div>
-                <div class="form-group"><label>Género</label><select class="input" id="editGenero"><option>mujer</option><option>hombre</option><option>unisex</option></select></div>
+                <div class="form-group"><label>Género</label><select class="input" id="editGenero"><option>mujer</option><option>hombre</option><option>niña</option><option>niño</option><option>unisex</option></select></div>
                 <div class="form-group"><label>Imagen URL</label><input type="text" class="input" id="editImagen"></div>
                 <div class="form-group"><label>Enlace</label><input type="text" class="input" id="editEnlace"></div>
                 <div class="form-group"><label>Estado</label><select class="input" id="editActivo"><option value="SI">Disponible</option><option value="NO">No disponible</option></select></div>
@@ -658,6 +675,42 @@ textarea.input { min-height: 100px; resize: vertical; }
 // 🔥 URL DE LA API - TV BOX 🔥
 // ============================================
 const API_URL = 'https://loving-chef-performer-coat.trycloudflare.com/tienda/api.php';
+
+// ========== CATEGORÍAS POR ORIGEN ==========
+const categoriasPorOrigen = {
+    'Amazon': ['ropa', 'zapatos', 'accesorios', 'electronica', 'perfume', 'maquillaje'],
+    'Temu': ['ropa', 'zapatos', 'accesorios', 'electronica'],
+    'Shein': ['ropa', 'zapatos', 'accesorios', 'electronica'],
+    'Sephora': ['cuidado de la piel', 'cuidado del cabello', 'maquillaje', 'perfume']
+};
+
+const nombresCategorias = {
+    'ropa': '👕 Ropa',
+    'zapatos': '👟 Zapatos',
+    'accesorios': '💍 Accesorios',
+    'electronica': '📱 Electrónica',
+    'perfume': '🌸 Perfume',
+    'maquillaje': '💄 Maquillaje',
+    'cuidado de la piel': '🧴 Cuidado de la piel',
+    'cuidado del cabello': '💇 Cuidado del cabello'
+};
+
+function actualizarCategorias() {
+    const origen = document.getElementById('prodOrigen').value;
+    const categorias = categoriasPorOrigen[origen] || [];
+    const selectCategoria = document.getElementById('prodCategoria');
+    
+    selectCategoria.innerHTML = '<option value="">Seleccionar categoría...</option>';
+    categorias.forEach(cat => {
+        const nombreMostrar = nombresCategorias[cat] || cat;
+        selectCategoria.innerHTML += `<option value="${cat}">${nombreMostrar}</option>`;
+    });
+}
+
+// Inicializar categorías al cargar la página
+document.addEventListener('DOMContentLoaded', function() {
+    actualizarCategorias();
+});
 
 let productos = [];
 let pedidos = [];
@@ -857,7 +910,7 @@ function renderizarInventario() {
     const tbody = document.getElementById('inventarioBody');
     
     if (!productos.length) {
-        tbody.innerHTML = '<td><td colspan="7" style="text-align:center;">No hay productos registrados</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay productos registrados</td>';
         return;
     }
     
@@ -892,7 +945,7 @@ function renderizarInventario() {
     }).join('');
 }
 
-// ==================== AGREGAR PRODUCTO (CORREGIDO) ====================
+// ==================== AGREGAR PRODUCTO ====================
 async function agregarProducto() {
     const tieneVariantes = document.getElementById('tieneVariantes').checked;
     let variantesString = '';
@@ -919,20 +972,14 @@ async function agregarProducto() {
     }
     
     const nuevoProducto = {
-        action: 'agregarProducto',
         nombre: document.getElementById('prodNombre').value,
         precio: parseFloat(document.getElementById('prodPrecio').value),
         origen: document.getElementById('prodOrigen').value,
         imagen: document.getElementById('prodImagen').value || 'https://via.placeholder.com/300x200',
         descripcion: document.getElementById('prodDescripcion').value,
         enlace: document.getElementById('prodEnlace').value,
-        categoria_genero: document.getElementById('prodGenero').value,
         categoria: document.getElementById('prodCategoria').value,
-        tiene_variantes: tieneVariantes ? "SI" : "NO",
-        variantes: variantesString,
-        colores_nombres: coloresNombres,
-        colores_imagenes: coloresImagenes,
-        colores_precios: coloresPrecios,
+        genero: document.getElementById('prodGenero').value,
         activo: document.getElementById('prodActivo').value === 'SI' ? 1 : 0
     };
     
@@ -973,6 +1020,7 @@ function limpiarFormularioProducto() {
     document.getElementById('tieneVariantes').checked = false;
     document.getElementById('variantesPanel').style.display = 'none';
     document.getElementById('coloresContainer').innerHTML = '';
+    actualizarCategorias();
 }
 
 function abrirEditarProducto(id) {
@@ -1003,7 +1051,7 @@ function abrirEditarProducto(id) {
     document.getElementById('editarModal').style.display = 'flex';
 }
 
-// ==================== ELIMINAR PRODUCTO (CORREGIDO) ====================
+// ==================== ELIMINAR PRODUCTO ====================
 async function eliminarProducto(id) {
     if (!confirm('⚠️ ¿Estás seguro de eliminar este producto?')) return;
     
@@ -1055,7 +1103,6 @@ async function guardarEdicion() {
     }
     
     const productoEditado = {
-        action: 'editarProductoCompleto',
         id: id,
         nombre: document.getElementById('editNombre').value,
         precio: parseFloat(document.getElementById('editPrecio').value),
@@ -1065,17 +1112,12 @@ async function guardarEdicion() {
         descripcion: document.getElementById('editDescripcion').value,
         enlace: document.getElementById('editEnlace').value,
         genero: document.getElementById('editGenero').value,
-        categoria: document.getElementById('editCategoria').value,
-        tiene_variantes: tieneVariantes ? "SI" : "NO",
-        variantes: variantesString,
-        colores_nombres: coloresNombres,
-        colores_imagenes: coloresImagenes,
-        colores_precios: coloresPrecios
+        categoria: document.getElementById('editCategoria').value
     };
     
     try {
         const response = await fetch(API_URL, {
-            method: 'POST',
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(productoEditado)
         });
@@ -1133,7 +1175,7 @@ function renderizarSolicitudes() {
     const table = document.getElementById('solicitudesTable');
     
     if (!solicitudes.length) {
-        tablaBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No hay solicitudes de productos</td></tr>';
+        tablaBody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No hay solicitudes de productos</td>';
         loading.style.display = 'none';
         table.style.display = 'block';
         return;
@@ -1280,7 +1322,7 @@ function renderizarPedidos() {
     const tbody = document.getElementById('pedidosBody');
     
     if (!pedidos.length) {
-        tbody.innerHTML = '<td><td colspan="10" style="text-align:center;">No hay pedidos registrados</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">No hay pedidos registrados</td>';
         return;
     }
     
@@ -1380,7 +1422,7 @@ async function eliminarPedido(idPedido) {
 function renderizarTrackingPedidos() {
     const tbody = document.getElementById('trackingPedidosBody');
     if (!pedidos.length) { 
-        tbody.innerHTML = '<tr><td colspan="6">No hay pedidos</td></tr>';
+        tbody.innerHTML = '<td><td colspan="6">No hay pedidosNeque';
         return; 
     }
     
