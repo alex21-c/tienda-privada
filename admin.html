@@ -1409,26 +1409,24 @@ async function cambiarEstadoPedido(idPedido, nuevoEstado) {
 }
 
 async function eliminarPedido(idPedido) {
-    if (!confirm(`⚠️ ¿Estás SEGURO de eliminar el pedido ${idPedido}?\nEsta acción no se puede deshacer.`)) return;
-    if (!confirm(`Confirma: ¿Eliminar pedido ${idPedido} permanentemente?`)) return;
+    if (!confirm(`⚠️ ¿Eliminar pedido ${idPedido} permanentemente?`)) return;
     
     try {
-        pedidos = pedidos.filter(p => p.id_pedido != idPedido);
-        localStorage.removeItem(`tracking_${idPedido}`);
-        
-        await fetch(API_URL, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id_pedido: idPedido })
+        const response = await fetch(`${API_URL}?action=eliminarPedido&id_pedido=${idPedido}`, {
+            method: 'DELETE'
         });
         
-        renderizarPedidos();
-        renderizarTrackingPedidos();
-        actualizarStats();
-        alert(`✅ Pedido ${idPedido} eliminado correctamente`);
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('✅ Pedido eliminado');
+            cargarPedidos(); // Recargar la lista
+        } else {
+            alert('❌ Error: ' + (data.error || 'Desconocido'));
+        }
     } catch (error) {
         console.error('Error:', error);
-        alert('Error al eliminar el pedido');
+        alert('❌ Error de conexión');
     }
 }
 
