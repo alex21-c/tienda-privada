@@ -1366,7 +1366,7 @@ function renderizarPedidos() {
                     </select>
                   </td>
                 <td>
-                    <button onclick="eliminarPedido('${idPedido}')" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;" title="Eliminar pedido">🗑️ Eliminar</button>
+                  <button onclick="eliminarPedido('${idPedido}')" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;">🗑️ Eliminar</button>
                   </td>
             </tr>
         `;
@@ -1420,7 +1420,8 @@ async function eliminarPedido(idPedido) {
         
         if (data.success) {
             alert('✅ Pedido eliminado');
-            cargarPedidos(); // Recargar la lista
+            // Recargar la lista de pedidos sin recargar toda la página
+            cargarPedidos();
         } else {
             alert('❌ Error: ' + (data.error || 'Desconocido'));
         }
