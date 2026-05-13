@@ -1303,9 +1303,17 @@ async function cargarPedidos() {
         loading.style.display = 'block';
         table.style.display = 'none';
         
+        // Obtener TODOS los pedidos
         const response = await fetch(`${API_URL}?action=pedidos&t=${Date.now()}`);
         const data = await response.json();
-        pedidos = (data.success && Array.isArray(data.data)) ? data.data : [];
+        
+        console.log('Pedidos recibidos:', data);
+        
+        if (data.success && Array.isArray(data.data)) {
+            pedidos = data.data;
+        } else {
+            pedidos = [];
+        }
         
         renderizarPedidos();
     } catch (error) {
@@ -1322,22 +1330,28 @@ function renderizarPedidos() {
     const tbody = document.getElementById('pedidosBody');
     
     if (!pedidos.length) {
-        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">No hay pedidos registrados</td>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;">No hay pedidos registrados</td><tr>';
         return;
     }
     
-    tbody.innerHTML = pedidos.map((p, index) => {
-        const idPedido = p.id_pedido || p.id || index;
+    tbody.innerHTML = pedidos.map(p => {
+        const idPedido = p.id_pedido || p.id;
         const estadoActual = p.estado_pago || 'Pendiente de pago';
         
         let estadoClass = 'badge-pending';
         if (estadoActual === 'Pagado') estadoClass = 'badge-info';
         if (estadoActual === 'Entregado') estadoClass = 'badge-success';
         
+        // Formatear fecha
+        let fecha = p.fecha || p.fecha_registro || '';
+        if (fecha) {
+            fecha = new Date(fecha).toLocaleDateString();
+        }
+        
         return `
             <tr>
                 <td>${idPedido}</td>
-                <td>${p.fecha ? new Date(p.fecha).toLocaleDateString() : '-'}</td>
+                <td>${fecha || '-'}</td>
                 <td>${p.nombre_cliente || p.nombre || '-'}</td>
                 <td>${p.telefono || '-'}</td>
                 <td style="max-width:150px;">${(p.direccion || '-').substring(0, 30)}</td>
@@ -1350,10 +1364,10 @@ function renderizarPedidos() {
                         <option value="Pagado" ${estadoActual === 'Pagado' ? 'selected' : ''}>💰 Pagado</option>
                         <option value="Entregado" ${estadoActual === 'Entregado' ? 'selected' : ''}>✅ Entregado</option>
                     </select>
-                </td>
+                  </td>
                 <td>
                     <button onclick="eliminarPedido('${idPedido}')" style="background:#ef9a9a; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;" title="Eliminar pedido">🗑️ Eliminar</button>
-                </td>
+                  </td>
             </tr>
         `;
     }).join('');
