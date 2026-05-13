@@ -1478,9 +1478,10 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// PAGO
+// ==================== PAGO CORREGIDO ====================
 document.getElementById('pedido-form-modal')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
     const nombre = document.getElementById('nombre-modal').value;
     const telefono = document.getElementById('telefono-modal').value;
     const direccion = document.getElementById('direccion-modal').value;
@@ -1491,35 +1492,63 @@ document.getElementById('pedido-form-modal')?.addEventListener('submit', async (
         return;
     }
     
-    let prodTexto = '', total = 0;
-    carrito.forEach(i => {
-        let subtotal = (i.precio || 0) * i.cantidad;
+    if(carrito.length === 0) {
+        alert('🛒 Tu carrito está vacío');
+        return;
+    }
+    
+    // Calcular total
+    let total = 0;
+    const productosParaPedido = carrito.map(item => {
+        const subtotal = (item.precio || 0) * item.cantidad;
         total += subtotal;
-        prodTexto += `${i.nombre} x${i.cantidad} - $${subtotal.toFixed(2)}\n`;
+        return {
+            nombre: item.nombre,
+            cantidad: item.cantidad,
+            precio: item.precio
+        };
     });
     
     const pedido = {
         action: 'pedido',
-        nombre, telefono, direccion, metodoPago,
-        productos_json: JSON.stringify(carrito.map(i => ({ nombre: i.nombre, cantidad: i.cantidad, precio: i.precio }))),
+        nombre: nombre,
+        telefono: telefono,
+        direccion: direccion,
+        metodo_pago: metodoPago,
+        productos_json: JSON.stringify(productosParaPedido),
         total: total
     };
     
-    await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(pedido)
-    });
+    console.log('📦 Enviando pedido:', pedido);
     
-    carrito = [];
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-    actualizarCarrito();
-    document.getElementById('pago-modal').style.display = 'none';
-    
-    if(metodoPago === 'Yappy') {
-        document.getElementById('yappy-modal').style.display = 'flex';
-    } else {
-        alert('✅ Pedido confirmado. Gracias por tu compra.');
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(pedido)
+        });
+        
+        const data = await response.json();
+        console.log('📡 Respuesta:', data);
+        
+        if(data.success) {
+            // Vaciar carrito SOLO si el pedido se guardó correctamente
+            carrito = [];
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            actualizarCarrito();
+            document.getElementById('pago-modal').style.display = 'none';
+            
+            if(metodoPago === 'Yappy') {
+                document.getElementById('yappy-modal').style.display = 'flex';
+            } else {
+                alert(`✅ Pedido confirmado. Gracias por tu compra.\n📦 Número de pedido: ${data.id_pedido}`);
+            }
+        } else {
+            alert('❌ Error al procesar el pedido: ' + (data.error || 'Desconocido'));
+        }
+    } catch(error) {
+        console.error('❌ Error:', error);
+        alert('❌ Error de conexión: ' + error.message);
     }
 });
 
@@ -1541,6 +1570,7 @@ document.getElementById('cerrar-confirmar-modal')?.addEventListener('click', () 
     document.getElementById('confirmar-pago-modal').style.display = 'none';
 });
 
+// Verificar pago después de Yappy
 document.getElementById('verificar-pago')?.addEventListener('click', async () => {
     let nombre = document.getElementById('nombre-verificar').value;
     if(!nombre) {
@@ -1559,15 +1589,20 @@ document.getElementById('verificar-pago')?.addEventListener('click', async () =>
             return;
         }
         
-        await fetch(`${API_URL}?action=actualizarEstado`, {
+        await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id_pedido: pedido.id_pedido, estado: 'Pagado' })
+            body: JSON.stringify({ 
+                action: 'actualizarEstadoPedido', 
+                id_pedido: pedido.id_pedido, 
+                estado: 'Pagado' 
+            })
         });
         
         document.getElementById('confirmar-pago-modal').style.display = 'none';
         alert('✅ Pago confirmado. Gracias por tu compra.');
     } catch(error) {
+        console.error('Error:', error);
         alert('Error al verificar el pago');
     }
 });
