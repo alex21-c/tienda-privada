@@ -852,13 +852,31 @@ function aprobarSolicitudCliente(codigo) {
 function agregarSolicitudAlCarrito(codigo) {
     const solicitud = solicitudes.find(s => s.codigo === codigo);
     if(solicitud && solicitud.cotizacion) {
+        // Asegurar que el precio sea un número válido
+        const precioValido = parseFloat(solicitud.cotizacion);
+        if (isNaN(precioValido) || precioValido <= 0) {
+            alert('❌ Error: Precio inválido');
+            return;
+        }
+        
         const existente = carrito.find(i => i.id === `sol_${codigo}`);
-        if(existente) existente.cantidad++;
-        else carrito.push({ id: `sol_${codigo}`, nombre: `📦 Producto solicitado (${solicitud.plataforma})`, precio: solicitud.cotizacion, origen: solicitud.plataforma, cantidad: 1 });
+        if(existente) {
+            existente.cantidad++;
+        } else {
+            carrito.push({
+                id: `sol_${codigo}`,
+                nombre: `📦 Producto solicitado (${solicitud.plataforma})`,
+                precio: precioValido,  // ← Asegurar que es número
+                origen: solicitud.plataforma,
+                cantidad: 1
+            });
+        }
         localStorage.setItem('carrito', JSON.stringify(carrito));
         actualizarCarrito();
         document.getElementById('consultar-modal').style.display = 'none';
-        alert('✅ Producto agregado al carrito');
+        alert('✅ Producto agregado al carrito correctamente');
+    } else {
+        alert('❌ Error: No se pudo agregar el producto');
     }
 }
 
