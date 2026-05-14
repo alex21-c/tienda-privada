@@ -1,1 +1,624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GREEN ADMIN | PANEL DE CONTROL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #e8f5e9;
+            color: #1b5e20;
+            overflow-x: hidden;
+        }
+        .login-screen {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+        }
+        .login-box {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255,255,255,.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(76,175,80,.3);
+            border-radius: 28px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,.1);
+        }
+        .login-title { font-size: 2rem; font-weight: 900; margin-bottom: 10px; color: #2e7d32; }
+        .login-sub { color: #558b2f; margin-bottom: 30px; }
+        .input {
+            width: 100%;
+            padding: 16px;
+            background: #f5f5f5;
+            border: 1px solid #c8e6c9;
+            border-radius: 16px;
+            color: #1b5e20;
+            font-size: 1rem;
+            outline: none;
+            margin-bottom: 20px;
+        }
+        .input:focus {
+            border-color: #66bb6a;
+            box-shadow: 0 0 0 3px rgba(102,187,106,.2);
+        }
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #66bb6a, #43a047);
+            color: white;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: .3s;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(67,160,71,.4); }
+        .btn-small { width: auto; padding: 10px 20px; font-size: 0.9rem; }
+        .btn-secondary { background: linear-gradient(135deg, #81c784, #66bb6a); }
+        .btn-danger { background: linear-gradient(135deg, #ef9a9a, #ef5350); }
+        .app { display: none; min-height: 100vh; }
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 280px;
+            background: rgba(255,255,255,.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(76,175,80,.2);
+            padding: 30px 20px;
+            overflow: auto;
+            z-index: 100;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #43a047, #2e7d32);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .menu { display: flex; flex-direction: column; gap: 8px; }
+        .menu button {
+            background: none;
+            border: none;
+            padding: 14px 16px;
+            border-radius: 14px;
+            color: #2e7d32;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: left;
+            transition: .3s;
+            font-size: 0.95rem;
+        }
+        .menu button:hover, .menu button.active { background: #c8e6c9; color: #1b5e20; transform: translateX(5px); }
+        .content { margin-left: 280px; padding: 30px; }
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .top-title { font-size: 2rem; font-weight: 900; color: #2e7d32; }
+        .logout {
+            padding: 12px 18px;
+            border-radius: 14px;
+            border: none;
+            background: #ef9a9a;
+            color: #c62828;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .3s;
+        }
+        .logout:hover { background: #ef5350; color: white; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,.9);
+            border: 1px solid rgba(76,175,80,.2);
+            border-radius: 28px;
+            padding: 25px;
+            text-align: center;
+        }
+        .stat-card h3 { font-size: 0.85rem; opacity: 0.7; margin-bottom: 10px; color: #558b2f; }
+        .stat-card .stat-value { font-size: 2rem; font-weight: 900; color: #2e7d32; }
+        .form-box {
+            background: rgba(255,255,255,.9);
+            border: 1px solid rgba(76,175,80,.2);
+            padding: 30px;
+            border-radius: 28px;
+            margin-bottom: 40px;
+        }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 0.85rem; font-weight: 600; color: #2e7d32; }
+        textarea.input { min-height: 100px; resize: vertical; }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table th, .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #c8e6c9;
+        }
+        .data-table th { background: #e8f5e9; font-weight: 700; color: #2e7d32; }
+        .data-table tr:hover { background: #f1f8e9; }
+        .badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .badge-success { background: #c8e6c9; color: #2e7d32; }
+        .badge-pending { background: #fff3e0; color: #ef6c00; }
+        .badge-danger { background: #ffebee; color: #c62828; }
+        .badge-info { background: #e3f2fd; color: #1565c0; }
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+        .modal-content {
+            width: 100%;
+            max-width: 700px;
+            background: white;
+            border-radius: 28px;
+            padding: 0;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            background: linear-gradient(135deg, #66bb6a, #43a047);
+            padding: 20px;
+            color: white;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body { padding: 25px; overflow-y: auto; flex: 1; }
+        .modal-cerrar { background: rgba(255,255,255,.2); border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; color: white; font-size: 1.2rem; }
+        .section { display: none; }
+        .section.active { display: block; }
+        .loading { text-align: center; padding: 40px; color: #66bb6a; }
+        .solicitud-codigo {
+            font-family: monospace;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #66bb6a;
+            background: #e8f5e9;
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            letter-spacing: 2px;
+        }
+        .tracking-timeline {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            gap: 8px;
+        }
+        .tracking-step {
+            flex: 1;
+            text-align: center;
+            padding: 12px 8px;
+            background: white;
+            border-radius: 16px;
+            cursor: pointer;
+            border: 2px solid #c8e6c9;
+            transition: all 0.3s;
+        }
+        .tracking-step.active {
+            background: #66bb6a;
+            color: white;
+            border-color: #66bb6a;
+        }
+        .tracking-step.completed {
+            background: #a5d6a7;
+            color: #1b5e20;
+            border-color: #a5d6a7;
+        }
+        .tracking-step .step-icon { font-size: 24px; display: block; }
+        .tracking-step .step-name { font-size: 10px; margin-top: 5px; }
+        .estado-select {
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid #c8e6c9;
+            background: white;
+            color: #2e7d32;
+            font-weight: 600;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        @media (max-width: 900px) {
+            .sidebar { position: relative; width: 100%; height: auto; }
+            .content { margin-left: 0; }
+            .data-table { font-size: 12px; }
+            .tracking-timeline { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+<div class="login-screen" id="loginScreen">
+    <div class="login-box">
+        <div class="login-title">🌿 GREEN ADMIN</div>
+        <div class="login-sub">Panel de control</div>
+        <input type="password" class="input" id="password" placeholder="Contraseña admin">
+        <button class="btn" onclick="login()">ACCEDER</button>
+    </div>
+</div>
+<div class="app" id="app">
+    <div class="sidebar">
+        <div class="logo">🌱 GREEN ADMIN</div>
+        <div class="menu">
+            <button class="active" data-section="dashboard">📊 Dashboard</button>
+            <button data-section="productos">➕ Agregar Producto</button>
+            <button data-section="inventario">📚 Inventario</button>
+            <button data-section="solicitudes">📌 Solicitudes</button>
+            <button data-section="pedidos">🛒 Pedidos</button>
+            <button data-section="tracking">🚚 TRACKING</button>
+        </div>
+    </div>
+    <div class="content">
+        <div class="topbar">
+            <div class="top-title" id="currentSectionTitle">Dashboard</div>
+            <button class="logout" onclick="logout()">Cerrar sesión</button>
+        </div>
+        <div id="dashboardSection" class="section active">
+            <div class="stats-grid">
+                <div class="stat-card"><h3>PRODUCTOS</h3><div class="stat-value" id="totalProductos">0</div></div>
+                <div class="stat-card"><h3>SOLICITUDES PENDIENTES</h3><div class="stat-value" id="totalSolicitudesPendientes">0</div></div>
+                <div class="stat-card"><h3>PEDIDOS</h3><div class="stat-value" id="totalPedidos">0</div></div>
+                <div class="stat-card"><h3>PAGADOS</h3><div class="stat-value" id="totalPagados">0</div></div>
+            </div>
+        </div>
+        <div id="productosSection" class="section">
+            <div class="form-box">
+                <h2 style="margin-bottom:20px;">➕ Agregar Nuevo Producto</h2>
+                <div class="form-grid">
+                    <div class="form-group"><label>Nombre del producto *</label><input type="text" class="input" id="prodNombre" placeholder="Ej: Camiseta Premium"></div>
+                    <div class="form-group"><label>Precio base *</label><input type="number" class="input" id="prodPrecio" step="0.01" placeholder="0.00"></div>
+                    <div class="form-group"><label>Origen/Plataforma</label><select class="input" id="prodOrigen"><option value="Amazon">Amazon</option><option value="Temu">Temu</option><option value="Shein">Shein</option><option value="Sephora">Sephora</option></select></div>
+                    <div class="form-group"><label>Categoría</label><select class="input" id="prodCategoria"><option value="ropa">Ropa</option><option value="zapatos">Zapatos</option><option value="accesorios">Accesorios</option><option value="electronica">Electrónica</option><option value="perfume">Perfume</option><option value="maquillaje">Maquillaje</option></select></div>
+                    <div class="form-group"><label>Género</label><select class="input" id="prodGenero"><option value="mujer">Mujer</option><option value="hombre">Hombre</option><option value="niña">Niña</option><option value="niño">Niño</option><option value="unisex">Unisex</option></select></div>
+                    <div class="form-group"><label>URL Imagen</label><input type="text" class="input" id="prodImagen" placeholder="https://..."></div>
+                    <div class="form-group"><label>Enlace producto</label><input type="text" class="input" id="prodEnlace" placeholder="URL del producto"></div>
+                    <div class="form-group"><label>Estado</label><select class="input" id="prodActivo"><option value="SI">✅ Disponible</option><option value="NO">❌ No disponible</option></select></div>
+                </div>
+                <div class="form-group"><label>Descripción</label><textarea class="input" id="prodDescripcion" placeholder="Descripción del producto"></textarea></div>
+                <div style="margin:20px 0"><label style="display:flex; align-items:center; gap:12px; background:#e8f5e9; padding:15px; border-radius:16px; cursor:pointer;"><input type="checkbox" id="tieneVariantes" style="width:20px; height:20px;"><span>🎨 ¿Tiene variantes? (Colores, tallas y precios)</span></label></div>
+                <div id="variantesPanel" style="display:none;" class="form-box" style="margin-top:10px; padding:15px;"><h4>Variantes (Formato: Talla:Precio)</h4><input type="text" class="input" id="variantesInput" placeholder="Ejemplo: S:25.99, M:25.99, L:27.99"><small style="color:#558b2f;">Separa cada talla con coma. Formato: Talla:Precio</small></div>
+                <button class="btn" onclick="agregarProducto()" style="margin-top:25px;">💾 Guardar Producto</button>
+            </div>
+        </div>
+        <div id="inventarioSection" class="section">
+            <h2 style="margin-bottom:20px;">📚 Inventario - Gestionar Productos</h2>
+            <div class="form-box">
+                <div id="inventarioLoading" class="loading">Cargando productos...</div>
+                <div style="overflow-x: auto;"><table class="data-table" id="inventarioTable" style="display:none;"><thead><tr><th>ID</th><th>Producto</th><th>Precio</th><th>Origen</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="inventarioBody"></tbody></table></div>
+            </div>
+        </div>
+        <div id="solicitudesSection" class="section">
+            <h2 style="margin-bottom:20px;">📌 Solicitudes de Productos</h2>
+            <div class="form-box"><div id="solicitudesList"></div></div>
+        </div>
+        <div id="pedidosSection" class="section">
+            <h2 style="margin-bottom:20px;">🛒 Pedidos - Gestionar Estados</h2>
+            <div class="form-box"><div id="pedidosList"></div></div>
+        </div>
+        <div id="trackingSection" class="section">
+            <h2 style="margin-bottom:20px;">🚚 GESTIÓN DE TRACKING</h2>
+            <div class="form-box">
+                <div class="form-group"><label>🔍 Buscar pedido por ID o nombre del cliente</label><input type="text" id="buscarPedidoTracking" class="input" placeholder="ID del pedido o nombre del cliente"></div>
+                <button class="btn-small" onclick="buscarPedidoParaTracking()" style="width: auto; margin-bottom: 20px;">🔍 Buscar Pedido</button>
+                <div id="trackingInfo" style="display: none;">
+                    <div style="background: #e8f5e9; border-radius: 16px; padding: 20px; margin-bottom: 20px;"><h3 id="trackingCliente" style="color: #2e7d32;">Cliente: -</h3><p id="trackingProductos">Productos: -</p><p id="trackingTotal">Total: -</p><p id="trackingFecha">Fecha: -</p></div>
+                    <div class="tracking-timeline" id="trackingTimeline"><div class="tracking-step" data-step="0" onclick="seleccionarEstadoTracking(0)"><span class="step-icon">📋</span><span class="step-name">Pedido Recibido</span></div><div class="tracking-step" data-step="1" onclick="seleccionarEstadoTracking(1)"><span class="step-icon">📦</span><span class="step-name">Preparando</span></div><div class="tracking-step" data-step="2" onclick="seleccionarEstadoTracking(2)"><span class="step-icon">✈</span><span class="step-name">En Tránsito</span></div><div class="tracking-step" data-step="3" onclick="seleccionarEstadoTracking(3)"><span class="step-icon">🌎</span><span class="step-name">En Panamá</span></div><div class="tracking-step" data-step="4" onclick="seleccionarEstadoTracking(4)"><span class="step-icon">🚚</span><span class="step-name">En Reparto</span></div><div class="tracking-step" data-step="5" onclick="seleccionarEstadoTracking(5)"><span class="step-icon">✅</span><span class="step-name">Entregado</span></div></div>
+                    <div style="margin-top: 20px;"><div class="form-group"><label>📝 Fecha estimada de llegada</label><input type="date" id="fechaEstimada" class="input"></div><div class="form-group"><label>📌 Nota de seguimiento</label><textarea id="notaTracking" rows="2" class="input" placeholder="Ej: El paquete llegó a Panamá, pendiente de aduana"></textarea></div><div style="display: flex; gap: 12px;"><button class="btn" onclick="actualizarTrackingPedido()">💾 Guardar Cambios</button><button class="btn" onclick="limpiarTracking()" style="background:#ef9a9a;">Limpiar</button></div></div>
+                </div>
+                <div id="trackingNoEncontrado" style="display: none; text-align: center; padding: 40px; color: #ef6c00;">⚠️ No se encontró el pedido</div>
+            </div>
+            <h3>📋 Lista de Pedidos con Tracking</h3>
+            <div class="form-box"><div style="overflow-x: auto;"><table class="data-table"><thead><tr><th>ID Pedido</th><th>Cliente</th><th>Total</th><th>Estado Tracking</th><th>Fecha Estimada</th><th>Acciones</th></tr></thead><tbody id="trackingPedidosBody"></tbody></table></div></div>
+        </div>
+    </div>
+</div>
+<div id="cotizarModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>💰 Cotizar Producto</h2><button class="modal-cerrar" onclick="cerrarCotizarModal()">✕</button></div><div class="modal-body"><div id="cotizarInfo"></div><div class="form-group"><label>💰 Precio cotizado (USD)</label><input type="number" id="precioCotizado" step="0.01" class="input" placeholder="0.00"></div><div class="form-group"><label>💬 Mensaje para el cliente</label><textarea id="respuestaAdmin" rows="3" class="input" placeholder="Ej: El producto está disponible, precio incluye envío a Panamá"></textarea></div><div style="display: flex; gap: 12px; margin-top: 10px;"><button class="btn" onclick="enviarCotizacion()">💰 Enviar Cotización</button><button class="btn" onclick="rechazarSolicitud()" style="background:#ef9a9a;">❌ Rechazar</button></div></div></div></div>
+<div id="editarModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>✏️ Editar Producto</h2><button class="modal-cerrar" onclick="cerrarEditarModal()">✕</button></div><div class="modal-body"><input type="hidden" id="editId"><div class="form-grid"><div class="form-group"><label>Nombre</label><input type="text" class="input" id="editNombre"></div><div class="form-group"><label>Precio base</label><input type="number" class="input" id="editPrecio" step="0.01"></div><div class="form-group"><label>Origen</label><select class="input" id="editOrigen"><option>Amazon</option><option>Temu</option><option>Shein</option><option>Sephora</option></select></div><div class="form-group"><label>Categoría</label><input type="text" class="input" id="editCategoria"></div><div class="form-group"><label>Género</label><select class="input" id="editGenero"><option>mujer</option><option>hombre</option><option>unisex</option></select></div><div class="form-group"><label>Imagen URL</label><input type="text" class="input" id="editImagen"></div><div class="form-group"><label>Enlace</label><input type="text" class="input" id="editEnlace"></div><div class="form-group"><label>Estado</label><select class="input" id="editActivo"><option value="SI">Disponible</option><option value="NO">No disponible</option></select></div></div><div class="form-group"><label>Descripción</label><textarea class="input" id="editDescripcion" rows="3"></textarea></div><div style="margin:20px 0"><label style="display:flex; align-items:center; gap:12px; background:#e8f5e9; padding:15px; border-radius:16px; cursor:pointer;"><input type="checkbox" id="editTieneVariantes" style="width:20px; height:20px;"><span>🎨 Editar variantes (Colores, tallas y precios)</span></label></div><div id="editVariantesPanel" style="display:none;" class="form-box"><h4>Variantes (Formato: Talla:Precio)</h4><input type="text" class="input" id="editVariantesInput" placeholder="Ejemplo: S:25.99, M:25.99, L:27.99"></div><div style="display: flex; gap: 12px; margin-top: 20px;"><button class="btn" onclick="guardarEdicion()">💾 Guardar Cambios</button><button class="btn" onclick="cerrarEditarModal()" style="background:#ef9a9a;">Cancelar</button></div></div></div></div>
+
+<script>
 const API_URL = 'https://specific-progressive-spin-decide.trycloudflare.com/tienda/api.php';
+let productos = [], pedidos = [], solicitudes = [], solicitudActual = null, trackingActual = null, estadoSeleccionado = 0;
+
+function login() {
+    const pass = document.getElementById('password').value;
+    if (pass === 'admin123') {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        cargarTodosLosDatos();
+    } else alert('Contraseña incorrecta');
+}
+function logout() { location.reload(); }
+
+async function cargarTodosLosDatos() {
+    await cargarProductos();
+    await cargarPedidos();
+    cargarSolicitudes();
+    actualizarStats();
+    renderizarTrackingPedidos();
+}
+
+async function cargarProductos() {
+    try {
+        const response = await fetch(`${API_URL}?action=productos&t=${Date.now()}`);
+        const data = await response.json();
+        productos = data.success && data.data ? data.data : [];
+        renderizarInventario();
+    } catch(e) { productos = []; renderizarInventario(); }
+}
+
+function renderizarInventario() {
+    const tbody = document.getElementById('inventarioBody');
+    if (!productos.length) { tbody.innerHTML = '<tr><td colspan="6">No hay productos</td></tr>'; return; }
+    tbody.innerHTML = productos.map(p => `<tr><td>${p.id}</td><td><strong>${p.nombre}</strong><br><small>${(p.descripcion || '').substring(0,40)}</small></td><td>$${parseFloat(p.precio).toFixed(2)}</td><td>${p.origen}</td><td><span class="badge ${p.activo == 1 ? 'badge-success' : 'badge-danger'}">${p.activo == 1 ? 'Disponible' : 'No disponible'}</span></td><td><button onclick="abrirEditarProducto(${p.id})">✏️</button> <button onclick="eliminarProducto(${p.id})">🗑️</button></td>`).join('');
+}
+
+async function agregarProducto() {
+    const tieneVariantes = document.getElementById('tieneVariantes').checked;
+    const nuevoProducto = {
+        nombre: document.getElementById('prodNombre').value,
+        precio: parseFloat(document.getElementById('prodPrecio').value),
+        origen: document.getElementById('prodOrigen').value,
+        categoria: document.getElementById('prodCategoria').value,
+        genero: document.getElementById('prodGenero').value,
+        imagen: document.getElementById('prodImagen').value || 'https://via.placeholder.com/300x200',
+        descripcion: document.getElementById('prodDescripcion').value,
+        enlace: document.getElementById('prodEnlace').value,
+        activo: document.getElementById('prodActivo').value === 'SI' ? 1 : 0,
+        variantes: tieneVariantes ? document.getElementById('variantesInput').value : null
+    };
+    if (!nuevoProducto.nombre || !nuevoProducto.precio) { alert('❌ Nombre y precio obligatorios'); return; }
+    try {
+        const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(nuevoProducto) });
+        const data = await response.json();
+        if (data.success) { alert('✅ Producto agregado'); limpiarFormularioProducto(); await cargarProductos(); actualizarStats(); }
+        else alert('❌ Error: ' + (data.error || 'No se pudo guardar'));
+    } catch(error) { alert('❌ Error de conexión'); }
+}
+
+function limpiarFormularioProducto() {
+    document.getElementById('prodNombre').value = ''; document.getElementById('prodPrecio').value = ''; document.getElementById('prodImagen').value = '';
+    document.getElementById('prodEnlace').value = ''; document.getElementById('prodDescripcion').value = ''; document.getElementById('tieneVariantes').checked = false;
+    document.getElementById('variantesPanel').style.display = 'none'; document.getElementById('variantesInput').value = '';
+}
+
+function abrirEditarProducto(id) {
+    const producto = productos.find(p => p.id == id);
+    if(!producto) return;
+    document.getElementById('editId').value = producto.id;
+    document.getElementById('editNombre').value = producto.nombre || '';
+    document.getElementById('editPrecio').value = producto.precio || 0;
+    document.getElementById('editOrigen').value = producto.origen || 'Amazon';
+    document.getElementById('editCategoria').value = producto.categoria || '';
+    document.getElementById('editGenero').value = producto.genero || 'unisex';
+    document.getElementById('editImagen').value = producto.imagen || '';
+    document.getElementById('editEnlace').value = producto.enlace || '';
+    document.getElementById('editActivo').value = producto.activo == 1 ? 'SI' : 'NO';
+    document.getElementById('editDescripcion').value = producto.descripcion || '';
+    const tieneVariantes = producto.variantes && producto.variantes.length > 0;
+    document.getElementById('editTieneVariantes').checked = tieneVariantes;
+    document.getElementById('editVariantesPanel').style.display = tieneVariantes ? 'block' : 'none';
+    if(tieneVariantes) document.getElementById('editVariantesInput').value = producto.variantes;
+    document.getElementById('editarModal').style.display = 'flex';
+}
+
+async function guardarEdicion() {
+    const id = parseInt(document.getElementById('editId').value);
+    const tieneVariantes = document.getElementById('editTieneVariantes').checked;
+    const productoEditado = {
+        id: id, nombre: document.getElementById('editNombre').value, precio: parseFloat(document.getElementById('editPrecio').value),
+        origen: document.getElementById('editOrigen').value, categoria: document.getElementById('editCategoria').value,
+        genero: document.getElementById('editGenero').value, imagen: document.getElementById('editImagen').value,
+        activo: document.getElementById('editActivo').value === 'SI' ? 1 : 0, descripcion: document.getElementById('editDescripcion').value,
+        enlace: document.getElementById('editEnlace').value, variantes: tieneVariantes ? document.getElementById('editVariantesInput').value : null
+    };
+    try {
+        const response = await fetch(API_URL, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(productoEditado) });
+        const data = await response.json();
+        if(data.success) { alert('✅ Producto actualizado'); cerrarEditarModal(); await cargarProductos(); actualizarStats(); }
+        else alert('❌ Error al actualizar');
+    } catch(error) { alert('Error al actualizar'); }
+}
+
+async function eliminarProducto(id) {
+    if(!confirm('¿Eliminar este producto?')) return;
+    try {
+        const response = await fetch(`${API_URL}?id=${id}`, { method: 'DELETE' });
+        const data = await response.json();
+        if(data.success) { alert('✅ Producto eliminado'); await cargarProductos(); actualizarStats(); }
+        else alert('❌ Error al eliminar');
+    } catch(error) { alert('❌ Error de conexión'); }
+}
+function cerrarEditarModal() { document.getElementById('editarModal').style.display = 'none'; }
+
+function cargarSolicitudes() {
+    const saved = localStorage.getItem('solicitudes');
+    solicitudes = saved ? JSON.parse(saved) : [];
+    renderizarSolicitudes();
+}
+function guardarSolicitudes() { localStorage.setItem('solicitudes', JSON.stringify(solicitudes)); }
+function eliminarSolicitud(codigo) {
+    if(!confirm(`Eliminar solicitud ${codigo}?`)) return;
+    solicitudes = solicitudes.filter(s => s.codigo !== codigo);
+    guardarSolicitudes(); renderizarSolicitudes(); actualizarStats();
+}
+function renderizarSolicitudes() {
+    const container = document.getElementById('solicitudesList');
+    if(!solicitudes.length) { container.innerHTML = '<div class="loading">No hay solicitudes</div>'; return; }
+    const estados = { pendiente:'badge-pending', cotizado:'badge-info', aprobado:'badge-success', rechazado:'badge-danger' };
+    const textos = { pendiente:'⏳ Pendiente', cotizado:'💰 Cotizado', aprobado:'✅ Aprobado', rechazado:'❌ Rechazado' };
+    container.innerHTML = `<div style="overflow-x:auto;"><table class="data-table"><thead><td><th>Código</th><th>Cliente</th><th>Plataforma</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>${solicitudes.map(s => `<tr><td class="solicitud-codigo">${s.codigo}</td><td>${s.nombre}</td><td>${s.plataforma}</td><td><span class="badge ${estados[s.estado]}">${textos[s.estado]}</span></td><td>${s.estado === 'pendiente' ? `<button onclick="abrirCotizarModal('${s.codigo}')">💰 Cotizar</button>` : ''}<button onclick="eliminarSolicitud('${s.codigo}')">🗑️</button></td>`).join('')}</tbody></table></div>`;
+}
+function abrirCotizarModal(codigo) {
+    const solicitud = solicitudes.find(s => s.codigo === codigo);
+    if(!solicitud) return;
+    solicitudActual = solicitud;
+    document.getElementById('cotizarInfo').innerHTML = `<div><p><strong>Cliente:</strong> ${solicitud.nombre}</p><p><strong>Producto:</strong> <a href="${solicitud.link}" target="_blank">Ver</a></p><p><strong>Notas:</strong> ${solicitud.notas || 'Sin notas'}</p></div>`;
+    document.getElementById('precioCotizado').value = solicitud.cotizacion || '';
+    document.getElementById('respuestaAdmin').value = solicitud.respuestaAdmin || '';
+    document.getElementById('cotizarModal').style.display = 'flex';
+}
+function cerrarCotizarModal() { document.getElementById('cotizarModal').style.display = 'none'; solicitudActual = null; }
+function enviarCotizacion() {
+    if(!solicitudActual) return;
+    const precio = parseFloat(document.getElementById('precioCotizado').value);
+    if(isNaN(precio) || precio <= 0) { alert('Precio válido'); return; }
+    solicitudActual.cotizacion = precio;
+    solicitudActual.respuestaAdmin = document.getElementById('respuestaAdmin').value;
+    solicitudActual.estado = 'cotizado';
+    guardarSolicitudes(); renderizarSolicitudes(); cerrarCotizarModal(); actualizarStats();
+    alert(`✅ Cotización enviada: $${precio.toFixed(2)}`);
+}
+function rechazarSolicitud() {
+    if(!solicitudActual || !confirm('¿Rechazar?')) return;
+    solicitudActual.estado = 'rechazado';
+    solicitudActual.respuestaAdmin = document.getElementById('respuestaAdmin').value || 'Rechazado';
+    guardarSolicitudes(); renderizarSolicitudes(); cerrarCotizarModal(); actualizarStats();
+}
+function aprobarSolicitudAdmin(codigo) {
+    const s = solicitudes.find(s => s.codigo === codigo);
+    if(s) { s.estado = 'aprobado'; guardarSolicitudes(); renderizarSolicitudes(); actualizarStats(); alert('✅ Solicitud aprobada'); }
+}
+
+async function cargarPedidos() {
+    try {
+        const response = await fetch(`${API_URL}?action=pedidos&t=${Date.now()}`);
+        const data = await response.json();
+        pedidos = data.success && data.data ? data.data : [];
+        renderizarPedidos();
+    } catch(e) { pedidos = []; renderizarPedidos(); }
+}
+function renderizarPedidos() {
+    const container = document.getElementById('pedidosList');
+    if(!pedidos.length) { container.innerHTML = '<div class="loading">No hay pedidos</div>'; return; }
+    container.innerHTML = `<div style="overflow-x:auto;"><table class="data-table"><thead><tr><th>ID</th><th>Cliente</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>${pedidos.map(p => `<tr><td>${p.id_pedido}</td><td>${p.nombre_cliente}</td><td>$${parseFloat(p.total).toFixed(2)}</td><td><span class="badge ${p.estado_pago === 'Pagado' ? 'badge-success' : 'badge-pending'}">${p.estado_pago || 'Pendiente'}</span></td><td><select onchange="cambiarEstadoPedido('${p.id_pedido}', this.value)"><option value="Pendiente de pago">Pendiente</option><option value="Pagado">Pagado</option><option value="Entregado">Entregado</option></select> <button onclick="eliminarPedido('${p.id_pedido}')">🗑️</button></td>`).join('')}</tbody></table></div>`;
+}
+async function cambiarEstadoPedido(id, estado) {
+    if(!confirm(`¿Cambiar estado a ${estado}?`)) return;
+    try {
+        await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'actualizarEstadoPedido', id_pedido: id, estado }) });
+        await cargarPedidos(); actualizarStats();
+    } catch(e) { alert('Error'); }
+}
+async function eliminarPedido(id) {
+    if(!confirm(`¿Eliminar pedido ${id}?`)) return;
+    try {
+        await fetch(`${API_URL}?action=eliminarPedido&id_pedido=${id}`, { method: 'DELETE' });
+        await cargarPedidos(); renderizarTrackingPedidos(); actualizarStats();
+    } catch(e) { alert('Error'); }
+}
+
+function renderizarTrackingPedidos() {
+    const tbody = document.getElementById('trackingPedidosBody');
+    if(!pedidos.length) { tbody.innerHTML = '<tr><td colspan="6">No hay pedidos</td></tr>'; return; }
+    tbody.innerHTML = pedidos.map(p => { const saved = localStorage.getItem(`tracking_${p.id_pedido}`); let estado=0, fecha=''; if(saved) { const d=JSON.parse(saved); estado=d.estado||0; fecha=d.fechaEstimada||''; } const estados=['Recibido','Preparando','En Tránsito','En Panamá','En Reparto','Entregado']; return `<tr><td>${p.id_pedido}</td><td>${p.nombre_cliente}</td><td>$${parseFloat(p.total).toFixed(2)}</td><td><span class="badge badge-info">${estados[estado]}</span></td><td>${fecha||'-'}</td><td><button onclick="cargarPedidoTracking('${p.id_pedido}')">✏️</button> <button onclick="eliminarTrackingPedido('${p.id_pedido}')">🗑️</button></td>`; }).join('');
+}
+function eliminarTrackingPedido(id) {
+    if(!confirm(`Eliminar tracking de ${id}?`)) return;
+    localStorage.removeItem(`tracking_${id}`);
+    renderizarTrackingPedidos();
+    if(trackingActual && trackingActual.id_pedido === id) trackingActual=null;
+}
+function buscarPedidoParaTracking() {
+    const busqueda = document.getElementById('buscarPedidoTracking').value.trim();
+    const pedido = pedidos.find(p => p.id_pedido === busqueda || p.nombre_cliente?.toLowerCase().includes(busqueda.toLowerCase()));
+    if(pedido) cargarPedidoTracking(pedido.id_pedido);
+    else { document.getElementById('trackingInfo').style.display='none'; document.getElementById('trackingNoEncontrado').style.display='block'; }
+}
+function cargarPedidoTracking(id) {
+    const pedido = pedidos.find(p => p.id_pedido == id);
+    if(!pedido) return;
+    trackingActual = pedido;
+    const saved = localStorage.getItem(`tracking_${id}`);
+    let estado=0, fecha='', nota='';
+    if(saved) { const d=JSON.parse(saved); estado=d.estado||0; fecha=d.fechaEstimada||''; nota=d.nota||''; }
+    estadoSeleccionado=estado;
+    document.getElementById('trackingCliente').innerHTML=`👤 ${pedido.nombre_cliente}`;
+    document.getElementById('trackingProductos').innerHTML=`📦 ${pedido.productos_json?.substring(0,100)||''}`;
+    document.getElementById('trackingTotal').innerHTML=`💰 $${parseFloat(pedido.total||0).toFixed(2)}`;
+    document.getElementById('trackingFecha').innerHTML=`📅 ${pedido.fecha?new Date(pedido.fecha).toLocaleDateString():'-'}`;
+    document.getElementById('fechaEstimada').value=fecha;
+    document.getElementById('notaTracking').value=nota;
+    actualizarUIEstadosTracking(estado);
+    document.getElementById('trackingInfo').style.display='block';
+    document.getElementById('trackingNoEncontrado').style.display='none';
+}
+function actualizarUIEstadosTracking(estado) {
+    document.querySelectorAll('#trackingTimeline .tracking-step').forEach((step,idx)=>{ step.classList.remove('active','completed'); if(idx<estado) step.classList.add('completed'); else if(idx===estado) step.classList.add('active'); });
+}
+function seleccionarEstadoTracking(step) { estadoSeleccionado=step; actualizarUIEstadosTracking(step); }
+function actualizarTrackingPedido() {
+    if(!trackingActual) return;
+    const id=trackingActual.id_pedido;
+    const fecha=document.getElementById('fechaEstimada').value;
+    const nota=document.getElementById('notaTracking').value;
+    localStorage.setItem(`tracking_${id}`, JSON.stringify({ estado:estadoSeleccionado, fechaEstimada:fecha, nota, ultimaActualizacion:new Date().toISOString() }));
+    alert(`✅ Tracking actualizado`);
+    renderizarTrackingPedidos();
+}
+function limpiarTracking() { document.getElementById('fechaEstimada').value=''; document.getElementById('notaTracking').value=''; if(trackingActual) { estadoSeleccionado=0; actualizarUIEstadosTracking(0); } }
+
+function actualizarStats() {
+    document.getElementById('totalProductos').innerText=productos.length;
+    document.getElementById('totalSolicitudesPendientes').innerText=solicitudes.filter(s=>s.estado==='pendiente').length;
+    document.getElementById('totalPedidos').innerText=pedidos.length;
+    document.getElementById('totalPagados').innerText=pedidos.filter(p=>p.estado_pago==='Pagado'||p.estado_pago==='Entregado').length;
+}
+
+document.getElementById('tieneVariantes').addEventListener('change', function() { document.getElementById('variantesPanel').style.display = this.checked ? 'block' : 'none'; });
+document.getElementById('editTieneVariantes').addEventListener('change', function() { document.getElementById('editVariantesPanel').style.display = this.checked ? 'block' : 'none'; });
+
+document.querySelectorAll('.menu button').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));
+        this.classList.add('active');
+        const section = this.dataset.section;
+        document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+        document.getElementById(`${section}Section`).classList.add('active');
+        const titles = { dashboard:'Dashboard', productos:'Agregar Producto', inventario:'Inventario', solicitudes:'Solicitudes', pedidos:'Pedidos', tracking:'TRACKING' };
+        document.getElementById('currentSectionTitle').innerText = titles[section] || section;
+        if(section==='inventario') renderizarInventario();
+        if(section==='solicitudes') renderizarSolicitudes();
+        if(section==='pedidos') renderizarPedidos();
+        if(section==='tracking') renderizarTrackingPedidos();
+    });
+});
+window.onclick = function(e) { if(e.target===document.getElementById('editarModal')) cerrarEditarModal(); if(e.target===document.getElementById('cotizarModal')) cerrarCotizarModal(); };
+</script>
+</body>
+</html>
