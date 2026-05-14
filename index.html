@@ -1187,29 +1187,83 @@ document.addEventListener('keydown', (e) => { if(e.key === 'Escape') cerrarZoom(
 
 document.getElementById('pedido-form-modal')?.addEventListener('submit', async (e) => {
     e.preventDefault();
+    
     const nombre = document.getElementById('nombre-modal').value;
     const telefono = document.getElementById('telefono-modal').value;
     const direccion = document.getElementById('direccion-modal').value;
     const metodoPago = document.getElementById('metodo-pago-modal').value;
-    if(!nombre || !telefono || !direccion) { alert('Completa todos los campos'); return; }
-    if(carrito.length === 0) { alert('Carrito vacío'); return; }
+    
+    if(!nombre || !telefono || !direccion) {
+        alert('Completa todos los campos');
+        return;
+    }
+    
+    if(carrito.length === 0) {
+        alert('🛒 Tu carrito está vacío');
+        return;
+    }
+    
+    // Calcular total y productos
     let total = 0;
-    const productosCarrito = carrito.map(item => ({
-    nombre: item.nombre || 'Producto',
-    cantidad: item.cantidad || 1,
-    precio: parseFloat(item.precio) || 0  // ← Forzar número, evitar null
-}));
-    const pedido = { action: 'pedido', nombre, telefono, direccion, metodo_pago: metodoPago, productos_json: JSON.stringify(productosCarrito), total };
+    const productosParaPedido = [];
+    
+    for (const item of carrito) {
+        const precioNum = parseFloat(item.precio);
+        if (isNaN(precioNum)) {
+            console.error('Precio inválido para:', item);
+            alert('Error: Precio inválido para ' + item.nombre);
+            return;
+        }
+        const subtotal = precioNum * item.cantidad;
+        total += subtotal;
+        productosParaPedido.push({
+            nombre: item.nombre,
+            cantidad: item.cantidad,
+            precio: precioNum
+        });
+    }
+    
+    const pedido = {
+        action: 'pedido',
+        nombre: nombre,
+        telefono: telefono,
+        direccion: direccion,
+        metodo_pago: metodoPago,
+        productos_json: JSON.stringify(productosParaPedido),
+        total: total
+    };
+    
+    console.log('📦 Enviando pedido:', pedido);
+    
     try {
-        const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido) });
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(pedido)
+        });
+        
         const data = await response.json();
+        console.log('📡 Respuesta:', data);
+        
         if(data.success) {
-            carrito = []; localStorage.setItem('carrito', JSON.stringify(carrito)); actualizarCarrito();
+            // Vaciar carrito
+            carrito = [];
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            actualizarCarrito();
             document.getElementById('pago-modal').style.display = 'none';
-            if(metodoPago === 'Yappy') document.getElementById('yappy-modal').style.display = 'flex';
-            else alert(`✅ Pedido confirmado. #${data.id_pedido}`);
-        } else alert('❌ Error: ' + (data.error || 'Desconocido'));
-    } catch(error) { alert('❌ Error de conexión'); }
+            
+            if(metodoPago === 'Yappy') {
+                document.getElementById('yappy-modal').style.display = 'flex';
+            } else {
+                alert(`✅ Pedido confirmado. Gracias por tu compra.\n📦 Número de pedido: ${data.id_pedido}`);
+            }
+        } else {
+            alert('❌ Error al procesar el pedido: ' + (data.error || 'Desconocido'));
+        }
+    } catch(error) {
+        console.error('❌ Error:', error);
+        alert('❌ Error de conexión: ' + error.message);
+    }
 });
 
 document.getElementById('cerrar-yappy-modal')?.addEventListener('click', () => { document.getElementById('yappy-modal').style.display = 'none'; });
