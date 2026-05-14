@@ -1196,7 +1196,11 @@ document.getElementById('pedido-form-modal')?.addEventListener('submit', async (
     if(!nombre || !telefono || !direccion) { alert('Completa todos los campos'); return; }
     if(carrito.length === 0) { alert('Carrito vacío'); return; }
     let total = 0;
-    const productosCarrito = carrito.map(item => { const subtotal = (item.precio || 0) * item.cantidad; total += subtotal; return { nombre: item.nombre, cantidad: item.cantidad, precio: item.precio }; });
+    const productosCarrito = carrito.map(item => ({
+    nombre: item.nombre || 'Producto',
+    cantidad: item.cantidad || 1,
+    precio: parseFloat(item.precio) || 0  // ← Forzar número, evitar null
+}));
     const pedido = { action: 'pedido', nombre, telefono, direccion, metodo_pago: metodoPago, productos_json: JSON.stringify(productosCarrito), total };
     try {
         const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(pedido) });
