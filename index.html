@@ -1244,7 +1244,7 @@ document.getElementById('pedido-form-modal')?.addEventListener('submit', async (
         });
         
         const data = await response.json();
-        console.log('📡 Respuesta:', data);
+        console.log('📡 Respuesta completa:', data);
         
         if(data.success) {
             // Vaciar carrito
@@ -1266,7 +1266,6 @@ document.getElementById('pedido-form-modal')?.addEventListener('submit', async (
         alert('❌ Error de conexión: ' + error.message);
     }
 });
-
 document.getElementById('cerrar-yappy-modal')?.addEventListener('click', () => { document.getElementById('yappy-modal').style.display = 'none'; });
 document.getElementById('copiar-yappy')?.addEventListener('click', () => { navigator.clipboard.writeText('6474-5914'); alert('✅ Número copiado'); });
 document.getElementById('ya-pague')?.addEventListener('click', () => { document.getElementById('yappy-modal').style.display = 'none'; document.getElementById('confirmar-pago-modal').style.display = 'flex'; });
