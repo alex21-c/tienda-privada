@@ -757,6 +757,7 @@ let solicitudes = [];
 let paginaActual = 0;
 const LIMITE_PRODUCTOS = 20;
 let totalProductos = 0;
+let ultimoIdPedido = null;
 
 function cargarSolicitudes() {
     const saved = localStorage.getItem('solicitudes');
@@ -1247,6 +1248,11 @@ document.getElementById('pedido-form-modal')?.addEventListener('submit', async (
         console.log('📡 Respuesta completa:', data);
         
         if(data.success) {
+            // Guardar el ID del pedido y nombre para verificación
+            ultimoIdPedido = data.id_pedido;
+            localStorage.setItem('ultimoPedidoNombre', nombre);
+            localStorage.setItem('ultimoPedidoId', data.id_pedido);
+            
             // Vaciar carrito
             carrito = [];
             localStorage.setItem('carrito', JSON.stringify(carrito));
@@ -1256,7 +1262,7 @@ document.getElementById('pedido-form-modal')?.addEventListener('submit', async (
             if(metodoPago === 'Yappy') {
                 document.getElementById('yappy-modal').style.display = 'flex';
             } else {
-                alert(`✅ Pedido confirmado. Gracias por tu compra.\n📦 Número de pedido: ${data.id_pedido}`);
+                alert(`✅ Pedido #${data.id_pedido} confirmado. Gracias por tu compra.\n📦 Recibirás actualizaciones de envío.`);
             }
         } else {
             alert('❌ Error al procesar el pedido: ' + (data.error || 'Desconocido'));
@@ -1266,23 +1272,109 @@ document.getElementById('pedido-form-modal')?.addEventListener('submit', async (
         alert('❌ Error de conexión: ' + error.message);
     }
 });
-document.getElementById('cerrar-yappy-modal')?.addEventListener('click', () => { document.getElementById('yappy-modal').style.display = 'none'; });
-document.getElementById('copiar-yappy')?.addEventListener('click', () => { navigator.clipboard.writeText('6474-5914'); alert('✅ Número copiado'); });
-document.getElementById('ya-pague')?.addEventListener('click', () => { document.getElementById('yappy-modal').style.display = 'none'; document.getElementById('confirmar-pago-modal').style.display = 'flex'; });
-document.getElementById('cerrar-confirmar-modal')?.addEventListener('click', () => { document.getElementById('confirmar-pago-modal').style.display = 'none'; });
+
+// ========== YAPPY MODAL CORREGIDO ==========
+document.getElementById('cerrar-yappy-modal')?.addEventListener('click', () => { 
+    document.getElementById('yappy-modal').style.display = 'none'; 
+});
+
+document.getElementById('copiar-yappy')?.addEventListener('click', () => { 
+    navigator.clipboard.writeText('6474-5914'); 
+    alert('✅ Número copiado al portapapeles'); 
+});
+
+document.getElementById('ya-pague')?.addEventListener('click', () => {
+    // Recuperar el nombre del último pedido
+    const nombreGuardado = localStorage.getItem('ultimoPedidoNombre');
+    if (nombreGuardado) {
+        document.getElementById('nombre-verificar').value = nombreGuardado;
+    }
+    document.getElementById('yappy-modal').style.display = 'none';
+    document.getElementById('confirmar-pago-modal').style.display = 'flex';
+});
+
+document.getElementById('cerrar-confirmar-modal')?.addEventListener('click', () => { 
+    document.getElementById('confirmar-pago-modal').style.display = 'none'; 
+});
+
+// ========== VERIFICACIÓN DE PAGO CORREGIDA ==========
 document.getElementById('verificar-pago')?.addEventListener('click', async () => {
-    let nombre = document.getElementById('nombre-verificar').value;
-    if(!nombre) { alert('Ingresa tu nombre'); return; }
+    let nombre = document.getElementById('nombre-verificar').value.trim();
+    
+    if(!nombre) { 
+        alert('❌ Ingresa tu nombre para verificar el pago'); 
+        return; 
+    }
+    
+    console.log('🔍 Buscando pedido para:', nombre);
+    
     try {
-        const response = await fetch(`${API_URL}?action=pedidos&nombre=${encodeURIComponent(nombre)}`);
+        // Primero obtener todos los pedidos
+        const response = await fetch(`${API_URL}?action=pedidos&t=${Date.now()}`);
         const data = await response.json();
-        let pedidosCliente = data.success ? data.data : [];
-        let pedido = pedidosCliente?.find(p => p.estado_pago === 'Pendiente de pago');
-        if(!pedido) { alert('No se encontró pedido pendiente'); return; }
-        await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'actualizarEstadoPedido', id_pedido: pedido.id_pedido, estado: 'Pagado' }) });
-        document.getElementById('confirmar-pago-modal').style.display = 'none';
-        alert('✅ Pago confirmado');
-    } catch(error) { alert('Error al verificar'); }
+        
+        console.log('📡 Respuesta de pedidos:', data);
+        
+        if (!data.success) {
+            alert('❌ Error al consultar pedidos');
+            return;
+        }
+        
+        let pedidosCliente = data.data || [];
+        
+        // Filtrar por nombre (case insensitive)
+        let pedidoPendiente = pedidosCliente.find(p => 
+            p.nombre_cliente && p.nombre_cliente.toLowerCase() === nombre.toLowerCase() && 
+            (p.estado_pago === 'Pendiente de pago' || p.estado_pago === 'Pendiente')
+        );
+        
+        // Si no encuentra pendiente, buscar el más reciente de este cliente
+        if (!pedidoPendiente) {
+            pedidoPendiente = pedidosCliente
+                .filter(p => p.nombre_cliente && p.nombre_cliente.toLowerCase() === nombre.toLowerCase())
+                .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))[0];
+        }
+        
+        if (!pedidoPendiente) {
+            alert(`❌ No se encontró un pedido pendiente para "${nombre}".\n\nSi ya realizaste el pago, espera unos segundos y vuelve a intentar.\nSi el problema persiste, contacta al administrador.`);
+            return;
+        }
+        
+        console.log('✅ Pedido encontrado:', pedidoPendiente);
+        
+        // Actualizar estado a Pagado
+        const updateResponse = await fetch(API_URL, { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ 
+                action: 'actualizarEstadoPedido', 
+                id_pedido: pedidoPendiente.id_pedido, 
+                estado: 'Pagado' 
+            }) 
+        });
+        
+        const updateData = await updateResponse.json();
+        
+        if (updateData.success) {
+            document.getElementById('confirmar-pago-modal').style.display = 'none';
+            alert(`✅ Pago confirmado correctamente para el pedido #${pedidoPendiente.id_pedido}\n\nGracias por tu compra. Recibirás actualizaciones de envío.`);
+            
+            // Limpiar el campo y el localStorage
+            document.getElementById('nombre-verificar').value = '';
+            localStorage.removeItem('ultimoPedidoNombre');
+            
+            // Opcional: recargar después de 2 segundos
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        } else {
+            alert('❌ Error al confirmar el pago: ' + (updateData.error || 'Desconocido'));
+        }
+        
+    } catch(error) { 
+        console.error('Error al verificar pago:', error);
+        alert('❌ Error de conexión: ' + error.message);
+    }
 });
 
 cargarSolicitudes();
