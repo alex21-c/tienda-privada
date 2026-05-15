@@ -446,8 +446,24 @@
                 <div class="form-grid">
                     <div class="form-group"><label>Nombre del producto *</label><input type="text" class="input" id="prodNombre" placeholder="Ej: Camiseta Premium"></div>
                     <div class="form-group"><label>Precio base *</label><input type="number" class="input" id="prodPrecio" step="0.01" placeholder="0.00"></div>
-                    <div class="form-group"><label>Origen/Plataforma</label><select class="input" id="prodOrigen"><option value="Amazon">Amazon</option><option value="Temu">Temu</option><option value="Shein">Shein</option><option value="Sephora">Sephora</option></select></div>
-                    <div class="form-group"><label>Categoría</label><select class="input" id="prodCategoria"><option value="ropa">Ropa</option><option value="zapatos">Zapatos</option><option value="accesorios">Accesorios</option><option value="electronica">Electrónica</option><option value="perfume">Perfume</option><option value="maquillaje">Maquillaje</option></select></div>
+                    <div class="form-group"><label>Origen/Plataforma</label>
+                        <select class="input" id="prodOrigen" onchange="actualizarCategoriasPorOrigen()">
+                            <option value="Amazon">Amazon</option>
+                            <option value="Temu">Temu</option>
+                            <option value="Shein">Shein</option>
+                            <option value="Sephora">Sephora</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Categoría</label>
+                        <select class="input" id="prodCategoria">
+                            <option value="ropa">👕 Ropa</option>
+                            <option value="zapatos">👟 Zapatos</option>
+                            <option value="accesorios">💍 Accesorios</option>
+                            <option value="electronica">📱 Electrónica</option>
+                            <option value="perfume">🌸 Perfume</option>
+                            <option value="maquillaje">💄 Maquillaje</option>
+                        </select>
+                    </div>
                     <div class="form-group"><label>Género</label><select class="input" id="prodGenero"><option value="mujer">Mujer</option><option value="hombre">Hombre</option><option value="niña">Niña</option><option value="niño">Niño</option><option value="unisex">Unisex</option></select></div>
                     <div class="form-group"><label>Imagen principal</label><input type="text" class="input" id="prodImagen" placeholder="https://..."></div>
                     <div class="form-group"><label>Enlace producto</label><input type="text" class="input" id="prodEnlace" placeholder="URL del producto"></div>
@@ -510,7 +526,7 @@
 <!-- MODALES -->
 <div id="cotizarModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>💰 Cotizar Producto</h2><button class="modal-cerrar" onclick="cerrarCotizarModal()">✕</button></div><div class="modal-body"><div id="cotizarInfo"></div><div class="form-group"><label>💰 Precio cotizado (USD)</label><input type="number" id="precioCotizado" step="0.01" class="input" placeholder="0.00"></div><div class="form-group"><label>💬 Mensaje para el cliente</label><textarea id="respuestaAdmin" rows="3" class="input" placeholder="Ej: El producto está disponible, precio incluye envío a Panamá"></textarea></div><div style="display: flex; gap: 12px; margin-top: 10px;"><button class="btn" onclick="enviarCotizacion()">💰 Enviar Cotización</button><button class="btn" onclick="rechazarSolicitud()" style="background:#ef9a9a;">❌ Rechazar</button></div></div></div></div>
 
-<div id="editarModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>✏️ Editar Producto</h2><button class="modal-cerrar" onclick="cerrarEditarModal()">✕</button></div><div class="modal-body"><input type="hidden" id="editId"><div class="form-grid"><div class="form-group"><label>Nombre</label><input type="text" class="input" id="editNombre"></div><div class="form-group"><label>Precio base</label><input type="number" class="input" id="editPrecio" step="0.01"></div><div class="form-group"><label>Origen</label><select class="input" id="editOrigen"><option>Amazon</option><option>Temu</option><option>Shein</option><option>Sephora</option></select></div><div class="form-group"><label>Categoría</label><input type="text" class="input" id="editCategoria"></div><div class="form-group"><label>Género</label><select class="input" id="editGenero"><option>mujer</option><option>hombre</option><option>unisex</option></select></div><div class="form-group"><label>Imagen URL</label><input type="text" class="input" id="editImagen"></div><div class="form-group"><label>Enlace</label><input type="text" class="input" id="editEnlace"></div><div class="form-group"><label>Estado</label><select class="input" id="editActivo"><option value="SI">Disponible</option><option value="NO">No disponible</option></select></div></div><div class="form-group"><label>Descripción</label><textarea class="input" id="editDescripcion" rows="3"></textarea></div><div style="margin:20px 0"><label style="display:flex; align-items:center; gap:12px; background:#e8f5e9; padding:15px; border-radius:16px; cursor:pointer;"><input type="checkbox" id="editTieneVariantes" style="width:20px; height:20px;"><span>🎨 Editar variantes</span></label></div><div id="editVariantesPanel" style="display:none;"><div id="editColoresContainer"></div><button type="button" onclick="agregarColorEditar()" class="btn-small btn-secondary" style="margin-top:15px;">+ Agregar Color</button></div><div style="display: flex; gap: 12px; margin-top: 20px;"><button class="btn" onclick="guardarEdicion()">💾 Guardar Cambios</button><button class="btn" onclick="cerrarEditarModal()" style="background:#ef9a9a;">Cancelar</button></div></div></div></div>
+<div id="editarModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>✏️ Editar Producto</h2><button class="modal-cerrar" onclick="cerrarEditarModal()">✕</button></div><div class="modal-body"><input type="hidden" id="editId"><div class="form-grid"><div class="form-group"><label>Nombre</label><input type="text" class="input" id="editNombre"></div><div class="form-group"><label>Precio base</label><input type="number" class="input" id="editPrecio" step="0.01"></div><div class="form-group"><label>Origen</label><select class="input" id="editOrigen" onchange="actualizarCategoriasPorOrigenEditar()"><option>Amazon</option><option>Temu</option><option>Shein</option><option>Sephora</option></select></div><div class="form-group"><label>Categoría</label><select class="input" id="editCategoria"></select></div><div class="form-group"><label>Género</label><select class="input" id="editGenero"><option>mujer</option><option>hombre</option><option>unisex</option></select></div><div class="form-group"><label>Imagen URL</label><input type="text" class="input" id="editImagen"></div><div class="form-group"><label>Enlace</label><input type="text" class="input" id="editEnlace"></div><div class="form-group"><label>Estado</label><select class="input" id="editActivo"><option value="SI">Disponible</option><option value="NO">No disponible</option></select></div></div><div class="form-group"><label>Descripción</label><textarea class="input" id="editDescripcion" rows="3"></textarea></div><div style="margin:20px 0"><label style="display:flex; align-items:center; gap:12px; background:#e8f5e9; padding:15px; border-radius:16px; cursor:pointer;"><input type="checkbox" id="editTieneVariantes" style="width:20px; height:20px;"><span>🎨 Editar variantes</span></label></div><div id="editVariantesPanel" style="display:none;"><div id="editColoresContainer"></div><button type="button" onclick="agregarColorEditar()" class="btn-small btn-secondary" style="margin-top:15px;">+ Agregar Color</button></div><div style="display: flex; gap: 12px; margin-top: 20px;"><button class="btn" onclick="guardarEdicion()">💾 Guardar Cambios</button><button class="btn" onclick="cerrarEditarModal()" style="background:#ef9a9a;">Cancelar</button></div></div></div></div>
 
 <script>
 const API_URL = 'https://specific-progressive-spin-decide.trycloudflare.com/tienda/api.php';
@@ -523,6 +539,64 @@ let estadoSeleccionado = 0;
 
 // Variables para almacenar variantes temporalmente
 let variantesColores = [];
+
+// ========== CATEGORÍAS POR ORIGEN ==========
+const categoriasPorOrigen = {
+    Amazon: [
+        { value: 'ropa', label: '👕 Ropa' },
+        { value: 'zapatos', label: '👟 Zapatos' },
+        { value: 'accesorios', label: '💍 Accesorios' },
+        { value: 'electronica', label: '📱 Electrónica' },
+        { value: 'perfume', label: '🌸 Perfume' },
+        { value: 'maquillaje', label: '💄 Maquillaje' }
+    ],
+    Temu: [
+        { value: 'ropa', label: '👕 Ropa' },
+        { value: 'zapatos', label: '👟 Zapatos' },
+        { value: 'accesorios', label: '💍 Accesorios' },
+        { value: 'electronica', label: '📱 Electrónica' }
+    ],
+    Shein: [
+        { value: 'ropa', label: '👕 Ropa' },
+        { value: 'zapatos', label: '👟 Zapatos' },
+        { value: 'accesorios', label: '💍 Accesorios' },
+        { value: 'electronica', label: '📱 Electrónica' }
+    ],
+    Sephora: [
+        { value: 'cuidado_piel', label: '🧴 Cuidado de la piel' },
+        { value: 'cuidado_cabello', label: '💇 Cuidado del cabello' },
+        { value: 'maquillaje', label: '💄 Maquillaje' },
+        { value: 'perfume', label: '🌸 Perfume' }
+    ]
+};
+
+function actualizarCategoriasPorOrigen() {
+    const origen = document.getElementById('prodOrigen').value;
+    const categoriaSelect = document.getElementById('prodCategoria');
+    const categorias = categoriasPorOrigen[origen] || categoriasPorOrigen.Amazon;
+    
+    categoriaSelect.innerHTML = '';
+    categorias.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat.value;
+        option.textContent = cat.label;
+        categoriaSelect.appendChild(option);
+    });
+}
+
+function actualizarCategoriasPorOrigenEditar() {
+    const origen = document.getElementById('editOrigen').value;
+    const categoriaSelect = document.getElementById('editCategoria');
+    const categorias = categoriasPorOrigen[origen] || categoriasPorOrigen.Amazon;
+    
+    categoriaSelect.innerHTML = '';
+    categorias.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat.value;
+        option.textContent = cat.label;
+        categoriaSelect.appendChild(option);
+    });
+}
 
 // ========== FUNCIONES PARA VARIANTES ==========
 function agregarColor() {
@@ -728,7 +802,6 @@ function cargarVariantesDesdeJSON(variantesJSON) {
     if (variantesJSON && variantesJSON !== '[]') {
         try {
             variantesColores = JSON.parse(variantesJSON);
-            // Asegurar que cada color tenga las propiedades necesarias
             variantesColores.forEach(color => {
                 if (!color.tallas) color.tallas = [];
                 if (!color.imagen) color.imagen = '';
@@ -749,6 +822,7 @@ function login() {
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('app').style.display = 'block';
         cargarTodosLosDatos();
+        actualizarCategoriasPorOrigen();
     } else {
         alert('Contraseña incorrecta');
     }
@@ -914,6 +988,7 @@ function limpiarFormularioProducto() {
     document.getElementById('variantesPanel').style.display = 'none'; 
     variantesColores = [];
     renderizarColores();
+    actualizarCategoriasPorOrigen();
 }
 
 function abrirEditarProducto(id) {
@@ -924,6 +999,7 @@ function abrirEditarProducto(id) {
     document.getElementById('editNombre').value = producto.nombre || '';
     document.getElementById('editPrecio').value = producto.precio || 0;
     document.getElementById('editOrigen').value = producto.origen || 'Amazon';
+    actualizarCategoriasPorOrigenEditar();
     document.getElementById('editCategoria').value = producto.categoria || '';
     document.getElementById('editGenero').value = producto.genero || 'unisex';
     document.getElementById('editImagen').value = producto.imagen || '';
